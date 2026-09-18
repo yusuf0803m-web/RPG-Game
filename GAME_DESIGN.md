@@ -555,6 +555,22 @@ heal = MAG_pengguna * kekuatan_skill + nilai_dasar_skill
 Kalibrasi target: musuh biasa mati dalam 2–3 aksi kalau kelemahannya dipakai, 4–6 kalau tidak.
 Boss punya HP ≈ (total damage party per ronde) × 12.
 
+**Aturan penurunan stat musuh dari formula ini** (dipakai `tools/calibrate.py` dan data Babak 1; boss
+akhir Babak 1 dinaikkan 40–60% di atas aturan setelah walkthrough, lihat §9.1):
+
+```
+off(L)  = 9.3 + 1.83·(L−1)          ≈ rata-rata ATK/MAG party pada level L
+HP      = peran × 7 × off(L)         peran: swarm 0.3 · rapuh 0.5–0.7 · normal 0.9–1.0 · tank 1.3–1.4
+HP boss = 30 × off(L)
+DEF/RES ≈ 0.55 × off(L)             (tank/zirah lebih tinggi)
+ATK     ≈ 7.3 + 1.26·(L−1)          ≈ 18% HP hero per pukulan biasa
+XP      = 6·L² (boss 30·L²)          Keping = L² (boss 5·L²)
+```
+
+Hasil simulasi Tahap 1 (150 pertarungan per skenario, kebijakan satu-target berbasis kelemahan):
+Hutan 2,1 aksi/musuh · Rawa 4,7 (party campuran Lv 6–7 melawan 3 musuh) · Tambang 3,1 ·
+Mercusuar 4,5 (Pelita Padam sengaja hanya lemah terhadap Kelam) · boss 4–8 ronde (12–15 aksi party).
+
 ### 4.8 Status Efek
 
 | Status | Efek | Durasi | Sumber |
@@ -965,9 +981,9 @@ Prinsip: satu layar = satu keputusan. Semua informasi yang dibutuhkan untuk memu
 
 | Tahap | Isi | Hasil |
 |---|---|---|
-| 0 | Arsitektur & data: modul `combat`, `party`, `world`, `ui`, `data/` (JSON untuk skill, musuh, item, Kaca) | Kerangka yang bisa dites — **selesai** (`world` menyusul di Tahap 2) |
-| 1 | Prototipe combat: 3 karakter, 5 musuh, formula §4.7, Bara, Pecah | Rasio "2–3 pukulan" terverifikasi |
-| 2 | **Babak 1 lengkap** (area 1–6, 4 karakter, 7 boss, 6 side quest) | Game 6,5 jam yang bisa tamat |
+| 0 | Arsitektur & data: modul `combat`, `party`, `world`, `ui`, `data/` (JSON untuk skill, musuh, item, Kaca) | Kerangka yang bisa dites — **selesai** |
+| 1 | Prototipe combat: 3 karakter, 5 musuh, formula §4.7, Bara, Pecah | Rasio "2–3 pukulan" terverifikasi — **selesai** (`tools/calibrate.py`) |
+| 2 | **Babak 1 lengkap** (area 1–6, 4 karakter, 7 boss, 6 side quest) | Game 6,5 jam yang bisa tamat — **selesai** (lihat §9.1) |
 | 3 | Sistem lanjutan: Ganti/cadangan, Jalur, Kaca, Berkemah/Kenangan, Buruan, Arena | Fondasi Babak 2 |
 | 4 | Babak 2 (area 7–12, 3 karakter baru, 7 boss) | Game 15 jam |
 | 5 | Babak 3 + 3 ending + dungeon opsional + superboss | Game 20 jam |
@@ -975,3 +991,30 @@ Prinsip: satu layar = satu keputusan. Semua informasi yang dibutuhkan untuk memu
 
 Tahap 2 adalah tonggak terpenting: kalau Babak 1 terasa enak dimainkan, sistemnya terbukti dan
 Babak 2–3 tinggal soal isi. Kalau tidak, lebih murah membetulkannya di sana.
+
+### 9.1 Catatan implementasi Tahap 2 (Babak 1)
+
+Yang dibangun: 8 area (Pelita Rendah, Hutan Kelabu, Rawa Suar, Danau Cermin, Tengara, Lorong Bawah,
+Tambang, Mercusuar; 55 ruang), 8 boss, 4 party member + Pak Guntur sebagai tamu, 5 side quest
+(Kirana, Yang Hilang di Telaga, Hampa Pasar Malam, Surat Distrik Sunyi, Kucing Penginapan),
+5 toko, 3 puzzle (tiga lentera, tiga tuas, lift Bagas), 12 Serpihan Ingatan, save/muat 5 slot.
+`python -m pelita` memainkannya; `python tools/walkthrough.py --seed N` menjalankan pemain
+otomatis dari prolog sampai "Akhir Babak 1" dan mencetak level party di tiap boss.
+
+Penyimpangan dari desain awal, dan alasannya:
+
+- **Lintang bergabung sebelum Raja Katak**, bukan sesudahnya. Boss itu "mengajarkan Petir
+  Lintang", jadi ia harus sudah ada. Urutan Rawa: puzzle → inti Suar (Lintang) → kolam (boss).
+- **XP musuh = 6·L², boss = 30·L²; Keping = L², boss 5·L².** Nilai awal (15–600) terlalu kecil
+  untuk kurva 20·n²: party tidak sampai level boss. Dengan angka ini pemain otomatis tiba di
+  Rangga pada Lv 12, Tambang Lv 18, Baskara Lv 23, tamat Lv 24: sesuai rentang §2.2.
+- **Pertarungan terskrip** (sekali, saat pertama masuk ruang) ditambahkan di 9 ruang jalur utama
+  sebagai penjaga pacing, karena encounter acak saja tidak menjamin XP minimum.
+- **Boss dikalibrasi ulang ke atas** setelah walkthrough: Penambang 1.900 HP, Penjaga 2.200,
+  Baskara 1.500 (+2 Pengawal Istana), Kelam Berwajah 2.600. Hasil: boss akhir 4–10 ronde.
+- **Kelam Berwajah** mengganti "fase" Cahaya/Kelam dengan rotasi tiap 4 giliran (sistem yang sama
+  dengan Penambang Raksasa). Ular Cermin memakai pergantian afinitas per fase, bukan klon.
+- **Ikan Cermin belum meniru skill**; ia menyerang Es biasa. Tukang Kaca dan penukaran Serpihan
+  Ingatan ditunda ke Tahap 3 (soket Kaca). Gua Bawah Danau (dungeon opsional) belum dibuat.
+- **Lentera penjaga memulihkan HP/MP penuh** selain menyimpan, supaya boss selalu bisa didekati
+  dalam kondisi segar tanpa grinding item.
