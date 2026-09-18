@@ -14,6 +14,11 @@
   "nyala_terakhir":   {"name": "Nyala Terakhir", "kind": "sihir", "element": "api", "target": "satu_musuh", "power": 2.4, "cost": 15, "level": 18,
                        "tags": ["low_hp_x1_5"], "description": "Damage ×1.5 kalau HP Rimba di bawah 30%."},
 
+  "pukulan_lentera":  {"name": "Pukulan Lentera", "kind": "fisik", "element": "cahaya", "target": "satu_musuh", "power": 1.8, "cost": 4, "level": 1,
+                       "description": "Pukulan tongkat berlapis Nyala."},
+  "nyala_penjaga":    {"name": "Nyala Penjaga", "kind": "heal", "element": "cahaya", "target": "semua_kawan", "power": 1.5, "heal_base": 25, "cost": 8, "level": 1,
+                       "cure": ["lupa"], "description": "Cahaya hangat yang memulihkan seluruh party dan mengusir Lupa."},
+
   "tebas_berat":      {"name": "Tebas Berat", "kind": "fisik", "element": "fisik", "target": "satu_musuh", "power": 1.6, "cost": 3, "level": 1, "hit_mod": -0.10},
   "pasang_badan":     {"name": "Pasang Badan", "kind": "buff", "element": "netral", "target": "diri", "cost": 2, "level": 4,
                        "self_inflict": [{"status": "provokasi", "chance": 1.0}], "mods": [{"stat": "def", "mult": 1.5, "turns": 1}]},

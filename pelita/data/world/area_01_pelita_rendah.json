@@ -1,0 +1,205 @@
+{
+  "id": "pelita_rendah",
+  "name": "Pelita Rendah",
+  "level_range": "1–3",
+  "start": "gerbang_timur",
+  "fog": false,
+  "encounter_rate": 0.0,
+  "encounters": [],
+  "rooms": {
+    "gerbang_timur": {
+      "name": "Gerbang Timur",
+      "safe": true,
+      "text": "Gerbang kayu jati dengan dua lentera perunggu besar di tiang-tiangnya. Di luar gerbang, jalan setapak menurun ke ladang yang sudah lama tidak ditanami. Kabut tipis menggantung di kejauhan, tidak pernah lebih dekat, tidak pernah lebih jauh.",
+      "on_enter": "prolog",
+      "exits": [
+        {"label": "Masuk ke jalan desa", "to": "jalan_desa"}
+      ],
+      "objects": [
+        {"id": "lentera_gerbang", "name": "Lentera penjaga (simpan & istirahat)", "script": "lentera_save", "if": ["prolog_selesai"]}
+      ]
+    },
+    "jalan_desa": {
+      "name": "Jalan Desa",
+      "safe": true,
+      "text": "Jalan tanah yang dipadatkan kaki-kaki selama tiga generasi. Rumah panggung berjajar di kedua sisi, sebagian sudah kosong. Anak-anak dulu main kejar-kejaran di sini. Sekarang mereka main di dalam rumah, dekat lentera.",
+      "exits": [
+        {"label": "Rumah Pak Guntur", "to": "rumah_guntur"},
+        {"label": "Warung Bu Ratna", "to": "warung"},
+        {"label": "Balai desa", "to": "balai_desa"},
+        {"label": "Gerbang timur", "to": "gerbang_timur"},
+        {"label": "Gerbang barat (ke Hutan Kelabu)", "to": "gerbang_barat", "if": ["kirana_hilang"],
+         "locked": "Pak Guntur selalu bilang: jangan ke gerbang barat sendirian. Belum ada alasan untuk melanggarnya."}
+      ],
+      "npcs": [
+        {"id": "pak_tua", "name": "Pak Darma (duduk di teras)", "script": "bicara_darma"}
+      ]
+    },
+    "rumah_guntur": {
+      "name": "Rumah Pak Guntur",
+      "safe": true,
+      "text": "Rumah panggung kecil yang bau minyak lentera dan kayu manis. Dinding penuh kaleng perunggu, sumbu, dan peta lembah yang sudah kuning. Ada dua tikar tidur: satu rapi, satu berantakan. Yang berantakan punyamu.",
+      "exits": [
+        {"label": "Keluar ke jalan desa", "to": "jalan_desa"}
+      ],
+      "objects": [
+        {"id": "tikar", "name": "Tikar tidur", "script": "tidur"},
+        {"id": "peti", "name": "Peti minyak Pak Guntur", "script": "peti_minyak"}
+      ]
+    },
+    "warung": {
+      "name": "Warung Bu Ratna",
+      "safe": true,
+      "text": "Warung kecil dengan rak bambu dan aroma tempe goreng. Bu Ratna menjual apa saja yang masih bisa dibawa kafilah dari kota: ramuan, minyak, sesekali zirah bekas.",
+      "exits": [
+        {"label": "Keluar ke jalan desa", "to": "jalan_desa"}
+      ],
+      "npcs": [
+        {"id": "ratna", "name": "Bu Ratna", "script": "bicara_ratna"}
+      ]
+    },
+    "balai_desa": {
+      "name": "Balai Desa",
+      "safe": true,
+      "text": "Balai terbuka beratap ijuk. Di tengahnya tergantung lentera desa, yang terbesar di Pelita Rendah. Nyalanya kuning pucat. Tiga tahun lalu masih putih.",
+      "on_enter": "balai_masuk",
+      "exits": [
+        {"label": "Keluar ke jalan desa", "to": "jalan_desa"}
+      ],
+      "npcs": [
+        {"id": "wira", "name": "Pak Wira (kepala desa)", "script": "bicara_wira"},
+        {"id": "sari", "name": "Mbok Sari", "script": "bicara_sari", "if": ["kirana_hilang"]}
+      ]
+    },
+    "gerbang_barat": {
+      "name": "Gerbang Barat",
+      "safe": true,
+      "text": "Gerbang yang jarang dibuka. Lenteranya lebih kecil dari yang di timur, dan lebih redup. Di baliknya, Hutan Kelabu mulai tepat di ujung jalan, seperti tembok abu-abu yang bernapas.",
+      "exits": [
+        {"label": "Kembali ke jalan desa", "to": "jalan_desa"},
+        {"label": "Masuk ke Hutan Kelabu", "to": "tepi_hutan", "area": "hutan_kelabu"}
+      ],
+      "objects": [
+        {"id": "lentera_barat", "name": "Lentera penjaga (simpan & istirahat)", "script": "lentera_save"}
+      ]
+    }
+  },
+  "scripts": {
+    "prolog": [
+      {"once": "prolog_mulai", "do": [
+        {"text": "Lentera di gerbang timur berkedip dua kali, lalu tenang lagi.\n\nKau menghitung dalam hati. Tiga hari lalu, kedipannya hanya satu."},
+        {"say": "Guntur", "text": "Rimba! Jangan bengong, minyaknya tumpah!"},
+        {"text": "Pak Guntur menyodorkan kaleng perunggu tanpa menoleh. Tangannya yang keriput tak pernah gemetar saat menuang. Tanganmu masih sering."},
+        {"say": "Guntur", "text": "Kalau lentera ini padam, bukan kabutnya yang kutakutkan. Yang kutakutkan, orang-orang lupa kenapa dulu kita menyalakannya."},
+        {"say": "Rimba", "text": "Pak, kedipannya nambah."},
+        {"say": "Guntur", "text": "Aku tahu. Makanya kau di sini, bukan tidur."},
+        {"pause": true},
+        {"text": "Sesuatu berdengung dari arah ladang. Bukan serangga. Suaranya terlalu rata, seperti orang bersenandung tanpa ingat lagunya.\n\nDua titik gelap melayang mendekati lentera. Kunang-kunang, tapi cahayanya terbalik: mereka memancarkan gelap."},
+        {"say": "Guntur", "text": "Kunang Kelam. Mereka datang kalau lentera lemah. Ambil tongkatmu. Ini pelajaran pertama yang sungguhan."},
+        {"join": "guntur", "level": 10, "guest": true},
+        {"text": "(Tip: Pukul musuh dengan berbagai elemen. Kelemahan yang ketemu dicatat permanen di Catatan Penyala. Pak Guntur bisa menyembuhkan party dengan Nyala Penjaga.)"},
+        {"battle": ["kunang_kelam", "kunang_kelam"], "boss": false, "can_flee": false, "lose": "gameover", "win": [
+          {"text": "Kunang-kunang itu pecah jadi serpihan gelap yang langsung ditelan cahaya lentera."},
+          {"say": "Guntur", "text": "Lihat? Mereka takut Cahaya. Semua yang datang dari kabut takut Cahaya. Ingat itu, dan ingat juga: yang takut biasanya yang paling berbahaya kalau terpojok."},
+          {"say": "Rimba", "text": "Pak... itu tadi lebih banyak dari biasanya, kan?"},
+          {"say": "Guntur", "text": "...Pulang. Tidur. Besok kita periksa semua lentera desa, satu-satu."},
+          {"set": "prolog_selesai"},
+          {"heal": "all"}
+        ]}
+      ]}
+    ],
+    "lentera_save": [
+      {"text": "Kau merapikan sumbu dan menuang sedikit minyak. Nyalanya menegak. Untuk sesaat, kabut di kejauhan terasa lebih jauh."},
+      {"heal": "all"},
+      {"save": true}
+    ],
+    "tidur": [
+      {"if": ["prolog_selesai", "!kirana_hilang"], "then": [
+        {"text": "Kau merebahkan diri. Pak Guntur masih duduk di ambang pintu, menatap gerbang barat lewat celah dinding. Ia selalu begitu.\n\nKau tertidur sebelum sempat bertanya apa yang ia lihat."},
+        {"pause": true},
+        {"text": "Pagi. Ketukan di pintu. Keras, berulang, tidak sabar."},
+        {"say": "Mbok Sari", "text": "Pak Guntur! Pak Guntur, Kirana tidak ada di tikarnya! Sandalnya hilang, pintu belakang terbuka. Jejaknya... jejaknya ke barat, Pak."},
+        {"text": "Pak Guntur sudah berdiri sebelum kalimat itu selesai. Ia mengambil tongkatnya, lalu menatapmu."},
+        {"say": "Guntur", "text": "Rimba. Bawa minyak lentera yang banyak. Di dalam hutan, lentera saku adalah satu-satunya yang menjaga kepalamu tetap kepalamu."},
+        {"say": "Rimba", "text": "Kita masuk hutan?"},
+        {"say": "Guntur", "text": "Kita masuk hutan."},
+        {"set": "kirana_hilang"},
+        {"quest": "kirana_hilang", "state": "aktif"},
+        {"heal": "all"},
+        {"text": "(Tip: Beli Minyak Lentera di warung Bu Ratna. Di area berkabut, satu minyak habis setiap 20 langkah. Tanpa minyak, party memulai pertarungan dengan status Lupa.)"}
+      ], "else": [
+        {"text": "Kau berbaring sebentar. Rumah ini sunyi tanpa suara Pak Guntur menuang minyak."},
+        {"heal": "all"},
+        {"text": "HP dan MP pulih."}
+      ]}
+    ],
+    "peti_minyak": [
+      {"once": "peti_minyak_diambil", "do": [
+        {"text": "Peti kayu berisi kaleng-kaleng kecil. Kau mengambil beberapa; Pak Guntur tidak akan keberatan. Mungkin."},
+        {"give": {"minyak_lentera": 3, "ramuan_daun": 2}}
+      ], "else": [
+        {"text": "Peti minyak. Sudah kau ambil sebagian. Sisanya untuk lentera desa."}
+      ]}
+    ],
+    "bicara_darma": [
+      {"if": ["boss_hutan_kalah"], "then": [
+        {"say": "Darma", "text": "Kau kembali dari hutan. Dengan orang asing, tanpa Guntur. (Ia mengunyah sirihnya lama.) Guntur pernah masuk kabut waktu muda. Keluar lagi. Dia orang yang keluar lagi, Nak. Percaya itu."}
+      ], "else": [
+        {"if": ["kirana_hilang"], "then": [
+          {"say": "Darma", "text": "Anak Sari itu... dia sering bilang dengar orang nyanyi dari hutan. Kami pikir dia mengarang. Anak-anak mengarang, kan?"}
+        ], "else": [
+          {"say": "Darma", "text": "Dulu dari teras ini kelihatan puncak Mercusuar. Putih, seperti gigi. Sekarang cuma kelabu. Kau terlalu muda untuk ingat. Itu bagus. Lebih sedikit yang hilang."}
+        ]}
+      ]}
+    ],
+    "bicara_ratna": [
+      {"if": ["kirana_hilang", "!boss_hutan_kalah"], "then": [
+        {"say": "Ratna", "text": "Kirana hilang? Ya ampun. Ambil minyak yang banyak, Nak. Bayar nanti kalau perlu. Tidak, bayar sekarang, aku juga harus makan. Tapi kuberi harga teman."}
+      ], "else": [
+        {"say": "Ratna", "text": "Tempe hari ini tiga keping. Minggu depan mungkin empat. Kafilah dari kota makin jarang lewat."}
+      ]},
+      {"shop": "warung_ratna"}
+    ],
+    "balai_masuk": [
+      {"if": ["boss_hutan_kalah", "!desa_epilog"], "then": [
+        {"set": "desa_epilog"},
+        {"text": "Balai desa penuh. Berita lebih cepat dari kaki. Mbok Sari memeluk Kirana sampai anak itu protes tidak bisa bernapas. Semua orang menatapmu, lalu menatap perempuan berperisai di sampingmu, lalu menatap ruang kosong di tempat Pak Guntur seharusnya berdiri."},
+        {"say": "Wira", "text": "Rimba. Ceritakan dari awal."},
+        {"text": "Kau bercerita. Tentang pita Kirana, tentang bayangan di kabut, tentang Pak Guntur yang berlari dan tidak kembali. Tentang lentera yang tergeletak dan percikan yang menempel di tanganmu.\n\nKau tidak bercerita bahwa percikan itu terasa hangat seperti dapur di pagi hari. Itu terasa terlalu pribadi."},
+        {"say": "Wira", "text": "Dan kau, Nak? Pengawal Mahkota, dari zirahmu."},
+        {"say": "Sela", "text": "Mantan. Panjang ceritanya, dan bukan cerita yang enak. Yang penting: dua malam lalu, dari punggung bukit, aku lihat cahaya di Rawa Suar. Sebentar. Seperti seseorang menyalakan sesuatu yang sangat besar, lalu memadamkannya lagi."},
+        {"say": "Rimba", "text": "Suar Lama? Itu sudah mati sebelum aku lahir."},
+        {"say": "Sela", "text": "Makanya aku ke sini. Ingin tanya siapa yang menyalakannya. Kupikir Penyala desa ini."},
+        {"text": "Balai sunyi. Semua orang berpikir hal yang sama: kalau ada yang bisa menyalakan Suar Lama, itu Pak Guntur."},
+        {"say": "Wira", "text": "Rimba... kau tidak wajib."},
+        {"say": "Rimba", "text": "Pak Guntur bilang lentera itu bukan buat mengusir kabut. Lentera itu buat orang tahu jalan pulang. Kalau dia di rawa, dia butuh lentera."},
+        {"say": "Sela", "text": "Aku ikut. Aku butuh jawaban, dan kau butuh orang yang bisa dipukul lebih dulu daripada kau."},
+        {"say": "Mbok Sari", "text": "Bawa ini. Sedikit, tapi dari kami semua."},
+        {"give": {"ramuan_daun": 3, "minyak_lentera": 3}},
+        {"keping": 60},
+        {"set": "kembali_ke_desa"},
+        {"quest": "kirana_hilang", "state": "selesai"},
+        {"quest": "mencari_guntur", "state": "aktif"},
+        {"text": "(Rawa Suar terbuka. Jalannya lewat Hutan Kelabu, di tepi kabut tempat kalian mengalahkan Hampa Penjaga.)"}
+      ]}
+    ],
+    "bicara_wira": [
+      {"if": ["kembali_ke_desa"], "then": [
+        {"say": "Wira", "text": "Rawa itu licin dan ingatannya panjang. Pakai lentera, jangan pisah dari temanmu, dan kalau dengar orang memanggil namamu dari kabut: jangan jawab."}
+      ], "else": [
+        {"if": ["kirana_hilang"], "then": [
+          {"say": "Wira", "text": "Aku sudah kirim dua orang ke tepi hutan. Mereka tidak berani lebih jauh. Aku tidak menyalahkan mereka. Hati-hati, Rimba."}
+        ], "else": [
+          {"say": "Wira", "text": "Lentera desa makin kuning. Guntur bilang minyaknya bukan masalahnya. Dia tidak bilang apa masalahnya."}
+        ]}
+      ]}
+    ],
+    "bicara_sari": [
+      {"if": ["boss_hutan_kalah"], "then": [
+        {"say": "Mbok Sari", "text": "Kirana bilang di hutan ada suara yang memanggil namanya. Dia bilang suaranya seperti bapaknya. Bapaknya sudah lima tahun tidak ada, Rimba."}
+      ], "else": [
+        {"say": "Mbok Sari", "text": "Dia cuma tujuh tahun. Tolong."}
+      ]}
+    ]
+  }
+}

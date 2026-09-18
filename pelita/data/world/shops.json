@@ -1,0 +1,7 @@
+{
+  "_catatan": "Toko per lokasi. Harga diambil dari items.json.",
+  "warung_ratna": {
+    "name": "Warung Bu Ratna",
+    "items": ["ramuan_daun", "penawar", "garam_bangun", "minyak_lentera", "bubuk_api", "zirah_kulit"]
+  }
+}

@@ -71,7 +71,8 @@ def render_screen(battle: Battle, title: str, io: IO) -> None:
             io.line(f" {h.name:<9} pingsan")
             continue
         io.line(f" {h.name:<9} HP {h.hp:>4}/{h.max_hp:<4}  MP {h.mp:>3}/{h.max_mp:<3}  {h.status_line()}")
-    io.line(f" Bara {'◆' * battle.bara}{'◇' * (battle.bara_max - battle.bara)}" + ("  (beku)" if battle.bara_frozen else ""))
+    if battle.bara_max > 0:
+        io.line(f" Bara {'◆' * battle.bara}{'◇' * (battle.bara_max - battle.bara)}" + ("  (beku)" if battle.bara_frozen else ""))
     io.line("─" * LEBAR)
 
 

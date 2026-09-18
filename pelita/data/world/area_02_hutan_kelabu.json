@@ -1,0 +1,149 @@
+{
+  "id": "hutan_kelabu",
+  "name": "Hutan Kelabu",
+  "level_range": "1–5",
+  "start": "tepi_hutan",
+  "fog": true,
+  "encounter_rate": 0.4,
+  "encounters": [
+    {"enemies": ["kunang_kelam", "kunang_kelam", "kunang_kelam"], "weight": 3},
+    {"enemies": ["serigala_kabut"], "weight": 3},
+    {"enemies": ["serigala_kabut", "kunang_kelam"], "weight": 2},
+    {"enemies": ["lumut_berjalan"], "weight": 2}
+  ],
+  "rooms": {
+    "tepi_hutan": {
+      "name": "Tepi Hutan",
+      "text": "Pohon-pohon di sini masih punya warna, tapi hanya di bagian bawah. Makin ke atas, daun-daunnya memucat seperti kain yang dijemur terlalu lama. Jalan setapak masih terlihat. Jejak sandal kecil di lumpur, mengarah ke dalam.",
+      "exits": [
+        {"label": "Kembali ke gerbang barat", "to": "gerbang_barat", "area": "pelita_rendah"},
+        {"label": "Ikuti jalan setapak", "to": "jalan_setapak"}
+      ]
+    },
+    "jalan_setapak": {
+      "name": "Jalan Setapak",
+      "text": "Kabut setinggi lutut. Suara langkahmu pulang lebih lambat dari seharusnya, seperti hutan berpikir dulu sebelum mengembalikannya. Di sebuah tunggul, seseorang pernah menggantung lentera penjaga. Nyalanya kecil, tapi masih ada.",
+      "exits": [
+        {"label": "Kembali ke tepi hutan", "to": "tepi_hutan"},
+        {"label": "Terus ke pohon tumbang", "to": "pohon_tumbang"}
+      ],
+      "objects": [
+        {"id": "lentera_setapak", "name": "Lentera penjaga di tunggul (simpan & istirahat)", "script": "lentera_save"}
+      ]
+    },
+    "pohon_tumbang": {
+      "name": "Pohon Tumbang",
+      "text": "Pohon beringin raksasa yang roboh melintang, akarnya mencuat seperti tangan-tangan. Kabut di sini setinggi dada. Kau hanya melihat kawan-kawanmu sebagai bentuk.",
+      "on_enter": "guntur_hilang",
+      "exits": [
+        {"label": "Kembali ke jalan setapak", "to": "jalan_setapak"},
+        {"label": "Lewati pohon ke lembah kabut", "to": "lembah_kabut", "if": ["bara"]}
+      ],
+      "objects": [
+        {"id": "pita", "name": "Sesuatu di akar pohon", "script": "periksa_pita", "if": ["!pita_diambil"]}
+      ]
+    },
+    "lembah_kabut": {
+      "name": "Lembah Kabut",
+      "text": "Cekungan kecil di antara dua bukit. Kabut menggenang di sini seperti air, dan tidak bergerak. Ada bekas api unggun yang belum lama padam, dan noda gelap di daun-daun. Darah.",
+      "on_enter": "temu_sela",
+      "exits": [
+        {"label": "Kembali ke pohon tumbang", "to": "pohon_tumbang"},
+        {"label": "Naik ke tepi kabut", "to": "tepi_kabut", "if": ["party:sela"]}
+      ],
+      "objects": [
+        {"id": "lentera_lembah", "name": "Lentera penjaga di batu (simpan & istirahat)", "script": "lentera_save", "if": ["party:sela"]}
+      ]
+    },
+    "tepi_kabut": {
+      "name": "Tepi Kabut",
+      "safe": true,
+      "text": "Hutan berakhir di sini. Bukan karena pohonnya habis, tapi karena setelah garis ini kabut terlalu tebal untuk disebut hutan. Di seberang garis itu, ada dunia yang tidak ingat dirinya sendiri.",
+      "on_enter": "boss_hutan",
+      "exits": [
+        {"label": "Kembali ke lembah kabut", "to": "lembah_kabut"},
+        {"label": "Menyusuri tepi kabut ke Rawa Suar", "to": "gerbang_rawa", "area": "rawa_suar", "if": ["kembali_ke_desa"],
+         "locked": "Sela: \"Rawa ada di arah sana. Tapi kita bawa Kirana pulang dulu. Anak itu lebih penting dari jawaban.\""}
+      ],
+      "objects": [
+        {"id": "lentera_tepi", "name": "Lentera penjaga (simpan & istirahat)", "script": "lentera_save", "if": ["boss_hutan_kalah"]}
+      ]
+    }
+  },
+  "scripts": {
+    "lentera_save": [
+      {"text": "Kau merapikan sumbu dan menuang sedikit minyak. Nyalanya menegak."},
+      {"heal": "all"},
+      {"save": true}
+    ],
+    "periksa_pita": [
+      {"set": "pita_diambil"},
+      {"text": "Pita rambut merah, tersangkut di akar. Kirana selalu memakai pita merah. Ujungnya basah dan dingin."},
+      {"if": ["party:guntur"], "then": [
+        {"say": "Guntur", "text": "Dia lewat sini. Belum lama. (Ia mengangkat lenteranya tinggi-tinggi.) Kirana! KIRANA!"},
+        {"text": "Tidak ada jawaban. Lalu ada: suara anak kecil, jauh, di dalam kabut. Memanggil bapaknya."}
+      ]}
+    ],
+    "guntur_hilang": [
+      {"if": ["party:guntur", "pita_diambil"], "then": [
+        {"once": "guntur_hilang_adegan", "do": [
+          {"text": "Suara itu lagi. Kali ini lebih dekat, dan lebih jelas: bukan hanya memanggil bapak. Memanggil nama. \"Pak Guntur. Pak Guntur, aku di sini.\"\n\nPak Guntur membeku."},
+          {"say": "Guntur", "text": "Itu bukan Kirana."},
+          {"say": "Rimba", "text": "Pak?"},
+          {"say": "Guntur", "text": "Kirana tidak tahu namaku. Anak-anak memanggilku Kakek Lentera. (Jeda.) Yang tahu namaku dan memanggil dari kabut... sudah lama tidak ada."},
+          {"pause": true},
+          {"text": "Bayangan kecil melintas di antara pohon, seukuran anak tujuh tahun. Lalu bayangan yang lebih besar di belakangnya, terlalu tinggi untuk manusia, terlalu tegak untuk pohon.\n\nPak Guntur menyodorkan lenteranya kepadamu. Bukan lentera saku. Lentera besarnya. Yang tidak pernah ia lepas."},
+          {"say": "Guntur", "text": "Pegang ini. Jangan lepas apa pun yang terjadi. Aku tarik perhatian yang besar itu; kau ambil anaknya."},
+          {"say": "Rimba", "text": "Pak, jangan..."},
+          {"say": "Guntur", "text": "Rimba. Lentera itu buat orang tahu jalan pulang. Aku tahu jalan pulang. Percaya."},
+          {"text": "Ia berlari ke dalam kabut. Cahaya lentera sakunya mengecil, mengecil, lalu tidak ada.\n\nKau menunggu. Kau memanggil. Kau menunggu lagi.\n\nHanya kabut yang menjawab, dan kabut tidak pernah bilang apa-apa."},
+          {"pause": true},
+          {"text": "Di dalam lentera besar Pak Guntur, di balik kaca yang sudah retak, ada satu percikan yang tidak seharusnya ada. Bukan api. Lebih hangat dari api. Seperti dapur di pagi hari.\n\nSaat kau menyentuh kacanya, percikan itu berpindah ke jarimu, ke telapakmu, ke suatu tempat di dadamu yang tidak punya nama.\n\nKau tidak merasa lebih kuat. Kau merasa lebih... ingat."},
+          {"leave": "guntur"},
+          {"bara": true},
+          {"text": "** Kau memperoleh BARA. **\n(Bara bertambah saat memukul kelemahan musuh, saat Rimba Jaga, atau saat kawan tumbang. Bara bisa dipakai untuk Nyala Pulih (2) dan Nyala Pamungkas (3). Lihat menu Bara di pertarungan.)"},
+          {"set": "guntur_hilang"},
+          {"quest": "mencari_guntur", "state": "hilang"}
+        ]}
+      ]}
+    ],
+    "temu_sela": [
+      {"once": "temu_sela_adegan", "do": [
+        {"text": "Seseorang duduk bersandar ke batu, perisai bundar di pangkuan, pedang lebar tertancap di tanah di sampingnya. Zirah rantai dengan lambang mahkota yang sudah digores sampai tidak terbaca. Perempuan, sedikit lebih tua darimu, dengan luka di lengan yang dibalut kain robekan jubah."},
+        {"say": "???", "text": "Berhenti di situ. Kau manusia atau Hampa?"},
+        {"say": "Rimba", "text": "...Manusia. Kurasa."},
+        {"say": "???", "text": "\"Kurasa\" itu jawaban manusia. Hampa tidak ragu. (Ia menurunkan pedangnya.) Sela. Bukan siapa-siapa, sekarang. Kau Penyala? Dari lenteramu."},
+        {"say": "Rimba", "text": "Murid Penyala. Rimba. Aku... mencari anak kecil. Dan mentorku."},
+        {"say": "Sela", "text": "Anak kecil lewat sini setengah jam lalu, lari ke atas, ke tepi kabut. Dikejar sesuatu yang besar. Aku coba menahannya. (Ia menunjuk lengannya.) Tidak cukup."},
+        {"say": "Sela", "text": "Kalau kau ke atas, aku ikut. Bukan karena baik hati. Karena aku tidak mau mati di lembah ini sendirian, dan kau kelihatannya tidak akan bertahan dua menit tanpa orang yang bisa dipukul lebih dulu."},
+        {"say": "Rimba", "text": "...Terima kasih?"},
+        {"say": "Sela", "text": "Jangan berterima kasih sebelum kita keluar. Pegang lenteramu tinggi-tinggi. Aku di depan."},
+        {"join": "sela", "equip": {"senjata": "pedang_latihan", "zirah": "zirah_kulit"}},
+        {"text": "(Tip: Sela bisa Pasang Badan agar musuh menyerangnya, bukan Rimba. Serigala Kabut selalu mengincar yang HP-nya paling rendah.)"}
+      ]}
+    ],
+    "boss_hutan": [
+      {"once": "boss_hutan_adegan", "do": [
+        {"text": "Ia berdiri tepat di garis kabut. Dulu manusia; masih berbentuk manusia. Tapi tingginya dua kali Sela, dan bahunya adalah bahu orang yang mengayunkan kapak seumur hidup. Kapaknya masih ada, tertancap di bahu kanannya sendiri, dan ia tidak menyadarinya.\n\nDi belakang kakinya, di dalam batang pohon berlubang, sepasang mata kecil mengintip. Kirana."},
+        {"say": "Sela", "text": "Hampa Penjaga. Penebang kayu, dulu. Dia tidak menjaga anak itu. Dia menjaga *pekerjaannya*. Hutan ini wilayahnya, dan kita pohon yang salah tumbuh."},
+        {"say": "Rimba", "text": "Dia bisa disembuhkan?"},
+        {"say": "Sela", "text": "Tidak ada yang kembali dari kosong, Rimba. Yang bisa kita lakukan: membuatnya berhenti."},
+        {"text": "Hampa itu mengangkat kepalanya. Suaranya seperti kayu yang patah pelan-pelan: \"...pulang... belum... selesai...\""},
+        {"battle": ["boss_hampa_penjaga_hutan"], "boss": true, "can_flee": false, "lose": "gameover", "win": [
+          {"text": "Ia jatuh berlutut, lalu ke samping, lalu diam. Kabut di sekelilingnya menipis, seolah kehilangan alasan untuk tinggal.\n\nSebelum bentuknya luruh sepenuhnya, kau melihat wajahnya sekali. Wajah yang tidak marah. Wajah yang lega."},
+          {"say": "Kirana", "text": "...Kak Rimba?"},
+          {"text": "Anak itu merangkak keluar dari batang pohon. Pita merahnya hilang, kakinya lecet, tapi utuh. Utuh sepenuhnya."},
+          {"say": "Kirana", "text": "Ada yang nyanyi dari kabut. Suaranya kayak Bapak. Aku ikutin. Terus Kakek Lentera datang, terus dia bilang lari ke pohon bolong, terus dia..."},
+          {"say": "Rimba", "text": "Terus dia apa, Kirana?"},
+          {"say": "Kirana", "text": "Dia jalan ke dalam. Sambil nyanyi juga. Lagunya sama."},
+          {"pause": true},
+          {"say": "Sela", "text": "Kita bawa dia pulang. Sekarang. Apa pun yang menyanyi di dalam sana, ia sudah dapat satu orang hari ini."},
+          {"set": "boss_hutan_kalah"},
+          {"quest": "kirana_hilang", "state": "ditemukan"},
+          {"heal": "all"},
+          {"text": "(Kirana ikut kalian pulang. Kembali ke Pelita Rendah dan bicara di balai desa.)"}
+        ]}
+      ]}
+    ]
+  }
+}

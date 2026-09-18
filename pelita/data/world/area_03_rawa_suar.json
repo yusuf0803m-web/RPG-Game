@@ -1,0 +1,40 @@
+{
+  "id": "rawa_suar",
+  "name": "Rawa Suar",
+  "level_range": "5–9",
+  "start": "gerbang_rawa",
+  "fog": true,
+  "encounter_rate": 0.4,
+  "encounters": [
+    {"enemies": ["lumut_berjalan"], "weight": 2},
+    {"enemies": ["serigala_kabut", "serigala_kabut"], "weight": 2},
+    {"enemies": ["katak_rawa_bengkak"], "weight": 3},
+    {"enemies": ["hampa_pengembara"], "weight": 3},
+    {"enemies": ["katak_rawa_bengkak", "lumut_berjalan"], "weight": 1}
+  ],
+  "rooms": {
+    "gerbang_rawa": {
+      "name": "Gerbang Rawa",
+      "safe": true,
+      "text": "Dua tiang batu miring menandai tempat jalan tanah berubah jadi jembatan bambu. Di kejauhan, di tengah rawa, siluet menara tua menembus kabut: Suar Lama.",
+      "on_enter": "stub",
+      "exits": [
+        {"label": "Kembali ke tepi kabut", "to": "tepi_kabut", "area": "hutan_kelabu"}
+      ],
+      "objects": [
+        {"id": "lentera_gerbang_rawa", "name": "Lentera penjaga (simpan & istirahat)", "script": "lentera_save"}
+      ]
+    }
+  },
+  "scripts": {
+    "lentera_save": [
+      {"heal": "all"},
+      {"save": true}
+    ],
+    "stub": [
+      {"once": "rawa_stub", "do": [
+        {"end_chapter": "BERSAMBUNG — Rawa Suar sedang dibangun (Tahap 2c). Simpan di lentera gerbang; progresmu akan terbawa."}
+      ]}
+    ]
+  }
+}

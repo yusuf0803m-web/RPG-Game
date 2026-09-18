@@ -1,0 +1,18 @@
+{
+  "_catatan": "Teks quest per status.",
+  "kirana_hilang": {
+    "name": "Kirana Hilang",
+    "states": {
+      "aktif": "Kirana, anak Mbok Sari, menghilang ke Hutan Kelabu di barat desa. Cari dia bersama Pak Guntur.",
+      "ditemukan": "Kirana ditemukan di tepi kabut. Bawa dia pulang ke Pelita Rendah dan lapor di balai desa.",
+      "selesai": "Kirana kembali ke pelukan ibunya."
+    }
+  },
+  "mencari_guntur": {
+    "name": "Mencari Pak Guntur",
+    "states": {
+      "hilang": "Pak Guntur masuk ke kabut di Hutan Kelabu dan tidak kembali. Lentera besarnya, dan Bara di dalamnya, kini ada padamu.",
+      "aktif": "Sela melihat cahaya dari Suar Lama di Rawa Suar dua malam lalu. Mungkin Pak Guntur ke sana."
+    }
+  }
+}

@@ -45,6 +45,7 @@ class Hero:
     hp: int = 0
     mp: int = 0
     equipment: dict[str, Optional[str]] = field(default_factory=lambda: {"senjata": None, "zirah": None, "aksesori": None})
+    guest: bool = False                 # companion sementara (Pak Guntur): tidak bisa ganti equipment
     _data: Optional[GameData] = field(default=None, repr=False)
 
     @classmethod
@@ -109,6 +110,20 @@ class Hero:
             self.mp = min(new.mp, self.mp + (new.mp - old.mp) + new.mp // 4)
             gained.append(self.level)
         return gained
+
+    def to_dict(self) -> dict:
+        return {"id": self.id, "level": self.level, "xp": self.xp, "hp": self.hp, "mp": self.mp,
+                "equipment": dict(self.equipment), "guest": self.guest}
+
+    @classmethod
+    def from_dict(cls, data: GameData, d: dict) -> "Hero":
+        h = cls.create(data, d["id"], int(d["level"]), full=False)
+        h.xp = int(d.get("xp", h.xp))
+        h.equipment.update(d.get("equipment", {}))
+        h.guest = bool(d.get("guest", False))
+        h.hp = min(int(d.get("hp", h.max_hp)), h.max_hp)
+        h.mp = min(int(d.get("mp", h.max_mp)), h.max_mp)
+        return h
 
     def new_skills_at(self, level: int) -> list[Skill]:
         assert self._data is not None
