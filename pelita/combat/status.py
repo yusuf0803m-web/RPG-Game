@@ -42,6 +42,8 @@ STATUS_DEFS: dict[str, StatusDef] = {
     "provokasi": StatusDef("provokasi", "Provokasi", bad=False, turns=1, taunt=True),
     "jaga":      StatusDef("jaga", "Jaga", bad=False, stat_mults={"def": 1.5, "res": 1.5}, expires_at_own_turn_start=True),
     "pecah":     StatusDef("pecah", "PECAH", turns=1, skip_turn=True, consumed_at_own_turn_end=True),
+    "mengisi":   StatusDef("mengisi", "Mengisi", bad=False, turns=3),
+    "tandai":    StatusDef("tandai", "Ditandai", turns=2),
 }
 
 BAD_STATUSES = {k for k, v in STATUS_DEFS.items() if v.bad}

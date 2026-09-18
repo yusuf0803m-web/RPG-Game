@@ -69,11 +69,12 @@ def wrap(text: str, width: int = 66, indent: str = " ") -> list[str]:
 
 
 class ScriptRunner:
-    def __init__(self, state: GameState, io: IO, hooks: Hooks, auto: bool = False) -> None:
+    def __init__(self, state: GameState, io: IO, hooks: Hooks, auto: bool = False, auto_choice: Optional[bool] = None) -> None:
         self.state = state
         self.io = io
         self.hooks = hooks
-        self.auto = auto          # mode otomatis: pilihan pertama, tanpa jeda (untuk tes)
+        self.auto = auto          # tanpa jeda Enter (untuk tes)
+        self.auto_choice = auto if auto_choice is None else auto_choice   # pilihan pertama otomatis
 
     # -- utilitas tampilan --------------------------------------------------
     def narrate(self, text: str) -> None:
@@ -170,7 +171,7 @@ class ScriptRunner:
                 if not opts:
                     continue
                 idx = 0
-                if not self.auto:
+                if not self.auto_choice:
                     for i, o in enumerate(opts, 1):
                         self.io.line(f"  {i}) {o['text']}")
                     while True:

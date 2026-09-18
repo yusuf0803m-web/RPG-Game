@@ -3,7 +3,7 @@
   "kunang_kelam": {
     "name": "Kunang Kelam",
     "level": 2,
-    "xp": 12,
+    "xp": 24,
     "keping": 4,
     "stats": {
       "hp": 22,
@@ -35,8 +35,8 @@
   "serigala_kabut": {
     "name": "Serigala Kabut",
     "level": 4,
-    "xp": 30,
-    "keping": 9,
+    "xp": 96,
+    "keping": 16,
     "stats": {
       "hp": 70,
       "mp": 0,
@@ -75,8 +75,8 @@
   "lumut_berjalan": {
     "name": "Lumut Berjalan",
     "level": 5,
-    "xp": 38,
-    "keping": 10,
+    "xp": 150,
+    "keping": 25,
     "stats": {
       "hp": 130,
       "mp": 0,
@@ -114,8 +114,8 @@
   "hampa_pengembara": {
     "name": "Hampa Pengembara",
     "level": 6,
-    "xp": 45,
-    "keping": 14,
+    "xp": 216,
+    "keping": 36,
     "stats": {
       "hp": 100,
       "mp": 0,
@@ -149,8 +149,8 @@
   "katak_rawa_bengkak": {
     "name": "Katak Rawa Bengkak",
     "level": 8,
-    "xp": 70,
-    "keping": 20,
+    "xp": 384,
+    "keping": 64,
     "stats": {
       "hp": 170,
       "mp": 0,
@@ -183,8 +183,8 @@
   "ikan_cermin": {
     "name": "Ikan Cermin",
     "level": 10,
-    "xp": 85,
-    "keping": 22,
+    "xp": 600,
+    "keping": 100,
     "stats": {
       "hp": 105,
       "mp": 0,
@@ -211,13 +211,19 @@
       }
     ],
     "lesson": "Meniru skill terakhir party (Tahap 2: implementasi penuh).",
-    "description": "Ikan pipih yang sisiknya memantulkan wajah penatapnya."
+    "description": "Ikan pipih yang sisiknya memantulkan wajah penatapnya.",
+    "drops": [
+      {
+        "item": "bubuk_petir",
+        "chance": 0.25
+      }
+    ]
   },
   "nelayan_hampa": {
     "name": "Nelayan Hampa",
     "level": 11,
-    "xp": 100,
-    "keping": 26,
+    "xp": 726,
+    "keping": 121,
     "stats": {
       "hp": 190,
       "mp": 0,
@@ -246,13 +252,19 @@
       "lupa"
     ],
     "lesson": "Menjerat satu kawan sampai penjerat dipukul.",
-    "description": "Nelayan yang masih menebar jala ke danau yang kini menatap balik."
+    "description": "Nelayan yang masih menebar jala ke danau yang kini menatap balik.",
+    "drops": [
+      {
+        "item": "ramuan_akar",
+        "chance": 0.3
+      }
+    ]
   },
   "pengawal_karat": {
     "name": "Pengawal Karat",
     "level": 13,
-    "xp": 140,
-    "keping": 35,
+    "xp": 1014,
+    "keping": 169,
     "stats": {
       "hp": 300,
       "mp": 0,
@@ -285,13 +297,14 @@
     ],
     "ketahanan": 40,
     "lesson": "Anti-fisik; Sela jadi tank, Lintang jadi pembunuh.",
-    "description": "Zirah pengawal kosong yang bergerak sendiri."
+    "description": "Zirah pengawal kosong yang bergerak sendiri.",
+    "steal": "suku_cadang"
   },
   "bayang_arsip": {
     "name": "Bayang Arsip",
     "level": 13,
-    "xp": 120,
-    "keping": 30,
+    "xp": 1014,
+    "keping": 169,
     "stats": {
       "hp": 195,
       "mp": 0,
@@ -327,13 +340,14 @@
       }
     ],
     "lesson": "Support musuh: buff & heal; prioritas target.",
-    "description": "Tumpukan gulungan dan tinta yang membacakan nama-nama Pelita."
+    "description": "Tumpukan gulungan dan tinta yang membacakan nama-nama Pelita.",
+    "steal": "garam_bangun"
   },
   "kelelawar_kristal": {
     "name": "Kelelawar Kristal",
     "level": 15,
-    "xp": 130,
-    "keping": 28,
+    "xp": 1350,
+    "keping": 225,
     "stats": {
       "hp": 120,
       "mp": 0,
@@ -359,13 +373,20 @@
       }
     ],
     "lesson": "Evasif, kuras MP, Tidur.",
-    "description": "Kelelawar yang sayapnya tumbuh kaca ingatan."
+    "description": "Kelelawar yang sayapnya tumbuh kaca ingatan.",
+    "steal": "tetes_nyala",
+    "drops": [
+      {
+        "item": "suku_cadang",
+        "chance": 0.5
+      }
+    ]
   },
   "penambang_terlupa": {
     "name": "Penambang Terlupa",
     "level": 17,
-    "xp": 220,
-    "keping": 45,
+    "xp": 1734,
+    "keping": 289,
     "stats": {
       "hp": 380,
       "mp": 0,
@@ -394,13 +415,20 @@
       "lupa"
     ],
     "lesson": "Hard hitter pelan; mengajarkan Jaga.",
-    "description": "Hampa bertubuh besar, punggung berkerak kristal."
+    "description": "Hampa bertubuh besar, punggung berkerak kristal.",
+    "steal": "suku_cadang",
+    "drops": [
+      {
+        "item": "suku_cadang",
+        "chance": 0.6
+      }
+    ]
   },
   "pelita_padam": {
     "name": "Pelita Padam",
     "level": 20,
-    "xp": 300,
-    "keping": 50,
+    "xp": 2400,
+    "keping": 400,
     "stats": {
       "hp": 370,
       "mp": 0,
@@ -431,17 +459,18 @@
       "tidur"
     ],
     "lesson": "Pembalik aturan: hanya Kelam yang efektif.",
-    "description": "Sisa Pelita lama: sosok cahaya redup berbentuk manusia."
+    "description": "Sisa Pelita lama: sosok cahaya redup berbentuk manusia.",
+    "steal": "cawan_nyala"
   },
   "boss_hampa_penjaga_hutan": {
     "name": "Hampa Penjaga Hutan",
     "level": 4,
-    "xp": 150,
-    "keping": 60,
+    "xp": 480,
+    "keping": 80,
     "is_boss": true,
-    "ketahanan": 60,
+    "ketahanan": 50,
     "stats": {
-      "hp": 450,
+      "hp": 320,
       "mp": 0,
       "atk": 13,
       "def": 9,
@@ -463,7 +492,8 @@
         "pattern": [
           "serang",
           "serang",
-          "m_raung_lupa"
+          "m_raung_lupa",
+          "m_panggil_kunang"
         ]
       }
     ],
@@ -478,14 +508,14 @@
   "boss_raja_katak_lumpur": {
     "name": "Raja Katak Lumpur",
     "level": 8,
-    "xp": 320,
-    "keping": 120,
+    "xp": 1920,
+    "keping": 320,
     "is_boss": true,
     "ketahanan": 80,
     "stats": {
-      "hp": 660,
+      "hp": 560,
       "mp": 0,
-      "atk": 19,
+      "atk": 17,
       "def": 14,
       "mag": 12,
       "res": 13,
@@ -528,5 +558,423 @@
     ],
     "lesson": "Racun area tiap 4 giliran; menelan kawan saat HP<50% (lepas kalau boss Goyah/Pecah).",
     "description": "Raja rawa yang perutnya berpendar lentera-lentera yang ditelannya."
+  },
+  "pengawal_istana": {
+    "name": "Pengawal Istana",
+    "level": 22,
+    "xp": 2904,
+    "keping": 484,
+    "stats": {
+      "hp": 400,
+      "mp": 0,
+      "atk": 34,
+      "def": 30,
+      "mag": 10,
+      "res": 22,
+      "agi": 8,
+      "lck": 4
+    },
+    "affinities": {
+      "petir": "lemah",
+      "fisik": "tahan"
+    },
+    "ai": [
+      {
+        "action": "m_derit_zirah",
+        "weight": 3
+      },
+      {
+        "action": "serang",
+        "weight": 2
+      }
+    ],
+    "immune": [
+      "racun",
+      "lupa",
+      "tidur",
+      "bakar"
+    ],
+    "ketahanan": 40,
+    "steal": "suku_cadang",
+    "lesson": "Varian Pengawal Karat di istana: lebih tebal.",
+    "description": "Zirah lapis emas yang tidak lagi berisi siapa pun."
+  },
+  "boss_ular_cermin": {
+    "name": "Ular Cermin",
+    "level": 12,
+    "xp": 4320,
+    "keping": 720,
+    "is_boss": true,
+    "ketahanan": 80,
+    "stats": {
+      "hp": 1000,
+      "mp": 0,
+      "atk": 23,
+      "def": 16,
+      "mag": 26,
+      "res": 18,
+      "agi": 12,
+      "lck": 6
+    },
+    "affinities": {
+      "petir": "lemah",
+      "kelam": "lemah",
+      "es": "tahan",
+      "cahaya": "tahan"
+    },
+    "ai": [],
+    "phases": [
+      {
+        "name": "Utuh",
+        "hp_above": 0.5,
+        "pattern": [
+          "m_lilit",
+          "m_pantulan_dingin",
+          "serang",
+          "m_tatapan_cermin"
+        ]
+      },
+      {
+        "name": "Retak",
+        "hp_above": 0.0,
+        "pattern": [
+          "m_pantulan_dingin",
+          "m_lilit",
+          "m_lilit",
+          "m_tatapan_cermin"
+        ],
+        "affinities": {
+          "api": "lemah",
+          "kelam": "lemah",
+          "petir": "tahan",
+          "cahaya": "tahan"
+        },
+        "announce": "Sisik cermin Ular retak! Pantulannya berbalik: kelemahannya berubah."
+      }
+    ],
+    "immune": [
+      "tidur",
+      "beku",
+      "lupa",
+      "berat"
+    ],
+    "lesson": "Kelemahan berubah di fase 2; pindai ulang.",
+    "description": "Ular sepanjang dermaga yang sisiknya memantulkan orang-orang yang pernah menatapnya."
+  },
+  "boss_kapten_rangga": {
+    "name": "Kapten Rangga",
+    "level": 15,
+    "xp": 6750,
+    "keping": 1125,
+    "is_boss": true,
+    "ketahanan": 100,
+    "stats": {
+      "hp": 1050,
+      "mp": 0,
+      "atk": 27,
+      "def": 19,
+      "mag": 12,
+      "res": 17,
+      "agi": 14,
+      "lck": 8
+    },
+    "affinities": {},
+    "ai": [],
+    "phases": [
+      {
+        "name": "Duel",
+        "hp_above": 0.4,
+        "pattern": [
+          "m_tandai@mag_tertinggi",
+          "m_tebas_eksekusi@tandai",
+          "serang",
+          "m_tebas_kapten"
+        ]
+      },
+      {
+        "name": "Buang Perisai",
+        "hp_above": 0.0,
+        "pattern": [
+          "serang",
+          "m_tandai@mag_tertinggi",
+          "m_tebas_kapten",
+          "m_tebas_eksekusi@tandai"
+        ],
+        "ignore_taunt": true,
+        "actions_per_turn": 2,
+        "announce": "Rangga melempar perisainya. \"Cukup main-main. Aku tidak akan tertipu provokasi lagi.\""
+      }
+    ],
+    "immune": [
+      "lupa",
+      "tidur",
+      "beku",
+      "berat",
+      "racun"
+    ],
+    "lesson": "Tandai lalu Tebas Eksekusi ×3: Pasang Badan atau Garam Bangun. Fase 2 kebal Provokasi, 2 aksi.",
+    "description": "Kapten Pengawal Mahkota. Loyal pada perintah karena takut pada kekacauan."
+  },
+  "boss_penambang_raksasa": {
+    "name": "Penambang Raksasa Terlupa",
+    "level": 19,
+    "xp": 10830,
+    "keping": 1805,
+    "is_boss": true,
+    "ketahanan": 150,
+    "stats": {
+      "hp": 1900,
+      "mp": 0,
+      "atk": 38,
+      "def": 23,
+      "mag": 20,
+      "res": 20,
+      "agi": 6,
+      "lck": 3
+    },
+    "affinities": {
+      "es": "lemah",
+      "api": "serap"
+    },
+    "ai": [],
+    "phases": [
+      {
+        "name": "Raksasa",
+        "hp_above": 0.0,
+        "pattern": [
+          "m_ayunan_beliung",
+          "serang",
+          "m_getar_kristal",
+          "m_ayunan_ganda"
+        ]
+      }
+    ],
+    "rotation": {
+      "every": 3,
+      "sets": [
+        {
+          "name": "Kristal Api",
+          "affinities": {
+            "api": "serap",
+            "es": "lemah"
+          },
+          "announce": "Kristal di punggungnya menyala MERAH: menyerap Api, lemah terhadap Es."
+        },
+        {
+          "name": "Kristal Es",
+          "affinities": {
+            "es": "serap",
+            "api": "lemah"
+          },
+          "announce": "Kristalnya membeku BIRU: menyerap Es, lemah terhadap Api."
+        },
+        {
+          "name": "Kristal Petir",
+          "affinities": {
+            "petir": "serap",
+            "fisik": "lemah"
+          },
+          "announce": "Kristalnya berdesis KUNING: menyerap Petir, lemah terhadap Fisik."
+        },
+        {
+          "name": "Kristal Kelam",
+          "affinities": {
+            "kelam": "serap",
+            "cahaya": "lemah"
+          },
+          "announce": "Kristalnya menghitam: menyerap Kelam, lemah terhadap Cahaya."
+        }
+      ]
+    },
+    "immune": [
+      "lupa",
+      "tidur",
+      "beku",
+      "berat",
+      "racun"
+    ],
+    "lesson": "Afinitas berganti tiap 3 giliran (diumumkan); kelemahan = lawan dari yang diserap.",
+    "description": "Beberapa penambang yang meleleh jadi satu, punggungnya berkerak kristal ingatan."
+  },
+  "boss_penjaga_mercusuar": {
+    "name": "Penjaga Mercusuar",
+    "level": 21,
+    "xp": 13230,
+    "keping": 2205,
+    "is_boss": true,
+    "ketahanan": 150,
+    "stats": {
+      "hp": 2200,
+      "mp": 0,
+      "atk": 38,
+      "def": 26,
+      "mag": 36,
+      "res": 24,
+      "agi": 9,
+      "lck": 5
+    },
+    "affinities": {
+      "petir": "lemah",
+      "kelam": "lemah",
+      "fisik": "tahan",
+      "cahaya": "tahan"
+    },
+    "ai": [],
+    "phases": [
+      {
+        "name": "Konstruk",
+        "hp_above": 0.5,
+        "pattern": [
+          "m_isi_meriam",
+          "serang",
+          "m_meriam_nyala",
+          "m_derit_besar"
+        ]
+      },
+      {
+        "name": "Liar",
+        "hp_above": 0.0,
+        "pattern": [
+          "m_panggil_pelita",
+          "m_isi_meriam",
+          "serang",
+          "m_meriam_nyala"
+        ],
+        "announce": "Rangka menara berderak. Pelita Padam merangkak keluar dari dinding."
+      }
+    ],
+    "immune": [
+      "lupa",
+      "tidur",
+      "beku",
+      "berat",
+      "racun",
+      "bakar",
+      "lelah",
+      "buta"
+    ],
+    "lesson": "Meriam Nyala mengisi 1 giliran; Goyah (kelemahan/Bantingan Perisai) atau Pecah membatalkannya.",
+    "description": "Konstruk batu putih yang dulu dikendalikan Guntur. Sekarang liar."
+  },
+  "boss_baskara": {
+    "name": "Adipati Baskara",
+    "level": 23,
+    "xp": 15870,
+    "keping": 2645,
+    "is_boss": true,
+    "ketahanan": 100,
+    "stats": {
+      "hp": 1500,
+      "mp": 0,
+      "atk": 36,
+      "def": 25,
+      "mag": 42,
+      "res": 28,
+      "agi": 11,
+      "lck": 8
+    },
+    "affinities": {},
+    "ai": [],
+    "phases": [
+      {
+        "name": "Adipati",
+        "hp_above": 0.0,
+        "pattern": [
+          "m_tongkat_kuasa",
+          "m_titah",
+          "serang",
+          "m_tongkat_kuasa",
+          "m_panggil_pengawal"
+        ]
+      }
+    ],
+    "immune": [
+      "lupa",
+      "tidur",
+      "beku",
+      "berat",
+      "racun",
+      "bakar"
+    ],
+    "lesson": "Titah = Lupa 3 giliran ke semua. Bunuh pengawal dengan Petir, simpan Garam Bangun.",
+    "description": "Wali kota Tengara yang memadamkan Mercusuar. Bicara pelan, tidak pernah berteriak."
+  },
+  "boss_kelam_berwajah": {
+    "name": "Kelam Berwajah",
+    "level": 23,
+    "xp": 0,
+    "keping": 0,
+    "is_boss": true,
+    "ketahanan": 160,
+    "stats": {
+      "hp": 2600,
+      "mp": 0,
+      "atk": 42,
+      "def": 24,
+      "mag": 46,
+      "res": 26,
+      "agi": 12,
+      "lck": 8
+    },
+    "affinities": {
+      "cahaya": "lemah",
+      "kelam": "serap"
+    },
+    "ai": [],
+    "phases": [
+      {
+        "name": "Kabut Berwajah",
+        "hp_above": 0.25,
+        "pattern": [
+          "m_cengkeram_kabut",
+          "m_raung_kelam",
+          "serang",
+          "m_nyala_curian"
+        ]
+      },
+      {
+        "name": "Padam",
+        "hp_above": 0.0,
+        "pattern": [
+          "m_padamkan",
+          "m_cengkeram_kabut",
+          "serang",
+          "m_raung_kelam"
+        ],
+        "announce": "Wajah Baskara di dalam kabut membuka mulut. \"...padamkan...\""
+      }
+    ],
+    "rotation": {
+      "every": 4,
+      "sets": [
+        {
+          "name": "Kabut",
+          "affinities": {
+            "cahaya": "lemah",
+            "kelam": "serap"
+          },
+          "announce": "Kelam Berwajah menjadi KABUT: lemah Cahaya, menyerap Kelam."
+        },
+        {
+          "name": "Nyala Curian",
+          "affinities": {
+            "kelam": "lemah",
+            "cahaya": "serap"
+          },
+          "announce": "Kelam Berwajah menyala dengan NYALA CURIAN: lemah Kelam, menyerap Cahaya."
+        }
+      ]
+    },
+    "immune": [
+      "lupa",
+      "tidur",
+      "beku",
+      "berat",
+      "racun",
+      "bakar",
+      "lelah"
+    ],
+    "lesson": "Bergantian tiap 4 giliran; Fajar Kelabu (Jurus Ganda) mengabaikan Serap. Padamkan di <25%: siapkan Nyala Pulih.",
+    "description": "Kabut yang selama ini ditahan Baskara di dalam menara, menelan dan membentuknya."
   }
 }

@@ -17,8 +17,9 @@ class Walker:
     memuat potongan itu, lalu menjawab nomornya. Kalau tidak ketemu, ia menjawab '' (lanjut).
     """
 
-    def __init__(self, steps: Iterable[str]) -> None:
+    def __init__(self, steps: Iterable[str], on_command=None) -> None:
         self.steps: deque[str] = deque(steps)
+        self.on_command = on_command          # dipanggil untuk langkah yang diawali '#'
         self.out: list[str] = []
         self.answers: list[str] = []
         self._since_prompt: list[str] = []
@@ -45,6 +46,12 @@ class Walker:
             if self.stuck > 50:
                 raise RuntimeError("Walker kehabisan langkah:\n" + "\n".join(self.out[-40:]))
             return "k"          # keluar
+        while self.steps and self.steps[0].startswith("#"):
+            cmd = self.steps.popleft()
+            if self.on_command:
+                self.on_command(cmd[1:])
+        if not self.steps:
+            return "k"
         step = self.steps[0]
         if step.startswith("@"):            # perintah huruf langsung
             self.steps.popleft()

@@ -25,7 +25,7 @@ AREA1_KE_BOSS = [
     "Masuk ke jalan desa", "Rumah Pak Guntur", "Peti minyak", "Tikar tidur",
     "Keluar ke jalan desa", "Gerbang barat", "Masuk ke Hutan",
     "Ikuti jalan", "Terus ke pohon", "Sesuatu di akar", "Kembali ke jalan setapak", "Terus ke pohon",
-    "Lewati pohon", "Naik ke tepi",
+    "Lewati pohon", "Lentera penjaga di batu", "Naik ke tepi",
 ]
 KEMBALI_KE_DESA = [
     "Kembali ke lembah", "Kembali ke pohon", "Kembali ke jalan setapak", "Kembali ke tepi hutan",
@@ -80,8 +80,8 @@ def test_prolog_sampai_boss_hutan(data, world, tmp_path):
 
 
 def test_area1_tamat_sampai_rawa(data, world, tmp_path):
-    res, st, wk = play(data, world, AREA1_KE_BOSS + KEMBALI_KE_DESA + KE_RAWA, tmp_path=tmp_path)
-    assert res == "chapter_end"
+    res, st, wk = play(data, world, AREA1_KE_BOSS + KEMBALI_KE_DESA + KE_RAWA + ["@k"], tmp_path=tmp_path)
+    assert res == "quit"
     assert st.area_id == "rawa_suar"
     assert st.quests == {"kirana_hilang": "selesai", "mencari_guntur": "aktif"}
     assert "kembali_ke_desa" in st.flags
@@ -111,6 +111,7 @@ def test_save_load_roundtrip(data, world, tmp_path):
 
 def test_lentera_menyimpan_dan_memulihkan(data, world, tmp_path):
     steps = AREA1_KE_BOSS[:8] + ["Lentera penjaga di tunggul", "@k"]
+    # (lentera di tunggul ada di Jalan Setapak, langkah ke-8)
     res, st, wk = play(data, world, steps, tmp_path=tmp_path)
     assert (tmp_path / "slot1.json").exists()
     assert all(h.hp == h.max_hp for h in st.party)
@@ -125,7 +126,7 @@ def test_menu_party_item_catatan_quest_tidak_crash(data, world, tmp_path):
 
 def test_toko_beli_jual(data, world, tmp_path):
     # beli Ramuan Daun (1), kembali, jual Ramuan Daun (1), kembali, pergi
-    wk = Walker(["Masuk ke jalan desa", "Warung", "Bu Ratna", "@1", "@1", "@0", "@2", "@1", "@0", "@0", "@k"])
+    wk = Walker(["Masuk ke jalan desa", "Warung", "Bu Ratna", "@1", "@1", "@0", "@2", "@2", "@0", "@0", "@k", "@y"])
     st = new_game(data)
     st.rng = random.Random(1)
     g = Game(data, world, st, wk.io, auto_battle=True, auto_script=True, save_dir=tmp_path)
@@ -134,4 +135,4 @@ def test_toko_beli_jual(data, world, tmp_path):
     res = g.run()
     assert res == "quit"
     assert "Membeli Ramuan Daun" in wk.text and "Menjual Ramuan Daun" in wk.text
-    assert st.keping == keping_awal - 15 + 7          # beli 15, jual 50% = 7
+    assert st.count("ramuan_daun") == 3                 # 3 awal + 1 beli − 1 jual

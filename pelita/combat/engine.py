@@ -39,6 +39,8 @@ KETAHANAN_GOYAH_SKILL = 15
 JAGA_MP_PCT = 0.05
 ITEM_BUBUK_DASAR = 10
 ITEM_BUBUK_PER_LEVEL = 4
+SUKU_CADANG = "suku_cadang"
+MAX_MUSUH = 5
 
 
 # ---------------------------------------------------------------------------
@@ -67,6 +69,11 @@ class Combatant:
     pattern_pos: int = 0
     weapon_element: Element = Element.FISIK
     used_once: set[str] = field(default_factory=set)
+    ignore_taunt: bool = False
+    actions_per_turn: int = 1
+    actions_done: int = 0
+    stolen: bool = False
+    rotation_index: int = -1
 
     # -- properti dasar -----------------------------------------------------
     @property
@@ -208,6 +215,7 @@ class Battle:
         self.round = 0
         self.queue: list[Combatant] = []
         self.log: list[str] = []
+        self.pending_events: list[str] = []
         self.result: Optional[BattleResult] = None
         self.bara_skills: list[Skill] = [s for s in data.skills.values() if s.cost_type == CostType.BARA]
 
@@ -236,7 +244,7 @@ class Battle:
                 seen[eid] = seen.get(eid, 0) + 1
                 label = chr(ord("A") + seen[eid] - 1)
             skills = [self.data.skill(a.action) for a in edef.ai if a.action != "serang"]
-            skills += [self.data.skill(x) for p in edef.phases for x in p.pattern if x != "serang"]
+            skills += [self.data.skill(x.partition("@")[0]) for p in edef.phases for x in p.pattern if x.partition("@")[0] != "serang"]
             skills += [self.data.skill(x) for x in edef.skills]
             out.append(Combatant(
                 key=eid, name=edef.name, is_player=False, level=edef.level, base=edef.stats.copy(),
@@ -303,10 +311,14 @@ class Battle:
         if not actor.alive:
             return Turn(None, [], skipped=True)
         ev: list[str] = []
+        if actor.actions_done > 0:
+            # lanjutan aksi ganda di giliran yang sama (fase boss actions_per_turn > 1)
+            return Turn(actor, ev, skipped=False)
         # status "sampai giliran berikutnya" (Jaga) berakhir di awal giliran pemilik
         for sid in [s for s, st in actor.statuses.items() if st.sdef and st.sdef.expires_at_own_turn_start]:
             del actor.statuses[sid]
         actor.turn_count += 1
+        self._apply_rotation(actor, ev)
         if actor.skip_turn:
             alasan = next(st.name for st in actor.statuses.values() if st.sdef and st.sdef.skip_turn)
             self._emit(ev, f"{actor.display_name} tidak bisa bergerak ({alasan}).")
@@ -314,8 +326,31 @@ class Battle:
             return Turn(actor, ev, skipped=True)
         return Turn(actor, ev, skipped=False)
 
+    def _apply_rotation(self, actor: Combatant, ev: list[str]) -> None:
+        """Afinitas berganti tiap N giliran (GAME_DESIGN §6.2: Penambang Raksasa, Kelam Berwajah)."""
+        rot = actor.edef.rotation if actor.edef else None
+        if not rot or not rot.sets:
+            return
+        idx = ((actor.turn_count - 1) // rot.every) % len(rot.sets)
+        if idx != actor.rotation_index:
+            actor.rotation_index = idx
+            aset = rot.sets[idx]
+            actor.affinities = dict(aset.affinities)
+            self._emit(ev, aset.announce or f"{actor.display_name} berubah: {aset.name}!")
+
+    def apply_phase(self, actor: Combatant, phase, ev: list[str]) -> None:
+        """Dipanggil AI saat fase boss berganti."""
+        if phase.affinities is not None:
+            actor.affinities = dict(phase.affinities)
+        actor.ignore_taunt = phase.ignore_taunt
+        actor.actions_per_turn = max(1, phase.actions_per_turn)
+        if phase.announce:
+            self._emit(ev, phase.announce)
+            self.log.append(phase.announce)
+
     def _end_turn(self, actor: Combatant, ev: list[str]) -> None:
         """Tick status pemilik giliran: DoT, kurangi durasi, hapus yang habis."""
+        actor.actions_done = 0
         for sid in list(actor.statuses.keys()):
             st = actor.statuses.get(sid)
             if st is None:
@@ -343,6 +378,8 @@ class Battle:
     def cost_ok(self, actor: Combatant, skill: Skill) -> bool:
         if skill.cost_type == CostType.MP:
             return actor.mp >= skill.cost
+        if skill.cost_type == CostType.SC:
+            return self.inventory.get(SUKU_CADANG, 0) >= skill.cost
         if skill.cost_type == CostType.HP_PCT:
             return actor.hp > int(actor.max_hp * skill.cost / 100)
         if skill.cost_type == CostType.BARA:
@@ -400,6 +437,9 @@ class Battle:
     # -- eksekusi aksi ------------------------------------------------------
     def act(self, actor: Combatant, action: Action) -> list[str]:
         ev: list[str] = []
+        if self.pending_events:
+            ev.extend(self.pending_events)
+            self.pending_events.clear()
         if self.over or not actor.alive:
             return ev
         if action.kind == "serang":
@@ -416,8 +456,14 @@ class Battle:
             self._do_flee(actor, ev)
         else:
             raise ValueError(f"aksi tidak dikenal: {action.kind}")
-        if not self.over:
-            self._end_turn(actor, ev)
+        if self.over:
+            return ev
+        actor.actions_done += 1
+        if not actor.is_player and actor.alive and actor.actions_done < actor.actions_per_turn and not actor.skip_turn:
+            self.queue.insert(0, actor)          # bertindak lagi sebelum peserta lain
+            self._emit(ev, f"{actor.display_name} bergerak lagi!")
+            return ev
+        self._end_turn(actor, ev)
         return ev
 
     def _do_guard(self, actor: Combatant, ev: list[str]) -> None:
@@ -447,7 +493,7 @@ class Battle:
         if target_type == Target.DIRI:
             return [actor]
         cands = self.valid_targets(actor, target_type)
-        if target_type == Target.SATU_MUSUH:
+        if target_type == Target.SATU_MUSUH and not actor.ignore_taunt:
             t = self.taunt_target(actor)
             if t is not None:
                 return [t]
@@ -472,6 +518,8 @@ class Battle:
     def _pay_cost(self, actor: Combatant, skill: Skill, ev: list[str]) -> None:
         if skill.cost_type == CostType.MP:
             actor.mp -= skill.cost
+        elif skill.cost_type == CostType.SC:
+            self.inventory[SUKU_CADANG] = self.inventory.get(SUKU_CADANG, 0) - skill.cost
         elif skill.cost_type == CostType.HP_PCT:
             actor.hp = max(1, actor.hp - int(actor.max_hp * skill.cost / 100))
         elif skill.cost_type == CostType.BARA:
@@ -496,9 +544,14 @@ class Battle:
         if not actor.can_use_skills or (skill.is_magic and not actor.can_use_magic):
             self._emit(ev, f"{actor.display_name} tidak bisa memakai skill sekarang!")
             return
+        if "needs_charge" in skill.tags and not actor.has("mengisi"):
+            self._emit(ev, f"{actor.display_name} mencoba {skill.name}, tapi isiannya belum siap!")
+            return
         self._pay_cost(actor, skill, ev)
         if skill.once_per_battle:
             actor.used_once.add(skill.id)
+        if "needs_charge" in skill.tags:
+            actor.statuses.pop("mengisi", None)
         ts = self._resolve_targets(actor, skill.target, targets)
         if skill.cost_type == CostType.BARA and len(skill.users) >= 2:
             names = " & ".join(h.name for u in skill.users if (h := self.hero_by_key(u)))
@@ -509,6 +562,9 @@ class Battle:
             self._emit(ev, "...tapi tidak ada sasaran.")
             return
         source = self._skill_source(actor, skill)
+        if self._special_skill(actor, skill, ts, ev):
+            self._check_end(ev)
+            return
         for t in ts:
             if skill.kind in (SkillKind.FISIK, SkillKind.SIHIR):
                 for _ in range(max(1, skill.hits)):
@@ -605,6 +661,10 @@ class Battle:
             power *= 1.5
         if skill and "ally_down_x2" in skill.tags and any(not a.alive for a in self.allies_of(actor)):
             power *= 2.0
+        if skill and "vs_tandai_x3" in skill.tags and target.has("tandai"):
+            power *= 3.0
+            del target.statuses["tandai"]
+            self._emit(ev, f"{actor.display_name} mengeksekusi tanda pada {target.display_name}!")
         krit = self.rng.random() < F.peluang_kritikal(actor.effective("lck"))
         dmg = F.hitung_damage(off, deff, power, mult, kritikal=krit,
                               pecah=target.has("pecah"), goyah=target.has("goyah"),
@@ -662,6 +722,73 @@ class Battle:
             self._try_inflict(actor, target, skill.inflict, ev)
         return dmg
 
+    def _special_skill(self, actor: Combatant, skill: Skill, ts: list[Combatant], ev: list[str]) -> bool:
+        """Tag khusus yang menggantikan eksekusi biasa. Mengembalikan True kalau sudah ditangani."""
+        tags = skill.tags
+        handled = False
+        for t in tags:
+            if t.startswith("summon:"):
+                parts = t.split(":")
+                eid, n = parts[1], int(parts[2]) if len(parts) > 2 else 1
+                for _ in range(n):
+                    if len(self.alive_enemies) >= MAX_MUSUH:
+                        break
+                    c = self._make_enemies([eid])[0]
+                    c.label = chr(ord("A") + sum(1 for e in self.enemies if e.key == eid))
+                    self.enemies.append(c)
+                    self._emit(ev, f"{c.display_name} muncul dipanggil {actor.display_name}!")
+                handled = True
+        if "charge" in tags:
+            actor.statuses["mengisi"] = make_status("mengisi")
+            self._emit(ev, f"{actor.display_name} mengisi tenaga... (Goyah atau Pecah membatalkannya)")
+            handled = True
+        if "set_hp_1" in tags:
+            for f in self.foes_of(actor):
+                if f.alive:
+                    f.hp = 1
+            self._emit(ev, "Cahaya padam. Semua HP party tersisa 1!")
+            handled = True
+        if "curi" in tags and ts:
+            t = ts[0]
+            handled = True
+            if t.stolen or not t.edef:
+                self._emit(ev, f"{t.display_name} tidak punya apa-apa lagi.")
+            else:
+                loot = t.edef.steal or (t.edef.drops[0].item if t.edef.drops else None)
+                p = 0.40 + actor.effective("lck") * 0.01
+                if loot and self.rng.random() < p:
+                    t.stolen = True
+                    self.inventory[loot] = self.inventory.get(loot, 0) + 1
+                    self._emit(ev, f"{actor.display_name} mencuri {self.data.items[loot].name} dari {t.display_name}!")
+                elif not loot:
+                    t.stolen = True
+                    self._emit(ev, f"{t.display_name} tidak membawa apa-apa.")
+                else:
+                    self._emit(ev, f"{actor.display_name} gagal mencuri.")
+        if "baterai" in tags and ts:
+            t = ts[0]
+            n = min(15, actor.mp, t.max_mp - t.mp)
+            actor.mp -= n
+            t.mp += n
+            self._emit(ev, f"{actor.display_name} menyalurkan {n} MP ke {t.display_name}.")
+            handled = True
+        if "pindai" in tags and ts:
+            t = ts[0]
+            for el in Element:
+                if el != Element.NETRAL:
+                    self.bestiary.learn(t.key, el, t.affinity(el))
+            lemah = [el.label for el, a in t.affinities.items() if a == Affinity.LEMAH]
+            buruk = [f"{el.label}({a.value})" for el, a in t.affinities.items() if a != Affinity.LEMAH]
+            self._emit(ev, f"Pindai {t.display_name}: HP {t.hp}/{t.max_hp}. Lemah: {', '.join(lemah) or '-'}. Lainnya: {', '.join(buruk) or '-'}.")
+            handled = True
+        if handled:
+            for t in ts:
+                self._try_inflict(actor, t, skill.inflict, ev)
+                self._apply_mods(t, skill, ev)
+            for inf in skill.self_inflict:
+                self._add_status(actor, inf.status, inf.turns, ev, source=actor)
+        return handled
+
     def _ketahanan(self, target: Combatant, amount: int, ev: list[str]) -> None:
         if target.ketahanan_max <= 0 or target.has("pecah"):
             return
@@ -670,6 +797,7 @@ class Battle:
             target.statuses.pop("goyah", None)
             target.statuses["pecah"] = make_status("pecah")
             self._emit(ev, f"*** {target.display_name} PECAH! Ia kehilangan giliran dan menerima damage ×1.5. ***")
+            target.statuses.pop("mengisi", None)
             self._release_swallowed(target, ev)
 
     def _release_swallowed(self, swallower: Combatant, ev: list[str]) -> None:
@@ -740,6 +868,10 @@ class Battle:
             return False
         if sid in target.statuses and sid != "goyah":
             return False
+        if sid == "goyah":
+            if target.statuses.pop("mengisi", None) is not None:
+                self._emit(ev, f"Isian {target.display_name} buyar!")
+            self._release_swallowed(target, ev)
         st = make_status(sid, turns, source=source)
         st.applied_turn = target.turn_count
         target.statuses[sid] = st

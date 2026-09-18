@@ -27,7 +27,7 @@ class QuitGame(Exception):
 class Game:
     def __init__(self, data: GameData, world: World, state: GameState, io: IO,
                  auto_battle: bool = False, auto_script: bool = False, save_dir: Path = SAVE_DIR,
-                 battle_policy: str = "pintar") -> None:
+                 battle_policy: str = "pintar", auto_choice: Optional[bool] = None) -> None:
         self.data = data
         self.world = world
         self.state = state
@@ -36,7 +36,8 @@ class Game:
         self.auto_menus = auto_battle       # toko/penginapan/save memilih default (untuk tes)
         self.save_dir = save_dir
         self.battle_policy = battle_policy
-        self.runner = ScriptRunner(state, io, Hooks(self.do_battle, self.save_menu, self.shop, self.inn, self.move_to), auto=auto_script)
+        self.runner = ScriptRunner(state, io, Hooks(self.do_battle, self.save_menu, self.shop, self.inn, self.move_to),
+                                   auto=auto_script, auto_choice=auto_choice)
         self._pending_move: Optional[tuple[str, Optional[str]]] = None
 
     # -- properti -----------------------------------------------------------
@@ -176,7 +177,7 @@ class Game:
     def try_encounter(self) -> None:
         st, room, area = self.state, self.room, self.area
         pool = room.encounters if room.encounters is not None else area.encounters
-        if not pool or st.steps_since_encounter < ENCOUNTER_JEDA:
+        if not pool or st.steps_since_encounter < ENCOUNTER_JEDA or st.dupa_steps > 0:
             return
         rate = room.encounter_rate if room.encounter_rate is not None else area.encounter_rate
         if st.rng.random() >= rate:
@@ -190,8 +191,9 @@ class Game:
     def do_battle(self, enemy_ids: list[str], boss: bool, can_flee: bool) -> str:
         st = self.state
         heroes = st.active_party
+        bara_start = min(2, sum(1 for h in heroes if h.equipment.get("aksesori") == "kalung_bara")) if st.bara_max else 0
         b = Battle(self.data, heroes, enemy_ids, rng=st.rng, bestiary=st.bestiary,
-                   can_flee=can_flee and not boss, bara_max=st.bara_max, inventory=st.inventory)
+                   can_flee=can_flee and not boss, bara_max=st.bara_max, inventory=st.inventory, bara_start=bara_start)
         if self.area.fog and st.in_dark_fog:
             for h in b.heroes:
                 h.statuses["lupa"] = make_status("lupa")
@@ -300,6 +302,11 @@ class Game:
             if not (s.isdigit() and 1 <= int(s) <= len(items)):
                 return
             it = items[int(s) - 1]
+            if it.id == "dupa_sunyi":
+                st.dupa_steps = 30
+                st.add_item(it.id, -1)
+                self.io.line("  Asap dupa menyelimuti kalian. Musuh tidak akan mengganggu selama 30 langkah.")
+                continue
             if it.kind != "konsumsi" or not (it.heal_hp or it.heal_mp or it.cure or it.revive_pct):
                 self.io.line("  Tidak bisa dipakai di sini.")
                 continue

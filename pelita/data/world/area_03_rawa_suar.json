@@ -6,35 +6,610 @@
   "fog": true,
   "encounter_rate": 0.4,
   "encounters": [
-    {"enemies": ["lumut_berjalan"], "weight": 2},
-    {"enemies": ["serigala_kabut", "serigala_kabut"], "weight": 2},
-    {"enemies": ["katak_rawa_bengkak"], "weight": 3},
-    {"enemies": ["hampa_pengembara"], "weight": 3},
-    {"enemies": ["katak_rawa_bengkak", "lumut_berjalan"], "weight": 1}
+    {
+      "enemies": [
+        "lumut_berjalan"
+      ],
+      "weight": 2
+    },
+    {
+      "enemies": [
+        "serigala_kabut",
+        "serigala_kabut"
+      ],
+      "weight": 2
+    },
+    {
+      "enemies": [
+        "katak_rawa_bengkak"
+      ],
+      "weight": 3
+    },
+    {
+      "enemies": [
+        "hampa_pengembara"
+      ],
+      "weight": 3
+    },
+    {
+      "enemies": [
+        "katak_rawa_bengkak",
+        "lumut_berjalan"
+      ],
+      "weight": 1
+    },
+    {
+      "enemies": [
+        "hampa_pengembara",
+        "kunang_kelam",
+        "kunang_kelam"
+      ],
+      "weight": 1
+    }
   ],
   "rooms": {
     "gerbang_rawa": {
       "name": "Gerbang Rawa",
       "safe": true,
-      "text": "Dua tiang batu miring menandai tempat jalan tanah berubah jadi jembatan bambu. Di kejauhan, di tengah rawa, siluet menara tua menembus kabut: Suar Lama.",
-      "on_enter": "stub",
+      "text": "Dua tiang batu miring menandai tempat jalan tanah berubah jadi jembatan bambu. Di kejauhan, di tengah rawa, siluet menara tua menembus kabut: Suar Lama. Sela menatapnya lama.",
+      "on_enter": "masuk_rawa",
       "exits": [
-        {"label": "Kembali ke tepi kabut", "to": "tepi_kabut", "area": "hutan_kelabu"}
+        {
+          "label": "Kembali ke tepi kabut (Hutan Kelabu)",
+          "to": "tepi_kabut",
+          "area": "hutan_kelabu"
+        },
+        {
+          "label": "Menyeberang jembatan bambu",
+          "to": "jembatan_bambu"
+        }
       ],
       "objects": [
-        {"id": "lentera_gerbang_rawa", "name": "Lentera penjaga (simpan & istirahat)", "script": "lentera_save"}
+        {
+          "id": "lentera_gerbang_rawa",
+          "name": "Lentera penjaga (simpan & istirahat)",
+          "script": "lentera_save"
+        }
+      ]
+    },
+    "jembatan_bambu": {
+      "name": "Jembatan Bambu",
+      "text": "Jembatan bambu yang berderit di setiap langkah. Air di bawahnya hitam dan tidak memantulkan apa-apa. Sesekali sesuatu yang besar bergerak di bawah permukaan, pelan, seperti tidak terburu-buru.",
+      "exits": [
+        {
+          "label": "Kembali ke gerbang rawa",
+          "to": "gerbang_rawa"
+        },
+        {
+          "label": "Turun ke rawa dangkal",
+          "to": "rawa_dangkal"
+        }
+      ],
+      "on_enter": "sergap_jembatan"
+    },
+    "rawa_dangkal": {
+      "name": "Rawa Dangkal",
+      "text": "Air setinggi betis, hangat dan bau belerang. Pohon bakau tumbuh miring semua ke arah yang sama, seolah menjauh dari menara. Di sebelah kiri ada gubuk nelayan yang sudah lama ditinggalkan.",
+      "exits": [
+        {
+          "label": "Kembali ke jembatan bambu",
+          "to": "jembatan_bambu"
+        },
+        {
+          "label": "Ke gubuk nelayan",
+          "to": "gubuk_nelayan"
+        },
+        {
+          "label": "Ke tanah tinggi tiga lentera",
+          "to": "tiga_lentera"
+        }
+      ],
+      "on_enter": "sergap_dangkal"
+    },
+    "gubuk_nelayan": {
+      "name": "Gubuk Nelayan",
+      "safe": true,
+      "text": "Gubuk panggung yang lantainya sudah miring. Jala menggantung, kaku oleh lumut. Di dinding, seseorang menggores hitungan hari. Berhenti di angka empat puluh tiga.",
+      "exits": [
+        {
+          "label": "Kembali ke rawa dangkal",
+          "to": "rawa_dangkal"
+        }
+      ],
+      "objects": [
+        {
+          "id": "peti_nelayan",
+          "name": "Peti di bawah tikar",
+          "script": "peti_nelayan",
+          "if": [
+            "!peti_nelayan_diambil"
+          ]
+        },
+        {
+          "id": "goresan",
+          "name": "Goresan di dinding",
+          "script": "goresan_dinding"
+        }
+      ]
+    },
+    "tiga_lentera": {
+      "name": "Tanah Tinggi Tiga Lentera",
+      "text": "Gundukan tanah kering dengan tiga tiang lentera tua membentuk segitiga: utara, tengah, selatan. Ketiganya padam. Di kaki tiang tengah ada batu berukir. Jalan ke menara di baliknya tertutup kabut yang terlalu pekat untuk ditembus.",
+      "exits": [
+        {
+          "label": "Kembali ke rawa dangkal",
+          "to": "rawa_dangkal"
+        },
+        {
+          "label": "Menembus kabut ke lorong Suar",
+          "to": "lorong_suar",
+          "if": [
+            "rawa_puzzle"
+          ],
+          "locked": "Kabut di sini terlalu pekat. Lentera saku kalian seperti korek api di dalam sumur. Mungkin tiga lentera tua itu dulu menahan kabut ini."
+        }
+      ],
+      "objects": [
+        {
+          "id": "ukiran",
+          "name": "Batu berukir",
+          "script": "ukiran_batu"
+        },
+        {
+          "id": "l_utara",
+          "name": "Lentera Utara",
+          "script": "lentera_utara",
+          "if": [
+            "!rawa_puzzle"
+          ]
+        },
+        {
+          "id": "l_tengah",
+          "name": "Lentera Tengah",
+          "script": "lentera_tengah",
+          "if": [
+            "!rawa_puzzle"
+          ]
+        },
+        {
+          "id": "l_selatan",
+          "name": "Lentera Selatan",
+          "script": "lentera_selatan",
+          "if": [
+            "!rawa_puzzle"
+          ]
+        },
+        {
+          "id": "lentera_tt",
+          "name": "Lentera penjaga (simpan & istirahat)",
+          "script": "lentera_save",
+          "if": [
+            "rawa_puzzle"
+          ]
+        }
+      ]
+    },
+    "lorong_suar": {
+      "name": "Lorong Batu Suar",
+      "text": "Lorong batu setengah tenggelam yang menghubungkan tanah tinggi dengan kaki menara. Ukiran di dindingnya menggambarkan garis-garis cahaya dari satu titik ke banyak titik: Mercusuar ke Suar, Suar ke desa-desa.",
+      "exits": [
+        {
+          "label": "Kembali ke tiga lentera",
+          "to": "tiga_lentera"
+        },
+        {
+          "label": "Masuk ke inti Suar",
+          "to": "inti_suar"
+        }
+      ]
+    },
+    "kolam_raja": {
+      "name": "Kolam Kaki Menara",
+      "text": "Kolam bundar di balik Suar Lama, tempat jalan setapak ke utara mulai. Airnya berpendar lemah dari dalam, seperti ada lentera-lentera yang tenggelam di dasarnya. Permukaannya bergolak.",
+      "on_enter": "boss_katak",
+      "exits": [
+        {
+          "label": "Kembali ke inti Suar",
+          "to": "inti_suar"
+        },
+        {
+          "label": "Jalan setapak utara ke Danau Cermin",
+          "to": "tepi_danau",
+          "area": "danau_cermin",
+          "if": [
+            "boss_katak_kalah"
+          ]
+        }
+      ],
+      "objects": [
+        {
+          "id": "lentera_kolam",
+          "name": "Lentera penjaga (simpan & istirahat)",
+          "script": "lentera_save",
+          "if": [
+            "boss_katak_kalah"
+          ]
+        }
+      ]
+    },
+    "inti_suar": {
+      "name": "Inti Suar Lama",
+      "safe": true,
+      "text": "Ruang bundar di dalam menara. Di tengahnya, kristal Kaca Ingatan sebesar orang dewasa, retak, gelap. Dulu ia meneruskan Nyala dari Mercusuar ke seluruh rawa. Sekarang ia hanya menyimpan dingin.",
+      "on_enter": "temu_lintang",
+      "exits": [
+        {
+          "label": "Kembali ke lorong Suar",
+          "to": "lorong_suar"
+        },
+        {
+          "label": "Keluar ke kolam di balik menara",
+          "to": "kolam_raja",
+          "if": [
+            "party:lintang"
+          ]
+        }
+      ],
+      "objects": [
+        {
+          "id": "lentera_inti",
+          "name": "Lentera penjaga (simpan & istirahat)",
+          "script": "lentera_save"
+        },
+        {
+          "id": "kristal_suar",
+          "name": "Kristal Suar yang retak",
+          "script": "kristal_suar",
+          "if": [
+            "party:lintang"
+          ]
+        }
       ]
     }
   },
   "scripts": {
     "lentera_save": [
-      {"heal": "all"},
-      {"save": true}
+      {
+        "text": "Kau merapikan sumbu dan menuang sedikit minyak. Nyalanya menegak."
+      },
+      {
+        "heal": "all"
+      },
+      {
+        "save": true
+      }
     ],
-    "stub": [
-      {"once": "rawa_stub", "do": [
-        {"end_chapter": "BERSAMBUNG — Rawa Suar sedang dibangun (Tahap 2c). Simpan di lentera gerbang; progresmu akan terbawa."}
-      ]}
+    "masuk_rawa": [
+      {
+        "once": "rawa_masuk_adegan",
+        "do": [
+          {
+            "say": "Sela",
+            "text": "Itu dia. Suar Lama. Cahaya yang kulihat datang dari puncaknya. Sebentar saja, lalu padam, seperti orang membuka pintu dan menutupnya lagi."
+          },
+          {
+            "say": "Rimba",
+            "text": "Kalau Pak Guntur yang menyalakannya..."
+          },
+          {
+            "say": "Sela",
+            "text": "Kalau. Jangan pegang kata itu terlalu erat; licin. (Ia mengeratkan tali perisai.) Rawa ini punya katak seukuran gerobak, kata orang-orang. Aku dulu tertawa."
+          },
+          {
+            "text": "(Tip: Katak Rawa tahan Api dan Es. Coba elemen lain, atau pukulan biasa, dan perhatikan Catatan Penyala.)"
+          }
+        ]
+      }
+    ],
+    "peti_nelayan": [
+      {
+        "set": "peti_nelayan_diambil"
+      },
+      {
+        "text": "Peti kayu kecil. Di dalamnya: dua botol ramuan yang masih tersegel, dua bungkus bubuk berkilat, dan sebuah kaca kecil sebesar ibu jari yang hangat saat disentuh."
+      },
+      {
+        "give": {
+          "ramuan_akar": 2,
+          "bubuk_petir": 2,
+          "serpihan_ingatan": 1,
+          "tongkat_perunggu": 1
+        }
+      }
+    ],
+    "goresan_dinding": [
+      {
+        "text": "Empat puluh tiga goresan. Di bawahnya, tulisan dengan arang: \"Hari ke-43. Aku masih ingat nama istriku. Besok kutulis lagi.\"\n\nTidak ada tulisan hari ke-44."
+      }
+    ],
+    "ukiran_batu": [
+      {
+        "text": "Ukiran tua, sebagian tertutup lumut. Tiga lingkaran dan panah-panah: dari lingkaran paling bawah ke lingkaran paling atas, lalu ke yang di tengah. Di bawahnya, tulisan: \"Dari yang paling jauh, ke yang paling dekat langit, lalu pulang ke tengah.\""
+      },
+      {
+        "if": [
+          "party:sela"
+        ],
+        "then": [
+          {
+            "say": "Sela",
+            "text": "Selatan, utara, tengah. Atau aku salah baca dan kita jadi katak."
+          }
+        ]
+      }
+    ],
+    "lentera_selatan": [
+      {
+        "if": [
+          "!rp1"
+        ],
+        "then": [
+          {
+            "set": "rp1"
+          },
+          {
+            "text": "Kau menyalakan Lentera Selatan. Nyalanya kecil, tapi tegak. Kabut di sekitarnya mundur setapak."
+          }
+        ],
+        "else": [
+          {
+            "unset": [
+              "rp1",
+              "rp2"
+            ]
+          },
+          {
+            "text": "Kau menyentuh Lentera Selatan lagi. Ketiga lentera bergetar, lalu padam serentak. Urutannya salah."
+          }
+        ]
+      }
+    ],
+    "lentera_utara": [
+      {
+        "if": [
+          "rp1",
+          "!rp2"
+        ],
+        "then": [
+          {
+            "set": "rp2"
+          },
+          {
+            "text": "Lentera Utara menyala. Dua garis cahaya tipis kini membentang di atas tanah tinggi."
+          }
+        ],
+        "else": [
+          {
+            "unset": [
+              "rp1",
+              "rp2"
+            ]
+          },
+          {
+            "text": "Lentera Utara berkedip sekali, lalu semua padam. Urutannya salah."
+          }
+        ]
+      }
+    ],
+    "lentera_tengah": [
+      {
+        "if": [
+          "rp1",
+          "rp2"
+        ],
+        "then": [
+          {
+            "set": "rawa_puzzle"
+          },
+          {
+            "text": "Lentera Tengah menyala, dan ketiga garis cahaya bertemu di kaki tiang. Kabut di depan kalian terbelah seperti tirai yang disibak. Sebuah lorong batu tua muncul, setengah tenggelam, mengarah ke menara."
+          },
+          {
+            "say": "Sela",
+            "text": "...Baiklah. Aku tidak salah baca."
+          },
+          {
+            "heal": "all"
+          }
+        ],
+        "else": [
+          {
+            "unset": [
+              "rp1",
+              "rp2"
+            ]
+          },
+          {
+            "text": "Lentera Tengah menyala sebentar, sendirian, lalu padam. Urutannya salah."
+          }
+        ]
+      }
+    ],
+    "boss_katak": [
+      {
+        "once": "boss_katak_adegan",
+        "do": [
+          {
+            "text": "Air kolam terangkat. Bukan bergolak: terangkat, seperti punggung yang bangun dari tidur. Katak sebesar rumah, kulitnya hitam mengkilap, dan dari dalam perutnya berpendar lentera-lentera yang ia telan selama dua belas tahun.\n\nIa menatap kalian dengan mata yang tidak punya pendapat apa-apa."
+          },
+          {
+            "say": "Sela",
+            "text": "Aku tarik kata-kataku. Katak seukuran gerobak itu *kecil*."
+          },
+          {
+            "say": "Rimba",
+            "text": "Lentera di perutnya... itu lentera desa-desa yang hilang."
+          },
+          {
+            "say": "Sela",
+            "text": "Kalau begitu kita ambil kembali. Lintang, kau bilang bisa Petir? Sekarang waktunya membuktikan. Aku di depan."
+          },
+          {
+            "say": "Lintang",
+            "text": "Katak itu ingat semua lentera yang ditelannya. Makanya perutnya terang. Aku bisa dengar mereka."
+          },
+          {
+            "text": "(Tip: Saat HP-nya di bawah setengah, Raja Katak menelan satu kawan. Pukulan kelemahan (Goyah) atau Pecah melepaskannya. Simpan Penawar untuk Racun.)"
+          },
+          {
+            "battle": [
+              "boss_raja_katak_lumpur"
+            ],
+            "boss": true,
+            "lose": "gameover",
+            "win": [
+              {
+                "text": "Katak itu mengempis pelan, seperti kantung yang bocor. Dari mulutnya yang terbuka bergulir keluar puluhan lentera kecil, berkarat, sebagian masih menyala samar.\n\nSatu di antaranya kau kenali: lentera saku Pak Guntur. Kosong. Tanpa Bara, tanpa minyak. Tapi lentera itu utuh, dan diletakkan, bukan ditelan. Seperti sengaja ditinggal di tepi kolam."
+              },
+              {
+                "say": "Sela",
+                "text": "Dia lewat sini. Dan dia meninggalkan tanda supaya kau tahu."
+              },
+              {
+                "set": "boss_katak_kalah"
+              },
+              {
+                "give": {
+                  "serpihan_ingatan": 1,
+                  "ramuan_akar": 2
+                }
+              },
+              {
+                "heal": "all"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "temu_lintang": [
+      {
+        "once": "temu_lintang_adegan",
+        "do": [
+          {
+            "text": "Ada seseorang di kaki kristal. Gadis kecil, mungkin lima belas tahun, duduk memeluk lutut dengan lentera retak di tangannya. Kabut mengalir di sekelilingnya seperti air mengalir di sekitar batu: menyentuh, tapi tidak masuk.\n\nIa mendongak. Matanya jernih. Terlalu jernih untuk orang yang tinggal di dalam kabut."
+          },
+          {
+            "say": "???",
+            "text": "Kalian yang membawa Bara."
+          },
+          {
+            "say": "Rimba",
+            "text": "Bagaimana kau..."
+          },
+          {
+            "say": "???",
+            "text": "Kakek berlentera bilang. Dua malam lalu. Dia lewat, dia nyanyi, dia bilang: \"Kalau ada yang datang membawa Bara, ikut mereka. Mereka tahu jalan pulang.\" Lalu dia jalan ke utara. Ke danau."
+          },
+          {
+            "say": "Sela",
+            "text": "Kau tinggal di sini? Di dalam kabut? Sendirian?"
+          },
+          {
+            "say": "???",
+            "text": "Bapak bilang tunggu di sini."
+          },
+          {
+            "say": "Sela",
+            "text": "Berapa lama?"
+          },
+          {
+            "say": "???",
+            "text": "(Ia berpikir lama.) Aku tidak ingat. Aku ingat namaku. Lintang. Aku ingat Bapak bilang tunggu. Yang lain... kabut yang pegang."
+          },
+          {
+            "pause": true
+          },
+          {
+            "text": "Rimba melihat ke kristal Suar. Retakannya berpendar lemah, sangat lemah, dan pendarnya mengikuti gerakan tangan Lintang."
+          },
+          {
+            "say": "Rimba",
+            "text": "Cahaya yang dilihat Sela dua malam lalu. Itu kau?"
+          },
+          {
+            "say": "Lintang",
+            "text": "Kakek bilang sentuh kristalnya. Aku sentuh. Kristalnya... ingat sebentar. Lalu lupa lagi."
+          },
+          {
+            "say": "Sela",
+            "text": "Rimba. Anak ini bisa membuat Suar yang mati menyala. Sebentar, tapi menyala."
+          },
+          {
+            "say": "Lintang",
+            "text": "Aku boleh ikut? Kakek bilang boleh."
+          },
+          {
+            "say": "Rimba",
+            "text": "...Ya. Ikut. Kita cari Kakek bersama-sama."
+          },
+          {
+            "join": "lintang",
+            "equip": {
+              "senjata": "lentera_retak",
+              "zirah": "zirah_kain"
+            }
+          },
+          {
+            "text": "(Tip: Lintang menguasai Es, Petir, dan Kelam. Kelam menyembuhkan Hampa: hati-hati. Petir adalah jawaban untuk katak dan konstruk logam.)"
+          },
+          {
+            "quest": "mencari_guntur",
+            "state": "danau"
+          },
+          {
+            "heal": "all"
+          }
+        ]
+      }
+    ],
+    "kristal_suar": [
+      {
+        "text": "Lintang meletakkan telapak tangannya di retakan. Kristal itu berpendar, sangat lemah, dan untuk sekejap kalian melihat garis cahaya tipis membentang dari puncak menara ke arah utara, ke danau, lalu padam."
+      },
+      {
+        "say": "Lintang",
+        "text": "Dia masih ingat ke mana harus mengarah. Cuma tidak ingat kenapa."
+      }
+    ],
+    "sergap_jembatan": [
+      {
+        "once": "sergap_jembatan_done",
+        "do": [
+          {
+            "text": "Jembatan berderit, dan dari kabut di kedua ujungnya dua bayangan berbulu asap merapat."
+          },
+          {
+            "battle": [
+              "serigala_kabut",
+              "serigala_kabut"
+            ],
+            "boss": false,
+            "can_flee": false,
+            "lose": "gameover"
+          }
+        ]
+      }
+    ],
+    "sergap_dangkal": [
+      {
+        "once": "sergap_dangkal_done",
+        "do": [
+          {
+            "text": "Sesuatu yang kau kira gundukan lumpur membuka mulut, dan kunang-kunang gelap berhamburan dari dalamnya."
+          },
+          {
+            "battle": [
+              "lumut_berjalan",
+              "kunang_kelam",
+              "kunang_kelam"
+            ],
+            "boss": false,
+            "can_flee": false,
+            "lose": "gameover"
+          }
+        ]
+      }
     ]
   }
 }

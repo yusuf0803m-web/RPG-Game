@@ -1,0 +1,464 @@
+{
+  "id": "lorong_bawah",
+  "name": "Lorong Bawah",
+  "level_range": "12–15",
+  "start": "saluran_masuk",
+  "fog": false,
+  "encounter_rate": 0.4,
+  "encounters": [
+    {
+      "enemies": [
+        "pengawal_karat"
+      ],
+      "weight": 3
+    },
+    {
+      "enemies": [
+        "bayang_arsip",
+        "hampa_pengembara"
+      ],
+      "weight": 3
+    },
+    {
+      "enemies": [
+        "nelayan_hampa",
+        "hampa_pengembara"
+      ],
+      "weight": 2
+    },
+    {
+      "enemies": [
+        "pengawal_karat",
+        "bayang_arsip"
+      ],
+      "weight": 2
+    }
+  ],
+  "rooms": {
+    "saluran_masuk": {
+      "name": "Saluran Masuk",
+      "text": "Lorong batu lengkung dengan air setinggi mata kaki. Bau lumut dan besi. Dari kejauhan terdengar derit teratur: sesuatu yang berzirah, berjalan, tidak pernah berhenti.",
+      "on_enter": "masuk_lorong",
+      "exits": [
+        {
+          "label": "Keluar ke Distrik Sunyi",
+          "to": "distrik_sunyi",
+          "area": "tengara"
+        },
+        {
+          "label": "Ke ruang tuas",
+          "to": "ruang_tuas"
+        }
+      ]
+    },
+    "ruang_tuas": {
+      "name": "Ruang Tuas",
+      "text": "Ruang bundar dengan roda-roda gigi sebesar meja di dindingnya. Tiga tuas besi. Lorong di seberang tenggelam sampai ke langit-langit; hanya buih yang terlihat.",
+      "exits": [
+        {
+          "label": "Kembali ke saluran masuk",
+          "to": "saluran_masuk"
+        },
+        {
+          "label": "Menyelam ke lorong dalam",
+          "to": "lorong_dalam",
+          "if": [
+            "air_surut"
+          ],
+          "locked": "Lorong di seberang penuh air sampai ke langit-langit. Tuas-tuas di dinding mungkin mengendalikan pintu airnya."
+        }
+      ],
+      "objects": [
+        {
+          "id": "tuas",
+          "name": "Tiga tuas besi",
+          "script": "tuas",
+          "if": [
+            "!air_surut"
+          ]
+        },
+        {
+          "id": "lentera_tuas",
+          "name": "Lentera penjaga (simpan & istirahat)",
+          "script": "lentera_save"
+        }
+      ]
+    },
+    "lorong_dalam": {
+      "name": "Lorong Dalam",
+      "text": "Lorong yang baru saja kering; dindingnya masih meneteskan air. Di ceruk-ceruk dinding, tumpukan gulungan tua yang basah dan tinta yang mengalir keluar membentuk huruf-huruf di lantai.",
+      "exits": [
+        {
+          "label": "Kembali ke ruang tuas",
+          "to": "ruang_tuas"
+        },
+        {
+          "label": "Ke ruang pompa",
+          "to": "ruang_pompa"
+        }
+      ],
+      "objects": [
+        {
+          "id": "kucing",
+          "name": "Suara mengeong dari ceruk kering",
+          "script": "kucing",
+          "if": [
+            "sq_kucing_aktif",
+            "!has:kucing_meong",
+            "!sq_kucing_selesai"
+          ]
+        },
+        {
+          "id": "peti_lorong",
+          "name": "Peti pengawal yang berkarat",
+          "script": "peti_lorong",
+          "if": [
+            "!peti_lorong_diambil"
+          ]
+        }
+      ],
+      "on_enter": "sergap_lorong"
+    },
+    "ruang_pompa": {
+      "name": "Ruang Pompa",
+      "text": "Pompa air raksasa yang sudah mati, pipa-pipanya menjulur ke atas seperti akar terbalik. Tangga besi menuju pintu di langit-langit: pintu ke Balai Arsip.",
+      "exits": [
+        {
+          "label": "Kembali ke lorong dalam",
+          "to": "lorong_dalam"
+        },
+        {
+          "label": "Naik tangga ke gerbang Arsip",
+          "to": "gerbang_arsip"
+        }
+      ],
+      "objects": [
+        {
+          "id": "lentera_pompa",
+          "name": "Lentera penjaga (simpan & istirahat)",
+          "script": "lentera_save"
+        }
+      ],
+      "on_enter": "sergap_pompa"
+    },
+    "gerbang_arsip": {
+      "name": "Gerbang Bawah Arsip",
+      "safe": true,
+      "text": "Ruang kecil di bawah Balai Arsip. Pintu besi ke atas, dan seseorang berdiri di depannya dengan tombak dan panji.",
+      "on_enter": "boss_rangga",
+      "exits": [
+        {
+          "label": "Turun kembali ke ruang pompa",
+          "to": "ruang_pompa"
+        },
+        {
+          "label": "Naik ke Balai Arsip",
+          "to": "balai_arsip",
+          "area": "tengara",
+          "if": [
+            "boss_rangga_kalah"
+          ]
+        }
+      ]
+    }
+  },
+  "scripts": {
+    "lentera_save": [
+      {
+        "text": "Kau merapikan sumbu dan menuang sedikit minyak. Nyalanya menegak."
+      },
+      {
+        "heal": "all"
+      },
+      {
+        "save": true
+      }
+    ],
+    "masuk_lorong": [
+      {
+        "once": "lorong_masuk_adegan",
+        "do": [
+          {
+            "say": "Sela",
+            "text": "Pengawal Karat. Zirah-zirah tua yang ditinggal di sini waktu saluran ditutup, dan sisa Nyala yang tersesat membuat mereka berjalan lagi. Pedangku tidak akan banyak berguna; zirah mereka lebih tebal dari punggungku."
+          },
+          {
+            "say": "Lintang",
+            "text": "Petir."
+          },
+          {
+            "say": "Sela",
+            "text": "Petir. Aku yang menahan, kau yang membunuh. Dan Rimba, kalau ada tumpukan gulungan yang bergerak, itu bukan angin."
+          },
+          {
+            "text": "(Tip: Pengawal Karat tahan Fisik dan punya meter Ketahanan: pukulan kelemahan mengurangi meter; di nol ia PECAH. Bayang Arsip menyembuhkan dan mem-buff kawannya: bunuh lebih dulu.)"
+          }
+        ]
+      }
+    ],
+    "tuas": [
+      {
+        "text": "Tiga tuas: kiri, tengah, kanan. Semuanya di posisi atas."
+      },
+      {
+        "choice": [
+          {
+            "text": "Tarik tuas kiri",
+            "then": [
+              {
+                "if": [
+                  "!t1"
+                ],
+                "then": [
+                  {
+                    "set": "t1"
+                  },
+                  {
+                    "text": "Roda gigi berputar. Air di lorong seberang turun sedikit."
+                  }
+                ],
+                "else": [
+                  {
+                    "unset": [
+                      "t1",
+                      "t2"
+                    ]
+                  },
+                  {
+                    "text": "Tuas kiri kembali ke atas. Air naik lagi."
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "text": "Tarik tuas tengah",
+            "then": [
+              {
+                "if": [
+                  "t1",
+                  "!t2"
+                ],
+                "then": [
+                  {
+                    "set": "t2"
+                  },
+                  {
+                    "text": "Deru air. Permukaan turun sampai setinggi pinggang."
+                  }
+                ],
+                "else": [
+                  {
+                    "unset": [
+                      "t1",
+                      "t2"
+                    ]
+                  },
+                  {
+                    "text": "Tuas tengah macet, lalu memantul balik. Semua tuas kembali ke atas, dan air memenuhi lorong lagi."
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "text": "Tarik tuas kanan",
+            "then": [
+              {
+                "if": [
+                  "t1",
+                  "t2"
+                ],
+                "then": [
+                  {
+                    "set": "air_surut"
+                  },
+                  {
+                    "text": "Pintu air terakhir terbuka dengan raungan. Lorong di seberang mengering, menyisakan genangan dan gulungan-gulungan basah."
+                  }
+                ],
+                "else": [
+                  {
+                    "unset": [
+                      "t1",
+                      "t2"
+                    ]
+                  },
+                  {
+                    "text": "Tuas kanan berderit dan semua tuas terlepas kembali. Urutannya salah."
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "text": "Biarkan",
+            "then": []
+          }
+        ]
+      }
+    ],
+    "kucing": [
+      {
+        "text": "Di ceruk paling tinggi, yang tetap kering, seekor kucing belang gemuk mengeong marah. Lintang mengangkatnya. Kucing itu langsung tidur di lengannya."
+      },
+      {
+        "give": {
+          "kucing_meong": 1
+        }
+      },
+      {
+        "say": "Lintang",
+        "text": "Namanya Meong. Dia bilang."
+      },
+      {
+        "say": "Sela",
+        "text": "Kucing tidak bilang apa-apa, Lintang."
+      },
+      {
+        "say": "Lintang",
+        "text": "Kalau begitu kenapa kau tahu namanya Meong?"
+      }
+    ],
+    "peti_lorong": [
+      {
+        "set": "peti_lorong_diambil"
+      },
+      {
+        "text": "Peti perlengkapan pengawal, kuncinya sudah berkarat lepas."
+      },
+      {
+        "give": {
+          "zirah_rantai": 1,
+          "tongkat_kaca": 1,
+          "suku_cadang": 5,
+          "tetes_nyala": 2
+        }
+      }
+    ],
+    "boss_rangga": [
+      {
+        "once": "boss_rangga_adegan",
+        "do": [
+          {
+            "say": "Rangga",
+            "text": "Aku bilang pergi dari kota. Kau malah masuk ke bawahnya."
+          },
+          {
+            "say": "Sela",
+            "text": "Kau tahu kami akan lewat sini."
+          },
+          {
+            "say": "Rangga",
+            "text": "Aku yang mengajarimu jalur ini. (Ia menurunkan panjinya ke lantai; tombaknya tetap di tangan.) Arsip di atas itu tertutup atas perintah Adipati. Aku tidak tahu isinya. Aku tidak *mau* tahu isinya."
+          },
+          {
+            "say": "Rimba",
+            "text": "Kapten, kalau kau tidak mau tahu, kenapa kau berdiri di depannya?"
+          },
+          {
+            "say": "Rangga",
+            "text": "Karena itu tugasku, Nak. Kota ini tidak berdiri karena semua orang tahu semuanya. Kota ini berdiri karena ada yang menjaga pintu."
+          },
+          {
+            "say": "Sela",
+            "text": "Dan kalau pintu itu menyembunyikan orang-orang yang dibakar?"
+          },
+          {
+            "text": "Rangga tidak menjawab. Ia mengangkat tombaknya."
+          },
+          {
+            "say": "Rangga",
+            "text": "Kau desersi, Sela. Tunjukkan padaku kau desersi karena benar, bukan karena takut."
+          },
+          {
+            "text": "(Tip: Rangga MENANDAI satu sasaran, lalu Tebas Eksekusi ×3 ke sasaran itu. Pasang Badan Sela mengalihkannya; Garam Bangun atau Cahaya Penunjuk menghapus tanda. Di bawah 40% HP ia kebal Provokasi dan bergerak dua kali.)"
+          },
+          {
+            "battle": [
+              "boss_kapten_rangga"
+            ],
+            "boss": true,
+            "lose": "gameover",
+            "win": [
+              {
+                "text": "Tombaknya jatuh lebih dulu. Lalu lututnya. Rangga bersandar ke pintu besi, napasnya berat, dan menatap Sela dengan sesuatu yang bukan marah."
+              },
+              {
+                "say": "Rangga",
+                "text": "...Kau lebih kuat dari waktu kau pergi."
+              },
+              {
+                "say": "Sela",
+                "text": "Aku punya alasan sekarang. Waktu itu cuma punya rasa tidak sanggup."
+              },
+              {
+                "say": "Rangga",
+                "text": "(Ia tertawa pendek, sakit.) Naik. Bacalah. Lalu kalau kau turun lagi, ceritakan padaku. Aku... akan tetap di sini. Menjaga pintu. Sampai ada yang memberi perintah yang bisa kupertanggungjawabkan."
+              },
+              {
+                "say": "Rimba",
+                "text": "Kapten, kau tidak menghentikan kami?"
+              },
+              {
+                "say": "Rangga",
+                "text": "Aku sudah mencoba. Kalah. Orang yang kalah dengan jujur tidak menghalangi pintu, Nak. Itu peraturan lama pengawal, sebelum semua peraturan diganti."
+              },
+              {
+                "set": "boss_rangga_kalah"
+              },
+              {
+                "give": {
+                  "serpihan_ingatan": 1
+                }
+              },
+              {
+                "heal": "all"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "sergap_lorong": [
+      {
+        "once": "sergap_lorong_done",
+        "do": [
+          {
+            "text": "Derit zirah dari lorong yang baru kering. Dua Pengawal Karat, dan tumpukan gulungan yang bergerak di belakang mereka."
+          },
+          {
+            "battle": [
+              "pengawal_karat",
+              "pengawal_karat",
+              "bayang_arsip"
+            ],
+            "boss": false,
+            "can_flee": false,
+            "lose": "gameover"
+          }
+        ]
+      }
+    ],
+    "sergap_pompa": [
+      {
+        "once": "sergap_pompa_done",
+        "do": [
+          {
+            "text": "Dari balik pipa-pipa pompa, zirah-zirah kosong bangkit, dan seorang Hampa nelayan menebar jala ke arah kalian."
+          },
+          {
+            "battle": [
+              "pengawal_karat",
+              "nelayan_hampa",
+              "bayang_arsip"
+            ],
+            "boss": false,
+            "can_flee": false,
+            "lose": "gameover"
+          }
+        ]
+      }
+    ]
+  }
+}

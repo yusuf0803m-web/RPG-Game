@@ -14,6 +14,8 @@ from .models import (
     AIAction,
     AIPhase,
     Affinity,
+    AffinitySet,
+    Rotation,
     CharacterDef,
     CostType,
     Drop,
@@ -114,7 +116,15 @@ def parse_enemy(eid: str, d: dict) -> EnemyDef:
             )
             for a in d.get("ai", [])
         ]
-        phases = [AIPhase(float(p["hp_above"]), list(p["pattern"]), p.get("name", "")) for p in d.get("phases", [])]
+        phases = [AIPhase(float(p["hp_above"]), list(p["pattern"]), p.get("name", ""),
+                          {Element(k): Affinity(v) for k, v in p["affinities"].items()} if "affinities" in p else None,
+                          bool(p.get("ignore_taunt", False)), int(p.get("actions_per_turn", 1)), p.get("announce", ""))
+                  for p in d.get("phases", [])]
+        rotation = None
+        if "rotation" in d:
+            r = d["rotation"]
+            rotation = Rotation(int(r["every"]), [AffinitySet(x["name"], {Element(k): Affinity(v) for k, v in x["affinities"].items()}, x.get("announce", ""))
+                                                   for x in r["sets"]])
         return EnemyDef(
             id=eid,
             name=d["name"],
@@ -130,6 +140,7 @@ def parse_enemy(eid: str, d: dict) -> EnemyDef:
             is_boss=bool(d.get("is_boss", False)),
             ketahanan=int(d.get("ketahanan", 0)),
             phases=phases,
+            rotation=rotation,
             immune=list(d.get("immune", [])),
             lesson=d.get("lesson", ""),
             description=d.get("description", ""),
@@ -193,7 +204,7 @@ class GameData:
                 if sid not in self.skills:
                     raise DataError(f"karakter '{c.id}' merujuk skill '{sid}' yang tidak ada")
         for e in self.enemies.values():
-            refs = [a.action for a in e.ai] + [x for p in e.phases for x in p.pattern] + list(e.skills)
+            refs = [a.action for a in e.ai] + [x.partition("@")[0] for p in e.phases for x in p.pattern] + list(e.skills)
             for sid in refs:
                 if sid != "serang" and sid not in self.skills:
                     raise DataError(f"musuh '{e.id}' merujuk skill '{sid}' yang tidak ada")
@@ -203,6 +214,9 @@ class GameData:
             if e.phases and e.ai:
                 raise DataError(f"musuh '{e.id}' punya 'ai' dan 'phases' sekaligus; pilih salah satu")
         for s in self.skills.values():
+            for t in s.tags:
+                if t.startswith("summon:") and t.split(":")[1] not in self.enemies:
+                    raise DataError(f"skill '{s.id}' memanggil musuh '{t.split(':')[1]}' yang tidak ada")
             for uid in s.users:
                 if uid not in self.characters:
                     raise DataError(f"skill '{s.id}' merujuk karakter '{uid}' yang tidak ada")

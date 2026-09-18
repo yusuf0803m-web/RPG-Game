@@ -132,10 +132,16 @@
       "agi": 1.8,
       "lck": 1.4
     },
-    "skills": [],
+    "skills": [
+      "curi",
+      "peluncur_kejut",
+      "jerat_bumi",
+      "baterai",
+      "pindai"
+    ],
     "weapon_type": "alat_kaca",
     "element_note": "Petir, Bumi (gadget)",
-    "description": "Juru kaca tambang. Gadget, Curi, Baterai. (Skill menyusul di Tahap 2.)"
+    "description": "Juru kaca tambang. Gadget berbahan Suku Cadang, Curi, Baterai."
   },
   "rangga": {
     "name": "Rangga",

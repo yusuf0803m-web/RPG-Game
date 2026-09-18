@@ -1,0 +1,675 @@
+{
+  "id": "mercusuar",
+  "name": "Mercusuar Langit",
+  "level_range": "19–23",
+  "start": "kaki_menara",
+  "fog": false,
+  "encounter_rate": 0.4,
+  "encounters": [
+    {
+      "enemies": [
+        "pelita_padam"
+      ],
+      "weight": 3
+    },
+    {
+      "enemies": [
+        "pengawal_istana"
+      ],
+      "weight": 3
+    },
+    {
+      "enemies": [
+        "pelita_padam",
+        "bayang_arsip"
+      ],
+      "weight": 2
+    },
+    {
+      "enemies": [
+        "pengawal_istana",
+        "bayang_arsip"
+      ],
+      "weight": 2
+    },
+    {
+      "enemies": [
+        "pelita_padam",
+        "pelita_padam"
+      ],
+      "weight": 1
+    }
+  ],
+  "rooms": {
+    "kaki_menara": {
+      "name": "Kaki Menara",
+      "safe": true,
+      "text": "Mercusuar Langit dari dekat: batu putih sehalus tulang, tanpa sambungan, menjulang sampai mata tidak sanggup mengikuti. Pintu perunggunya terbuka sedikit. Seorang pedagang keliling yang gila atau berani membuka lapak di bawah tangga.",
+      "on_enter": "masuk_menara",
+      "exits": [
+        {
+          "label": "Turun kembali ke Tambang",
+          "to": "mulut_tambang",
+          "area": "tambang"
+        },
+        {
+          "label": "Masuk dan naik ke Lantai Panen",
+          "to": "lantai_panen",
+          "if": [
+            "mercusuar_siap"
+          ],
+          "locked": "Sela: \"Setelah pintu ini, aku tidak yakin kita bisa turun lagi. Belanja, simpan, dan bilang kalau sudah siap.\""
+        }
+      ],
+      "npcs": [
+        {
+          "id": "pedagang_keliling",
+          "name": "Pedagang keliling",
+          "script": "bicara_pedagang_keliling"
+        },
+        {
+          "id": "siap",
+          "name": "Sela (\"Kita siap?\")",
+          "script": "konfirmasi_siap",
+          "if": [
+            "!mercusuar_siap"
+          ]
+        }
+      ],
+      "objects": [
+        {
+          "id": "lentera_kaki",
+          "name": "Lentera penjaga (simpan & istirahat)",
+          "script": "lentera_save"
+        }
+      ]
+    },
+    "lantai_panen": {
+      "name": "Lantai 2 — Panen",
+      "text": "Dinding lantai ini diukir sawah dan orang-orang memanen. Ukirannya bergerak kalau tidak ditatap langsung. Bau padi yang baru dipotong, dari tempat yang tidak punya padi.",
+      "on_enter": "lantai_panen_masuk",
+      "exits": [
+        {
+          "label": "Turun ke kaki menara",
+          "to": "kaki_menara"
+        },
+        {
+          "label": "Naik ke Lantai Pernikahan",
+          "to": "lantai_pernikahan"
+        }
+      ]
+    },
+    "lantai_pernikahan": {
+      "name": "Lantai 3 — Pernikahan",
+      "text": "Ukiran pengantin, gamelan, dan tamu-tamu yang wajahnya sudah aus. Ada suara musik yang terlalu pelan untuk didengar tapi terlalu jelas untuk diabaikan.",
+      "exits": [
+        {
+          "label": "Turun ke Lantai Panen",
+          "to": "lantai_panen"
+        },
+        {
+          "label": "Naik ke Lantai Pemakaman",
+          "to": "lantai_pemakaman"
+        }
+      ],
+      "objects": [
+        {
+          "id": "peti_pernikahan",
+          "name": "Kotak seserahan yang tertinggal",
+          "script": "peti_pernikahan",
+          "if": [
+            "!peti_pernikahan_diambil"
+          ]
+        }
+      ],
+      "on_enter": "sergap_pernikahan"
+    },
+    "lantai_pemakaman": {
+      "name": "Lantai 4 — Pemakaman",
+      "text": "Dinding penuh nama. Ribuan nama, diukir kecil-kecil, dan di bawah tiap nama satu kata: \"diingat\". Lintang membaca sambil berjalan dan tidak berhenti sampai lantai berikutnya.",
+      "on_enter": "lantai_pemakaman_masuk",
+      "exits": [
+        {
+          "label": "Turun ke Lantai Pernikahan",
+          "to": "lantai_pernikahan"
+        },
+        {
+          "label": "Naik ke Lantai Perang",
+          "to": "lantai_perang"
+        }
+      ],
+      "objects": [
+        {
+          "id": "lentera_pemakaman",
+          "name": "Lentera penjaga (simpan & istirahat)",
+          "script": "lentera_save"
+        }
+      ]
+    },
+    "lantai_perang": {
+      "name": "Lantai 5 — Perang Lama",
+      "text": "Ukiran barisan-barisan prajurit dari perang yang tidak ada di buku mana pun. Semua menghadap ke atas, ke lantai berikutnya, seolah menunggu perintah. Di sudut, sebuah peti batu dengan lambang lentera.",
+      "exits": [
+        {
+          "label": "Turun ke Lantai Pemakaman",
+          "to": "lantai_pemakaman"
+        },
+        {
+          "label": "Naik ke Lantai Penjaga",
+          "to": "lantai_penjaga"
+        }
+      ],
+      "objects": [
+        {
+          "id": "peti_perang",
+          "name": "Peti batu berlambang lentera",
+          "script": "peti_perang",
+          "if": [
+            "!peti_perang_diambil"
+          ]
+        }
+      ],
+      "on_enter": "sergap_perang"
+    },
+    "lantai_penjaga": {
+      "name": "Lantai 6 — Ruang Penjaga",
+      "safe": true,
+      "text": "Ruang bundar kosong, kecuali sebuah patung batu putih setinggi tiga orang di tengahnya, memegang lentera batu. Matanya, dua rongga kosong, menyala samar. Ia menoleh.",
+      "on_enter": "boss_penjaga",
+      "exits": [
+        {
+          "label": "Turun ke Lantai Perang",
+          "to": "lantai_perang"
+        },
+        {
+          "label": "Naik ke Puncak",
+          "to": "puncak",
+          "if": [
+            "boss_penjaga_kalah"
+          ]
+        }
+      ],
+      "objects": [
+        {
+          "id": "lentera_penjaga",
+          "name": "Lentera penjaga (simpan & istirahat)",
+          "script": "lentera_save",
+          "if": [
+            "boss_penjaga_kalah"
+          ]
+        }
+      ]
+    },
+    "puncak": {
+      "name": "Lantai 7 — Puncak",
+      "safe": true,
+      "text": "Ruang inti Mercusuar. Di tengahnya, rongga kaca raksasa yang kosong: tempat Nyala seharusnya berada. Di sekelilingnya, lembah terhampar di semua arah, kelabu sampai ke gunung. Seorang lelaki tua berjubah berdiri membelakangi kalian, menatap ke luar.",
+      "on_enter": "puncak_baskara",
+      "exits": [
+        {
+          "label": "Turun ke Lantai Penjaga",
+          "to": "lantai_penjaga"
+        }
+      ]
+    }
+  },
+  "scripts": {
+    "lentera_save": [
+      {
+        "text": "Kau merapikan sumbu dan menuang sedikit minyak. Nyalanya menegak."
+      },
+      {
+        "heal": "all"
+      },
+      {
+        "save": true
+      }
+    ],
+    "bicara_pedagang_keliling": [
+      {
+        "say": "Pedagang",
+        "text": "Aku ikut kalian sampai sini karena kalian kelihatan seperti orang yang akan mati dengan banyak keping di kantong. Lebih baik kepingnya di kantongku. Ramuan? Abu Fajar?"
+      },
+      {
+        "shop": "pedagang_keliling"
+      }
+    ],
+    "konfirmasi_siap": [
+      {
+        "say": "Sela",
+        "text": "Menara ini enam lantai sebelum puncak, dan aku tidak percaya pintunya akan tetap terbuka di belakang kita. Kalau ada yang mau dibeli atau disimpan, sekarang waktunya. Kita siap?"
+      },
+      {
+        "choice": [
+          {
+            "text": "Kita siap.",
+            "then": [
+              {
+                "set": "mercusuar_siap"
+              },
+              {
+                "say": "Sela",
+                "text": "Baik. Rimba di tengah, Lintang di belakangku, Bagas... di mana pun kau bisa membidik. Naik."
+              }
+            ]
+          },
+          {
+            "text": "Belum.",
+            "then": [
+              {
+                "say": "Sela",
+                "text": "Tidak apa-apa. Menara ini sudah menunggu dua belas tahun; dia bisa menunggu satu jam lagi."
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "masuk_menara": [
+      {
+        "once": "menara_masuk_adegan",
+        "do": [
+          {
+            "text": "Kalian berdiri di kaki Mercusuar Langit. Dari sini, batu putihnya terasa hangat, seperti kulit orang yang demam."
+          },
+          {
+            "say": "Bagas",
+            "text": "Aku pernah bermimpi masuk ke sini. Waktu kecil. Semua anak Tengara bermimpi itu."
+          },
+          {
+            "say": "Lintang",
+            "text": "Bapak masuk ke sini."
+          },
+          {
+            "say": "Rimba",
+            "text": "Pak Guntur juga. Tiga puluh tahun, tiap hari. (Ia menyentuh pintu perunggu.) Dan mungkin minggu lalu, sekali lagi."
+          },
+          {
+            "say": "Sela",
+            "text": "Kalau begitu ayo kita tanya menaranya. Lentera penjaga ada di sini; simpan dulu."
+          }
+        ]
+      }
+    ],
+    "lantai_panen_masuk": [
+      {
+        "once": "panen_adegan",
+        "do": [
+          {
+            "text": "Begitu kalian masuk, ukiran di dinding berbisik: \"...panen bagus tahun ini... simpan sebagian untuk menara...\" Sesuatu bergerak di antara ukiran: sosok cahaya redup berbentuk manusia. Pelita Padam."
+          },
+          {
+            "say": "Bagas",
+            "text": "Pelita Padam. Sisa orang-orang yang dibakar di sini. Mereka *menyerap* Cahaya. Jangan pakai Nyala ke mereka, Rimba, kecuali kau ingin mereka makin kuat."
+          },
+          {
+            "say": "Lintang",
+            "text": "Kelam. Mereka lemah pada Kelam. Aku bisa."
+          },
+          {
+            "text": "(Tip: Pelita Padam menyerap Cahaya dan tahan Api. Lintang (Kelam) dan Bagas (Petir pada Pengawal Istana) adalah pembunuh utama di menara ini. Nyala Pamungkas akan menyembuhkan Pelita Padam!)"
+          }
+        ]
+      }
+    ],
+    "peti_pernikahan": [
+      {
+        "set": "peti_pernikahan_diambil"
+      },
+      {
+        "text": "Kotak seserahan berukir. Di dalamnya, kain sutra yang sudah rapuh, dan di bawah kain: barang-barang yang bukan milik pengantin."
+      },
+      {
+        "give": {
+          "ramuan_sari": 2,
+          "cawan_nyala": 2,
+          "abu_fajar": 1
+        }
+      }
+    ],
+    "lantai_pemakaman_masuk": [
+      {
+        "once": "pemakaman_adegan",
+        "do": [
+          {
+            "text": "Lintang berhenti di satu nama. \"Arya Kelana.\" Di bawahnya, bukan \"diingat\". Kata itu dikerik, dan di atasnya diukir kasar dengan sesuatu yang tajam: \"pulang\"."
+          },
+          {
+            "say": "Lintang",
+            "text": "Ini bukan tulisan Adipati. Ini tulisan Bapak. Dia lewat sini waktu turun."
+          },
+          {
+            "say": "Sela",
+            "text": "Dia mengukir \"pulang\" di makamnya sendiri."
+          },
+          {
+            "say": "Lintang",
+            "text": "Bukan. Dia mengukirnya supaya aku baca."
+          },
+          {
+            "text": "** Kenangan Lintang: Nama yang Dikerik. **"
+          }
+        ]
+      }
+    ],
+    "peti_perang": [
+      {
+        "set": "peti_perang_diambil"
+      },
+      {
+        "text": "Peti batu yang berat. Di dalamnya, sebatang tongkat lentera yang kalian kenal. Tongkat Pak Guntur. Diletakkan rapi, dengan secarik kain di sekelilingnya bertuliskan satu kata dengan arang: \"Rimba\"."
+      },
+      {
+        "say": "Rimba",
+        "text": "...Dia tahu aku akan naik."
+      },
+      {
+        "say": "Sela",
+        "text": "Dia Penyala, Rimba. Mereka selalu tahu siapa yang akan pulang."
+      },
+      {
+        "give": {
+          "tongkat_guntur": 1,
+          "serpihan_ingatan": 1
+        }
+      }
+    ],
+    "boss_penjaga": [
+      {
+        "once": "boss_penjaga_adegan",
+        "do": [
+          {
+            "text": "Patung itu berdiri. Lentera batunya menyala putih. Suaranya bukan suara, tapi getaran di lantai yang menyusun kata-kata."
+          },
+          {
+            "say": "Penjaga",
+            "text": "PENJAGA. KE. TIGA. PULUH. SATU. TIDAK. ADA. TIDAK ADA YANG. MEMBERI. PERINTAH."
+          },
+          {
+            "say": "Rimba",
+            "text": "Ini... Pak Guntur yang mengendalikannya. Dulu."
+          },
+          {
+            "say": "Bagas",
+            "text": "Konstruk Nyala. Tanpa Penjaga yang memerintah, ia liar. Dan ia menembakkan Nyala dari lentera itu: perlu diisi dulu. Kalau kita bisa menggoyahkannya saat mengisi, tembakannya buyar."
+          },
+          {
+            "text": "(Tip: Meriam Nyala mengisi satu giliran. Goyah (pukulan kelemahan Petir/Kelam, atau Bantingan Perisai) atau Pecah membatalkan isian. Di bawah 50% HP ia memanggil Pelita Padam.)"
+          },
+          {
+            "battle": [
+              "boss_penjaga_mercusuar"
+            ],
+            "boss": true,
+            "lose": "gameover",
+            "win": [
+              {
+                "text": "Patung itu retak dari lentera ke kaki, dan cahaya di rongga matanya berkedip, berubah, melembut. Suara yang keluar kali ini adalah suara."
+              },
+              {
+                "say": "Guntur",
+                "text": "...Rimba. Tangannya masih gemetar, tapi pukulannya tidak."
+              },
+              {
+                "say": "Rimba",
+                "text": "PAK GUNTUR!"
+              },
+              {
+                "say": "Guntur",
+                "text": "Jangan berteriak, Nak, aku patung; telingaku dari batu. Dengar, aku tidak punya banyak. Aku masuk kabut dengan sengaja. Aku mau ke sini, jadi Pelita ke-32, supaya menara menyala dan kalian punya waktu. Tapi Baskara mengunci ruang inti. Dia bilang tidak ada lagi yang dibakar. Dia keras kepala. Dia benar, dengan cara yang salah."
+              },
+              {
+                "say": "Guntur",
+                "text": "Bara di dadamu adalah yang tersisa dariku yang masih ingat. Bawa ke atas. Apa pun yang kau putuskan di sana... putuskan sambil ingat. Itu saja yang kuminta."
+              },
+              {
+                "say": "Rimba",
+                "text": "Pak, aku tidak mau membakar Bapak."
+              },
+              {
+                "say": "Guntur",
+                "text": "Aku tahu. Makanya kau yang kupilih, bukan aku sendiri."
+              },
+              {
+                "text": "Cahaya di mata patung padam. Batu itu diam, dan diam kali ini terasa seperti tidur, bukan seperti mati."
+              },
+              {
+                "set": "boss_penjaga_kalah"
+              },
+              {
+                "quest": "mencari_guntur",
+                "state": "penjaga"
+              },
+              {
+                "heal": "all"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "puncak_baskara": [
+      {
+        "once": "puncak_adegan",
+        "do": [
+          {
+            "text": "Lelaki tua itu tidak menoleh. Jubahnya dulu ungu; sekarang warna debu. Tongkat kekuasaan bersandar di dinding kaca, seperti barang yang sudah lama tidak dipakai."
+          },
+          {
+            "say": "Baskara",
+            "text": "Kau membawa Bara Guntur. Berarti kau sudah tahu apa isinya."
+          },
+          {
+            "say": "Rimba",
+            "text": "Ingatan Pak Guntur."
+          },
+          {
+            "say": "Baskara",
+            "text": "Dan kau tetap naik ke sini untuk membakarnya. Kalau begitu kita tidak berbeda, Nak. Aku hanya lebih dulu lelah."
+          },
+          {
+            "say": "Sela",
+            "text": "Kau memadamkan menara dan membiarkan lembah mati pelan-pelan."
+          },
+          {
+            "say": "Baskara",
+            "text": "Aku memadamkan menara karena ia meminta satu orang setiap tahun, dan orang-orang itu punya nama. Aku membaca nama-nama itu, Prajurit. Setiap malam. Kau membaca nama-nama itu?"
+          },
+          {
+            "say": "Lintang",
+            "text": "Aku membaca satu. Arya Kelana. Dibatalkan."
+          },
+          {
+            "text": "Baskara akhirnya menoleh. Wajahnya wajah orang yang sudah dua belas tahun tidak tidur nyenyak."
+          },
+          {
+            "say": "Baskara",
+            "text": "...Anak Kelana."
+          },
+          {
+            "say": "Lintang",
+            "text": "Bapakku tidak pernah selesai dibakar. Kau berhenti di tengah. Itu bukan tangan bersih. Itu tangan gemetar."
+          },
+          {
+            "pause": true
+          },
+          {
+            "say": "Baskara",
+            "text": "Ya. Tangan gemetar. Aku tahu. Aku hidup dengan itu. Dan sekarang kau datang dengan tangan yang tidak gemetar, dan itu lebih menakutkan bagiku daripada kabut."
+          },
+          {
+            "say": "Baskara",
+            "text": "Aku tidak akan membiarkan menara menyala dengan orang lain lagi. Kalau kau mau menyalakannya, kau harus lewat aku. Itu satu-satunya hal yang masih bisa kuputuskan."
+          },
+          {
+            "text": "Ia mengambil tongkatnya. Dari bayang-bayang di sudut ruangan, dua zirah lapis emas berderak bangun."
+          },
+          {
+            "text": "(Tip: Titah membuat semua Lupa 3 giliran: siapkan Garam Bangun dan Cahaya Penunjuk. Pengawal Istana lemah Petir.)"
+          },
+          {
+            "battle": [
+              "boss_baskara",
+              "pengawal_istana",
+              "pengawal_istana"
+            ],
+            "boss": true,
+            "lose": "gameover",
+            "win": [
+              {
+                "text": "Tongkat itu jatuh. Baskara jatuh berlutut, terbatuk, dan tertawa pelan, tanpa suara."
+              },
+              {
+                "say": "Baskara",
+                "text": "Dua belas tahun. Dua belas tahun aku menahan kabut di dalam menara ini dengan diriku sendiri. Kau tahu, Nak? Kabut itu lapar pada orang yang menolak melupakan. Aku menolak melupakan nama-nama itu. Jadi ia... menungguku. Di sini. Di belakangku."
+              },
+              {
+                "text": "Kabut merembes dari lantai. Bukan dari luar: dari dalam batu, dari dalam rongga kaca, dari dalam Baskara sendiri. Ia menelan lelaki tua itu tanpa suara, dan yang berdiri di tempatnya adalah kabut setinggi langit-langit dengan wajah Baskara di dalamnya, membuka mulut tanpa bicara."
+              },
+              {
+                "say": "Sela",
+                "text": "Rimba! Itu bukan dia lagi!"
+              },
+              {
+                "say": "Lintang",
+                "text": "Itu semua yang dia tahan. Dan sekarang tidak ada yang menahan."
+              },
+              {
+                "text": "(Tip: Kelam Berwajah bergantian tiap 4 giliran: KABUT (lemah Cahaya, menyerap Kelam) dan NYALA CURIAN (lemah Kelam, menyerap Cahaya). Fajar Kelabu (Rimba+Lintang, 4 Bara) mengabaikan Serap. Di bawah 25% ia memakai Padamkan: HP semua jadi 1. Simpan 2 Bara untuk Nyala Pulih.)"
+              },
+              {
+                "battle": [
+                  "boss_kelam_berwajah"
+                ],
+                "boss": true,
+                "lose": "gameover",
+                "win": [
+                  {
+                    "text": "Kabut itu terurai seperti benang yang ditarik ujungnya. Di lantai, Baskara terbaring, kecil, tua, bernapas."
+                  },
+                  {
+                    "say": "Baskara",
+                    "text": "...Kunci ruang inti. Di saku dalamku. Ambil."
+                  },
+                  {
+                    "say": "Rimba",
+                    "text": "Adipati, kenapa..."
+                  },
+                  {
+                    "say": "Baskara",
+                    "text": "Karena aku kalah, dan orang yang kalah dengan jujur tidak menghalangi pintu. Rangga yang mengajariku itu, dulu, waktu ia masih mau mengajariku apa-apa."
+                  },
+                  {
+                    "pause": true
+                  },
+                  {
+                    "text": "Ruang inti terbuka. Rongga kaca raksasa menunggu. Bagas memasang Kaca Inti di tempatnya dengan tangan yang tidak gemetar sama sekali. Rimba berdiri di depannya.\n\nDi dadanya, Bara menghangat. Seperti dapur di pagi hari."
+                  },
+                  {
+                    "say": "Rimba",
+                    "text": "Pak Guntur bilang: putuskan sambil ingat."
+                  },
+                  {
+                    "text": "Kau ingat. Tangan yang tidak pernah gemetar saat menuang minyak. Suara yang bilang lentera itu buat orang tahu jalan pulang. Kalimat terakhir di lembah kabut: aku tahu jalan pulang, percaya.\n\nKau meletakkan tanganmu di Kaca Inti."
+                  },
+                  {
+                    "pause": true
+                  },
+                  {
+                    "text": "Cahaya itu tidak menyilaukan. Ia hangat, seperti dapur di pagi hari.\n\nLalu ia menjangkau lebih jauh dari yang pernah kau lihat: melewati Tengara, melewati Rawa, melewati gunung.\n\nDan di balik gunung, tidak ada apa-apa. Hanya kelabu, rata, sampai ujung langit."
+                  },
+                  {
+                    "say": "Sela",
+                    "text": "...Itu bukan awan, kan."
+                  },
+                  {
+                    "say": "Lintang",
+                    "text": "Bukan."
+                  },
+                  {
+                    "say": "Rimba",
+                    "text": "Pak Guntur pernah bilang, di balik gunung ada laut."
+                  },
+                  {
+                    "say": "Lintang",
+                    "text": "Ini laut."
+                  },
+                  {
+                    "pause": true
+                  },
+                  {
+                    "say": "Baskara",
+                    "text": "(dari lantai, sangat pelan) Sekarang kau lihat. Lembah ini pulau terakhir. Bara Guntur... cukup untuk beberapa minggu. Lalu menara minta lagi."
+                  },
+                  {
+                    "say": "Baskara",
+                    "text": "Suar tidak pernah dibuat untuk berdiri sendirian, Nak. Ada tujuh. Cari yang lain. Cari tahu kenapa mereka padam. Dan kalau kau menemukan jawaban yang tidak kutemukan... jangan kembali untuk mengatakannya padaku. Aku tidak berhak mendengarnya."
+                  },
+                  {
+                    "text": "Di bawah, di Tengara, lentera-lentera kota menyala satu per satu, putih, seperti gigi. Orang-orang keluar dari rumah. Seseorang mulai bernyanyi."
+                  },
+                  {
+                    "set": "babak_1_selesai"
+                  },
+                  {
+                    "quest": "mencari_guntur",
+                    "state": "selesai"
+                  },
+                  {
+                    "heal": "all"
+                  },
+                  {
+                    "save": true
+                  },
+                  {
+                    "end_chapter": "AKHIR BABAK 1 — LEMBAH LARUNG\n\nMercusuar Langit menyala kembali. Dewan sementara Tengara dibentuk. Kapten Rangga ditunjuk mengawal Rimba, Sela, Lintang, dan Bagas menyeberangi Pegunungan Sunyi.\n\nBabak 2 — Tanah Luar: sedang ditulis (Tahap 4). Terima kasih sudah bermain sampai sini."
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "sergap_pernikahan": [
+      {
+        "once": "sergap_pernikahan_done",
+        "do": [
+          {
+            "text": "Ukiran tamu-tamu pernikahan melangkah keluar dari dinding sebagai cahaya redup."
+          },
+          {
+            "battle": [
+              "pelita_padam",
+              "pelita_padam",
+              "bayang_arsip"
+            ],
+            "boss": false,
+            "can_flee": false,
+            "lose": "gameover"
+          }
+        ]
+      }
+    ],
+    "sergap_perang": [
+      {
+        "once": "sergap_perang_done",
+        "do": [
+          {
+            "text": "Barisan prajurit di dinding berderak. Dua zirah lapis emas turun dari ukiran."
+          },
+          {
+            "battle": [
+              "pengawal_istana",
+              "pengawal_istana",
+              "pelita_padam"
+            ],
+            "boss": false,
+            "can_flee": false,
+            "lose": "gameover"
+          }
+        ]
+      }
+    ]
+  }
+}

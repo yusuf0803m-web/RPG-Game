@@ -233,6 +233,24 @@ class AIPhase:
     hp_above: float
     pattern: list[str]          # urutan id aksi, diulang
     name: str = ""
+    affinities: Optional[dict] = None     # override afinitas saat fase ini mulai
+    ignore_taunt: bool = False            # kebal Provokasi
+    actions_per_turn: int = 1
+    announce: str = ""                    # teks saat fase dimulai
+
+
+@dataclass
+class AffinitySet:
+    name: str
+    affinities: dict
+    announce: str = ""
+
+
+@dataclass
+class Rotation:
+    """Afinitas berganti tiap ``every`` giliran musuh (Penambang Raksasa, Kelam Berwajah)."""
+    every: int
+    sets: list[AffinitySet]
 
 
 @dataclass
@@ -257,6 +275,7 @@ class EnemyDef:
     is_boss: bool = False
     ketahanan: int = 0                       # >0 = punya meter Pecah (boss/elit)
     phases: list[AIPhase] = field(default_factory=list)
+    rotation: Optional[Rotation] = None
     immune: list[str] = field(default_factory=list)    # status yang tidak mempan
     lesson: str = ""                          # "pelajaran" musuh ini (dokumentasi desain)
     description: str = ""

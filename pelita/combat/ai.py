@@ -25,6 +25,11 @@ def _pick_target(battle: Battle, actor: Combatant, rule: str, target_type: Targe
         return []
     if rule == "hp_terendah":
         return [min(foes, key=lambda c: c.hp)]
+    if rule == "tandai":
+        marked = [f for f in foes if f.has("tandai")]
+        if marked:
+            return [marked[0]]
+        return [max(foes, key=lambda c: c.effective("mag"))]
     if rule == "mag_tertinggi":
         return [max(foes, key=lambda c: c.effective("mag"))]
     return [battle.rng.choice(foes)]
@@ -34,6 +39,8 @@ def _skill_action(battle: Battle, actor: Combatant, action_id: str, rule: str = 
     if action_id == "serang":
         return Action("serang", targets=_pick_target(battle, actor, rule, Target.SATU_MUSUH))
     skill = battle.data.skill(action_id)
+    if skill.once_per_battle and skill.id in actor.used_once:
+        return Action("serang", targets=_pick_target(battle, actor, rule, Target.SATU_MUSUH))
     if not battle.cost_ok(actor, skill) or (skill.is_magic and not actor.can_use_magic) or not actor.can_use_skills:
         return Action("serang", targets=_pick_target(battle, actor, rule, Target.SATU_MUSUH))
     # Heal hanya kalau ada yang perlu disembuhkan
@@ -56,10 +63,12 @@ def choose_enemy_action(battle: Battle, actor: Combatant) -> Action:
         if idx != actor.phase_index:
             actor.phase_index = idx
             actor.pattern_pos = 0
+            battle.apply_phase(actor, phases[idx], battle.pending_events)
         pattern = phases[idx].pattern
         action_id = pattern[actor.pattern_pos % len(pattern)]
         actor.pattern_pos += 1
-        return _skill_action(battle, actor, action_id)
+        action_id, _, rule = action_id.partition("@")
+        return _skill_action(battle, actor, action_id, rule or "acak")
     cands = []
     for row in edef.ai:
         if row.hp_below is not None and actor.hp_ratio >= row.hp_below:
@@ -114,6 +123,37 @@ def choose_hero_action(battle: Battle, actor: Combatant, policy: str = "pintar")
 
     skills = battle.usable_skills(actor)
     allies = battle.alive_heroes
+    boss_present = any(f.is_boss for f in foes)
+
+    # 0. Bangkitkan kawan pingsan (Abu Fajar), prioritas Rimba (pemegang Bara)
+    down = [h for h in battle.heroes if not h.alive]
+    if down:
+        for iid, n in battle.inventory.items():
+            it = battle.data.items[iid]
+            if n > 0 and it.revive_pct:
+                target = next((h for h in down if h.key == "rimba"), down[0])
+                return Action("item", item=it, targets=[target])
+
+    # 0b. Tanda eksekusi (Rangga): hapus dengan Cahaya Penunjuk / Garam Bangun, atau tarik dengan Pasang Badan
+    marked = [a for a in allies if a.has("tandai")]
+    if marked:
+        cure = next((s for s in skills if "tandai" in s.cure), None)
+        if cure:
+            return Action("skill", skill=cure, targets=[marked[0]])
+        for iid, n in battle.inventory.items():
+            it = battle.data.items[iid]
+            if n > 0 and "tandai" in it.cure:
+                return Action("item", item=it, targets=[marked[0]])
+        taunt = next((s for s in skills if any(i.status == "provokasi" for i in s.self_inflict)), None)
+        if taunt and not actor.taunting and actor not in marked:
+            return Action("skill", skill=taunt, targets=[])
+
+    # 0c. Tank: Pasang Badan melawan boss saat sehat, agar serangan single-target diarahkan ke tank
+    taunt = next((s for s in skills if any(i.status == "provokasi" for i in s.self_inflict)), None)
+    if taunt and boss_present and not actor.taunting and actor.hp_ratio > 0.5 and not any(f.ignore_taunt for f in foes):
+        others = [a for a in allies if a is not actor]
+        if others and min(a.hp_ratio for a in others) < 0.8:
+            return Action("skill", skill=taunt, targets=[])
 
     # 1. Darurat: heal
     hurt = [a for a in allies if a.hp_ratio < 0.35]
@@ -155,10 +195,11 @@ def choose_hero_action(battle: Battle, actor: Combatant, policy: str = "pintar")
         score /= (1 + s.cost / 10)      # hemat MP sedikit
         if score > best_score:
             best_score, best_choice = score, s
-    basic_ok = not _known_bad(battle, target, actor.weapon_element)
     if best_choice and best_score > 1.0:
         ts = foes if best_choice.target.is_multi else [target]
         return Action("skill", skill=best_choice, targets=ts)
-    if not basic_ok:
-        return Action("jaga")
+    # Serang biasa: pilih sasaran yang tidak diketahui tahan/serap terhadap elemen senjata
+    ok_targets = [f for f in foes if not _known_bad(battle, f, actor.weapon_element)]
+    if ok_targets:
+        target = max(ok_targets, key=lambda c: c.hp) if len(ok_targets) > 1 else ok_targets[0]
     return Action("serang", targets=[target])

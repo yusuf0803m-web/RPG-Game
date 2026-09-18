@@ -3,5 +3,24 @@
   "warung_ratna": {
     "name": "Warung Bu Ratna",
     "items": ["ramuan_daun", "penawar", "garam_bangun", "minyak_lentera", "bubuk_api", "zirah_kulit"]
+  },
+  "pasar_apung": {
+    "name": "Pasar Apung Telaga",
+    "items": ["ramuan_daun", "ramuan_akar", "tetes_nyala", "penawar", "garam_bangun", "minyak_lentera", "bubuk_petir", "bubuk_es",
+              "tongkat_perunggu", "pedang_pengawal", "lentera_rawa", "zirah_kulit", "cincin_anti_racun", "sabuk_lumut"]
+  },
+  "pasar_bawah": {
+    "name": "Pasar Bawah Tengara",
+    "items": ["ramuan_akar", "ramuan_sari", "tetes_nyala", "cawan_nyala", "penawar", "garam_bangun", "abu_fajar", "minyak_lentera", "dupa_sunyi",
+              "bubuk_petir", "bubuk_es", "bubuk_api", "suku_cadang",
+              "tongkat_kaca", "pedang_besi_tambang", "lentera_kaca", "zirah_rantai", "zirah_kaca_lapis", "gelang_kilat", "jimat_lentera", "cincin_anti_racun"]
+  },
+  "kafilah_tambang": {
+    "name": "Lapak Kafilah Tambang",
+    "items": ["ramuan_akar", "ramuan_sari", "tetes_nyala", "cawan_nyala", "penawar", "garam_bangun", "abu_fajar", "minyak_lentera", "suku_cadang", "peluncur_kaca", "zirah_kaca_lapis"]
+  },
+  "pedagang_keliling": {
+    "name": "Pedagang Keliling di Kaki Menara",
+    "items": ["ramuan_akar", "ramuan_sari", "tetes_nyala", "cawan_nyala", "garam_bangun", "abu_fajar", "suku_cadang", "dupa_sunyi", "jubah_penyala", "kalung_bara"]
   }
 }

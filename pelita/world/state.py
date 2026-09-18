@@ -35,6 +35,7 @@ class GameState:
     steps: int = 0
     steps_since_encounter: int = 99
     lentera_steps: int = 0
+    dupa_steps: int = 0
     seed: int = field(default_factory=lambda: random.randrange(1 << 30))
     rng: random.Random = field(default=None, repr=False)  # type: ignore[assignment]
     started_at: float = field(default_factory=time.time)
@@ -146,6 +147,8 @@ class GameState:
         msgs: list[str] = []
         self.steps += 1
         self.steps_since_encounter += 1
+        if self.dupa_steps > 0:
+            self.dupa_steps -= 1
         if fog:
             if self.lentera_steps > 0:
                 self.lentera_steps -= 1

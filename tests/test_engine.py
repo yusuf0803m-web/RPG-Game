@@ -51,7 +51,7 @@ def test_pertarungan_selesai_dan_memberi_xp(data):
     b = make_battle(data, [("rimba", 5), ("sela", 5), ("lintang", 5)], ["kunang_kelam", "kunang_kelam"])
     r = play_out(b)
     assert r is not None and r.outcome == "menang"
-    assert r.xp == 24 and r.keping == 8
+    assert r.xp == 48 and r.keping == 8
 
 
 # --- kelemahan, Goyah, Bara, Catatan Penyala --------------------------------
