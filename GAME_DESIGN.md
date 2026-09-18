@@ -965,7 +965,7 @@ Prinsip: satu layar = satu keputusan. Semua informasi yang dibutuhkan untuk memu
 
 | Tahap | Isi | Hasil |
 |---|---|---|
-| 0 | Arsitektur & data: modul `combat`, `party`, `world`, `ui`, `data/` (JSON untuk skill, musuh, item, Kaca) | Kerangka yang bisa dites |
+| 0 | Arsitektur & data: modul `combat`, `party`, `world`, `ui`, `data/` (JSON untuk skill, musuh, item, Kaca) | Kerangka yang bisa dites — **selesai** (`world` menyusul di Tahap 2) |
 | 1 | Prototipe combat: 3 karakter, 5 musuh, formula §4.7, Bara, Pecah | Rasio "2–3 pukulan" terverifikasi |
 | 2 | **Babak 1 lengkap** (area 1–6, 4 karakter, 7 boss, 6 side quest) | Game 6,5 jam yang bisa tamat |
 | 3 | Sistem lanjutan: Ganti/cadangan, Jalur, Kaca, Berkemah/Kenangan, Buruan, Arena | Fondasi Babak 2 |

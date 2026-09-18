@@ -1,0 +1,532 @@
+{
+  "_catatan": "Musuh Babak 1 (GAME_DESIGN §6.1–6.2). stats.hp = HP dasar. ai = tabel bobot; phases = skrip boss.",
+  "kunang_kelam": {
+    "name": "Kunang Kelam",
+    "level": 2,
+    "xp": 12,
+    "keping": 4,
+    "stats": {
+      "hp": 22,
+      "mp": 0,
+      "atk": 8,
+      "def": 4,
+      "mag": 6,
+      "res": 4,
+      "agi": 9,
+      "lck": 3
+    },
+    "affinities": {
+      "cahaya": "lemah",
+      "kelam": "serap"
+    },
+    "ai": [
+      {
+        "action": "serang",
+        "weight": 3
+      },
+      {
+        "action": "m_kedip_gelap",
+        "weight": 2
+      }
+    ],
+    "lesson": "Swarm tutorial: serangan area & kelemahan Cahaya.",
+    "description": "Kunang-kunang yang cahayanya terbalik: mengeluarkan gelap."
+  },
+  "serigala_kabut": {
+    "name": "Serigala Kabut",
+    "level": 4,
+    "xp": 30,
+    "keping": 9,
+    "stats": {
+      "hp": 70,
+      "mp": 0,
+      "atk": 12,
+      "def": 7,
+      "mag": 5,
+      "res": 6,
+      "agi": 13,
+      "lck": 5
+    },
+    "affinities": {
+      "api": "lemah",
+      "es": "tahan"
+    },
+    "ai": [
+      {
+        "action": "m_gigit",
+        "weight": 3,
+        "target_rule": "hp_terendah"
+      },
+      {
+        "action": "m_cakar_kabut",
+        "weight": 2,
+        "target_rule": "hp_terendah"
+      }
+    ],
+    "drops": [
+      {
+        "item": "ramuan_daun",
+        "chance": 0.3
+      }
+    ],
+    "lesson": "Glass cannon cepat; menyasar HP terendah. Mengajarkan Pasang Badan.",
+    "description": "Serigala dengan bulu seperti asap. Menggigit lalu mundur ke kabut."
+  },
+  "lumut_berjalan": {
+    "name": "Lumut Berjalan",
+    "level": 5,
+    "xp": 38,
+    "keping": 10,
+    "stats": {
+      "hp": 130,
+      "mp": 0,
+      "atk": 11,
+      "def": 13,
+      "mag": 8,
+      "res": 9,
+      "agi": 3,
+      "lck": 3
+    },
+    "affinities": {
+      "api": "lemah",
+      "fisik": "tahan",
+      "es": "tahan"
+    },
+    "ai": [
+      {
+        "action": "serang",
+        "weight": 2
+      },
+      {
+        "action": "m_sembur_racun",
+        "weight": 3
+      }
+    ],
+    "drops": [
+      {
+        "item": "penawar",
+        "chance": 0.4
+      }
+    ],
+    "lesson": "Tank pelan + Racun; menghukum pemain yang hanya Serang.",
+    "description": "Gundukan lumut dan akar yang dulu tunggul pohon."
+  },
+  "hampa_pengembara": {
+    "name": "Hampa Pengembara",
+    "level": 6,
+    "xp": 45,
+    "keping": 14,
+    "stats": {
+      "hp": 100,
+      "mp": 0,
+      "atk": 13,
+      "def": 10,
+      "mag": 12,
+      "res": 9,
+      "agi": 6,
+      "lck": 4
+    },
+    "affinities": {
+      "cahaya": "lemah",
+      "kelam": "serap"
+    },
+    "ai": [
+      {
+        "action": "serang",
+        "weight": 3
+      },
+      {
+        "action": "m_sentuhan_lupa",
+        "weight": 3
+      }
+    ],
+    "immune": [
+      "lupa"
+    ],
+    "lesson": "Musuh ikonik; status Lupa.",
+    "description": "Manusia yang ingatannya habis. Masih mengulang gerak pekerjaan lama."
+  },
+  "katak_rawa_bengkak": {
+    "name": "Katak Rawa Bengkak",
+    "level": 8,
+    "xp": 70,
+    "keping": 20,
+    "stats": {
+      "hp": 170,
+      "mp": 0,
+      "atk": 16,
+      "def": 13,
+      "mag": 9,
+      "res": 11,
+      "agi": 5,
+      "lck": 4
+    },
+    "affinities": {
+      "petir": "lemah",
+      "api": "tahan",
+      "es": "tahan"
+    },
+    "ai": [
+      {
+        "action": "serang",
+        "weight": 3
+      },
+      {
+        "action": "m_lompatan_lumpur",
+        "weight": 2,
+        "every_n_turns": 2
+      }
+    ],
+    "lesson": "Tank + Racun area; mengajarkan Petir Lintang.",
+    "description": "Katak seukuran gerobak yang menelan lentera rawa."
+  },
+  "ikan_cermin": {
+    "name": "Ikan Cermin",
+    "level": 10,
+    "xp": 85,
+    "keping": 22,
+    "stats": {
+      "hp": 105,
+      "mp": 0,
+      "atk": 15,
+      "def": 12,
+      "mag": 20,
+      "res": 15,
+      "agi": 14,
+      "lck": 8
+    },
+    "affinities": {
+      "petir": "lemah",
+      "es": "tahan",
+      "cahaya": "tahan"
+    },
+    "ai": [
+      {
+        "action": "m_tiru",
+        "weight": 3
+      },
+      {
+        "action": "serang",
+        "weight": 1
+      }
+    ],
+    "lesson": "Meniru skill terakhir party (Tahap 2: implementasi penuh).",
+    "description": "Ikan pipih yang sisiknya memantulkan wajah penatapnya."
+  },
+  "nelayan_hampa": {
+    "name": "Nelayan Hampa",
+    "level": 11,
+    "xp": 100,
+    "keping": 26,
+    "stats": {
+      "hp": 190,
+      "mp": 0,
+      "atk": 20,
+      "def": 15,
+      "mag": 10,
+      "res": 13,
+      "agi": 7,
+      "lck": 4
+    },
+    "affinities": {
+      "cahaya": "lemah",
+      "kelam": "serap"
+    },
+    "ai": [
+      {
+        "action": "m_jerat",
+        "weight": 2
+      },
+      {
+        "action": "serang",
+        "weight": 3
+      }
+    ],
+    "immune": [
+      "lupa"
+    ],
+    "lesson": "Menjerat satu kawan sampai penjerat dipukul.",
+    "description": "Nelayan yang masih menebar jala ke danau yang kini menatap balik."
+  },
+  "pengawal_karat": {
+    "name": "Pengawal Karat",
+    "level": 13,
+    "xp": 140,
+    "keping": 35,
+    "stats": {
+      "hp": 300,
+      "mp": 0,
+      "atk": 23,
+      "def": 22,
+      "mag": 8,
+      "res": 15,
+      "agi": 6,
+      "lck": 2
+    },
+    "affinities": {
+      "petir": "lemah",
+      "fisik": "tahan"
+    },
+    "ai": [
+      {
+        "action": "m_derit_zirah",
+        "weight": 3
+      },
+      {
+        "action": "serang",
+        "weight": 2
+      }
+    ],
+    "immune": [
+      "racun",
+      "lupa",
+      "tidur",
+      "bakar"
+    ],
+    "ketahanan": 40,
+    "lesson": "Anti-fisik; Sela jadi tank, Lintang jadi pembunuh.",
+    "description": "Zirah pengawal kosong yang bergerak sendiri."
+  },
+  "bayang_arsip": {
+    "name": "Bayang Arsip",
+    "level": 13,
+    "xp": 120,
+    "keping": 30,
+    "stats": {
+      "hp": 195,
+      "mp": 0,
+      "atk": 12,
+      "def": 15,
+      "mag": 24,
+      "res": 18,
+      "agi": 9,
+      "lck": 6
+    },
+    "affinities": {
+      "api": "lemah",
+      "petir": "tahan",
+      "es": "tahan"
+    },
+    "ai": [
+      {
+        "action": "m_bacakan_nama",
+        "weight": 2
+      },
+      {
+        "action": "m_pulihkan",
+        "weight": 2,
+        "target_rule": "kawan_hp_terendah"
+      },
+      {
+        "action": "m_bisu",
+        "weight": 2
+      },
+      {
+        "action": "serang",
+        "weight": 1
+      }
+    ],
+    "lesson": "Support musuh: buff & heal; prioritas target.",
+    "description": "Tumpukan gulungan dan tinta yang membacakan nama-nama Pelita."
+  },
+  "kelelawar_kristal": {
+    "name": "Kelelawar Kristal",
+    "level": 15,
+    "xp": 130,
+    "keping": 28,
+    "stats": {
+      "hp": 120,
+      "mp": 0,
+      "atk": 20,
+      "def": 16,
+      "mag": 18,
+      "res": 17,
+      "agi": 22,
+      "lck": 10
+    },
+    "affinities": {
+      "petir": "lemah",
+      "kelam": "tahan"
+    },
+    "ai": [
+      {
+        "action": "m_jerit_kristal",
+        "weight": 3
+      },
+      {
+        "action": "serang",
+        "weight": 2
+      }
+    ],
+    "lesson": "Evasif, kuras MP, Tidur.",
+    "description": "Kelelawar yang sayapnya tumbuh kaca ingatan."
+  },
+  "penambang_terlupa": {
+    "name": "Penambang Terlupa",
+    "level": 17,
+    "xp": 220,
+    "keping": 45,
+    "stats": {
+      "hp": 380,
+      "mp": 0,
+      "atk": 31,
+      "def": 20,
+      "mag": 8,
+      "res": 15,
+      "agi": 5,
+      "lck": 3
+    },
+    "affinities": {
+      "es": "lemah",
+      "api": "tahan"
+    },
+    "ai": [
+      {
+        "action": "m_ayunan_beliung",
+        "weight": 3
+      },
+      {
+        "action": "serang",
+        "weight": 2
+      }
+    ],
+    "immune": [
+      "lupa"
+    ],
+    "lesson": "Hard hitter pelan; mengajarkan Jaga.",
+    "description": "Hampa bertubuh besar, punggung berkerak kristal."
+  },
+  "pelita_padam": {
+    "name": "Pelita Padam",
+    "level": 20,
+    "xp": 300,
+    "keping": 50,
+    "stats": {
+      "hp": 370,
+      "mp": 0,
+      "atk": 22,
+      "def": 22,
+      "mag": 30,
+      "res": 26,
+      "agi": 10,
+      "lck": 6
+    },
+    "affinities": {
+      "kelam": "lemah",
+      "cahaya": "serap",
+      "api": "tahan"
+    },
+    "ai": [
+      {
+        "action": "m_serap_cahaya",
+        "weight": 3
+      },
+      {
+        "action": "serang",
+        "weight": 1
+      }
+    ],
+    "immune": [
+      "lupa",
+      "tidur"
+    ],
+    "lesson": "Pembalik aturan: hanya Kelam yang efektif.",
+    "description": "Sisa Pelita lama: sosok cahaya redup berbentuk manusia."
+  },
+  "boss_hampa_penjaga_hutan": {
+    "name": "Hampa Penjaga Hutan",
+    "level": 4,
+    "xp": 150,
+    "keping": 60,
+    "is_boss": true,
+    "ketahanan": 60,
+    "stats": {
+      "hp": 450,
+      "mp": 0,
+      "atk": 13,
+      "def": 9,
+      "mag": 9,
+      "res": 8,
+      "agi": 6,
+      "lck": 4
+    },
+    "affinities": {
+      "cahaya": "lemah",
+      "api": "lemah",
+      "kelam": "serap"
+    },
+    "ai": [],
+    "phases": [
+      {
+        "name": "Penjaga",
+        "hp_above": 0.0,
+        "pattern": [
+          "serang",
+          "serang",
+          "m_raung_lupa"
+        ]
+      }
+    ],
+    "immune": [
+      "lupa",
+      "tidur",
+      "beku"
+    ],
+    "lesson": "Tutorial boss: Raung Lupa; (Tahap 2: memanggil Kunang tiap 3 giliran).",
+    "description": "Hampa besar bekas penebang kayu."
+  },
+  "boss_raja_katak_lumpur": {
+    "name": "Raja Katak Lumpur",
+    "level": 8,
+    "xp": 320,
+    "keping": 120,
+    "is_boss": true,
+    "ketahanan": 80,
+    "stats": {
+      "hp": 660,
+      "mp": 0,
+      "atk": 19,
+      "def": 14,
+      "mag": 12,
+      "res": 13,
+      "agi": 6,
+      "lck": 5
+    },
+    "affinities": {
+      "petir": "lemah",
+      "api": "tahan",
+      "es": "tahan"
+    },
+    "ai": [],
+    "phases": [
+      {
+        "name": "Kenyang",
+        "hp_above": 0.5,
+        "pattern": [
+          "m_hantam_lidah",
+          "serang",
+          "serang",
+          "m_muntah_racun"
+        ]
+      },
+      {
+        "name": "Lapar",
+        "hp_above": 0.0,
+        "pattern": [
+          "m_telan",
+          "m_hantam_lidah",
+          "m_muntah_racun",
+          "serang"
+        ]
+      }
+    ],
+    "immune": [
+      "racun",
+      "tidur",
+      "beku",
+      "lupa"
+    ],
+    "lesson": "Racun area tiap 4 giliran; menelan kawan saat HP<50% (lepas kalau boss Goyah/Pecah).",
+    "description": "Raja rawa yang perutnya berpendar lentera-lentera yang ditelannya."
+  }
+}

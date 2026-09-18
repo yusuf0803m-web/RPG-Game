@@ -1,0 +1,33 @@
+{
+  "_catatan": "Item konsumsi & equipment Babak 1 (GAME_DESIGN §5.2–5.4).",
+
+  "ramuan_daun":   {"name": "Ramuan Daun", "kind": "konsumsi", "price": 15, "heal_hp": 40, "target": "satu_kawan"},
+  "ramuan_akar":   {"name": "Ramuan Akar", "kind": "konsumsi", "price": 45, "heal_hp": 120, "target": "satu_kawan"},
+  "tetes_nyala":   {"name": "Tetes Nyala", "kind": "konsumsi", "price": 30, "heal_mp": 20, "target": "satu_kawan"},
+  "penawar":       {"name": "Penawar", "kind": "konsumsi", "price": 12, "cure": ["racun", "bakar"], "target": "satu_kawan"},
+  "garam_bangun":  {"name": "Garam Bangun", "kind": "konsumsi", "price": 12, "cure": ["tidur", "lupa"], "target": "satu_kawan"},
+  "abu_fajar":     {"name": "Abu Fajar", "kind": "konsumsi", "price": 80, "revive_pct": 0.3, "target": "kawan_pingsan"},
+  "bubuk_petir":   {"name": "Bubuk Petir", "kind": "konsumsi", "price": 25, "element": "petir", "power": 1.2, "target": "satu_musuh"},
+  "bubuk_es":      {"name": "Bubuk Es", "kind": "konsumsi", "price": 25, "element": "es", "power": 1.2, "target": "satu_musuh"},
+  "bubuk_api":     {"name": "Bubuk Api", "kind": "konsumsi", "price": 25, "element": "api", "power": 1.2, "target": "satu_musuh"},
+  "minyak_lentera": {"name": "Minyak Lentera", "kind": "konsumsi", "price": 10, "description": "Tolak Lupa 20 giliran di area kabut (eksplorasi)."},
+  "jimat_kabur":   {"name": "Jimat Kabur", "kind": "konsumsi", "price": 40, "description": "Kabur pasti berhasil."},
+
+  "tongkat_kayu_jati": {"name": "Tongkat Kayu Jati", "kind": "senjata", "weapon_for": "rimba", "price": 0, "stats": {"atk": 3}, "slots": 0},
+  "tongkat_perunggu":  {"name": "Tongkat Perunggu", "kind": "senjata", "weapon_for": "rimba", "price": 180, "stats": {"atk": 7, "mag": 2}, "slots": 1},
+  "tongkat_kaca":      {"name": "Tongkat Kaca", "kind": "senjata", "weapon_for": "rimba", "price": 520, "stats": {"atk": 11, "mag": 6}, "element": "api", "slots": 1},
+  "pedang_latihan":    {"name": "Pedang Latihan", "kind": "senjata", "weapon_for": "sela", "price": 0, "stats": {"atk": 5}, "slots": 0},
+  "pedang_pengawal":   {"name": "Pedang Pengawal", "kind": "senjata", "weapon_for": "sela", "price": 200, "stats": {"atk": 10}, "slots": 1},
+  "pedang_besi_tambang": {"name": "Pedang Besi Tambang", "kind": "senjata", "weapon_for": "sela", "price": 600, "stats": {"atk": 16}, "slots": 1},
+  "lentera_retak":     {"name": "Lentera Retak", "kind": "senjata", "weapon_for": "lintang", "price": 0, "stats": {"mag": 4}, "slots": 0},
+  "lentera_rawa":      {"name": "Lentera Rawa", "kind": "senjata", "weapon_for": "lintang", "price": 190, "stats": {"mag": 8}, "element": "es", "slots": 1},
+  "lentera_kaca":      {"name": "Lentera Kaca", "kind": "senjata", "weapon_for": "lintang", "price": 560, "stats": {"mag": 14}, "slots": 1},
+
+  "zirah_kain":   {"name": "Zirah Kain", "kind": "zirah", "price": 0, "stats": {"def": 2, "res": 2}},
+  "zirah_kulit":  {"name": "Zirah Kulit", "kind": "zirah", "price": 120, "stats": {"def": 5, "res": 3}},
+  "zirah_rantai": {"name": "Zirah Rantai", "kind": "zirah", "price": 380, "stats": {"def": 9, "res": 4}},
+
+  "cincin_anti_racun": {"name": "Cincin Anti-Racun", "kind": "aksesori", "price": 150, "description": "Imun Racun."},
+  "gelang_kilat":      {"name": "Gelang Kilat", "kind": "aksesori", "price": 220, "stats": {"agi": 4}},
+  "jimat_lentera":     {"name": "Jimat Lentera", "kind": "aksesori", "price": 260, "description": "Imun Lupa."}
+}
