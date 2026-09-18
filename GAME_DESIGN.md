@@ -1,77 +1,98 @@
-# Pelita Terakhir — Dokumen Desain Game
+# Pelita Terakhir — Dokumen Desain Game (v2, edisi 20 jam)
 
 > RPG teks turn-based bergaya JRPG klasik. Dibangun dengan Python, dimainkan di terminal.
-> Target durasi: **2–4 jam** sekali tamat. Scope kecil-menengah, linear dengan satu kota hub.
+> Target durasi: **18–22 jam** sekali tamat (sekitar 15 jam jalur utama + 5 jam konten sampingan).
+> Versi 3 jam sebelumnya tersimpan di riwayat git; v2 memperluasnya menjadi tiga babak.
 
 ---
 
-## 0. Ringkasan & Keputusan Desain yang Perlu Persetujuan
+## 0. Ringkasan, Keputusan Desain, dan Peringatan Scope
 
-Dokumen ini menetapkan beberapa arah tema/gaya. Semua bisa diganti tanpa membongkar sistem;
-yang terikat ke tema hanya nama, flavor text, dan susunan elemen.
+### 0.1 Keputusan tema/gaya (bisa diganti sebelum implementasi)
 
-| Keputusan | Pilihan di dokumen ini | Alternatif kalau mau diganti |
+| Keputusan | Pilihan di dokumen ini | Alternatif |
 |---|---|---|
-| Nada cerita | Melankolis-hangat (dunia meredup, tapi fokus ke orang-orang kecil yang bertahan) | (a) lebih ringan/komedik ala JRPG 16-bit, (b) lebih gelap/tragis |
-| Setting | Fantasi lembah terpencil bernuansa Nusantara (nama, flora, arsitektur) | (a) fantasi Eropa klasik, (b) steampunk |
-| Sumber sihir | "Nyala" — cahaya yang dipelihara di lentera, berbahan bakar ingatan | Kristal elemen klasik |
-| Ending | Satu ending utama + satu variasi kecil dari pilihan akhir | Ending tunggal saja (lebih mudah dibuat) |
-| Bahasa in-game | Indonesia | Inggris, atau dua bahasa |
+| Nada cerita | Melankolis-hangat; babak 2 lebih petualang, babak 3 lebih mitis | Lebih ringan, atau lebih gelap |
+| Setting | Fantasi bernuansa Nusantara; dunia luar lembah lebih beragam (dataran abu, hutan bernyanyi, kota kaca) | Fantasi Eropa klasik |
+| Sumber sihir | Nyala (cahaya dari ingatan) vs Kabut (ingatan tanpa pemilik) | Kristal elemen |
+| Ending | 3 ending (dua dari pilihan akhir, satu rahasia dari konten sampingan) | Ending tunggal |
+| Bahasa in-game | Indonesia | Inggris / dwibahasa |
+| Struktur | 3 babak, tiap babak punya klimaks sendiri dan bisa dirilis bertahap | Satu alur panjang tanpa sekat |
 
-Kalau tidak ada keberatan, implementasi tahap berikutnya mengikuti tabel ini apa adanya.
+### 0.2 Peringatan scope (penting)
+
+Dari 3 jam ke 20 jam, yang membesar bukan sistemnya, tapi **isinya**: naskah, data musuh, data
+skill, dan peta. Perkiraan kasar volume kerja:
+
+| Komponen | v1 (3 jam) | v2 (20 jam) |
+|---|---|---|
+| Kata naskah (dialog + narasi) | ~15.000 | ~80.000–100.000 |
+| Area / dungeon | 5 | 14 utama + 3 opsional |
+| Karakter party | 3 | 7 |
+| Skill | ~22 | ~110 |
+| Musuh biasa / boss | 10 / 7 | 30 / 16 (+2 superboss) |
+| Item & equipment | ~35 | ~150 |
+
+Supaya tidak macet di tengah, dokumen ini dirancang **modular per babak**: Babak 1 (Lembah Larung,
+~6,5 jam) adalah game utuh dengan klimaks sendiri. Babak 2 dan 3 menambah dunia dan party tanpa
+mengubah sistem inti. Rekomendasi: bangun dan mainkan Babak 1 sampai tamat sebelum menulis Babak 2.
 
 ---
 
 ## 1. Premis & Setting
 
-### 1.1 Dunia: Lembah Larung
+### 1.1 Lembah Larung dan Dunia di Baliknya
 
-Lembah Larung adalah lembah luas yang dikelilingi pegunungan tak tertembus. Penduduknya tidak
-tahu ada apa di balik gunung; bagi mereka, lembah *adalah* dunia. Di tengah lembah berdiri
-**Mercusuar Langit**, menara batu putih setinggi awan yang selama berabad-abad memancarkan
-**Nyala** — cahaya hangat yang menjaga lembah tetap terang, subur, dan waras.
+Lembah Larung adalah lembah luas yang dikelilingi pegunungan tak tertembus. Penduduknya percaya
+lembah *adalah* dunia. Di tengahnya berdiri **Mercusuar Langit**, menara batu putih yang selama
+berabad-abad memancarkan **Nyala**: cahaya hangat yang menjaga lembah terang, subur, dan waras.
 
-Nyala bukan sekadar cahaya. Nyala adalah *ingatan yang dibakar*. Mercusuar dulu dinyalakan oleh
-para **Pelita**: orang-orang yang secara sukarela menyerahkan ingatan hidupnya untuk menjadi bahan
-bakar menara. Rahasia ini hanya diketahui segelintir orang di lingkaran istana.
+Yang tidak diketahui penduduk: Mercusuar hanyalah **satu dari tujuh Suar** yang dibangun sebuah ordo
+kuno di seluruh benua. Di balik gunung ada dunia luar yang jauh lebih besar: Kerajaan Wirasaba,
+Dataran Abu, Hutan Nyanyi, Danau Garam. Dunia luar itu jatuh lebih dulu.
 
-### 1.2 Latar Waktu: Tahun ke-12 Musim Redup
+### 1.2 Nyala, Kabut, dan Rahasia Ordo Pelita
 
-Dua belas tahun lalu, Mercusuar padam tanpa penjelasan. Sejak itu, dari tepi lembah merayap
-**Kabut Lupa**: kabut kelabu yang perlahan menghapus ingatan siapa pun yang berlama-lama di
-dalamnya. Orang yang kehilangan seluruh ingatannya berubah menjadi **Hampa**: makhluk kosong
-yang bergerak mengikuti sisa-sisa kebiasaan lama, dan menyerang apa pun yang masih "utuh".
+Nyala adalah *ingatan yang dibakar*. Para Suar dinyalakan oleh **Pelita**: orang yang menyerahkan
+seluruh ingatan hidupnya sebagai bahan bakar. Rahasia ini dijaga **Ordo Pelita**, ordo pendeta
+yang mengelola ketujuh Suar selama delapan abad.
 
-Manusia bertahan di kantong-kantong cahaya: kota dan desa yang dikelilingi **lentera penjaga**
-berisi sisa Nyala. Lentera-lentera itu makin redup setiap tahun. Tugas paling dihormati sekaligus
-paling berbahaya di lembah adalah **Penyala**: orang yang berkeliling menjaga lentera tetap hidup.
+Ingatan yang dibakar tidak lenyap. Ia menjadi cahaya sebentar, lalu mengendap di tepi dunia sebagai
+**Kabut Lupa**: ingatan tanpa pemilik, lapar akan tubuh. Selama berabad-abad Kabut naik perlahan.
+Dua belas tahun lalu, Kabut melewati ambang: lima Suar di dunia luar padam dalam satu musim, dan
+benua tenggelam dalam Kabut. Orang yang berlama-lama di dalamnya kehilangan ingatan dan menjadi
+**Hampa**: makhluk kosong yang mengulang kebiasaan lama dan menyerang apa pun yang masih "utuh".
 
-Teknologi: setara abad pertengahan akhir. Ada roda gigi, pompa air, dan kaca, tapi tanpa mesiu.
-Estetika: rumah panggung kayu, atap ijuk, jembatan bambu, batu andesit gelap, dan lentera perunggu
-dengan ukiran sulur. Nama tempat dan orang memakai rasa Nusantara tanpa merujuk ke tempat nyata.
+Suar Larung bertahan paling lama. Untuk menahan Kabut sendirian, ia menuntut Pelita bukan lagi
+sekali per beberapa dekade, tapi **setiap tahun**. Wali kota Larung, **Adipati Baskara**, menolak
+membayar, dan memadamkan menara. Ia memilih lembah mati perlahan dengan tangan bersih.
 
-### 1.3 Konflik Utama
+### 1.3 Konflik Tiga Babak
 
-**Adipati Baskara**, wali kota ibukota sekaligus penguasa de facto lembah, ternyata *sengaja*
-memadamkan Mercusuar. Ia mengetahui rahasia Pelita dan memutuskan bahwa harga menyalakan menara
-(mengorbankan ingatan seseorang setiap beberapa dekade) terlalu mahal. Ia memilih membiarkan kabut
-datang perlahan, sambil mencari cara lain yang tak kunjung ketemu. Dua belas tahun kemudian,
-lembah sekarat dan Baskara semakin terpojok dan tertutup.
+- **Babak 1 — Lembah Larung**: Rimba, murid Penyala, mewarisi **Bara** (percikan terakhir Nyala)
+  dari mentornya yang hilang, dan menempuh lembah untuk menyalakan kembali Mercusuar. Klimaks:
+  konfrontasi dengan Adipati Baskara. Menara menyala, dan cahayanya menunjukkan kebenaran pahit:
+  lembah adalah pulau terakhir di tengah lautan Kabut, dan Bara hanya cukup untuk beberapa minggu.
+- **Babak 2 — Tanah Luar**: party menyeberangi gunung mencari tahu mengapa lima Suar lain padam,
+  dan menemukan Ordo Pelita masih hidup, dipimpin **Juru Nyala Nirmala**, yang "memanen" kota-kota
+  Hampa sebagai bahan bakar karena menganggap mereka sudah mati. Klimaks: Benteng Ordo Pelita.
+  Party menemukan bahwa Kabut dan Nyala adalah zat yang sama.
+- **Babak 3 — Ke Tepi Dunia**: berlayar ke **Pusar Kabut**, tempat Kabut berasal: reruntuhan
+  **Adiluhung**, kota pertama yang membangun Suar. Di sana menunggu **Sang Pelita Pertama**, orang
+  pertama yang pernah dibakar, kini kehendak Kabut itu sendiri, yang ingin seluruh dunia lupa agar
+  tak ada lagi yang diingat-tanpa-tubuh. Klimaks: pilihan tentang apa yang dilakukan pada Nyala.
 
-Protagonis, **Rimba**, seorang murid Penyala dari desa perbatasan, tanpa sengaja mewarisi
-**Bara**: percikan terakhir Nyala asli yang ditinggalkan mentornya. Perjalanan Rimba adalah
-perjalanan mengetahui *mengapa* menara padam, dan memutuskan apa yang mau dibayar untuk
-menyalakannya kembali.
-
-**Tema inti:** apa yang layak dikorbankan agar orang lain bisa mengingat? Kabut menghapus ingatan
-secara paksa; Nyala meminta ingatan secara sukarela. Keduanya mengambil hal yang sama.
+**Tema inti:** mengingat itu ada harganya, dan siapa yang membayarnya. Kabut mengambil ingatan
+secara paksa; Nyala memintanya secara sukarela; Ordo mengambilnya dari yang tak bisa menolak.
+Pertanyaan game: adakah cara mengingat bersama tanpa membakar siapa pun?
 
 ### 1.4 Nada & Contoh Narasi
 
-Nada: melankolis tapi hangat. Dunia sedang meredup, tapi orang-orangnya masih bercanda, memasak,
-dan bertengkar soal hal sepele. Humor muncul dari karakter, bukan dari lelucon keempat-dinding.
+Nada: melankolis tapi hangat. Dunia meredup, tapi orang-orangnya masih bercanda, memasak, dan
+bertengkar soal hal sepele. Humor lahir dari karakter. Babak 2 menambah rasa petualangan
+(kafilah, arena, kota asing); Babak 3 lebih sunyi dan mitis.
 
-Contoh narasi pembuka (layar pertama game):
+Layar pertama game:
 
 ```
 Lentera di gerbang timur berkedip dua kali, lalu tenang lagi.
@@ -88,210 +109,319 @@ kutakutkan. Yang kutakutkan, orang-orang lupa kenapa dulu kita
 menyalakannya."
 ```
 
-Contoh dialog santai di kota hub:
+Akhir Babak 1 (menara menyala, party di puncak):
 
 ```
-Sela  : Kau tahu berapa harga sepotong tempe di kota sekarang?
-Rimba : ...tiga keping?
-Sela  : Delapan. DELAPAN. Aku pernah menjaga gerbang istana dan
-        gajiku sebulan cuma cukup buat tempe dua minggu.
-Lintang: Apa itu tempe?
-Sela  : ...Oke, ini prioritas. Kita cari warung dulu.
+Cahaya itu tidak menyilaukan. Ia hangat, seperti dapur di pagi hari.
+
+Lalu ia menjangkau lebih jauh dari yang pernah kau lihat: melewati
+Tengara, melewati Rawa, melewati gunung.
+
+Dan di balik gunung, tidak ada apa-apa. Hanya kelabu, rata, sampai
+ujung langit.
+
+Sela   : ...Itu bukan awan, kan.
+Lintang: Bukan.
+Rimba  : Pak Guntur pernah bilang, di balik gunung ada laut.
+Lintang: Ini laut.
+```
+
+Pos Kafilah Sanggar, Babak 2:
+
+```
+Bagas : Tiga keping buat air seember? Di Tengara segitu dapat tempe.
+Sela  : Jangan mulai soal tempe.
+Pedagang: Tuan, di sini yang mahal bukan airnya. Yang mahal itu
+          orang yang masih ingat jalan ke sumurnya.
 ```
 
 ---
 
 ## 2. Struktur Dunia
 
-Progres bersifat **linear dengan hub**: lima area utama, dilalui berurutan, dengan ibukota
-sebagai pusat kembali (toko, penginapan, side quest kecil). Tidak ada peta dunia terbuka;
-perpindahan lewat menu pilihan lokasi.
+Progres **linear per babak dengan hub**. Tiap babak punya satu kota hub tempat kembali (toko,
+penginapan, papan Buruan, side quest). Perpindahan lewat menu lokasi; setelah Babak 2, peta dunia
+menampilkan semua area yang sudah dibuka dan bisa dikunjungi ulang (kecuali yang runtuh secara cerita).
 
 ### 2.1 Peta Progres
 
 ```
-[1] Pelita Rendah & Hutan Kelabu
-        │
-        ▼
-[2] Rawa Suar
-        │
-        ▼
-[3] Ibukota Tengara  ◄──────────────┐  (hub: bisa kembali kapan saja
-        │                           │   setelah pertama kali tiba)
-        ▼                           │
-[4] Tambang Kaca Ingatan ───────────┘
-        │
-        ▼
-[5] Mercusuar Langit  (final dungeon, point of no return)
+BABAK 1 — LEMBAH LARUNG
+ [1] Pelita Rendah & Hutan Kelabu
+ [2] Rawa Suar
+ [3] Danau Cermin & Desa Apung Telaga
+ [4] Ibukota Tengara (HUB 1) + Lorong Bawah
+ [5] Tambang Kaca Ingatan
+ [6] Mercusuar Langit                        ← klimaks Babak 1
+      (opsional: Gua Bawah Danau)
+
+BABAK 2 — TANAH LUAR
+ [7] Celah Angin
+ [8] Dataran Abu & Pos Kafilah Sanggar (HUB 2)
+ [9] Hutan Nyanyi & Desa Padasuara
+[10] Kota Kaca Wirasaba
+[11] Danau Garam & Menara Terapung
+[12] Benteng Ordo Pelita                     ← klimaks Babak 2
+      (opsional: Reruntuhan Suar Ketiga)
+
+BABAK 3 — KE TEPI DUNIA
+[13] Laut Lupa (Kapal Lentera; HUB 3 = kapal)
+[14] Pusar Kabut & Kota Adiluhung            ← final
+      (opsional: Pulau Hilang, superboss)
 ```
 
-### 2.2 Rincian Area
+### 2.2 Babak 1 — Lembah Larung (~6,5 jam, Lv 1–23)
 
-#### Area 1 — Pelita Rendah & Hutan Kelabu (Prolog, ~25 menit, Lv 1–4)
+#### [1] Pelita Rendah & Hutan Kelabu (~40 mnt, Lv 1–5)
+- Desa perbatasan, rumah Rimba. Tutorial gerak, menu, pertarungan, Bara.
+- Pak Guntur ikut sebagai companion tutorial (Lv 10, overpowered).
+- Guntur masuk kabut mengejar anak hilang dan tidak kembali; Bara menempel ke Rimba.
+- Sela ditemukan terluka di hutan; bergabung sebelum boss.
+- **Boss**: Hampa Penjaga Hutan.
 
-- **Pelita Rendah**: desa perbatasan kecil, rumah Rimba. Lima bangunan: rumah Pak Guntur,
-  warung, balai desa, gerbang timur, gerbang barat. Tutorial gerak, menu, dan pertarungan pertama.
-- **Hutan Kelabu**: hutan tepi kabut, 4 "ruang" (screen) linear. Kabut tipis: setiap 10 giliran
-  di dalam hutan, party terkena status *Lupa* ringan kecuali membawa lentera saku (item tutorial).
-- **Kejadian kunci**: Pak Guntur masuk kabut mengejar seorang anak yang hilang dan tidak kembali.
-  Rimba menemukan lentera Guntur tergeletak dengan Bara di dalamnya. Bara "menempel" ke Rimba.
-- **Boss**: *Hampa Penjaga Hutan* (Hampa besar bekas penebang kayu). Mengajarkan mekanik kelemahan
-  elemen dan Bara.
-- **Party join**: Sela ditemukan terluka di hutan, bertarung bersama sejak boss.
+#### [2] Rawa Suar (~50 mnt, Lv 5–9)
+- Reruntuhan **Suar Lama** (menara sinyal pengulang Nyala). Puzzle urutan tiga lentera rawa.
+- Lintang ditemukan di inti Suar, hidup di kabut tanpa jadi Hampa. Bergabung.
+- **Boss**: Raja Katak Lumpur.
 
-#### Area 2 — Rawa Suar (~35 menit, Lv 4–8)
+#### [3] Danau Cermin & Desa Apung Telaga (~50 mnt, Lv 9–12) *(baru)*
+- Danau besar yang permukaannya memantulkan ingatan orang yang menatapnya. Desa nelayan apung
+  yang bertahan karena air danau menolak Kabut.
+- Cerita: penduduk mulai menghilang di malam hari. Party menyelidiki; ternyata **Ular Cermin**,
+  makhluk danau, mengumpulkan ingatan penduduk untuk "menjaga" mereka dari Kabut dengan cara
+  menelan mereka. Tema: perlindungan yang jadi kurungan.
+- Adegan Sela: pantulan danau menunjukkan hari ia menolak perintah. Pemain melihat versi lengkapnya.
+- **Boss**: Ular Cermin. Membuka jalan ke ibukota lewat dermaga.
+- **Opsional**: Gua Bawah Danau (dungeon opsional Lv 14–17, dibuka setelah Lorong Bawah).
 
-- Rawa berkabut dengan reruntuhan **Suar Lama**, menara sinyal kuno yang dulu meneruskan Nyala
-  dari Mercusuar ke desa-desa. Enam ruang, dua di antaranya bercabang (opsional, peti harta).
-- **Puzzle ringan**: tiga lentera rawa harus dinyalakan dalam urutan yang benar (petunjuk dari
-  ukiran di reruntuhan) untuk membuka jalan ke inti Suar.
-- **Kejadian kunci**: di inti Suar, party menemukan **Lintang**, gadis yang hidup sendirian di
-  dalam kabut tanpa jadi Hampa. Ia hanya ingat namanya dan satu kalimat: "Bapak bilang tunggu
-  di sini." Ia bisa menggunakan kabut sebagai sihir.
-- **Boss**: *Raja Katak Lumpur*. Mengajarkan manajemen status (racun) dan pentingnya Petir.
-- **Party join**: Lintang.
+#### [4] Ibukota Tengara — HUB 1 (~60 mnt cerita, Lv 12–15)
+- Kota terbesar di lembah. Pasar Bawah, Penginapan Lentera Merah, Balai Arsip, Gerbang Istana,
+  **Tukang Kaca** (soket Kaca & spesialisasi), papan Buruan (Babak 1: 3 buruan).
+- Party ditolak menemui Adipati. Sela mengaku mantan Pengawal Mahkota yang desersi; Kapten Rangga memburunya.
+- **Dungeon**: Lorong Bawah (saluran air, tuas pasang-surut) menuju Arsip. Catatan Pelita ditemukan:
+  nama ayah Lintang ada di daftar, dan Guntur adalah Penjaga Mercusuar terakhir.
+- **Boss**: Kapten Rangga (duel taktis "Tandai").
+- Side quest: 5.
 
-#### Area 3 — Ibukota Tengara (Hub, ~30 menit cerita + waktu bebas, Lv 8–11)
+#### [5] Tambang Kaca Ingatan (~55 mnt, Lv 15–19)
+- Tambang **Kaca Ingatan**, mineral yang bisa menyimpan Nyala. Struktur vertikal, lift rusak.
+- **Bagas** bergabung: mantan juru kaca tambang yang bertahan 12 tahun di dalam dengan alat-alat
+  buatannya. Cerewet, praktis, alergi pada kata "takdir".
+- Lintang mendengar suara ayahnya dari kristal: ayahnya adalah Pelita yang ritualnya *dibatalkan*
+  Adipati di tengah jalan, dan menjadi Hampa pertama.
+- Tujuan: Kaca Inti untuk membawa Bara ke puncak menara.
+- **Boss**: Penambang Raksasa Terlupa (kristal punggung berganti elemen).
 
-- Kota terbesar di lembah, di kaki Mercusuar. Tembok tinggi, lentera besar di setiap sudut,
-  tapi separuh distrik luar sudah ditinggalkan. Lokasi: Pasar Bawah (toko senjata, zirah, item),
-  Penginapan Lentera Merah, Balai Arsip, Gerbang Istana, dan **Lorong Bawah** (dungeon saluran air).
-- **Kejadian kunci**: party mencoba menemui Adipati untuk melapor soal Guntur, ditolak.
-  Sela terpaksa membuka masa lalunya: ia mantan Pengawal Mahkota yang desersi setelah menolak
-  perintah "mengamankan" warga yang mempertanyakan Adipati. Mantan kaptennya, **Kapten Rangga**,
-  masih memburunya.
-- **Dungeon**: Lorong Bawah, jalur rahasia menuju Balai Arsip istana. Lima ruang, mekanik air
-  pasang-surut (beberapa jalur hanya terbuka setelah menarik tuas). Di Arsip, party menemukan
-  catatan Pelita: daftar nama orang yang "dibakar", termasuk nama ayah Lintang, dan catatan bahwa
-  Guntur adalah **Penjaga Mercusuar terakhir**.
-- **Boss**: *Kapten Rangga* (duel manusia pertama; agresif, memakai taktik "tandai lalu tebas").
-- **Side quest (opsional, 3 buah)**: mengantar surat ke distrik terbengkalai, mencari kucing
-  penginapan di Lorong Bawah, mengalahkan Hampa di pasar malam. Hadiah: aksesori & Serpihan Ingatan.
+#### [6] Mercusuar Langit (~60 mnt, Lv 19–23)
+- Menara 7 lantai bertema kenangan lembah. Point of no return Babak 1 (kembali dibuka setelahnya).
+- **Mid-boss**: Penjaga Mercusuar (konstruk Guntur). Sisa kesadaran Guntur bicara: ia masuk kabut
+  *sengaja* untuk menjadi Pelita berikutnya, tapi Adipati mengunci menara.
+- **Final Babak 1**: Adipati Baskara, dua fase (manusia lalu Kelam Berwajah).
+- Rimba menyalakan menara dengan Bara. Cahaya menyingkap lautan Kabut di balik gunung. Baskara,
+  sekarat, memberi tahu: Bara Guntur hanya cukup beberapa minggu, dan "Suar tidak pernah dibuat
+  untuk berdiri sendirian. Cari yang lain."
+- Epilog Babak 1: dewan sementara dibentuk, Rangga ditunjuk mengawal party ke luar lembah.
 
-#### Area 4 — Tambang Kaca Ingatan (~35 menit, Lv 11–15)
+### 2.3 Babak 2 — Tanah Luar (~8,5 jam, Lv 23–43)
 
-- Tambang di lereng utara, tempat ditambangnya **Kaca Ingatan**: mineral bening yang bisa
-  menyimpan Nyala. Semua lentera di lembah memakai kaca dari sini. Tambang ditutup 12 tahun lalu,
-  tepat saat menara padam.
-- Tujuan: mengambil **Kaca Inti**, satu-satunya wadah yang cukup besar untuk menampung Bara
-  agar bisa dibawa ke puncak Mercusuar.
-- Delapan ruang, struktur vertikal (turun lewat lift tambang rusak, naik lewat tangga darurat).
-  Kristal di dinding memutar potongan ingatan penambang saat disentuh: lore opsional.
-- **Kejadian kunci**: Lintang mendengar suara ayahnya dari kristal. Ia ingat: ayahnya
-  adalah Pelita terakhir yang *dibatalkan*: Adipati menghentikan ritual di tengah jalan, sehingga
-  ayahnya tidak jadi bahan bakar tapi juga tidak kembali utuh. Ia menjadi Hampa pertama.
-  Lintang dibawa ayahnya ke Suar Lama sebelum kehilangan sisa dirinya.
-- **Boss**: *Penambang Raksasa Terlupa* (Hampa gabungan beberapa penambang, tubuh berkerak kristal).
-  Mekanik: kristal di punggung menyerap satu elemen yang berganti tiap 3 giliran.
+#### [7] Celah Angin (~45 mnt, Lv 23–26)
+- Lintasan gunung yang dijaga badai. **Rangga bergabung** (arc penebusan). Elemen Angin & Bumi diperkenalkan.
+- Puzzle: menyusun batu penahan angin agar jembatan bisa dilewati.
+- **Boss**: Garuda Kelabu (musuh terbang; pemain belajar Bumi/Angin).
 
-#### Area 5 — Mercusuar Langit (Final, ~30–40 menit, Lv 15–20)
+#### [8] Dataran Abu & Pos Kafilah Sanggar — HUB 2 (~60 mnt, Lv 26–29)
+- Dataran luas berabu, sisa kota-kota yang terbakar saat Kabut datang. Kafilah pedagang yang hidup
+  berpindah dengan lentera raksasa di gerobak. Pos Sanggar: pasar, **Arena Kafilah**, papan Buruan (8 buruan),
+  Tukang Kaca kedua, dermaga pasir.
+- Cerita: kafilah dipimpin **Nyai Rukmini**, yang mengenal Ordo Pelita dan menunjukkan arah ke Wirasaba.
+  Ia juga memperkenalkan sistem **Berkemah** (adegan Kenangan party).
+- **Boss**: Cacing Abu (boss opsional tapi diarahkan cerita; membuka Buruan tingkat 2).
 
-- Menara 7 lantai (lantai 1–5 eksplorasi, 6 boss penjaga, 7 final). Setiap lantai bertema
-  satu "kenangan lembah": panen, pernikahan, pemakaman, perang lama, dan lantai kosong.
-- **Point of no return** ditandai jelas; ada peti penyimpanan dan pedagang keliling di lantai 1.
-- **Mid-boss (lantai 6)**: *Penjaga Mercusuar*, konstruk batu yang dulu dikendalikan Guntur.
-  Sekarang liar. Di dalamnya ada sisa kesadaran Guntur yang sempat berbicara setelah kalah:
-  ia masuk kabut *dengan sengaja* karena ingin menjadi Pelita berikutnya, tapi Adipati mengunci menara.
-- **Final (lantai 7)**: Adipati Baskara menunggu. Dialog konfrontasi, lalu pertarungan dua fase
-  (lihat §6.3). Setelah kalah, Baskara menyerahkan kunci ruang inti.
-- **Pilihan akhir** (memengaruhi epilog, bukan gameplay):
-  1. **Rimba menyalakan Mercusuar dengan Bara** (ingatan Guntur). Lembah terang lagi, Guntur
-     hilang sepenuhnya. Epilog: Rimba menjadi Penjaga baru, tahu suatu hari harus ada Pelita berikutnya.
-  2. **Rimba membagi Bara ke semua lentera desa**, bukan ke menara. Kabut tertahan tapi tidak
-     mundur. Epilog: lembah hidup dalam kantong-kantong cahaya, tapi tidak ada lagi yang harus dibakar.
-     Lintang menjadi Penyala keliling.
-  Keduanya sah; game tidak menghakimi.
+#### [9] Hutan Nyanyi & Desa Padasuara (~60 mnt, Lv 29–32)
+- Hutan yang pohon-pohonnya bergema. Desa **Pendendang**: orang-orang yang menahan Kabut dengan
+  **nyanyian ingatan bersama**, tanpa membakar siapa pun. Ini benih ending rahasia.
+- **Ratih bergabung**: Pendendang muda yang suaranya "terlalu keras untuk desa". Ingin membuktikan
+  lagu bisa menahan Kabut di luar hutan.
+- Konflik: Ordo Pelita menganggap Pendendang bidah dan mulai menyerang.
+- **Boss**: Pengkhotbah Ordo, Sunan Wirya (manusia + 2 Bayang Arsip; pertarungan pertama melawan Ordo).
 
-### 2.3 Anggaran Waktu
+#### [10] Kota Kaca Wirasaba (~75 mnt, Lv 32–36)
+- Ibukota kerajaan luar yang runtuh; gedung-gedung kaca ingatan, seluruh penduduk kini Hampa
+  yang masih menjalani "hari terakhir" mereka berulang. Dungeon terbesar kedua (12 ruang, 3 distrik).
+- Suar Wirasaba (Suar kedua) di pusat kota, padam. Ordo "memanen" Hampa di sini.
+- Kenangan Bagas: ia lahir di Wirasaba; keluarganya di antara para Hampa.
+- **Boss**: Penjaga Suar Wirasaba (konstruk), lalu **Kelana** sebagai mid-boss: Hampa berzirah yang
+  menjaga gerobak panen Ordo, dan hanya berhenti saat mendengar suara Lintang.
+
+#### [11] Danau Garam & Menara Terapung (~60 mnt, Lv 36–39)
+- Danau garam putih dengan Suar ketiga di atas pulau apung. Kabut di sini "beku": bisa dilewati tapi
+  menyerap MP. Mekanik: rakit garam dan arus.
+- **Kelana bergabung** setelah party membawanya dari Wirasaba. Ia hanya ingat Lintang. Skill-nya
+  memakai HP.
+- Cerita: di Menara Terapung, party menemukan "buku besar" Ordo: Kabut naik sejak abad pertama
+  pembakaran. Ordo tahu, dan tetap membakar.
+- **Boss**: Letnan Ordo, Nyi Pandansari, dengan Kaca Pemanen (menyedot Bara party).
+
+#### [12] Benteng Ordo Pelita (~75 mnt, Lv 39–43)
+- Benteng di tebing garam. Dungeon vertikal 3 tingkat, penjaga manusia dan konstruk Nyala.
+- **Final Babak 2**: Juru Nyala **Nirmala**, dua fase. Fase 2 ia menyerahkan diri ke Suar Benteng dan
+  menjadi **Pelita Hidup**: setengah manusia, setengah cahaya.
+- Setelah kalah, Nirmala mengungkap: Kabut adalah ingatan-ingatan yang pernah dibakar. "Setiap
+  Pelita yang kami nyalakan menambah lautan itu. Kami tahu sejak abad ketiga. Berhenti berarti
+  gelap sekarang. Lanjut berarti gelap nanti. Kami memilih nanti."
+- Party memutuskan pergi ke sumber: Pusar Kabut. Kafilah Sanggar menyumbang **Kapal Lentera**.
+- **Opsional**: Reruntuhan Suar Ketiga (Lv 45–48, dibuka setelah Benteng).
+
+### 2.4 Babak 3 — Ke Tepi Dunia (~5 jam, Lv 43–52)
+
+#### [13] Laut Lupa (~90 mnt, Lv 43–47)
+- Berlayar dengan Kapal Lentera (hub 3: toko, kemah, Tukang Kaca terakhir). Laut Kabut dengan
+  pulau-pulau ingatan: tiap pulau adalah satu kenangan besar yang mengeras (pulau pernikahan, pulau
+  perang, pulau pasar). 4 pulau wajib, 2 opsional.
+- Musuh di sini adalah **Gema**: ingatan yang cukup kuat untuk membentuk tubuh sendiri.
+- Kenangan puncak tiap party member terjadi di pulau yang "memanggil" mereka.
+- **Boss**: Gema Guntur (pulau lentera; Rimba berhadapan dengan kenangan mentornya).
+- **Opsional**: Pulau Hilang (superboss Sang Penenun, Lv 55+).
+
+#### [14] Pusar Kabut & Kota Adiluhung (~90 mnt, Lv 47–52)
+- Reruntuhan kota pertama. Point of no return final. Dungeon 5 lapis turun ke Sumur Ingatan.
+- Musuh: Pelita Padam kuno, Gema Ordo pertama, Hampa Adiluhung.
+- **Mid-boss**: Tujuh Penjaga Suar (satu pertarungan panjang melawan 7 konstruk secara bergelombang).
+- **Final**: **Sang Pelita Pertama**, tiga fase (§6.3).
+- **Pilihan akhir** (memengaruhi epilog):
+  1. **Menyalakan Kembali** — Kelana menawarkan diri sebagai Pelita untuk tujuh Suar sekaligus,
+     memakai seluruh Kabut yang mengalir kembali. Dunia terang lagi, Suar hidup, Kelana hilang,
+     dan Ordo harus dibangun ulang dengan aturan baru. Lintang menjadi Juru Nyala pertama yang
+     berjanji tak akan membakar siapa pun. Ending "terang tapi berutang".
+  2. **Mengembalikan** — Rimba memakai Bara untuk membuka semua Suar dan mengalirkan Nyala kembali ke
+     Kabut, melarutkan keduanya. Tidak ada lagi Nyala, tidak ada lagi Kabut, tidak ada lagi sihir.
+     Semua orang kehilangan *sebagian* ingatan (termasuk party), tapi tidak ada yang jadi Hampa lagi.
+     Ending "gelap yang adil".
+  3. **Mendendangkan** (rahasia; syarat: semua adegan Kenangan Ratih + 7 Buruan + Padasuara diselamatkan) —
+     Ratih memimpin Pendendang dari seluruh dunia (yang ditemui sepanjang side quest) menyanyikan
+     Kabut kembali menjadi ingatan yang *dikembalikan ke pemiliknya*. Hampa pulih. Suar tidak
+     perlu menyala karena tidak ada lagi yang perlu ditahan. Ending "mengingat bersama".
+
+### 2.5 Anggaran Waktu
 
 | Segmen | Estimasi |
 |---|---|
-| Area 1 | 25 mnt |
-| Area 2 | 35 mnt |
-| Area 3 (cerita + Lorong Bawah) | 30 mnt |
-| Area 4 | 35 mnt |
-| Area 5 | 35 mnt |
-| Side quest, grinding, belanja | 20–60 mnt |
-| **Total** | **~3 jam (2 jam 40 mnt – 3 jam 40 mnt)** |
+| Babak 1 jalur utama | 6 j 00 m |
+| Babak 2 jalur utama | 7 j 15 m |
+| Babak 3 jalur utama | 3 j 00 m |
+| Side quest (18 buah) | 2 j 00 m |
+| Buruan (11) + Arena (5 tingkat) | 1 j 15 m |
+| Dungeon opsional (3) | 1 j 30 m |
+| Kenangan/Berkemah, belanja, grinding wajar | 1 j 00 m |
+| **Total** | **~20–22 jam** (jalur utama saja ~16 jam) |
 
 ---
 
 ## 3. Karakter
 
-### 3.1 Protagonis — Rimba (17 th)
+### 3.1 Party (7 anggota; 4 aktif, 3 cadangan)
 
-- **Peran naratif**: murid Penyala, pewaris Bara. Tipe protagonis yang *bertanya*, bukan yang
-  selalu punya jawaban. Sopan ke orang tua, keras kepala soal janji.
-- **Peran gameplay**: all-rounder condong ke serangan Api/Cahaya. Punya sumber daya unik
-  **Bara** (lihat §4.5) yang membuka jurus pamungkas party.
-- **Senjata**: tongkat lentera (dipukulkan, bisa dinyalakan untuk serangan elemen).
-- **Arc**: dari "aku cuma harus menjaga lentera tetap nyala" ke "aku harus memutuskan apa
-  yang boleh dibakar."
+| # | Nama | Gabung | Peran gameplay | Elemen utama | Senjata |
+|---|---|---|---|---|---|
+| 1 | **Rimba** (17) | Awal | All-rounder, pemegang Bara | Api, Cahaya | Tongkat lentera |
+| 2 | **Sela** (24) | Area 1 | Tank fisik, provokasi | Fisik | Pedang lebar & perisai |
+| 3 | **Lintang** (15) | Area 2 | Mage & debuffer | Es, Petir, Kelam | Lentera fokus |
+| 4 | **Bagas** (31) | Area 5 | Juru Kaca: gadget, curi, baterai MP | Petir, Bumi (via alat) | Alat kaca (peluncur, jerat) |
+| 5 | **Rangga** (35) | Area 7 | Komandan: buff party & fisik berat | Bumi | Tombak & panji |
+| 6 | **Ratih** (19) | Area 9 | Pendendang: heal, buff berlapis, Angin | Angin, Cahaya | Kecapi |
+| 7 | **Kelana** (~45) | Area 11 | Ksatria Kelam: damage besar berbiaya HP | Kelam, Fisik | Pedang panjang berkarat |
 
-Contoh suara Rimba:
+Guest: **Pak Guntur** (prolog, Lv 10). Tidak bisa dikendalikan equipment-nya.
+
+#### Rimba — Penyala
+- Protagonis yang *bertanya*, bukan yang selalu punya jawaban. Sopan ke orang tua, keras kepala soal janji.
+- Gameplay: satu-satunya pemegang Bara; wajib ada di party aktif (aturan cerita, disebut jelas).
+- Jalur Lv 20: **Kobaran** (damage Api area, Bakar) atau **Penuntun** (support Cahaya, heal, Bara lebih cepat).
+- Arc: dari "menjaga lentera tetap nyala" ke "memutuskan apa yang boleh dibakar" ke "mencari cara
+  agar tak ada yang perlu dibakar".
+
+#### Sela — Pengawal yang Desersi
+- Blak-blakan, sinis di permukaan, sangat protektif. Merasa bersalah karena diam terlalu lama.
+- Gameplay: HP & DEF tertinggi. Provokasi, counter, pelindung kawan.
+- Jalur Lv 20: **Benteng** (counter, mengurangi damage kawan) atau **Algojo** (serangan fisik besar, mengorbankan DEF).
+- Arc: menghadapi Rangga di Babak 1, lalu *bekerja bersama* Rangga di Babak 2. Kenangan puncak:
+  Pulau Perang di Laut Lupa, tempat ia melihat versi dirinya yang tidak pernah desersi.
+
+#### Lintang — Anak Kabut
+- Polos soal hal sehari-hari (tidak tahu tempe), tajam soal hal besar. Kabut "mengenalinya".
+- Gameplay: MAG tertinggi, HP terendah. Satu-satunya yang menguasai Kelam sejak awal.
+- Jalur Lv 20: **Badai** (Es/Petir area) atau **Bisikan** (Kelam, debuff & status, serap).
+- Arc: menemukan ayahnya sebagai Hampa, lalu memutuskan mengingat *untuk* dia.
+
+#### Bagas — Juru Kaca
+- Cerewet, praktis, benci kata "takdir". Bertahan 12 tahun di tambang dengan alat buatannya sendiri.
+  Lahir di Wirasaba; keluarganya kini Hampa di kota itu.
+- Gameplay: **Curi** (item dari musuh, sumber Kaca langka), **Baterai** (pindahkan MP ke kawan),
+  gadget elemen (Petir/Bumi) yang tidak memakai MP tapi memakai **Suku Cadang** (item murah).
+  Item yang ia pakai berefek ×1.5.
+- Jalur Lv 20: **Peretas** (debuff & curi lebih kuat, Goyah tanpa elemen) atau **Montir** (gadget area & sokongan MP).
+- Arc: menerima bahwa keluarganya "sudah pergi", lalu menolak keputusan itu di ending 3.
+
+#### Rangga — Kapten yang Kalah
+- Loyal pada "perintah" karena takut kekacauan. Setelah Baskara jatuh, ia kehilangan pegangan dan
+  memilih mengabdi pada *misi*, bukan orang.
+- Gameplay: **Komando**: buff satu baris (ATK/DEF/AGI party), **Panji** yang bertahan beberapa
+  giliran, serangan tombak Bumi menembus DEF.
+- Jalur Lv 30 (gabung terlambat, jadi jalurnya di Lv 30 & 45): **Panglima** (buff area lebih lama) atau **Penumbuk** (fisik Bumi, Berat).
+- Arc: dari mengikuti perintah ke memberi perintah yang bisa ia pertanggungjawabkan. Kenangan puncak:
+  menolak perintah Nirmala untuk "menahan" Padasuara.
+
+#### Ratih — Pendendang
+- Suaranya "terlalu keras untuk desa": keras kepala, optimis dengan cara yang bikin orang lain lelah,
+  tapi benar. Percaya lagu bisa menahan Kabut di mana pun.
+- Gameplay: **Lagu**: buff/heal yang berlangsung 3 giliran selama Ratih tidak diserang Bisu.
+  Angin untuk musuh terbang & evasif; Cahaya untuk Hampa.
+- Jalur Lv 30/45: **Pemulih** (heal & pembersih status) atau **Penggugah** (buff ofensif, Bara lebih cepat untuk Rimba).
+- Arc: kunci ending 3. Ia mengumpulkan Pendendang yang tersebar (side quest lintas babak).
+
+#### Kelana — Ayah Lintang, Hampa yang Ingat Satu Nama
+- Bicara singkat, sering salah nama orang selain Lintang. Kadang berhenti di tengah pertarungan
+  (mekanik: 5% peluang "Terdiam" satu giliran, hilang setelah Kenangan ke-3).
+- Gameplay: ATK tertinggi. Skill Kelam berbiaya HP, bukan MP. Tidak bisa disembuhkan skill Cahaya
+  (Cahaya melukainya), tapi menyerap Kelam. Memaksa pemain menyusun ulang kebiasaan heal.
+- Jalur Lv 40: **Pendekar Sunyi** (single-target ekstrem) atau **Perisai Kabut** (menyerap damage kawan ke HP-nya).
+- Arc: memilih hilang untuk yang diingatnya (ending 1), atau pulih (ending 3).
+
+### 3.2 Antagonis
+
+| Nama | Babak | Peran |
+|---|---|---|
+| **Adipati Baskara** (58) | 1 | Memadamkan Mercusuar untuk menolak harga Pelita. Bukan gila; terjebak mempertahankan keputusan. Bicara pelan. |
+| **Kapten Rangga** | 1 | Antagonis sekunder yang berubah jadi party member. |
+| **Sunan Wirya** | 2 | Pengkhotbah Ordo yang tulus percaya Pendendang bidah. |
+| **Nyi Pandansari** | 2 | Letnan Ordo, pragmatis, memegang Kaca Pemanen. Menyerah setelah kalah dan membelot di Babak 3 (NPC di kapal). |
+| **Juru Nyala Nirmala** (61) | 2 | Pemimpin Ordo. Percaya "gelap nanti lebih baik daripada gelap sekarang". Membakar Hampa karena "mereka sudah pergi". Menjadi Pelita Hidup. |
+| **Sang Pelita Pertama** | 3 | Manusia pertama yang dibakar delapan abad lalu; kesadarannya bertahan di Kabut dan menjadi kehendaknya. Tidak ingin balas dendam; ingin semua *berhenti diingat* agar tidak ada lagi yang sepertinya. |
+
+Contoh dialog Nirmala (fase 1, sebelum bertarung):
 
 ```
-Rimba : Pak Guntur selalu bilang, lentera itu bukan buat mengusir
-        kabut. Lentera itu buat orang tahu jalan pulang.
-Sela  : Dan kalau tidak ada yang pulang?
-Rimba : ...Tetap dinyalakan. Siapa tahu.
+Nirmala: Kau menyalakan Suar Larung dengan satu orang. Bagus.
+         Berapa lama? Empat minggu? Lima?
+Rimba  : Tiga.
+Nirmala: Tiga. Dan kau datang ke sini untuk menghakimi kami yang
+         menjaga tujuh Suar selama delapan ratus tahun.
+Ratih  : Kalian tidak menjaga apa-apa. Kalian menunda.
+Nirmala: Nak, seluruh peradaban adalah menunda.
 ```
 
-### 3.2 Party Member — Sela (24 th)
-
-- **Naratif**: mantan Pengawal Mahkota yang desersi. Blak-blakan, sinis di permukaan, sangat
-  protektif. Merasa bersalah karena diam terlalu lama sebelum melawan perintah.
-- **Gameplay**: **tank / fisik berat**. HP dan DEF tertinggi. Skill *Pasang Badan* (tarik semua
-  serangan satu giliran), *Tebas Berat*, *Teriakan Provokasi*. Tidak punya sihir elemen; lemah
-  terhadap musuh yang tahan fisik, mendorong pemain memanfaatkan anggota lain.
-- **Senjata**: pedang lebar & perisai bundar.
-- **Arc**: menghadapi Kapten Rangga, mantan atasannya, dan menerima bahwa "melawan perintah"
-  bukan pengkhianatan.
-
-### 3.3 Party Member — Lintang (15 th)
-
-- **Naratif**: gadis yang bertahan di dalam kabut tanpa jadi Hampa. Ingatan bolong-bolong,
-  polos soal hal sehari-hari (tidak tahu tempe), tapi tajam soal hal besar. Kabut "mengenalinya".
-- **Gameplay**: **mage / debuffer**. MAG dan AGI tinggi, HP terendah. Menguasai elemen **Es**,
-  **Petir**, dan **Kelam** (kabut). Satu-satunya yang bisa menyerang musuh tipe Pelita Padam
-  di Mercusuar yang menyerap Cahaya. Skill debuff: *Selimut Kabut* (turunkan ATK musuh),
-  *Bisikan Lupa* (status Lupa).
-- **Senjata**: lentera kecil retak (fokus sihir).
-- **Arc**: menemukan siapa ayahnya, dan memilih untuk mengingat meski menyakitkan.
-
-### 3.4 Party Member Opsional — Pak Guntur (hanya di prolog, ~15 menit)
-
-Tutorial companion di Area 1 sebelum hilang. Level 10 saat party masih level 1, sengaja
-overpowered supaya pemain merasakan "seperti apa Penyala sejati", lalu kehilangannya terasa.
-Menghilang dari party setelah masuk kabut. Skill: *Nyala Penjaga* (heal seluruh party), *Pukulan Lentera*.
-
-### 3.5 Antagonis Utama — Adipati Baskara (58 th)
-
-- **Naratif**: bukan penjahat gila. Ia orang yang membuat keputusan mengerikan dengan alasan
-  yang bisa dimengerti, lalu terjebak mempertahankannya selama 12 tahun. Semakin lembah sekarat,
-  semakin ia merasa harus terus benar. Bicara pelan, tidak pernah berteriak.
-- **Motivasi**: "Menara ini memakan orang. Aku lebih rela dunia kami habis pelan-pelan
-  dengan tangan bersih daripada terang dengan tangan berdarah."
-- **Gameplay**: boss dua fase (§6.3). Fase 1 manusia dengan tongkat kekuasaan dan penjaga.
-  Fase 2: kabut yang selama ini ia tahan di dalam menara menelan dan membentuknya menjadi
-  **Kelam Berwajah**: Hampa raksasa dengan wajah Baskara.
-
-Contoh dialog konfrontasi:
+Contoh Kelana (Kenangan ke-2, berkemah):
 
 ```
-Baskara: Kau membawa Bara Guntur. Berarti kau sudah tahu apa isinya.
-Rimba  : Ingatan Pak Guntur.
-Baskara: Dan kau tetap naik ke sini untuk membakarnya. Kalau begitu
-         kita tidak berbeda, Nak. Aku hanya lebih dulu lelah.
-Lintang: ...Bapakku tidak pernah selesai dibakar. Kau berhenti di
-         tengah. Itu bukan tangan bersih. Itu tangan gemetar.
+Kelana : ...Lintang.
+Lintang: Iya, Pak.
+Kelana : Yang itu. Yang pakai perisai.
+Lintang: Sela.
+Kelana : Sela. Dia... dia baik padamu?
+Lintang: Iya.
+Kelana : Bagus. (jeda panjang) Lintang.
+Lintang: Iya, Pak. Masih di sini.
 ```
-
-### 3.6 Antagonis Sekunder — Kapten Rangga (35 th)
-
-Kapten Pengawal Mahkota, mantan atasan Sela. Loyal ke Adipati karena percaya "tanpa perintah,
-lembah bubar". Mid-boss Area 3. Tidak jahat; setelah kalah, ia membiarkan party lewat dan
-memilih tetap menjaga kota. Muncul lagi di epilog.
 
 ---
 
@@ -299,190 +429,307 @@ memilih tetap menjaga kota. Muncul lagi di epilog.
 
 ### 4.1 Prinsip
 
-- **Turn-based murni**, urutan giliran ditentukan AGI (bukan ATB). Semua aksi dipilih lewat menu teks.
-- Party maksimal **3 anggota aktif** (Rimba, Sela, Lintang). Musuh 1–4 per encounter.
-- Encounter **acak** saat berpindah ruang di dungeon (peluang 35–50% per perpindahan, dengan
-  jaminan tidak ada dua encounter berturut-turut dalam 2 langkah). Boss selalu fixed.
-- Durasi target satu pertarungan biasa: **3–5 giliran** (sekitar 30–60 detik). Boss: 8–15 giliran.
-- Pertarungan menekankan **kelemahan elemen** dan **status**, bukan angka mentah.
+- **Turn-based murni**, urutan giliran oleh AGI. Semua aksi lewat menu teks.
+- **4 aktif + 3 cadangan**. Aksi **Ganti** menukar satu aktif dengan cadangan (memakai giliran karakter
+  yang ditukar; karakter masuk langsung dapat giliran di ronde berikutnya). Cadangan menerima 70% XP.
+- Musuh 1–5 per encounter. Encounter acak per perpindahan ruang (peluang 30–45%, jaminan tidak
+  beruntun dalam 2 langkah). Ada item **Dupa Sunyi** untuk mematikan encounter 30 langkah.
+- Durasi target pertarungan biasa: 3–5 giliran. Boss: 10–20 giliran. Superboss: 25–40.
+- Pertarungan menekankan **kelemahan elemen**, **status**, dan **manajemen Bara**.
 
 ### 4.2 Stat
 
-| Stat | Singkatan | Fungsi |
-|---|---|---|
-| Health Point | HP | Nyawa. 0 = pingsan. Semua pingsan = game over (kembali ke save terakhir). |
-| Mana Point | MP | Bahan bakar skill. Pulih di penginapan, item, dan sedikit tiap naik level. |
-| Serangan | ATK | Kekuatan serangan fisik. |
-| Pertahanan | DEF | Mengurangi damage fisik. |
-| Sihir | MAG | Kekuatan skill sihir/elemen. |
-| Ketahanan | RES | Mengurangi damage sihir. |
-| Kelincahan | AGI | Urutan giliran, peluang menghindar. |
-| Keberuntungan | LCK | Peluang kritikal, peluang status masuk/menghindar status. |
+| Stat | Fungsi |
+|---|---|
+| HP | Nyawa. 0 = pingsan. Semua aktif pingsan = game over (cadangan tidak otomatis masuk). |
+| MP | Bahan bakar skill (kecuali Kelana: HP; Bagas gadget: Suku Cadang). |
+| ATK / DEF | Serangan & pertahanan fisik. |
+| MAG / RES | Serangan & pertahanan sihir. |
+| AGI | Urutan giliran, peluang kena/hindar fisik. |
+| LCK | Kritikal, peluang status, peluang Curi. |
 
-Stat dasar level 1 dan pertumbuhan per level:
+Stat dasar Lv 1 (karakter yang gabung belakangan masuk dengan level = Rimba − 1, stat dihitung dari kurva):
 
-| Karakter | HP | MP | ATK | DEF | MAG | RES | AGI | LCK | Pertumbuhan/level |
+| Karakter | HP | MP | ATK | DEF | MAG | RES | AGI | LCK | Pertumbuhan/level (HP, MP, ATK, DEF, MAG, RES, AGI, LCK) |
 |---|---|---|---|---|---|---|---|---|---|
-| Rimba | 45 | 12 | 8 | 6 | 7 | 6 | 7 | 6 | HP+7, MP+2, ATK+1.6, DEF+1.2, MAG+1.4, RES+1.2, AGI+1.2, LCK+0.8 |
-| Sela | 60 | 6 | 10 | 9 | 3 | 5 | 5 | 4 | HP+9, MP+1, ATK+1.9, DEF+1.8, MAG+0.4, RES+1.0, AGI+0.8, LCK+0.6 |
-| Lintang | 34 | 18 | 4 | 4 | 10 | 8 | 9 | 7 | HP+5, MP+3, ATK+0.6, DEF+0.8, MAG+2.1, RES+1.6, AGI+1.6, LCK+1.0 |
+| Rimba | 45 | 12 | 8 | 6 | 7 | 6 | 7 | 6 | 7, 2, 1.6, 1.2, 1.4, 1.2, 1.2, 0.8 |
+| Sela | 60 | 6 | 10 | 9 | 3 | 5 | 5 | 4 | 9, 1, 1.9, 1.8, 0.4, 1.0, 0.8, 0.6 |
+| Lintang | 34 | 18 | 4 | 4 | 10 | 8 | 9 | 7 | 5, 3, 0.6, 0.8, 2.1, 1.6, 1.6, 1.0 |
+| Bagas | 42 | 10 | 7 | 6 | 6 | 6 | 10 | 10 | 6, 1.5, 1.3, 1.1, 1.1, 1.1, 1.8, 1.4 |
+| Rangga | 55 | 8 | 9 | 8 | 4 | 6 | 6 | 5 | 8, 1.2, 1.8, 1.6, 0.6, 1.2, 1.0, 0.7 |
+| Ratih | 38 | 16 | 4 | 5 | 8 | 9 | 8 | 8 | 5.5, 2.8, 0.6, 0.9, 1.7, 1.8, 1.4, 1.1 |
+| Kelana | 58 | 0 | 12 | 7 | 6 | 4 | 6 | 3 | 9.5, 0, 2.3, 1.3, 1.0, 0.8, 1.0, 0.5 |
 
-(Pertumbuhan pecahan diakumulasi lalu dibulatkan ke bawah, supaya kurva halus tanpa RNG.)
+Pertumbuhan pecahan diakumulasi lalu dibulatkan ke bawah (deterministik).
 
 ### 4.3 Aksi per Giliran
 
-1. **Serang** — serangan fisik dasar, gratis, elemen Fisik (atau elemen senjata kalau ada).
-2. **Skill** — pilih dari daftar skill karakter, biaya MP.
-3. **Item** — pakai item dari inventori (tidak habiskan MP).
-4. **Jaga** — DEF & RES ×1.5 sampai giliran berikutnya, pulihkan 5% MP, dan **+1 Bara** (Rimba saja).
-5. **Kabur** — hanya di encounter acak. Peluang = 50% + (AGI rata-rata party − AGI rata-rata musuh) × 3%, dibatasi 20–90%.
+1. **Serang** — fisik dasar, gratis, elemen Fisik atau elemen Kaca senjata.
+2. **Skill** — biaya MP (Kelana: HP; Bagas gadget: Suku Cadang).
+3. **Item** — dari inventori.
+4. **Jaga** — DEF & RES ×1.5 hingga giliran berikutnya, +5% MP, **+1 Bara** kalau Rimba.
+5. **Ganti** — tukar dengan cadangan.
+6. **Bara** — jurus pamungkas & Jurus Ganda (hanya kalau Bara cukup).
+7. **Kabur** — encounter acak saja. Peluang 50% + (rata AGI party − rata AGI musuh) × 3%, batas 20–90%.
 
-### 4.4 Elemen & Kelemahan
+### 4.4 Elemen (8) & Afinitas
 
-Enam elemen serangan:
+| Elemen | Pengguna utama | Lawan alami | Catatan |
+|---|---|---|---|
+| **Fisik** | Sela, Rangga, Kelana | — | Musuh berzirah/konstruk sering Tahan. |
+| **Api** | Rimba | Es | Tumbuhan, es, kabut tipis. Status Bakar. |
+| **Es** | Lintang | Api | Makhluk rawa, tambang, gurun. Status Beku. |
+| **Petir** | Lintang, Bagas | (diserap Bumi) | Konstruk logam, makhluk air. |
+| **Angin** | Ratih | Bumi | Makhluk terbang, evasif. Status Buta. |
+| **Bumi** | Rangga, Bagas | Angin | Makhluk terbang jatuh (Berat), menembus DEF. Menyerap Petir. |
+| **Cahaya** | Rimba, Ratih | Kelam | Hampa & makhluk Kabut. Diserap Pelita Padam. |
+| **Kelam** | Lintang, Kelana | Cahaya | Pelita Padam & konstruk Nyala. Diserap Hampa. |
 
-| Elemen | Sumber utama | Catatan |
-|---|---|---|
-| **Fisik** | Serang dasar, skill Sela | Beberapa musuh berzirah tahan Fisik. |
-| **Api** | Rimba | Melawan tumbuhan, es, kabut tipis. Bisa memicu *Bakar*. |
-| **Es** | Lintang | Melawan makhluk rawa & tambang. Bisa memicu *Beku* (lewati 1 giliran, peluang rendah). |
-| **Petir** | Lintang | Melawan konstruk logam & makhluk air. |
-| **Cahaya** | Rimba (Bara) | Melawan Hampa & makhluk kabut. Diserap oleh Pelita Padam. |
-| **Kelam** | Lintang | Melawan Pelita Padam & konstruk Nyala. Diserap oleh Hampa. |
+Pengali afinitas: Lemah ×1.5 (+Goyah, +1 Bara), Normal ×1.0, Tahan ×0.5, Imun ×0, Serap (menyembuhkan musuh).
 
-Pengali afinitas:
+Kelemahan **tersembunyi sampai dipukul**, lalu dicatat permanen di **Catatan Penyala**. Bagas
+punya skill **Pindai** (Lv 22) yang membuka semua afinitas satu musuh sekaligus, sebagai jalan
+pintas bagi yang tidak mau menebak.
 
-| Afinitas | Pengali | Efek tambahan |
-|---|---|---|
-| Lemah | ×1.5 | Musuh terkena **Goyah**: aksinya di giliran berikutnya dipilih acak dari aksi paling lemah, dan Rimba mendapat **+1 Bara** |
-| Normal | ×1.0 | — |
-| Tahan | ×0.5 | — |
-| Imun | ×0 | Pesan "Tidak berpengaruh." |
-| Serap | −1.0 (menyembuhkan musuh) | Pesan peringatan warna berbeda pertama kali terjadi |
+### 4.5 Bara (Sumber Daya Party) & Jurus Ganda
 
-Kelemahan musuh **tersembunyi sampai dipukul** dengan elemen yang tepat, lalu dicatat permanen
-di bestiary in-game (menu "Catatan Penyala"). Tidak ada skill "analisis", supaya pemain
-bereksperimen. Musuh yang sudah dicatat menampilkan ikon kelemahan di layar pertarungan.
+- Meteran bersama, **0–5 Bara** (naik ke 8 lewat Serpihan Ingatan), pegangan Rimba, reset ke 0 tiap pertarungan
+  (kecuali Kalung Bara: mulai 1–2).
+- Dapat: pukul kelemahan +1, Rimba Jaga +1, kawan pingsan +2, Lagu Penggugah Ratih +1 per 2 giliran.
+- Pakai:
+  - **Nyala Pulih** (2): heal semua aktif 30% + hapus status buruk.
+  - **Nyala Pamungkas** (3): Rimba, Cahaya semua musuh, kekuatan 2.5, tak bisa dihindari.
+  - **Jurus Ganda** (4): dua anggota aktif. Setiap pasangan dibuka lewat **adegan Kenangan** saat Berkemah
+    (tidak otomatis), supaya konten sampingan terasa berdampak. Daftar (12 pasangan; pasangan lain tidak punya Jurus):
 
-### 4.5 Bara (Sumber Daya Party)
+| Pasangan | Nama | Elemen | Efek |
+|---|---|---|---|
+| Rimba + Sela | Tebas Berapi | Fisik+Api | Satu target, 3.0 |
+| Rimba + Lintang | Fajar Kelabu | Cahaya+Kelam | Semua, 2.0, abaikan Serap |
+| Sela + Lintang | Badai Perisai | Petir | Semua, 1.8, Goyah |
+| Rimba + Bagas | Lentera Meledak | Api+Petir | Semua, 2.2, Bakar 50% |
+| Bagas + Lintang | Sirkuit Beku | Es+Petir | Satu, 3.2, Beku 40% |
+| Sela + Rangga | Barisan Perisai | — | Party imun damage 1 ronde + DEF ×1.5 3 giliran |
+| Rangga + Rimba | Panji Nyala | Bumi+Cahaya | Semua, 2.0, +1 Bara balik |
+| Ratih + Rimba | Nyanyian Fajar | Cahaya | Heal penuh semua aktif + Lagu ofensif 3 giliran |
+| Ratih + Lintang | Kidung Kabut | Angin+Kelam | Semua, 2.0, Lelah & Buta 60% |
+| Kelana + Lintang | Pulang | Kelam | Satu, 4.0, abaikan RES; Kelana pulih 30% HP |
+| Kelana + Sela | Dua Pedang Karat | Fisik+Kelam | Satu, 3.5 |
+| Ratih + Kelana | Lagu untuk yang Lupa | Cahaya+Kelam | Semua, 2.4; Kelana tidak terluka Cahaya 5 giliran |
 
-- Meteran bersama **0–5 Bara**, dipegang Rimba, di-reset ke 0 di awal setiap pertarungan.
-- Cara mendapat: memukul kelemahan (+1), Rimba **Jaga** (+1), party member pingsan (+2, "nyala dari amarah").
-- Cara memakai:
-  - **Nyala Pamungkas** (3 Bara): Rimba, serangan Cahaya ke semua musuh, kekuatan 2.5, tidak bisa dihindari.
-  - **Jurus Ganda** (4 Bara): dua karakter hidup melakukan serangan gabungan. Kombinasinya tetap:
-    - Rimba+Sela: *Tebas Berapi* — Fisik+Api, satu target, kekuatan 3.0
-    - Rimba+Lintang: *Fajar Kelabu* — Cahaya+Kelam, semua musuh, kekuatan 2.0, abaikan afinitas Serap
-    - Sela+Lintang: *Badai Perisai* — Petir, semua musuh, kekuatan 1.8 + Goyah
-  - **Nyala Pulih** (2 Bara): heal semua party 30% HP + hapus semua status buruk.
-- Kalau Rimba pingsan, Bara membeku (tidak bertambah, tidak bisa dipakai) sampai ia dibangunkan.
+  - **Jurus Empat** (8 Bara, hanya setelah Bara maks 8): **Pelita Terakhir**, seluruh party aktif, semua musuh, kekuatan 5.0, elemen sesuai kelemahan tiap musuh. Sekali per pertarungan.
+- Rimba pingsan = Bara membeku.
 
-### 4.6 Formula Damage
+### 4.6 Pecah (Break) untuk Boss
 
-Semua pembagian dibulatkan ke bawah; damage minimum 1 kecuali afinitas Imun/Serap.
+Boss dan musuh elit punya **meter Ketahanan** (0–100). Pukulan kelemahan −25, Goyah dari skill
+non-elemen −15, serangan normal −5. Di 0, boss **Pecah**: melewatkan satu ronde penuh, semua damage
+masuk ×1.5, lalu meter pulih penuh. Boss tertentu punya fase yang mengganti kelemahan sehingga
+membangun Pecah adalah puzzle utamanya.
 
-**Serangan fisik (Serang & skill fisik):**
+### 4.7 Formula Damage
+
+Pembagian dibulatkan ke bawah; damage minimum 1 kecuali Imun/Serap.
 
 ```
-dasar   = ATK_penyerang * 2 - DEF_target        (min 1)
-damage  = dasar * kekuatan_skill * afinitas * kritikal * jaga * acak
+Fisik : dasar = ATK_penyerang * 2 - DEF_target        (min 1)
+Sihir : dasar = MAG_penyerang * 2 - RES_target        (min 1)
+damage = dasar * kekuatan_skill * afinitas * kritikal * pecah * acak
 ```
-
-**Serangan sihir (skill elemen):**
-
-```
-dasar   = MAG_penyerang * 2 - RES_target        (min 1)
-damage  = dasar * kekuatan_skill * afinitas * kritikal * jaga * acak
-```
-
-Keterangan pengali:
 
 | Pengali | Nilai |
 |---|---|
-| `kekuatan_skill` | Serang dasar = 1.0. Skill 0.8–3.0 (lihat tabel skill). |
-| `afinitas` | 1.5 / 1.0 / 0.5 / 0 / −1.0 |
-| `kritikal` | 1.5 kalau kena kritikal, 1.0 kalau tidak. Peluang kritikal = 5% + LCK_penyerang × 0.5%, maks 30%. |
-| `jaga` | 1/1.5 kalau target sedang Jaga (dihitung lewat DEF/RES, bukan pengali terpisah; tabel ini untuk kejelasan). |
-| `acak` | Seragam 0.90–1.10 |
-
-**Peluang kena (fisik saja; sihir selalu kena kecuali Imun):**
-
-```
-peluang_kena = 92% + (AGI_penyerang - AGI_target) * 1.5%     dibatasi 60%–100%
-```
-
-**Penyembuhan:**
+| kekuatan_skill | Serang 1.0; skill 0.8–4.0; Jurus Empat 5.0 |
+| afinitas | 1.5 / 1.0 / 0.5 / 0 / −1.0 |
+| kritikal | 1.5; peluang 5% + LCK × 0.5%, maks 35% |
+| pecah | 1.5 saat target Pecah, 1.2 saat Goyah |
+| acak | seragam 0.90–1.10 |
+| Jaga target | DEF/RES ×1.5 (masuk lewat dasar) |
+| Tembus DEF (tombak Rangga, Malam Pengingat) | DEF/RES target dihitung 0 |
 
 ```
+peluang_kena fisik = 92% + (AGI_penyerang - AGI_target) * 1.5%   batas 60–100%
 heal = MAG_pengguna * kekuatan_skill + nilai_dasar_skill
 ```
 
-Contoh angka kalibrasi (Rimba Lv 5, ATK 14, memukul Serigala Kabut DEF 6 dengan Serang dasar):
-dasar = 28 − 6 = 22, acak ~1.0 → **22 damage**, HP serigala 60, jadi ~3 pukulan. Dengan skill
-*Sulut* (Api, kekuatan 1.4, kelemahan serigala) dari MAG 13 vs RES 4: dasar = 22, × 1.4 × 1.5 =
-**46 damage**, jadi 2 kali. Ini rasio target: menggunakan kelemahan mempercepat pertarungan ~2×.
+Kalibrasi target: musuh biasa mati dalam 2–3 aksi kalau kelemahannya dipakai, 4–6 kalau tidak.
+Boss punya HP ≈ (total damage party per ronde) × 12.
 
-### 4.7 Status Efek
+### 4.8 Status Efek
 
-| Status | Efek | Durasi | Sumber umum |
+| Status | Efek | Durasi | Sumber |
 |---|---|---|---|
-| **Racun** | Kehilangan 8% HP maks tiap akhir giliran | 4 giliran | Lumut Berjalan, Katak Rawa |
-| **Bakar** | Kehilangan 5% HP maks tiap giliran, DEF −20% | 3 giliran | Skill Api |
-| **Beku** | Lewati 1 giliran | 1 giliran | Skill Es (peluang 20%) |
-| **Lelah** | ATK & MAG −30% | 3 giliran | Selimut Kabut, beberapa musuh |
-| **Goyah** | Aksi berikutnya acak & lemah; damage masuk ×1.2 | Sampai giliran berikutnya | Pukulan kelemahan |
-| **Lupa** | Tidak bisa memakai Skill (hanya Serang/Item/Jaga) | 2 giliran | Hampa, kabut tanpa lentera |
-| **Tidur** | Lewati giliran, bangun kalau dipukul | 3 giliran | Kelelawar Kristal |
-| **Provokasi** | Semua serangan musuh single-target diarahkan ke Sela | 1 giliran | Skill Sela |
+| Racun | −8% HP maks/giliran | 4 | Lumut, katak, kalajengking abu |
+| Bakar | −5% HP/giliran, DEF −20% | 3 | Api |
+| Beku | Lewati 1 giliran | 1 | Es (20%) |
+| Lelah | ATK & MAG −30% | 3 | Selimut Kabut, dsb. |
+| Goyah | Aksi berikutnya acak & lemah; damage masuk ×1.2 | 1 | Kelemahan, Bantingan Perisai |
+| Lupa | Tidak bisa Skill | 2 | Hampa, kabut tanpa lentera |
+| Tidur | Lewati giliran; bangun kalau dipukul | 3 | Kelelawar, Gema Ninabobo |
+| Buta | Peluang kena fisik −40% | 3 | Angin |
+| Berat | AGI −50%; musuh terbang jatuh (kehilangan evasi & kelemahan Angin, dapat kelemahan Fisik) | 3 | Bumi |
+| Bisu | Lagu Ratih berhenti; tidak bisa skill sihir | 2 | Bayang Arsip, Ordo |
+| Kutuk | Heal jadi damage | 3 | Pelita Padam, Gema |
+| Provokasi | Serangan single-target musuh diarahkan ke pemasang | 1 | Sela, Rangga |
+| Terdiam (Kelana saja) | Lewati giliran, 5% peluang tiap giliran, hilang setelah Kenangan ke-3 | 1 | Bawaan |
 
-Peluang status masuk = peluang dasar skill × (1 − LCK_target × 1%). Boss punya daftar imunitas sendiri.
+Peluang status masuk = peluang skill × (1 − LCK_target × 1%). Boss punya daftar imunitas.
 
-### 4.8 Daftar Skill (per karakter, level unlock)
+### 4.9 Jalur Spesialisasi
+
+Di level tertentu (§3.1) tiap karakter memilih satu dari dua **Jalur**: membuka 3 skill eksklusif
+dan satu pasif. Bisa direset di Tukang Kaca dengan 3 Serpihan Ingatan. Pilihan kedua di Lv 45 menambah
+1 skill puncak per jalur.
+
+### 4.10 Daftar Skill
+
+Format: Lv · Nama · biaya · elemen · kekuatan · target · catatan. "J:" menandai skill Jalur.
 
 **Rimba**
 
-| Lv | Skill | MP | Elemen | Kekuatan | Target | Catatan |
+| Lv | Skill | MP | Elemen | Kek. | Target | Catatan |
 |---|---|---|---|---|---|---|
 | 1 | Sulut | 3 | Api | 1.4 | Satu | 30% Bakar |
 | 3 | Sinar Lentera | 4 | Cahaya | 1.3 | Satu | — |
 | 6 | Kobar | 7 | Api | 1.2 | Semua | 20% Bakar |
-| 9 | Tumbuk Nyala | 5 | Fisik | 1.6 | Satu | Memakai ATK, elemen senjata |
-| 12 | Cahaya Penunjuk | 6 | — | — | Satu kawan | Sembuhkan Lupa & Tidur + heal kecil |
+| 9 | Tumbuk Nyala | 5 | Fisik | 1.6 | Satu | Elemen senjata |
+| 12 | Cahaya Penunjuk | 6 | — | — | Kawan | Hapus Lupa/Tidur/Buta + heal MAG×1.5+30 |
 | 15 | Fajar | 12 | Cahaya | 1.8 | Semua | — |
-| 18 | Nyala Terakhir | 15 | Api+Cahaya | 2.4 | Satu | Damage ×1.5 lagi kalau HP Rimba < 30% |
+| 18 | Nyala Terakhir | 15 | Api+Cahaya | 2.4 | Satu | ×1.5 kalau HP Rimba <30% |
+| 20 J | Kobaran: Lautan Api | 16 | Api | 2.0 | Semua | Bakar 60%, ×1.3 pada target Bakar |
+| 20 J | Penuntun: Pelita Kawan | 8 | — | — | Kawan | Kawan dapat +1 Bara tiap giliran 3 giliran |
+| 26 J | Kobaran: Bara Amarah | 0 | — | — | Diri | Habiskan 2 Bara: ATK & MAG ×1.5 3 giliran |
+| 26 J | Penuntun: Jalan Pulang | 14 | Cahaya | — | Semua kawan | Heal MAG×2+60, hapus semua status |
+| 24 | Sinar Menembus | 10 | Cahaya | 1.6 | Satu | Abaikan Tahan (Tahan dihitung Normal) |
+| 30 | Nyala Bergilir | 14 | Api/Cahaya | 1.5 | Semua | Elemen dipilih saat cast |
+| 36 | Api Ingatan | 18 | Api | 2.6 | Satu | ×1.5 pada Hampa & Gema |
+| 42 | Terang Larung | 24 | Cahaya | 2.2 | Semua | +2 Bara |
+| 45 J | Kobaran: Puncak Nyala | 30 | Api | 3.6 | Semua | Bakar pasti |
+| 45 J | Penuntun: Ingat Aku | 30 | — | — | Semua kawan | Bangkitkan semua yang pingsan 50% HP |
+| 48 | Pelita Terakhir (Jurus Empat) | 8 Bara | Adaptif | 5.0 | Semua | Lihat §4.5 |
 
 **Sela**
 
-| Lv | Skill | MP | Elemen | Kekuatan | Target | Catatan |
+| Lv | Skill | MP | Elemen | Kek. | Target | Catatan |
 |---|---|---|---|---|---|---|
-| 1 | Tebas Berat | 3 | Fisik | 1.6 | Satu | Peluang kena −10% |
-| 4 | Pasang Badan | 2 | — | — | Diri | Status Provokasi + DEF ×1.5 satu giliran |
-| 7 | Teriakan Provokasi | 4 | — | — | Semua musuh | Provokasi + 40% Lelah pada musuh |
-| 10 | Bantingan Perisai | 5 | Fisik | 1.3 | Satu | 50% Goyah tanpa syarat elemen |
+| 1 | Tebas Berat | 3 | Fisik | 1.6 | Satu | Kena −10% |
+| 4 | Pasang Badan | 2 | — | — | Diri | Provokasi + DEF ×1.5 |
+| 7 | Teriakan Provokasi | 4 | — | — | Semua musuh | Provokasi + 40% Lelah |
+| 10 | Bantingan Perisai | 5 | Fisik | 1.3 | Satu | 50% Goyah, −15 Ketahanan |
 | 13 | Tebas Menyapu | 8 | Fisik | 1.1 | Semua | — |
-| 16 | Tumbal Baja | 0 | — | — | Diri | Habiskan 25% HP: ATK ×1.5 selama 3 giliran |
-| 19 | Sumpah Pengawal | 10 | Fisik | 2.6 | Satu | Damage ×2 kalau ada kawan pingsan |
+| 16 | Tumbal Baja | 0 | — | — | Diri | −25% HP: ATK ×1.5 3 giliran |
+| 19 | Sumpah Pengawal | 10 | Fisik | 2.6 | Satu | ×2 kalau ada kawan pingsan |
+| 20 J | Benteng: Balas | 6 | — | — | Diri | Counter tiap serangan fisik 3 giliran, kekuatan 1.2 |
+| 20 J | Algojo: Tebas Pemenggal | 12 | Fisik | 2.8 | Satu | Kritikal +25%, DEF diri −30% 2 giliran |
+| 26 J | Benteng: Perisai Semua | 10 | — | — | Semua kawan | Damage masuk kawan −30% 2 giliran |
+| 26 J | Algojo: Tebas Bumi | 14 | Fisik | 1.8 | Semua | Berat 50% |
+| 24 | Dinding Perunggu | 8 | — | — | Diri | RES ×1.5 & imun status 2 giliran |
+| 30 | Tumbuk Perisai Ganda | 12 | Fisik | 2.0 | Satu | 2 pukulan, masing-masing −10 Ketahanan |
+| 36 | Sumpah Pertama | 16 | Fisik | 3.0 | Satu | Provokasi diri 2 giliran setelahnya |
+| 42 | Kaki Terpancang | 12 | — | — | Diri | HP tidak bisa <1 selama 2 giliran |
+| 45 J | Benteng: Tembok Tengara | 20 | — | — | Semua kawan | Imun damage 1 ronde |
+| 45 J | Algojo: Hukuman | 26 | Fisik | 4.0 | Satu | ×1.5 pada target Goyah/Pecah |
 
 **Lintang**
 
-| Lv | Skill | MP | Elemen | Kekuatan | Target | Catatan |
+| Lv | Skill | MP | Elemen | Kek. | Target | Catatan |
 |---|---|---|---|---|---|---|
 | 4 | Serpih Es | 3 | Es | 1.4 | Satu | 20% Beku |
 | 4 | Selimut Kabut | 4 | — | — | Semua musuh | 60% Lelah |
 | 6 | Kilat Kecil | 4 | Petir | 1.4 | Satu | — |
 | 8 | Bisikan Lupa | 5 | Kelam | 0.8 | Satu | 70% Lupa |
-| 10 | Rawat Kabut | 5 | — | — | Satu kawan | Heal: MAG × 2 + 20 |
+| 10 | Rawat Kabut | 5 | — | — | Kawan | Heal MAG×2+20 |
 | 12 | Badai Es | 9 | Es | 1.2 | Semua | 10% Beku |
 | 14 | Petir Bercabang | 9 | Petir | 1.3 | Semua | — |
-| 16 | Tirai Kelam | 8 | Kelam | 1.2 | Semua | Serap: heal Lintang 25% dari damage |
-| 19 | Malam Pengingat | 14 | Kelam | 2.2 | Satu | Abaikan RES target |
+| 16 | Tirai Kelam | 8 | Kelam | 1.2 | Semua | Serap 25% ke HP Lintang |
+| 19 | Malam Pengingat | 14 | Kelam | 2.2 | Satu | Abaikan RES |
+| 20 J | Badai: Salju Sunyi | 14 | Es | 1.8 | Semua | 30% Beku |
+| 20 J | Bisikan: Nama yang Hilang | 10 | Kelam | 1.0 | Satu | Lupa + Lelah + Kutuk 60% |
+| 26 J | Badai: Guntur Tujuh | 20 | Petir | 2.4 | Semua | — |
+| 26 J | Bisikan: Tukar Ingatan | 12 | — | — | Musuh | Pindahkan semua status buruk Lintang ke target |
+| 24 | Es Kaca | 12 | Es | 2.0 | Satu | Beku 35% |
+| 30 | Kabut Pelindung | 10 | — | — | Semua kawan | RES ×1.5 & serangan sihir musuh −20% 3 giliran |
+| 36 | Petir Ingatan | 18 | Petir | 2.6 | Satu | ×1.5 pada konstruk |
+| 42 | Gerhana | 26 | Kelam | 2.4 | Semua | Kutuk 50%, abaikan Serap Hampa (Hampa dihitung Normal) |
+| 45 J | Badai: Musim Beku | 34 | Es+Petir | 3.4 | Semua | Beku 50% |
+| 45 J | Bisikan: Sunyi Total | 30 | Kelam | 3.0 | Satu | Abaikan RES; Bisu, Lupa, Kutuk pasti |
 
-### 4.9 Perilaku AI Musuh
+**Bagas** (gadget: biaya "SC" = Suku Cadang, bukan MP)
 
-Musuh biasa memakai **tabel bobot**: tiap aksi punya bobot, dipilih acak berbobot, dengan
-beberapa aturan pemicu (misal: "kalau HP < 30%, bobot Kabur/Heal naik"). Boss memakai
-**skrip fase**: urutan aksi tetap per fase yang berganti di ambang HP tertentu. Ini cukup
-untuk terasa "cerdas" tanpa perlu sistem AI kompleks.
+| Lv | Skill | Biaya | Elemen | Kek. | Target | Catatan |
+|---|---|---|---|---|---|---|
+| 15 | Curi | 0 | — | — | Satu | Peluang 40% + LCK×1%; item sesuai tabel musuh |
+| 15 | Peluncur Kejut | 1 SC | Petir | 1.4 | Satu | — |
+| 17 | Jerat Bumi | 1 SC | Bumi | 1.2 | Satu | Berat 70% |
+| 19 | Baterai | 4 MP | — | — | Kawan | Pindahkan 15 MP Bagas ke kawan (ambil dari cadangan MP Bagas) |
+| 20 J | Peretas: Bongkar Zirah | 2 SC | — | — | Satu | DEF & RES target −30% 3 giliran, −20 Ketahanan |
+| 20 J | Montir: Lentera Portabel | 6 MP | — | — | Semua kawan | Imun Lupa & MP +10/giliran 3 giliran |
+| 22 | Pindai | 3 MP | — | — | Satu | Buka semua afinitas & HP target |
+| 26 J | Peretas: Copet Ulung | 0 | — | — | Satu | Curi 70%, item langka jika target Pecah |
+| 26 J | Montir: Ranjau Ganda | 3 SC | Petir+Bumi | 1.6 | Semua | Goyah 40% |
+| 28 | Ledakan Kaca | 3 SC | Api | 1.8 | Semua | Bakar 30% |
+| 32 | Perbaiki | 8 MP | — | — | Kawan | Heal MAG×2+50, hapus Berat/Bisu |
+| 36 | Serat Kaca | 2 SC | — | — | Semua musuh | AGI −30% 3 giliran |
+| 40 | Meriam Ingatan | 5 SC | Petir | 3.0 | Satu | Abaikan Tahan |
+| 45 J | Peretas: Kunci Mati | 6 SC | — | — | Satu boss | Meter Ketahanan −50 |
+| 45 J | Montir: Nyala Cadangan | 20 MP | — | — | Semua kawan | Pulihkan MP 50% semua aktif |
+
+**Rangga**
+
+| Lv | Skill | MP | Elemen | Kek. | Target | Catatan |
+|---|---|---|---|---|---|---|
+| 23 | Tusukan Bumi | 5 | Bumi | 1.5 | Satu | Tembus DEF |
+| 23 | Komando: Maju | 6 | — | — | Semua kawan | ATK ×1.3 2 giliran |
+| 25 | Komando: Tahan | 6 | — | — | Semua kawan | DEF ×1.3 2 giliran |
+| 27 | Panji Larung | 10 | — | — | Lapangan | 4 giliran: kawan +10% heal tiap giliran; Provokasi ke Rangga |
+| 29 | Tombak Melingkar | 9 | Bumi | 1.2 | Semua | Berat 40% |
+| 30 J | Panglima: Komando Ganda | 12 | — | — | Semua kawan | Maju + Tahan sekaligus 3 giliran |
+| 30 J | Penumbuk: Hantaman Gempa | 14 | Bumi | 2.4 | Semua | Berat 70%, −20 Ketahanan |
+| 33 | Serbu | 8 | Fisik | 2.0 | Satu | Kawan yang AGI-nya di bawah Rangga ikut Serang dasar |
+| 37 J | Panglima: Panji Tujuh Suar | 18 | — | — | Lapangan | Panji 6 giliran + AGI ×1.2 |
+| 37 J | Penumbuk: Tombak Tanah | 18 | Bumi | 3.0 | Satu | Tembus DEF, Berat pasti |
+| 41 | Perintah Terakhir | 20 | — | — | Kawan | Kawan bertindak lagi segera (satu kali per pertarungan) |
+| 45 J | Panglima: Barisan Tak Patah | 28 | — | — | Semua kawan | Imun status & damage −40% 3 giliran |
+| 45 J | Penumbuk: Runtuhkan Langit | 32 | Bumi | 4.0 | Semua | Berat pasti, −40 Ketahanan |
+
+**Ratih** ("Lagu" berlangsung 3 giliran, berhenti kalau Ratih Bisu/pingsan; hanya satu Lagu aktif)
+
+| Lv | Skill | MP | Elemen | Kek. | Target | Catatan |
+|---|---|---|---|---|---|---|
+| 29 | Hembus Angin | 4 | Angin | 1.4 | Satu | Buta 30% |
+| 29 | Lagu Rawat | 8 | — | — | Semua kawan | Heal MAG×1+20 tiap giliran |
+| 31 | Lagu Gugah | 8 | — | — | Semua kawan | ATK & MAG ×1.2; Rimba +1 Bara tiap 2 giliran |
+| 33 | Sinar Kidung | 7 | Cahaya | 1.4 | Semua | — |
+| 30 J | Pemulih: Lagu Sembuh | 10 | — | — | Semua kawan | Hapus 1 status buruk tiap giliran + heal MAG×1.5 |
+| 30 J | Penggugah: Lagu Cepat | 10 | — | — | Semua kawan | AGI ×1.3; Rimba +1 Bara tiap giliran |
+| 35 | Badai Bulu | 12 | Angin | 1.6 | Semua | Buta 40%; ×1.5 pada musuh terbang |
+| 37 J | Pemulih: Nada Bangkit | 18 | — | — | Kawan | Bangkitkan 60% HP + imun status 2 giliran |
+| 37 J | Penggugah: Lagu Berani | 16 | — | — | Semua kawan | Kritikal +20% & ATK ×1.4 |
+| 39 | Ninabobo | 9 | — | — | Semua musuh | Tidur 60% |
+| 43 | Kidung Tujuh Suar | 22 | Cahaya | 2.4 | Semua | Hapus Kutuk kawan |
+| 45 J | Pemulih: Lagu Pulang | 30 | — | — | Semua kawan | Heal penuh sekali + Lagu Rawat 5 giliran |
+| 45 J | Penggugah: Lagu Terang | 30 | — | — | Semua kawan | Semua buff sekaligus 3 giliran, +3 Bara |
+
+**Kelana** (biaya dalam % HP maks)
+
+| Lv | Skill | HP | Elemen | Kek. | Target | Catatan |
+|---|---|---|---|---|---|---|
+| 36 | Tebas Karat | 5% | Kelam | 1.8 | Satu | — |
+| 36 | Hisap Kabut | 0 | Kelam | 1.0 | Satu | Serap 50% ke HP Kelana |
+| 38 | Sayat Sunyi | 8% | Fisik | 2.2 | Satu | Bisu 50% |
+| 40 J | Pendekar Sunyi: Satu Nama | 15% | Kelam | 3.4 | Satu | Abaikan RES |
+| 40 J | Perisai Kabut: Tanggung | 0 | — | — | Kawan | 2 giliran, damage ke kawan dialihkan 70% ke Kelana |
+| 42 | Bayang Pedang | 12% | Kelam | 1.6 | Semua | Kutuk 40% |
+| 44 | Diam | 0 | — | — | Diri | Pulih 25% HP, giliran berikutnya damage ×1.5 |
+| 45 J | Pendekar Sunyi: Tebas Lupa | 25% | Kelam+Fisik | 4.2 | Satu | ×2 pada Hampa/Gema |
+| 45 J | Perisai Kabut: Dinding Ayah | 20% | — | — | Semua kawan | Damage ke semua kawan dialihkan 100% ke Kelana 1 ronde; Kelana tidak bisa mati ronde ini |
+| 48 | Pulang Sendiri | 30% | Kelam | 3.0 | Semua | Kelana pulih 100% kalau ada musuh mati |
+
+### 4.11 AI Musuh
+
+Musuh biasa: tabel bobot dengan pemicu (HP rendah, kawan mati, status tertentu). Elit: bobot + satu
+"sikap" yang berganti (agresif/defensif). Boss: skrip fase berdasarkan ambang HP + pola siklik yang
+diumumkan (misal "Meriam Nyala mengisi...") supaya pemain bisa merespons.
 
 ---
 
@@ -490,148 +737,241 @@ untuk terasa "cerdas" tanpa perlu sistem AI kompleks.
 
 ### 5.1 Leveling
 
-- Level maks **25**. Party tamat normal di **Lv 18–20**. Grinding tidak wajib kalau pemain
-  memakai kelemahan dan tidak kabur dari semua encounter.
-- **XP dibagi rata** ke semua anggota party termasuk yang pingsan (menghindari siklus "yang lemah makin tertinggal").
-- Anggota yang bergabung belakangan masuk dengan level = level Rimba − 1.
-- Kurva XP: `XP_ke_level_n = 20 * n^2` (Lv 2 = 80, Lv 10 = 2000, Lv 20 = 8000). Total sampai
-  Lv 20 ≈ 57.000 XP. Encounter biasa memberi 15–350 XP tergantung area; boss 2–4× encounter biasa.
-- Tiap naik level: stat naik sesuai tabel §4.2, HP/MP pulih 25%, skill baru diumumkan.
+- Level maks **60**. Tamat normal di **Lv 50–52**. Superboss diasumsikan Lv 55+.
+- XP dibagi rata ke aktif (100%) dan cadangan (70%), termasuk yang pingsan.
+- Anggota baru masuk di level Rimba − 1 dengan Kaca & equipment tahap wilayahnya.
+- Kurva: `XP_ke_level_n = 20 * n²`. Total ke Lv 50 ≈ 858.000 XP. XP musuh diskalakan per babak
+  (Babak 1: 15–600, Babak 2: 600–3.500, Babak 3: 3.500–9.000; boss 3–5× musuh biasa area).
+- Naik level: stat naik, HP/MP pulih 25%, skill baru diumumkan; Lv 20/30/40/45 memicu pilihan Jalur.
 
 ### 5.2 Equipment
 
-Tiga slot per karakter: **Senjata**, **Zirah**, **Aksesori**. Tiap karakter punya tipe senjata
-sendiri (tidak bisa saling tukar). Zirah dan aksesori bebas.
+Slot: **Senjata** (khas per karakter), **Zirah**, **Aksesori ×2** (slot kedua dibuka Babak 2).
 
-Contoh progresi senjata (satu jalur per karakter, dibeli di toko atau ditemukan):
+Senjata punya **1–3 soket Kaca** (§5.3). Tiap babak punya 3 tahap senjata toko + 1 senjata "puncak"
+tersembunyi/cerita per karakter (total 4 tahap × 3 babak = 12 senjata per karakter, dengan tahap
+puncak Babak 3 sebagai senjata terbaik). Contoh jalur Rimba:
 
-| Tahap | Rimba (Tongkat Lentera) | Sela (Pedang) | Lintang (Lentera Fokus) | Dapat di |
+| Tahap | Nama | Bonus | Soket | Dapat |
 |---|---|---|---|---|
-| 1 | Tongkat Kayu Jati (ATK+3) | Pedang Latihan (ATK+5) | Lentera Retak (MAG+4) | Awal |
-| 2 | Tongkat Perunggu (ATK+7, MAG+2) | Pedang Pengawal (ATK+10) | Lentera Rawa (MAG+8, +Es) | Rawa / Toko Tengara |
-| 3 | Tongkat Kaca (ATK+11, MAG+6, elemen Api) | Pedang Besi Tambang (ATK+16) | Lentera Kaca (MAG+14) | Toko Tengara (setelah Lorong Bawah) / Tambang |
-| 4 | **Tongkat Guntur** (ATK+16, MAG+10, Cahaya, +1 Bara awal) | **Pedang Sumpah** (ATK+24, LCK+5) | **Lentera Bapak** (MAG+22, Kelam, MP biaya −20%) | Peti tersembunyi Mercusuar / side quest / cerita |
+| B1-1 | Tongkat Kayu Jati | ATK+3 | 0 | Awal |
+| B1-2 | Tongkat Perunggu | ATK+7 MAG+2 | 1 | Rawa/Tengara |
+| B1-3 | Tongkat Kaca | ATK+11 MAG+6, Api | 1 | Tengara (setelah Lorong) |
+| B1-P | Tongkat Guntur | ATK+16 MAG+10, Cahaya, +1 Bara awal | 2 | Mercusuar (peti) |
+| B2-1 | Tongkat Kafilah | ATK+22 MAG+14 | 2 | Sanggar |
+| B2-2 | Tongkat Nyanyi | ATK+28 MAG+20, Angin | 2 | Padasuara |
+| B2-3 | Tongkat Wirasaba | ATK+36 MAG+26 | 3 | Wirasaba (peti) / Sanggar tk.3 |
+| B2-P | Tongkat Juru Nyala | ATK+44 MAG+34, Cahaya, Bara maks +1 | 3 | Benteng (drop Nirmala) |
+| B3-1 | Tongkat Garam | ATK+50 MAG+40 | 3 | Kapal |
+| B3-P | **Pelita Pertama** | ATK+64 MAG+52, Adaptif, biaya MP −30% | 3 | Buruan Tk.5 / Pulau Hilang |
 
-Zirah: 5 tingkat (Kain, Kulit, Rantai, Kaca Lapis, Jubah Penyala) dengan DEF/RES bertahap,
-beberapa dengan resistensi elemen. Aksesori (~10 jenis): Cincin Anti-Racun, Gelang Kilat (AGI+4),
-Jimat Lentera (imun Lupa), Kalung Bara (+1 Bara di awal pertarungan), dsb.
+Zirah: 12 tingkat (Kain → Jubah Adiluhung), beberapa dengan resistensi elemen atau imun status.
+Aksesori (~30): Cincin Anti-Racun, Gelang Kilat, Jimat Lentera (imun Lupa), Kalung Bara (+1–2 Bara awal),
+Anting Pendendang (Lagu +1 giliran), Sabuk Karat (Kelana: biaya HP −30%), Lensa Juru Kaca (Curi +20%), dsb.
 
-### 5.3 Item Konsumsi
+### 5.3 Kaca Ingatan (Soket)
 
-| Item | Efek | Harga |
+Sistem "materia ringan". Kaca dipasang ke soket senjata, bisa dilepas bebas di Tukang Kaca atau di kemah.
+Tiga jenis:
+
+| Jenis | Contoh | Efek |
 |---|---|---|
-| Ramuan Daun | HP +40 | 15 |
-| Ramuan Akar | HP +120 | 45 |
-| Tetes Nyala | MP +20 | 30 |
-| Minyak Lentera | Tolak Lupa 20 giliran di area kabut; wajib untuk eksplorasi | 10 |
-| Penawar | Sembuhkan Racun/Bakar | 12 |
-| Garam Bangun | Sembuhkan Tidur/Lupa | 12 |
-| Abu Fajar | Bangunkan kawan pingsan, HP 30% | 80 |
-| Bubuk Petir / Es / Api | Serangan elemen kekuatan 1.2, siapa pun bisa pakai | 25 |
-| Jimat Kabur | Kabur pasti berhasil | 40 |
+| **Kaca Elemen** | Kaca Api, Kaca Angin, Kaca Kelam | Serang dasar jadi elemen itu. |
+| **Kaca Pasif** | Kaca Napas (MP +2/giliran), Kaca Tabah (imun Lupa), Kaca Tajam (kritikal +10%), Kaca Rakus (XP +15%), Kaca Kikir (harga toko −20%) | Pasif selama terpasang. |
+| **Kaca Skill** | Kaca Sembuh (Rawat Kabut untuk siapa saja), Kaca Kilat, Kaca Pindai, Kaca Curi | Memberi satu skill dari karakter lain, biaya MP ×1.5. |
 
-Uang: **Keping** (keping perunggu). Diperoleh dari pertarungan dan menjual barang.
+Kaca **naik tingkat** (I→III) dengan dipakai (hitung pertarungan), memperkuat efeknya. ~22 jenis Kaca.
+Sumber: toko (dasar), Curi (langka), Buruan, peti, Serpihan Ingatan.
 
-### 5.4 Serpihan Ingatan (Collectible)
+### 5.4 Item Konsumsi (ringkas)
 
-Sebanyak **12 Serpihan** tersebar di dunia (peti tersembunyi, side quest, boss). Diserahkan ke
-**Tukang Kaca** di Ibukota Tengara, tiap 3 Serpihan bisa ditukar satu **peningkatan permanen**
-yang dipilih pemain: HP maks +10% untuk satu karakter, atau +1 Bara maks (hanya sekali), atau
-membuka satu skill tambahan. Ini adalah "reward eksplorasi" tanpa memaksa 100% completion.
+Ramuan Daun/Akar/Sari (HP 40/120/400), Tetes/Cawan/Kendi Nyala (MP 20/60/150), Minyak Lentera
+(tolak Lupa 20 giliran di area kabut), Penawar, Garam Bangun, Abu Fajar (bangkit 30%), Abu Pagi
+(bangkit 100%), Bubuk 8 elemen (kekuatan 1.2, siapa pun), Suku Cadang (gadget Bagas), Dupa Sunyi
+(tanpa encounter 30 langkah), Jimat Kabur, Bekal Kemah (buka adegan Kenangan tanpa kembali ke hub).
 
-### 5.5 Sumber Kekuatan Pemain (ringkasan)
+Uang: **Keping**. Sumber: pertarungan, jual barang, Buruan, Arena.
 
-1. **Level** — pertumbuhan stat & skill baru (sumber utama, otomatis).
-2. **Equipment** — lompatan kekuatan di tiap kota/area (membuat uang berarti).
-3. **Pengetahuan** — kelemahan musuh yang dicatat & dipahami (sumber "gratis" yang membedakan
-   pemain yang memperhatikan).
-4. **Serpihan Ingatan** — peningkatan permanen dari eksplorasi opsional.
-5. **Komposisi & Bara** — memilih kapan menabung Bara untuk Jurus Ganda vs memakai Nyala Pulih.
+### 5.5 Serpihan Ingatan
 
-### 5.6 Save & Kematian
+**36 Serpihan** di seluruh dunia (peti, side quest, boss, Buruan). Tukang Kaca menukar tiap 3 Serpihan
+dengan satu peningkatan permanen pilihan pemain:
 
-- Save di **lentera penjaga** (titik save eksplisit, ada di tiap area 2–3 buah) dan otomatis
-  saat masuk kota. Save = file JSON tunggal, 3 slot.
-- Kalah = kembali ke save terakhir. Tidak ada penalti tambahan; ini game cerita, bukan roguelike.
+- HP maks +10% (satu karakter, maks 3× per karakter)
+- Bara maks +1 (maks 3×, dari 5 ke 8)
+- Slot Kaca +1 pada satu senjata (maks 1× per senjata)
+- Reset Jalur
+- Buka satu **Kaca Skill** langka
+
+### 5.6 Berkemah & Kenangan
+
+Di titik save tertentu dan di kapal, party bisa **Berkemah**: pulih penuh (memakai Bekal Kemah),
+lalu pilih dua anggota untuk mengobrol. Obrolan bertingkat (1–4 per pasangan/karakter), dibuka oleh
+progres cerita. Kenangan membuka **Jurus Ganda**, dan Kenangan puncak tiap karakter (terjadi di Laut Lupa)
+membuka skill Lv 48 mereka. Total 34 adegan Kenangan (~45 menit membaca).
+
+### 5.7 Konten Sampingan
+
+- **Side quest**: 18 (Babak 1: 6, Babak 2: 9, Babak 3: 3). Contoh: "Surat untuk Distrik Sunyi" (Tengara),
+  "Kucing Penginapan" (Lorong Bawah), "Pendendang yang Hilang" (rantai 4 bagian lintas Babak 2–3, syarat ending 3),
+  "Keluarga Bagas" (Wirasaba), "Kapal yang Tak Pernah Berlayar" (Sanggar).
+- **Papan Buruan**: 11 target elit (3 Babak 1, 5 Babak 2, 3 Babak 3), tiap buruan punya mekanik unik
+  dan hadiah Kaca/aksesori/Serpihan. Tingkat 5 memberi senjata Pelita Pertama.
+- **Arena Kafilah** (Sanggar): 5 tingkat, 3 pertarungan beruntun tanpa item, hadiah Keping & Kaca Rakus.
+- **Dungeon opsional**: Gua Bawah Danau (Babak 1), Reruntuhan Suar Ketiga (Babak 2), Pulau Hilang (Babak 3).
+- **Catatan Penyala**: bestiary in-game; 100% afinitas satu babak memberi hadiah dari Tukang Kaca.
+
+### 5.8 Sumber Kekuatan (ringkasan)
+
+1. Level (otomatis). 2. Equipment per babak (uang berarti). 3. Kaca & soket (kustomisasi).
+4. Jalur (identitas build). 5. Pengetahuan afinitas. 6. Kenangan → Jurus Ganda (konten sampingan berdampak).
+7. Serpihan Ingatan (eksplorasi). 8. Komposisi 4 dari 7 dan kapan Ganti.
+
+### 5.9 Save & Kematian
+
+Save di lentera penjaga (2–4 per area) dan otomatis saat masuk hub/kapal. JSON, 5 slot + autosave.
+Kalah = kembali ke save terakhir tanpa penalti. Boss & superboss punya opsi "Ulangi pertarungan" langsung.
 
 ---
 
 ## 6. Bestiary
 
-### 6.1 Musuh Biasa
+### 6.1 Musuh Biasa (30)
 
-| # | Nama | Area | HP | Lemah | Tahan/Serap | Role gameplay | Deskripsi |
-|---|---|---|---|---|---|---|---|
-| 1 | **Kunang Kelam** | Hutan Kelabu | 18 | Cahaya | Serap Kelam | *Swarm/tutorial.* Muncul 3–4 sekaligus, damage kecil. Mengajarkan serangan area & kelemahan. | Kunang-kunang yang cahayanya terbalik: mengeluarkan gelap. Berkerumun di sekitar lentera yang hampir padam. |
-| 2 | **Serigala Kabut** | Hutan, Rawa | 60 | Api | Tahan Es | *Glass cannon cepat.* AGI tinggi, bergerak duluan, sering menyerang Lintang. Mengajarkan Pasang Badan Sela. | Serigala dengan bulu seperti asap. Menggigit lalu mundur ke kabut. |
-| 3 | **Lumut Berjalan** | Hutan, Rawa | 85 | Api | Tahan Fisik, Tahan Es | *Tank pelan + status.* DEF tinggi, menyemburkan Racun. Menghukum pemain yang hanya pakai Serang. | Gundukan lumut dan akar yang dulu tunggul pohon. Bergerak hanya kalau tak ada yang melihat. |
-| 4 | **Hampa Pengembara** | Semua area | 70 (+level scaling) | Cahaya | Serap Kelam | *Musuh ikonik / status.* Menyerang dengan *Sentuhan Lupa* (status Lupa). Muncul sepanjang game dengan varian (Petani, Pedagang, Prajurit). | Manusia yang ingatannya habis. Masih mengulang gerak pekerjaan lama: mencangkul udara, menawar ke kosong. Tidak menyerang karena benci, tapi karena tak ingat cara berhenti. |
-| 5 | **Katak Rawa Bengkak** | Rawa Suar | 110 | Petir | Tahan Api, Tahan Es | *Tank + area.* Serangan *Lompatan Lumpur* ke semua, peluang Racun. Mengajarkan Petir Lintang. | Katak seukuran gerobak yang menelan lentera rawa. Perutnya berpendar lemah. |
-| 6 | **Pengawal Karat** | Lorong Bawah, Mercusuar | 140 | Petir | Tahan Fisik, Imun Racun/Lupa | *Anti-fisik.* Sela hampir tidak berguna menyerang; ia harus jadi tank sementara Lintang membunuh. | Zirah pengawal kosong yang bergerak sendiri, digerakkan sisa Nyala yang tersesat. Berderit setiap melangkah. |
-| 7 | **Kelelawar Kristal** | Tambang | 55 | Petir | Tahan Kelam | *Evasif + pengganggu.* AGI sangat tinggi, serangannya menguras MP dan bisa menyebabkan Tidur. Mendorong pemain pakai skill area / Bantingan Perisai (Goyah). | Kelelawar yang sayapnya tumbuh kaca ingatan. Suaranya terdengar seperti bisikan orang yang kau kenal. |
-| 8 | **Penambang Terlupa** | Tambang | 160 | Es | Tahan Api | *Hard hitter.* ATK tinggi, serangan *Ayunan Beliung* satu target damage besar; pelan. Mengajarkan Jaga & manajemen HP. | Hampa bertubuh besar, punggung berkerak kristal. Masih mengayunkan beliung ke dinding yang sudah tidak ada. |
-| 9 | **Pelita Padam** | Mercusuar | 120 | Kelam | **Serap Cahaya**, Tahan Api | *Pembalik aturan.* Satu-satunya musuh yang dilawan dengan Kelam. Menghukum pemain yang autopilot Nyala Pamungkas. | Sisa Pelita lama: sosok cahaya redup berbentuk manusia. Kalau diberi cahaya, ia menyerapnya dengan lapar dan makin kuat. |
-| 10 | **Bayang Arsip** | Lorong Bawah, Mercusuar | 90 | Api | Tahan Petir, Tahan Es | *Support musuh.* Tidak menyerang kuat, tapi memberi buff ATK ke musuh lain dan menyembuhkan. Prioritas target. | Tumpukan gulungan dan tinta yang bergerak. Membacakan nama-nama Pelita tanpa henti. |
+Kolom: Lemah / Tahan-Serap / Role / Deskripsi singkat. HP adalah HP dasar; musuh varian (mis. Hampa) mengikuti level area.
 
-### 6.2 Boss
+**Babak 1**
 
-| Boss | Area | HP | Lemah | Mekanik utama |
-|---|---|---|---|---|
-| **Hampa Penjaga Hutan** | Area 1 | 220 | Cahaya, Api | Tutorial boss. Tiap 3 giliran memanggil 2 Kunang Kelam. Pola: Serang, Serang, *Raung Lupa* (Lupa ke semua). |
-| **Raja Katak Lumpur** | Area 2 | 480 | Petir | Muntahkan Racun ke semua tiap 4 giliran; saat HP < 50% menelan satu party member (hilang 2 giliran, keluar kalau boss di-Goyah). |
-| **Kapten Rangga** | Area 3 | 650 | — (manusia, semua normal) | Duel taktis. *Tandai*: memilih satu target, giliran berikutnya *Tebas Eksekusi* damage ×3 ke target itu. Pasang Badan Sela adalah jawabannya. Fase 2 (HP<40%): Provokasi imun, dua serangan per giliran. |
-| **Penambang Raksasa Terlupa** | Area 4 | 900 | Berganti | Kristal punggung menyerap satu elemen, berganti tiap 3 giliran (diumumkan). Kelemahan = elemen "lawan" dari yang diserap (Api↔Es, Petir↔Fisik, Cahaya↔Kelam). |
-| **Penjaga Mercusuar** | Area 5 lt.6 | 1100 | Petir, Kelam | Konstruk. Tiap 2 giliran mengisi *Nyala Meriam* (damage besar area giliran berikutnya, bisa dibatalkan dengan Goyah). Memanggil 1 Pelita Padam saat HP < 50%. |
-| **Adipati Baskara** (Fase 1) | Area 5 lt.7 | 700 | — | Manusia + 2 Pengawal Karat. Skill *Titah*: paksa satu party member Lupa 3 giliran. Sela harus tank, Lintang bunuh pengawal dengan Petir. |
-| **Kelam Berwajah** (Fase 2) | Area 5 lt.7 | 1600 | Cahaya (fase A), Kelam (fase B, bergantian tiap 4 giliran) | Bergantian "menjadi kabut" (lemah Cahaya, serap Kelam) dan "menjadi Nyala curian" (lemah Kelam, serap Cahaya). Mengharuskan Rimba dan Lintang saling bergantian jadi damage dealer, dengan Jurus Ganda *Fajar Kelabu* sebagai jawaban universal (abaikan Serap). Serangan pamungkas *Padamkan* di HP < 25%: semua HP party jadi 1 (tidak membunuh), lalu giliran bebas untuk pemain: momen untuk Nyala Pulih. |
+| # | Nama | Area | HP | Lemah | Tahan / Serap | Role & deskripsi |
+|---|---|---|---|---|---|---|
+| 1 | Kunang Kelam | Hutan | 18 | Cahaya | Serap Kelam | Swarm tutorial. Kunang-kunang yang memancarkan gelap. |
+| 2 | Serigala Kabut | Hutan, Rawa | 60 | Api | Tahan Es | Glass cannon cepat; menyasar yang HP-nya terendah. |
+| 3 | Lumut Berjalan | Hutan, Rawa | 85 | Api | Tahan Fisik, Es | Tank pelan + Racun. |
+| 4 | Hampa Pengembara | Semua | 70+ | Cahaya | Serap Kelam | Musuh ikonik; Sentuhan Lupa. Varian Petani/Pedagang/Prajurit/Warga Wirasaba/Pendeta. |
+| 5 | Katak Rawa Bengkak | Rawa | 110 | Petir | Tahan Api, Es | Tank + Racun area. |
+| 6 | Ikan Cermin | Danau | 50 | Petir | Tahan Es, Cahaya | Meniru satu skill terakhir yang dipakai party. Mengajarkan hati-hati memakai skill area. |
+| 7 | Nelayan Hampa | Danau | 95 | Cahaya | Serap Kelam | Menjerat satu kawan (tidak bisa bertindak sampai penjerat dipukul). |
+| 8 | Pengawal Karat | Lorong, Mercusuar | 140 | Petir | Tahan Fisik; Imun Racun, Lupa | Anti-fisik; Sela jadi tank, Lintang jadi pembunuh. |
+| 9 | Bayang Arsip | Lorong, Benteng | 90 | Api | Tahan Petir, Es | Support: buff & heal musuh, Bisu. Prioritas target. |
+| 10 | Kelelawar Kristal | Tambang | 55 | Petir | Tahan Kelam | Evasif, kuras MP, Tidur. |
+| 11 | Penambang Terlupa | Tambang | 160 | Es | Tahan Api | Hard hitter pelan. |
+| 12 | Pelita Padam | Mercusuar, Adiluhung | 120 | Kelam | **Serap Cahaya**, Tahan Api | Pembalik aturan; menghukum autopilot Cahaya. |
 
-### 6.3 Filosofi Bestiary
+**Babak 2**
 
-Setiap musuh biasa punya **satu pelajaran** (kelemahan, status, target priority, atau pembalikan
-aturan), dan setiap boss **menguji pelajaran dari areanya** ditambah satu mekanik baru. Tidak ada
-musuh yang murni "kantong HP".
+| # | Nama | Area | HP | Lemah | Tahan / Serap | Role & deskripsi |
+|---|---|---|---|---|---|---|
+| 13 | Elang Badai | Celah Angin | 210 | Bumi | Tahan Angin, Petir | Terbang: evasi 40% sampai Berat. Mengajarkan Bumi. |
+| 14 | Kambing Batu | Celah Angin | 320 | Angin | Serap Bumi, Tahan Fisik | Tank yang menyeruduk; Goyah kalau di-Angin. |
+| 15 | Kalajengking Abu | Dataran Abu | 260 | Es | Tahan Api, Bumi | Racun kuat + Berat. |
+| 16 | Hantu Kafilah | Dataran Abu | 240 | Cahaya | Serap Kelam, Tahan Angin | Mencuri item party (bisa direbut lewat Curi). |
+| 17 | Cacing Abu Muda | Dataran Abu | 400 | Es, Petir | Tahan Fisik, Bumi | Menelan satu kawan 2 giliran. |
+| 18 | Pohon Gema | Hutan Nyanyi | 350 | Api | Tahan Angin, Bumi | Mengulang skill Ratih untuk musuh (Lagu musuh). |
+| 19 | Burung Peniru | Hutan Nyanyi | 180 | Bumi | Tahan Angin | Meniru status yang sedang diderita party ke kawan lain. |
+| 20 | Pendeta Ordo | Hutan, Benteng | 300 | Kelam | Tahan Cahaya | Manusia; Bisu & Kutuk; memanggil Pelita Padam. |
+| 21 | Warga Wirasaba (Hampa) | Wirasaba | 330 | Cahaya | Serap Kelam | Datang 4–5 sekaligus; masing-masing mengulang satu "kebiasaan" (menawar = curi Keping, menyapu = Buta). |
+| 22 | Konstruk Kaca | Wirasaba, Benteng | 480 | Petir | Tahan Fisik, Api; Imun status | Menyerap elemen terakhir yang mengenainya (jadi Serap 2 giliran). |
+| 23 | Cermin Berjalan | Wirasaba | 260 | Bumi | Serap Cahaya, Kelam | Memantulkan sihir single-target ke pengguna; harus dipukul fisik/area. |
+| 24 | Kepiting Garam | Danau Garam | 420 | Petir | Tahan Es, Bumi, Fisik | Cangkang: Tahan semua sampai di-Pecah (meter 40). |
+| 25 | Hampa Beku | Danau Garam | 360 | Api | Serap Es, Kelam | Menyerap MP tiap serangan. |
+| 26 | Pemanen Ordo | Menara Terapung, Benteng | 450 | Angin | Tahan Cahaya, Fisik | Menyedot 1 Bara tiap 2 giliran. Prioritas target. |
+| 27 | Pelita Hidup Muda | Benteng | 520 | Kelam | Serap Cahaya, Api | Meledak saat mati (damage Cahaya semua). |
+
+**Babak 3**
+
+| # | Nama | Area | HP | Lemah | Tahan / Serap | Role & deskripsi |
+|---|---|---|---|---|---|---|
+| 28 | Gema Pesta | Laut Lupa | 600 | Berganti tiap giliran (diumumkan) | — | Kelemahan berputar; Bara mudah dikumpulkan tapi mereka menyerang area. |
+| 29 | Gema Prajurit | Laut Lupa, Adiluhung | 800 | Kelam | Tahan Fisik, Cahaya | Formasi: DEF ×2 selama ≥2 hidup. |
+| 30 | Hampa Adiluhung | Adiluhung | 900 | Cahaya & Kelam (keduanya) | Serap Api, Es, Petir, Angin, Bumi | Hanya bisa dilukai Cahaya/Kelam/Fisik; menguji build akhir. |
+
+### 6.2 Boss Utama (16)
+
+| # | Boss | Area | Lv | Lemah | Mekanik utama |
+|---|---|---|---|---|---|
+| 1 | Hampa Penjaga Hutan | 1 | 4 | Cahaya, Api | Tutorial: memanggil Kunang tiap 3 giliran; Raung Lupa. |
+| 2 | Raja Katak Lumpur | 2 | 8 | Petir | Racun area tiap 4 giliran; menelan kawan saat HP<50% (lepas kalau Goyah). |
+| 3 | Ular Cermin | 3 | 12 | Petir, Kelam | Tiap 3 giliran "memantulkan" satu party member: klon yang memakai skill mereka. Klon mati kalau aslinya Jaga. |
+| 4 | Kapten Rangga | 4 | 15 | — | "Tandai" lalu Tebas Eksekusi ×3; fase 2 imun Provokasi, dua aksi per giliran. |
+| 5 | Penambang Raksasa Terlupa | 5 | 19 | Berganti tiap 3 giliran | Kristal punggung menyerap satu elemen; kelemahan = lawannya. |
+| 6 | Penjaga Mercusuar | 6 | 21 | Petir, Kelam | Meriam Nyala (isi 2 giliran, batal jika Goyah/Pecah); memanggil Pelita Padam. |
+| 7 | Adipati Baskara → Kelam Berwajah | 6 | 23 | — → Cahaya/Kelam bergantian | F1: Titah (Lupa 3 giliran) + 2 Pengawal Karat. F2: bergantian kabut/Nyala tiap 4 giliran; Padamkan (HP semua jadi 1) di <25%. |
+| 8 | Garuda Kelabu | 7 | 26 | Bumi | Terbang; hanya bisa dipukul fisik saat Berat; Badai Sayap Buta semua. |
+| 9 | Cacing Abu Purba | 8 | 29 | Es, Petir | Segmen: 3 bagian tubuh, kepala imun sampai 2 segmen mati; menelan kawan. |
+| 10 | Sunan Wirya | 9 | 32 | Kelam | Khotbah: Bisu semua tiap 3 giliran (Ratih diam); 2 Bayang Arsip yang terus ia bangkitkan. |
+| 11 | Penjaga Suar Wirasaba | 10 | 34 | Petir | Menyerap elemen terakhir; meter Ketahanan 150; Meriam ganda. |
+| 12 | Kelana (Hampa Berzirah) | 10 | 36 | Cahaya (tapi cerita: pemain diminta *tidak* membunuhnya) | Pertarungan bertahan 8 giliran; tiap kali Lintang bertindak, Ketahanan −20; Pecah = ia berhenti. Membunuhnya tetap mungkin, tapi mengunci ending 1 dan 3 (game memperingatkan). |
+| 13 | Nyi Pandansari | 11 | 39 | Angin | Kaca Pemanen menyedot 2 Bara tiap giliran; harus dihancurkan dulu (target terpisah, 300 HP). |
+| 14 | Juru Nyala Nirmala → Pelita Hidup | 12 | 43 | — → Kelam (Serap Cahaya, Api) | F1: Titah Ordo (Kutuk semua), memanggil Pemanen. F2: Nyala Penuh: tiap 3 giliran damage Cahaya besar semua; Kelana harus dijaga dari heal Cahaya. |
+| 15 | Gema Guntur | 13 | 47 | Api → Cahaya → Kelam (tiap fase) | Tiga fase = tiga ingatan Rimba tentang Guntur. Nyala Penjaga (heal boss penuh) kalau Bara party ≥5 saat giliran boss: pemain harus *membelanjakan* Bara. |
+| 16 | Sang Pelita Pertama | 14 | 52 | F1: Cahaya. F2: Kelam. F3: hanya Jurus Ganda & Jurus Empat yang melukai (serang biasa 1 damage) | F1 "Yang Dibakar": Kutuk & Lupa. F2 "Yang Mengendap": Serap semua elemen kecuali Kelam; memanggil Gema party (klon). F3 "Yang Ingin Dilupakan": HP 9.999; tiap giliran menghapus satu skill acak party sampai pertarungan usai; Lagu Ratih mengembalikan satu. Padamkan Dunia di HP<15%: semua HP jadi 1 + Bara jadi 0; Kenangan yang terbuka memberi Bara balik (1 per Kenangan puncak). |
+
+Mid-boss tambahan: Tujuh Penjaga Suar (Adiluhung, 7 gelombang konstruk masing-masing satu elemen).
+
+### 6.3 Superboss & Buruan Puncak
+
+| Nama | Lokasi | Lv | Mekanik |
+|---|---|---|---|
+| **Sang Penenun** | Pulau Hilang | 58 | Menenun ulang afinitas party (kelemahan party berubah tiap 5 giliran); 30.000 HP; Ketahanan 300. Hadiah: Kaca Penenun (Serang dasar adaptif). |
+| **Cacing Abu Ibu** | Buruan Tk.5, Dataran Abu | 55 | 5 segmen, regenerasi kalau kepala tak dipukul tiap giliran. Hadiah: senjata Pelita Pertama (Rimba) / Serpihan ×3. |
+
+### 6.4 Filosofi Bestiary
+
+Setiap musuh biasa mengajarkan **satu hal** (afinitas, status, prioritas target, atau pembalikan
+aturan). Setiap boss menguji pelajaran areanya plus **satu mekanik baru** yang berhubungan dengan
+cerita area itu (Ular Cermin = pantulan ingatan, Kelana = pertarungan yang tidak untuk dimenangkan,
+Pelita Pertama = kehilangan skill = lupa).
 
 ---
 
-## 7. Antarmuka Teks (Gambaran Awal)
-
-Bukan bagian sistem inti, tapi menentukan rasa. Contoh layar pertarungan target:
+## 7. Antarmuka Teks
 
 ```
-════════════════════════════════════════════════════════════
- RAWA SUAR — Inti Suar Lama
-────────────────────────────────────────────────────────────
- Serigala Kabut  A   [██████░░░░]  ~ lemah: Api
- Lumut Berjalan  B   [██████████]  ~ lemah: ?
-────────────────────────────────────────────────────────────
- Rimba    HP  62/ 71   MP 11/ 18   Bara ◆◆◇◇◇
- Sela     HP  90/ 96   MP  4/  9   [Provokasi]
- Lintang  HP  31/ 44   MP 20/ 27   [Racun]
-────────────────────────────────────────────────────────────
- Giliran Rimba.
-  1) Serang   2) Skill   3) Item   4) Jaga   5) Bara
+════════════════════════════════════════════════════════════════════
+ KOTA KACA WIRASABA — Distrik Pasar
+────────────────────────────────────────────────────────────────────
+ Warga Wirasaba  A  [████░░░░░░]  lemah: Cahaya   serap: Kelam
+ Warga Wirasaba  B  [██████████]  lemah: Cahaya   serap: Kelam
+ Konstruk Kaca   C  [████████░░]  lemah: Petir    KETAHANAN [███░░]
+────────────────────────────────────────────────────────────────────
+ Rimba   HP 412/460  MP  58/ 90   Bara ◆◆◆◇◇◇
+ Sela    HP 590/610  MP  22/ 40   [Provokasi]
+ Bagas   HP 380/420  MP  41/ 75   SC 14   [Lentera Portabel 2]
+ Ratih   HP 300/350  MP  70/110   ♪ Lagu Gugah (2)
+ cadangan: Lintang, Rangga
+────────────────────────────────────────────────────────────────────
+ Giliran Bagas.
+  1) Serang  2) Skill  3) Item  4) Jaga  5) Ganti  6) Bara
 > _
-════════════════════════════════════════════════════════════
+════════════════════════════════════════════════════════════════════
 ```
 
-Prinsip: satu layar = satu keputusan; tidak ada informasi yang butuh scroll ke atas.
+Prinsip: satu layar = satu keputusan. Semua informasi yang dibutuhkan untuk memutuskan ada di layar.
 
 ---
 
-## 8. Yang Sengaja TIDAK Dimasukkan (Scope Guard)
+## 8. Yang Sengaja TIDAK Dimasukkan
 
-- Tidak ada crafting, tidak ada sistem pekerjaan/job, tidak ada romance.
-- Tidak ada peta dunia terbuka atau backtracking wajib selain hub.
-- Tidak ada party lebih dari 3 karakter aktif atau karakter opsional keempat.
-- Tidak ada minigame; puzzle dibatasi pada urutan/tuas sederhana.
-- Tidak ada New Game+ di rilis pertama (bisa ditambah kalau ada waktu).
+- Tidak ada crafting bebas (upgrade Kaca lewat pemakaian, bukan resep).
+- Tidak ada romance, tidak ada sistem job/kelas bebas (Jalur cukup).
+- Tidak ada peta dunia "berjalan"; perpindahan lewat menu.
+- Tidak ada minigame selain Arena.
+- Tidak ada New Game+ di rilis pertama (kandidat pasca-rilis: NG+ dengan Kaca terbawa).
+- Tidak ada party aktif lebih dari 4.
 
 ---
 
-## 9. Langkah Berikutnya (setelah dokumen disetujui)
+## 9. Rencana Pembangunan Bertahap
 
-1. Konfirmasi tabel keputusan di §0.
-2. Tulis rancangan arsitektur kode (modul: `combat`, `world`, `party`, `data/`, `ui`) dengan
-   data musuh/skill/item sebagai file data (JSON/YAML) agar angka mudah dikalibrasi.
-3. Prototipe pertarungan tunggal dengan formula §4.6 dan uji rasio "2–3 pukulan per musuh biasa".
-4. Baru setelah itu: cerita & area, mulai dari Area 1.
+| Tahap | Isi | Hasil |
+|---|---|---|
+| 0 | Arsitektur & data: modul `combat`, `party`, `world`, `ui`, `data/` (JSON untuk skill, musuh, item, Kaca) | Kerangka yang bisa dites |
+| 1 | Prototipe combat: 3 karakter, 5 musuh, formula §4.7, Bara, Pecah | Rasio "2–3 pukulan" terverifikasi |
+| 2 | **Babak 1 lengkap** (area 1–6, 4 karakter, 7 boss, 6 side quest) | Game 6,5 jam yang bisa tamat |
+| 3 | Sistem lanjutan: Ganti/cadangan, Jalur, Kaca, Berkemah/Kenangan, Buruan, Arena | Fondasi Babak 2 |
+| 4 | Babak 2 (area 7–12, 3 karakter baru, 7 boss) | Game 15 jam |
+| 5 | Babak 3 + 3 ending + dungeon opsional + superboss | Game 20 jam |
+| 6 | Kalibrasi, penulisan ulang naskah, playtest | Rilis |
+
+Tahap 2 adalah tonggak terpenting: kalau Babak 1 terasa enak dimainkan, sistemnya terbukti dan
+Babak 2–3 tinggal soal isi. Kalau tidak, lebih murah membetulkannya di sana.
