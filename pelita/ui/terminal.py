@@ -15,6 +15,10 @@ LEBAR = 66
 
 
 class IO:
+    #: True kalau klien menampilkan ``emit()`` secara grafis; render teks (bar ASCII,
+    #: header ruang) dilewati agar tidak tampil dua kali.
+    structured = False
+
     def __init__(self, read: Callable[[str], str] = input, write: Callable[[str], None] = print) -> None:
         self.read = read
         self.write = write
@@ -27,6 +31,9 @@ class IO:
             return self.read(prompt).strip()
         except EOFError:
             return "q"
+
+    def emit(self, kind: str, payload: dict) -> None:
+        """Kanal terstruktur untuk UI selain terminal (web). Terminal mengabaikannya."""
 
 
 def bar(ratio: float, width: int = 10) -> str:
@@ -52,7 +59,33 @@ def _aff_notes(battle: Battle, e: Combatant) -> str:
     return "   ".join(parts)
 
 
+def battle_snapshot(battle: Battle, title: str) -> dict:
+    """Keadaan pertarungan untuk UI terstruktur."""
+    enemies = []
+    for e in battle.enemies:
+        known = battle.bestiary.get(e.key)
+        enemies.append({
+            "key": e.key, "name": e.display_name, "alive": e.alive,
+            "hp": e.hp, "max_hp": e.max_hp, "boss": e.is_boss,
+            "ketahanan": e.ketahanan, "ketahanan_max": e.ketahanan_max, "pecah": e.has("pecah"),
+            "weak": [el.label for el, a in known.items() if a == Affinity.LEMAH],
+            "resist": [el.label for el, a in known.items() if a in (Affinity.TAHAN, Affinity.IMUN)],
+            "absorb": [el.label for el, a in known.items() if a == Affinity.SERAP],
+            "statuses": [{"name": s.name, "turns": s.turns_left, "bad": s.bad} for s in e.statuses.values()],
+        })
+    heroes = [{
+        "key": h.key, "name": h.name, "alive": h.alive, "level": h.level,
+        "hp": h.hp, "max_hp": h.max_hp, "mp": h.mp, "max_mp": h.max_mp,
+        "statuses": [{"name": s.name, "turns": s.turns_left, "bad": s.bad} for s in h.statuses.values()],
+    } for h in battle.heroes]
+    return {"title": title, "round": battle.round, "enemies": enemies, "heroes": heroes,
+            "bara": battle.bara, "bara_max": battle.bara_max, "bara_frozen": battle.bara_frozen}
+
+
 def render_screen(battle: Battle, title: str, io: IO) -> None:
+    io.emit("battle", battle_snapshot(battle, title))
+    if io.structured:
+        return
     io.line("═" * LEBAR)
     io.line(f" {title}")
     io.line("─" * LEBAR)
@@ -188,9 +221,13 @@ def run_battle(battle: Battle, title: str, io: IO, auto: bool = False, pause: bo
             action = ai.choose_enemy_action(battle, actor)
         for e in battle.act(actor, action):
             io.line("  " + e)
+        if not actor.is_player:
+            io.emit("battle", battle_snapshot(battle, title))
         if pause and not actor.is_player and not auto and not battle.over:
             io.ask("(Enter) ")
     io.line("═" * LEBAR)
     r = battle.result
     assert r is not None
+    io.emit("battle", battle_snapshot(battle, title))
+    io.emit("battle_end", {"outcome": r.outcome, "rounds": r.rounds, "xp": r.xp, "keping": r.keping})
     io.line(f" Hasil: {r.outcome.upper()} dalam {r.rounds} ronde.")

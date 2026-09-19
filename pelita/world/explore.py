@@ -65,11 +65,13 @@ class Game:
                 self.render_room()
                 self.menu()
         except QuitGame:
+            self.io.emit("end", {"result": "quit"})
             return "quit"
         except GameOver:
             self.io.line("")
             self.io.line(" Seluruh party tumbang...")
             self.io.line(" Lentera terakhir yang kau nyalakan masih menunggu. (muat save terakhir)")
+            self.io.emit("end", {"result": "gameover"})
             return "gameover"
         except ChapterEnd as e:
             self.io.line("")
@@ -77,6 +79,7 @@ class Game:
             for l in wrap(e.text):
                 self.io.line(l)
             self.io.line("═" * LEBAR)
+            self.io.emit("end", {"result": "chapter_end", "text": e.text})
             return "chapter_end"
 
     def move_to(self, room_id: str, area_id: Optional[str]) -> None:
@@ -91,6 +94,8 @@ class Game:
             self.io.line(f" ═══ {self.area.name} ═══")
         st.room_id = room_id
         room = self.room
+        if self.io.structured:
+            self.io.emit("room", self.room_snapshot())
         if run_enter and room.on_enter:
             self.run_script(room.on_enter)
 
@@ -105,8 +110,22 @@ class Game:
             self.enter_room(room_id, area_id, run_enter=True)
 
     # -- tampilan -----------------------------------------------------------
+    def room_snapshot(self) -> dict:
+        st, room = self.state, self.room
+        return {
+            "area_id": self.area.id, "area": self.area.name, "room_id": room.id, "room": room.name,
+            "text": room.text, "safe": room.safe, "fog": self.area.fog, "lentera": st.lentera_steps,
+            "keping": st.keping, "bara_max": st.bara_max,
+            "party": [{"key": h.id, "name": h.name, "level": h.level, "hp": h.hp, "max_hp": h.max_hp,
+                       "mp": h.mp, "max_mp": h.max_mp, "guest": h.guest} for h in st.party],
+            "quests": {q: s for q, s in st.quests.items()},
+        }
+
     def render_room(self) -> None:
         st, room = self.state, self.room
+        self.io.emit("room", self.room_snapshot())
+        if self.io.structured:
+            return
         self.io.line("")
         self.io.line("─" * LEBAR)
         self.io.line(f" {self.area.name} — {room.name}")

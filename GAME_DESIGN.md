@@ -964,6 +964,26 @@ Pelita Pertama = kehilangan skill = lupa).
 
 Prinsip: satu layar = satu keputusan. Semua informasi yang dibutuhkan untuk memutuskan ada di layar.
 
+### 7.1 Antarmuka web (tambahan di luar desain awal)
+
+Selain terminal, permainan bisa dimainkan di browser (`python -m pelita --web`). Mesinnya sama
+persis; yang berbeda hanya lapisan tampilan. Prinsip §7 tetap berlaku: satu layar, satu keputusan.
+
+Yang ditampilkan secara grafis:
+
+| Unsur | Tampilan web |
+|---|---|
+| Lokasi | Panorama SVG per area (desa, hutan berkabut, rawa, danau, kota, saluran, tambang, menara) |
+| Kabut | Lapisan kabut di panorama + penghitung sisa Minyak Lentera |
+| Musuh | Kartu dengan bar HP, meter Ketahanan, label kelemahan/tahan/serap dari Catatan Penyala |
+| Party | Kartu dengan potret, bar HP/MP, label status |
+| Bara | Deretan belah ketupat yang menyala |
+| Damage | Angka melayang di atas kartu yang terkena; merah untuk biasa, kuning untuk LEMAH |
+| Dialog | Nama pembicara di kolom kiri, kalimat di kanan; narasi dibedakan dari log pertarungan |
+
+Seni dibuat prosedural (SVG dari kode), tanpa berkas aset dan tanpa internet. Area baru otomatis
+memakai panorama bawaan sampai seni khususnya ditambahkan.
+
 ---
 
 ## 8. Yang Sengaja TIDAK Dimasukkan

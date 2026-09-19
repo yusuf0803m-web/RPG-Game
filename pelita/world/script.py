@@ -78,11 +78,17 @@ class ScriptRunner:
 
     # -- utilitas tampilan --------------------------------------------------
     def narrate(self, text: str) -> None:
+        self.io.emit("text", {"text": text})
+        if self.io.structured:
+            return
         for line in wrap(text):
             self.io.line(line)
         self.io.line("")
 
     def say(self, who: str, text: str) -> None:
+        self.io.emit("say", {"who": who, "text": text})
+        if self.io.structured:
+            return
         lines = wrap(text, width=56, indent="")
         head = f" {who:<8}: "
         for i, l in enumerate(lines):

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Pelita Terakhir</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23131820'/%3E%3Ccircle cx='16' cy='16' r='9' fill='%23f0b45c' opacity='.25'/%3E%3Crect x='12' y='11' width='8' height='11' rx='2' fill='%23f0b45c'/%3E%3Cpath d='M11 10h10l2-4H9z' fill='%235d431f'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+
+<!-- ══ Layar judul ══════════════════════════════════════════════════════ -->
+<div id="title-screen" class="screen">
+  <div class="title-art" id="title-art"></div>
+  <div class="title-veil"></div>
+  <div class="title-inner">
+    <h1 class="game-title">Pelita<span>Terakhir</span></h1>
+    <p class="game-sub">Lembah yang meredup, dan satu percikan yang masih ingat jalan pulang.</p>
+    <div class="title-menu">
+      <button class="btn btn-primary" id="btn-new">Mulai Baru</button>
+      <button class="btn" id="btn-load">Muat Permainan</button>
+    </div>
+    <div class="slot-list" id="slot-list" hidden></div>
+    <p class="title-foot">Babak 1 — Lembah Larung</p>
+  </div>
+</div>
+
+<!-- ══ Layar permainan ══════════════════════════════════════════════════ -->
+<div id="game-screen" class="screen" hidden>
+
+  <!-- panorama lokasi -->
+  <header class="scene" id="scene">
+    <div class="scene-art" id="scene-art"></div>
+    <div class="scene-fog" id="scene-fog"></div>
+    <div class="scene-label">
+      <span class="scene-area" id="scene-area">—</span>
+      <h2 class="scene-room" id="scene-room">—</h2>
+    </div>
+    <div class="scene-meta">
+      <span class="chip" id="chip-keping" title="Keping">◈ <b>0</b></span>
+      <span class="chip" id="chip-lentera" title="Sisa langkah minyak lentera" hidden>🜂 <b>0</b></span>
+      <button class="chip chip-btn" id="btn-quit" title="Kembali ke layar judul">Keluar</button>
+    </div>
+  </header>
+
+  <main class="stage">
+
+    <!-- arena pertarungan -->
+    <section class="battle" id="battle" hidden>
+      <div class="battle-head">
+        <span class="battle-round" id="battle-round">Ronde 1</span>
+        <div class="bara" id="bara" hidden><span class="bara-label">Bara</span><span class="bara-pips" id="bara-pips"></span></div>
+      </div>
+      <div class="enemies" id="enemies"></div>
+    </section>
+
+    <!-- narasi & log -->
+    <section class="story" id="story">
+      <div class="log" id="log"></div>
+    </section>
+
+    <!-- party -->
+    <aside class="party" id="party"></aside>
+  </main>
+
+  <!-- pilihan aksi -->
+  <footer class="choices" id="choices">
+    <div class="prompt-label" id="prompt-label"></div>
+    <div class="choice-grid" id="choice-grid"></div>
+    <form class="free-input" id="free-input" hidden>
+      <input type="text" id="free-text" autocomplete="off" placeholder="ketik jawaban…">
+      <button class="btn btn-primary" type="submit">Kirim</button>
+    </form>
+  </footer>
+
+  <div class="toast" id="toast" hidden></div>
+</div>
+
+<script src="/static/art.js"></script>
+<script src="/static/app.js"></script>
+</body>
+</html>

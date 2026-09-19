@@ -1,14 +1,30 @@
 # Pelita Terakhir
 
-RPG teks turn-based bergaya JRPG klasik, dibangun dengan Python (stdlib saja).
+RPG teks turn-based bergaya JRPG klasik, dibangun dengan Python. Mesin permainan hanya memakai
+pustaka standar; antarmuka web menambah satu dependensi, Flask.
 
 - **Dokumen desain**: [`GAME_DESIGN.md`](GAME_DESIGN.md) (edisi 20 jam, tiga babak).
 - **Status**: Tahap 2 dari rencana di §9 dokumen desain selesai — **Babak 1 (Lembah Larung) bisa dimainkan
   sampai tamat**: 8 area, 8 boss, 4 anggota party, 5 side quest, save/muat.
+- **Dua antarmuka**: web (grafis) dan terminal. Keduanya memakai mesin permainan yang sama.
 
-## Bermain
+## Bermain di browser
 
-Butuh Python 3.10+.
+```bash
+pip install flask
+python -m pelita --web                  # lalu buka http://127.0.0.1:5000
+python -m pelita --web --port 8000      # porta lain
+```
+
+Antarmuka web menampilkan panorama per area, kartu musuh dengan bar HP dan meter
+Ketahanan, kartu party dengan potret dan bar HP/MP, meteran Bara, dialog bergaya,
+serta angka damage yang melayang saat pukulan mendarat. Semua gambar dibuat dari
+SVG di `pelita/web/static/art.js`, jadi tidak ada berkas aset dan tidak butuh
+internet. Pilihan bisa diklik atau ditekan dengan angka 1–9.
+
+## Bermain di terminal
+
+Butuh Python 3.10+ saja.
 
 ```bash
 python -m pelita                        # layar judul: Mulai Baru / Muat / Prototipe Combat
@@ -32,7 +48,7 @@ python -m pelita -s rawa --auto --seed 3 --no-pause
 
 ```bash
 pip install pytest
-python -m pytest -q                     # 61 tes, termasuk walkthrough otomatis Babak 1
+python -m pytest -q                     # 73 tes: unit, walkthrough Babak 1, dan API web
 python tools/calibrate.py --n 200       # simulasi rasio "2–3 pukulan" per skenario
 python tools/walkthrough.py --seed 11   # pemain otomatis dari prolog sampai Akhir Babak 1;
                                         # mencetak level party & lama tiap boss
@@ -57,11 +73,33 @@ pelita/
     state.py       GameState: party, inventori, flag, quest, kabut, save/load
     script.py      interpreter skrip cerita (narasi, dialog, if/once/choice, battle, join, ...)
     explore.py     loop eksplorasi, encounter, menu, toko, penginapan
-  ui/terminal.py   layar pertarungan & menu teks
+  ui/terminal.py   layar pertarungan & menu teks; IO.emit() = kanal terstruktur untuk web
+  web/
+    session.py     satu sesi = satu thread Game.run() dengan IO antrian (event ⇄ input)
+    app.py         server Flask: /api/session, /state (long-poll), /input
+    static/        index.html, style.css, app.js (klien), art.js (SVG prosedural)
   data/            characters, skills, enemies, items; world/area_*.json, shops, quests
 tools/             calibrate.py, walkthrough.py
 tests/             pytest (walker.py = pemain otomatis untuk tes alur)
 ```
+
+## Cara antarmuka web bekerja
+
+Mesin permainan tidak tahu-menahu soal web. Ia hanya menulis ke sebuah objek `IO`.
+Versi terminal mencetak ke layar; versi web menaruh tiap keluaran ke antrian event,
+dan `IO.ask()` memblokir sampai browser mengirim jawaban.
+
+```
+Game.run()  ──IO.line/emit──▶  antrian event  ──GET /state (long-poll)──▶  browser
+     ▲                                                                        │
+     └──────────────  IO.ask() menunggu  ◀── POST /input ──────────────────────┘
+```
+
+Selain baris teks, mesin mengirim **event terstruktur** lewat `IO.emit()`: `room`
+(area, ruang, party, keping), `battle` (musuh, HP, afinitas yang sudah diketahui,
+status, Bara), `say` dan `text` (dialog dan narasi), serta `end`. Itulah yang
+digambar klien. Menambah area atau musuh baru tidak perlu menyentuh kode web sama
+sekali; panorama memakai seni bawaan bila id area belum punya gambar sendiri.
 
 ## Menambah konten
 
