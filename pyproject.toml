@@ -1,0 +1,27 @@
+[project]
+name = "pelita-terakhir"
+version = "0.1.0"
+description = "RPG teks turn-based bergaya JRPG klasik (prototipe)"
+requires-python = ">=3.10"
+dependencies = []
+
+[project.optional-dependencies]
+web = ["flask>=3"]
+dev = ["pytest>=7", "flask>=3"]
+
+[project.scripts]
+pelita = "pelita.__main__:main"
+pelita-web = "pelita.web.app:main"
+
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+include = ["pelita*"]
+
+[tool.setuptools.package-data]
+pelita = ["data/*.json", "data/world/*.json", "web/static/*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

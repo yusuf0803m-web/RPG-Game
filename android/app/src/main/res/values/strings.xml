@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Pelita Terakhir</string>
+    <string name="memuat">Menyalakan lentera…</string>
+    <string name="memuat_lama">Pertama kali dibuka memang agak lama.</string>
+    <string name="gagal">Gagal menyalakan permainan.</string>
+    <string name="tekan_lagi">Tekan sekali lagi untuk keluar.</string>
+</resources>

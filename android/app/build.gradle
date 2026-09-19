@@ -1,0 +1,77 @@
+plugins {
+    id 'com.android.application'
+    id 'com.chaquo.python'
+}
+
+// Mesin permainan tidak diduplikasi di folder Android. Paket pelita/ disalin apa
+// adanya dari akar repo ke folder staging sebelum Chaquopy mengemasnya, sehingga
+// hanya ada satu salinan kode Python yang perlu dirawat.
+def repoRoot = rootProject.projectDir.parentFile
+def pythonStage = layout.buildDirectory.dir("pythonStage").get().asFile
+
+tasks.register('sinkronSumberPython', Copy) {
+    description = 'Salin paket pelita/ dari akar repo ke folder staging Chaquopy.'
+    group = 'build'
+    from("$repoRoot/pelita") {
+        into 'pelita'
+    }
+    exclude '**/__pycache__/**', '**/*.pyc'
+    into pythonStage
+}
+
+android {
+    namespace 'com.pelita.terakhir'
+    compileSdk 34
+
+    defaultConfig {
+        applicationId "com.pelita.terakhir"
+        minSdk 24
+        targetSdk 34
+        versionCode 1
+        versionName "0.1.0-babak1"
+
+        ndk {
+            // arm64 untuk HP modern, armeabi-v7a untuk perangkat 32-bit lama.
+            abiFilters 'arm64-v8a', 'armeabi-v7a'
+        }
+    }
+
+    buildTypes {
+        debug {
+            minifyEnabled false
+        }
+        release {
+            minifyEnabled false
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+}
+
+chaquopy {
+    defaultConfig {
+        version "3.11"
+        pip {
+            install "flask"
+        }
+    }
+    sourceSets {
+        main {
+            srcDir pythonStage
+        }
+    }
+}
+
+// Folder staging adalah keluaran dari sinkronSumberPython sekaligus masukan bagi
+// seluruh tugas Python milik Chaquopy (mergeDebugPythonSources dan kawan-kawan).
+// Gradle menolak build kalau hubungan itu tidak dinyatakan, dan tugas-tugas itu
+// tidak lewat preBuild, jadi ketergantungan dipasang ke semuanya sekaligus.
+tasks.matching {
+    it.name != 'sinkronSumberPython' &&
+        (it.name == 'preBuild' || it.name.toLowerCase().contains('python'))
+}.configureEach {
+    dependsOn 'sinkronSumberPython'
+}

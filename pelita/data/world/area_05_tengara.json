@@ -1,0 +1,825 @@
+{
+ "id": "tengara",
+ "name": "Ibukota Tengara",
+ "level_range": "12–15",
+ "start": "dermaga_kota",
+ "fog": false,
+ "encounter_rate": 0.0,
+ "encounters": [],
+ "rooms": {
+  "dermaga_kota": {
+   "name": "Dermaga Kota",
+   "safe": true,
+   "text": "Dermaga batu andesit dengan tiang-tiang lentera setinggi tiga orang. Di belakangnya, tembok Tengara menjulang, dan di belakang tembok, di kejauhan, Mercusuar Langit: putih, sunyi, gelap di puncaknya.",
+   "on_enter": "masuk_tengara",
+   "exits": [
+    {
+     "label": "Perahu kembali ke Desa Apung Telaga",
+     "to": "dermaga_telaga",
+     "area": "danau_cermin"
+    },
+    {
+     "label": "Masuk ke Pasar Bawah",
+     "to": "pasar_bawah"
+    }
+   ],
+   "objects": [
+    {
+     "id": "lentera_dermaga",
+     "name": "Lentera penjaga (simpan & istirahat)",
+     "script": "lentera_save"
+    },
+    {
+     "id": "papan_buruan",
+     "name": "Papan Buruan Kafilah",
+     "verb": "Baca",
+     "script": "papan_buruan_kafilah",
+     "if": [
+      "boss_ular_kalah"
+     ]
+    }
+   ],
+   "npcs": [
+    {
+     "id": "juru_arena",
+     "name": "Juru Arena Kafilah",
+     "script": "arena_kafilah",
+     "if": [
+      "boss_ular_kalah"
+     ]
+    }
+   ]
+  },
+  "pasar_bawah": {
+   "name": "Pasar Bawah",
+   "safe": true,
+   "text": "Pasar bertingkat di lereng dalam tembok. Ramai, tapi ramainya pelan: orang-orang bicara setengah suara dan menghitung keping dua kali. Harga tempe ditulis di papan: delapan keping.",
+   "exits": [
+    {
+     "label": "Ke dermaga kota",
+     "to": "dermaga_kota"
+    },
+    {
+     "label": "Penginapan Lentera Merah",
+     "to": "penginapan"
+    },
+    {
+     "label": "Kios Tukang Kaca",
+     "to": "tukang_kaca"
+    },
+    {
+     "label": "Ke Gerbang Istana",
+     "to": "gerbang_istana"
+    },
+    {
+     "label": "Ke Distrik Sunyi",
+     "to": "distrik_sunyi"
+    },
+    {
+     "label": "Ke Balai Arsip",
+     "to": "balai_arsip",
+     "if": [
+      "boss_rangga_kalah"
+     ],
+     "locked": "Balai Arsip dijaga dua pengawal. \"Tertutup untuk umum. Perintah Adipati.\""
+    },
+    {
+     "label": "Ke Gerbang Utara (jalan ke Tambang)",
+     "to": "gerbang_utara",
+     "if": [
+      "arsip_dibaca"
+     ],
+     "locked": "Gerbang Utara ditutup rantai. Tidak ada alasan ke sana; belum."
+    }
+   ],
+   "npcs": [
+    {
+     "id": "salim",
+     "name": "Juragan Salim (pedagang)",
+     "script": "bicara_salim"
+    },
+    {
+     "id": "harun",
+     "name": "Pak Pos Harun",
+     "script": "bicara_harun"
+    }
+   ],
+   "latar_varian": [
+    {
+     "if": [
+      "boss_rangga_kalah"
+     ],
+     "latar": "tengara/pasar_bawah_siaga"
+    }
+   ]
+  },
+  "penginapan": {
+   "name": "Penginapan Lentera Merah",
+   "safe": true,
+   "text": "Penginapan dua lantai dengan lentera merah besar di depannya. Dalamnya hangat dan bau kayu manis. Mbak Wulan, pemiliknya, sedang memanggil-manggil sesuatu ke kolong meja.",
+   "exits": [
+    {
+     "label": "Kembali ke Pasar Bawah",
+     "to": "pasar_bawah"
+    }
+   ],
+   "npcs": [
+    {
+     "id": "wulan",
+     "name": "Mbak Wulan",
+     "script": "bicara_wulan"
+    }
+   ],
+   "objects": [
+    {
+     "id": "kamar",
+     "name": "Kamar (menginap, 40 Keping)",
+     "script": "inn_tengara"
+    }
+   ]
+  },
+  "tukang_kaca": {
+   "name": "Kios Tukang Kaca",
+   "safe": true,
+   "text": "Kios sempit penuh kaca: lentera, lensa, botol, dan kaca-kaca kecil yang berdengung kalau didekati. Mpu Sarwa, tukang kacanya, memakai kacamata setebal jari.",
+   "exits": [
+    {
+     "label": "Kembali ke Pasar Bawah",
+     "to": "pasar_bawah"
+    }
+   ],
+   "npcs": [
+    {
+     "id": "sarwa",
+     "name": "Mpu Sarwa (Tukang Kaca)",
+     "script": "bicara_sarwa"
+    }
+   ]
+  },
+  "gerbang_istana": {
+   "name": "Gerbang Istana",
+   "safe": true,
+   "text": "Gerbang besi setinggi pohon, dijaga enam Pengawal Mahkota. Di baliknya, halaman istana dan tangga ke kaki Mercusuar. Semua pintu menuju menara lewat halaman ini, dan halaman ini tertutup.",
+   "on_enter": "adegan_gerbang",
+   "exits": [
+    {
+     "label": "Kembali ke Pasar Bawah",
+     "to": "pasar_bawah"
+    }
+   ]
+  },
+  "distrik_sunyi": {
+   "name": "Distrik Sunyi",
+   "safe": true,
+   "text": "Distrik luar yang sudah ditinggalkan. Lenteranya padam semua kecuali satu, di jendela sebuah rumah kecil. Saluran air kota bermuara di sini: jeruji besi besar di kaki tembok, setengah tertutup lumut.",
+   "exits": [
+    {
+     "label": "Kembali ke Pasar Bawah",
+     "to": "pasar_bawah"
+    },
+    {
+     "label": "Masuk ke Lorong Bawah lewat jeruji",
+     "to": "saluran_masuk",
+     "area": "lorong_bawah",
+     "if": [
+      "rencana_lorong"
+     ],
+     "locked": "Jeruji besi berkarat. Bisa dibuka, tapi untuk apa masuk ke saluran air kota?"
+    }
+   ],
+   "npcs": [
+    {
+     "id": "asih",
+     "name": "Nenek Asih (rumah berlentera)",
+     "script": "bicara_asih"
+    }
+   ],
+   "objects": [
+    {
+     "id": "lentera_sunyi",
+     "name": "Lentera penjaga (simpan & istirahat)",
+     "script": "lentera_save"
+    }
+   ]
+  },
+  "balai_arsip": {
+   "name": "Balai Arsip",
+   "safe": true,
+   "text": "Ruang tinggi penuh rak gulungan. Debu tebal di semua tempat kecuali satu meja, tempat seseorang baru-baru ini membuka gulungan dan tidak menggulungnya kembali.",
+   "on_enter": "adegan_arsip",
+   "exits": [
+    {
+     "label": "Kembali ke Pasar Bawah",
+     "to": "pasar_bawah"
+    },
+    {
+     "label": "Turun kembali ke Lorong Bawah",
+     "to": "gerbang_arsip",
+     "area": "lorong_bawah"
+    }
+   ],
+   "objects": [
+    {
+     "id": "lentera_arsip",
+     "name": "Lentera penjaga (simpan & istirahat)",
+     "script": "lentera_save"
+    }
+   ]
+  },
+  "gerbang_utara": {
+   "name": "Gerbang Utara",
+   "safe": true,
+   "text": "Gerbang kecil di tembok utara, rantainya sudah kalian potong. Di luar, jalan berbatu mendaki ke lereng gunung, ke mulut Tambang Kaca Ingatan yang menganga hitam.",
+   "exits": [
+    {
+     "label": "Kembali ke Pasar Bawah",
+     "to": "pasar_bawah"
+    },
+    {
+     "label": "Mendaki ke Tambang Kaca Ingatan",
+     "to": "mulut_tambang",
+     "area": "tambang"
+    }
+   ],
+   "objects": [
+    {
+     "id": "lentera_utara",
+     "name": "Lentera penjaga (simpan & istirahat)",
+     "script": "lentera_save"
+    }
+   ],
+   "latar": "tengara/distrik_sunyi"
+  }
+ },
+ "scripts": {
+  "lentera_save": [
+   {
+    "text": "Kau merapikan sumbu dan menuang sedikit minyak. Nyalanya menegak."
+   },
+   {
+    "heal": "all"
+   },
+   {
+    "save": true
+   },
+   {
+    "if": [
+     "has:bekal_kemah"
+    ],
+    "then": [
+     {
+      "kemah": true
+     }
+    ]
+   }
+  ],
+  "inn_tengara": [
+   {
+    "inn": 40
+   }
+  ],
+  "masuk_tengara": [
+   {
+    "once": "tengara_masuk_adegan",
+    "do": [
+     {
+      "say": "Lintang",
+      "text": "Menaranya... besar sekali."
+     },
+     {
+      "say": "Sela",
+      "text": "Dan gelap. Dua belas tahun. Dulu dari dermaga ini kau bisa membaca surat tengah malam."
+     },
+     {
+      "say": "Rimba",
+      "text": "Kalau Pak Guntur ke sini, ke mana dia pergi?"
+     },
+     {
+      "say": "Sela",
+      "text": "Kalau dia Penyala yang tahu apa yang ia lakukan: ke menara. Dan semua jalan ke menara lewat gerbang istana. Yang berarti lewat Adipati. Yang berarti lewat... orang-orang yang mengenalku."
+     },
+     {
+      "say": "Sela",
+      "text": "Kita coba cara sopan dulu. Kalau tidak bisa, aku tahu cara yang tidak sopan."
+     }
+    ]
+   }
+  ],
+  "adegan_gerbang": [
+   {
+    "once": "gerbang_istana_adegan",
+    "do": [
+     {
+      "text": "Pengawal di gerbang menatap lentera Rimba, lalu Lintang, lalu berhenti di Sela. Lama."
+     },
+     {
+      "say": "Pengawal",
+      "text": "...Prajurit Sela. Kau masih hidup."
+     },
+     {
+      "say": "Sela",
+      "text": "Danu. Kau masih di gerbang."
+     },
+     {
+      "say": "Pengawal",
+      "text": "Aku masih di tempat aku ditugaskan. (Ia menelan ludah.) Apa maumu?"
+     },
+     {
+      "say": "Rimba",
+      "text": "Kami mencari Penyala tua yang mungkin datang beberapa hari lalu. Dan kami ingin bicara dengan Adipati soal Mercusuar."
+     },
+     {
+      "say": "Pengawal",
+      "text": "Tidak ada Penyala tua yang lewat gerbang ini. Dan Adipati tidak menerima siapa pun soal Mercusuar. Sudah dua belas tahun begitu."
+     },
+     {
+      "pause": true
+     },
+     {
+      "text": "Langkah kaki dari halaman. Seorang lelaki bertombak dan berpanji, rahangnya keras, matanya lelah. Kapten Rangga. Ia berhenti tiga langkah dari gerbang dan tidak melewatinya."
+     },
+     {
+      "say": "Rangga",
+      "text": "Sela."
+     },
+     {
+      "say": "Sela",
+      "text": "Kapten."
+     },
+     {
+      "say": "Rangga",
+      "text": "Kau desersi. Hukumannya kau tahu. Aku tidak menangkapmu sekarang karena kau membawa anak-anak, dan karena aku sedang tidak ingin. Pergi dari kota ini sebelum aku ingin."
+     },
+     {
+      "say": "Rimba",
+      "text": "Kapten, Mercusuar..."
+     },
+     {
+      "say": "Rangga",
+      "text": "Mercusuar bukan urusanmu, Nak. Bukan urusanku juga. Adipati yang memutuskan, dan kota ini berdiri karena ada yang memutuskan. Itu saja yang kutahu. Itu saja yang perlu kutahu."
+     },
+     {
+      "text": "Ia berbalik. Gerbang tetap tertutup."
+     },
+     {
+      "pause": true
+     },
+     {
+      "say": "Sela",
+      "text": "Cara sopan gagal. Kabar baiknya: aku pernah lima tahun jadi pengawal di kota ini, dan pengawal tahu satu hal yang tidak ditulis di peta. Saluran air kota bermuara di Distrik Sunyi, dan hulunya... di bawah Balai Arsip, di dalam tembok istana."
+     },
+     {
+      "say": "Lintang",
+      "text": "Kita lewat air?"
+     },
+     {
+      "say": "Sela",
+      "text": "Kita lewat air. Basah, bau, dan mungkin ada zirah-zirah kosong yang masih berpatroli. Tapi Arsip menyimpan catatan Pelita, dan catatan itu akan bilang siapa Penyala terakhir yang masuk menara."
+     },
+     {
+      "set": "rencana_lorong"
+     },
+     {
+      "quest": "mencari_guntur",
+      "state": "lorong"
+     }
+    ]
+   }
+  ],
+  "bicara_salim": [
+   {
+    "if": [
+     "!sq_pasar_selesai"
+    ],
+    "then": [
+     {
+      "if": [
+       "!sq_pasar_aktif"
+      ],
+      "then": [
+       {
+        "say": "Salim",
+        "text": "Beli dulu, baru ngobrol. (Ia melirik lentera Rimba.) ...Kau Penyala? Kalau begitu ngobrol dulu. Tiap malam ada Hampa masuk pasar dari sisi tembok. Pengawal tidak mau turun. Kalau kau usir mereka malam ini, dagangan terbaikku jadi milikmu, dan keping yang lumayan."
+       },
+       {
+        "choice": [
+         {
+          "text": "Baik, malam ini kami jaga pasar.",
+          "then": [
+           {
+            "set": "sq_pasar_aktif"
+           },
+           {
+            "quest": "hampa_pasar_malam",
+            "state": "aktif"
+           },
+           {
+            "say": "Salim",
+            "text": "Datang lagi ke sini kalau sudah siap. Aku tunggu sampai lentera-lentera pasar dinyalakan."
+           }
+          ]
+         },
+         {
+          "text": "Nanti dulu.",
+          "then": []
+         }
+        ]
+       }
+      ],
+      "else": [
+       {
+        "choice": [
+         {
+          "text": "Kami siap. Tunggu malam di sini.",
+          "then": [
+           {
+            "text": "Malam turun. Lentera pasar dinyalakan satu-satu, dan seperti kata Salim, bayangan-bayangan merayap masuk dari sisi tembok: orang-orang yang masih menawar harga ke udara kosong."
+           },
+           {
+            "battle": [
+             "hampa_pengembara",
+             "hampa_pengembara",
+             "nelayan_hampa"
+            ],
+            "boss": false,
+            "can_flee": false,
+            "lose": "gameover",
+            "win": [
+             {
+              "say": "Salim",
+              "text": "...Kau sungguhan Penyala. Ini, sesuai janji. Dan ini, karena aku tidak enak hati."
+             },
+             {
+              "give": {
+               "gelang_kilat": 1,
+               "ramuan_sari": 1
+              }
+             },
+             {
+              "keping": 250
+             },
+             {
+              "set": "sq_pasar_selesai"
+             },
+             {
+              "quest": "hampa_pasar_malam",
+              "state": "selesai"
+             }
+            ]
+           }
+          ]
+         },
+         {
+          "text": "Belum siap.",
+          "then": []
+         }
+        ]
+       }
+      ]
+     }
+    ],
+    "else": [
+     {
+      "say": "Salim",
+      "text": "Pasar aman sejak malam itu. Belanja?"
+     }
+    ]
+   },
+   {
+    "shop": "pasar_bawah"
+   }
+  ],
+  "bicara_harun": [
+   {
+    "if": [
+     "!sq_surat_selesai"
+    ],
+    "then": [
+     {
+      "if": [
+       "!sq_surat_aktif"
+      ],
+      "then": [
+       {
+        "say": "Harun",
+        "text": "Aku tukang pos. Dulu. Sekarang tidak ada yang mengirim surat ke Distrik Sunyi, karena tidak ada yang tinggal di sana. Kecuali satu. Nenek Asih. Dan ada surat untuknya sejak tiga bulan lalu, dari cucunya di Wirasaba, sebelum... sebelum semuanya."
+       },
+       {
+        "say": "Harun",
+        "text": "Kakiku sudah tidak kuat. Dan jujur, aku takut ke sana. Kau mau antar?"
+       },
+       {
+        "choice": [
+         {
+          "text": "Kami antar.",
+          "then": [
+           {
+            "set": "sq_surat_aktif"
+           },
+           {
+            "quest": "surat_distrik_sunyi",
+            "state": "aktif"
+           },
+           {
+            "say": "Harun",
+            "text": "Rumah dengan lentera yang masih menyala. Satu-satunya di sana. Terima kasih, Nak."
+           }
+          ]
+         },
+         {
+          "text": "Nanti dulu.",
+          "then": []
+         }
+        ]
+       }
+      ],
+      "else": [
+       {
+        "say": "Harun",
+        "text": "Rumah dengan lentera yang masih menyala, di Distrik Sunyi."
+       }
+      ]
+     }
+    ],
+    "else": [
+     {
+      "say": "Harun",
+      "text": "Nenek Asih membaca suratnya? Bagus. Bagus. Dua belas tahun aku antar surat, dan yang satu itu yang paling berat."
+     }
+    ]
+   }
+  ],
+  "bicara_asih": [
+   {
+    "if": [
+     "sq_surat_aktif",
+     "!sq_surat_selesai"
+    ],
+    "then": [
+     {
+      "say": "Asih",
+      "text": "Surat? Untukku? (Tangannya gemetar membuka segel.) Dari Wirasaba... dari cucuku. Tiga bulan. Tiga bulan lalu dia masih menulis. Dia bilang... dia bilang dia akan pulang lewat gunung kalau jalan sudah aman."
+     },
+     {
+      "text": "Nenek Asih melipat surat itu dan menempelkannya ke dada. Ia tidak bilang apa-apa lagi untuk waktu yang lama."
+     },
+     {
+      "say": "Asih",
+      "text": "Ini. Cucuku menabungnya untukku. Aku tidak butuh. Aku butuh dia pulang, dan itu tidak bisa kalian antar."
+     },
+     {
+      "give": {
+       "ramuan_sari": 1,
+       "serpihan_ingatan": 1
+      }
+     },
+     {
+      "keping": 150
+     },
+     {
+      "set": "sq_surat_selesai"
+     },
+     {
+      "quest": "surat_distrik_sunyi",
+      "state": "selesai"
+     }
+    ],
+    "else": [
+     {
+      "if": [
+       "sq_surat_selesai"
+      ],
+      "then": [
+       {
+        "say": "Asih",
+        "text": "Aku baca suratnya tiap malam. Tiap malam, sebelum lupa. Lentera ini kunyalakan supaya dia tahu jalan pulang."
+       }
+      ],
+      "else": [
+       {
+        "say": "Asih",
+        "text": "Orang-orang pindah ke dalam tembok. Aku tidak. Kalau cucuku pulang, dia harus lihat lentera di jendela yang sama."
+       }
+      ]
+     }
+    ]
+   }
+  ],
+  "bicara_wulan": [
+   {
+    "if": [
+     "!sq_kucing_selesai"
+    ],
+    "then": [
+     {
+      "if": [
+       "!sq_kucing_aktif"
+      ],
+      "then": [
+       {
+        "say": "Wulan",
+        "text": "Meong! Meooong! (Ia menoleh.) Maaf. Kucing penginapan. Hilang sejak kemarin; terakhir dilihat masuk ke saluran air di belakang. Kalau kalian orang gila yang mau masuk ke sana, tolong bawa dia pulang. Aku beri jimat peninggalan suamiku. Dia tidak butuh lagi."
+       },
+       {
+        "set": "sq_kucing_aktif"
+       },
+       {
+        "quest": "kucing_penginapan",
+        "state": "aktif"
+       }
+      ],
+      "else": [
+       {
+        "if": [
+         "has:kucing_meong"
+        ],
+        "then": [
+         {
+          "say": "Wulan",
+          "text": "MEONG! Kau bawa dia! Sini, sini... Kau bau got, Meong. (Ke kalian.) Ini jimatnya. Dan menginap gratis malam ini."
+         },
+         {
+          "take": {
+           "kucing_meong": 1
+          }
+         },
+         {
+          "give": {
+           "jimat_lentera": 1
+          }
+         },
+         {
+          "set": "sq_kucing_selesai"
+         },
+         {
+          "quest": "kucing_penginapan",
+          "state": "selesai"
+         },
+         {
+          "heal": "all"
+         }
+        ],
+        "else": [
+         {
+          "say": "Wulan",
+          "text": "Belum ketemu? Dia suka tempat kering. Di saluran air pasti ada bagian yang kering."
+         }
+        ]
+       }
+      ]
+     }
+    ],
+    "else": [
+     {
+      "say": "Wulan",
+      "text": "Meong tidur di dapur sejak kalian bawa pulang. Tidak mau dekat pintu belakang lagi."
+     }
+    ]
+   },
+   {
+    "choice": [
+     {
+      "text": "Menginap (40 Keping)",
+      "then": [
+       {
+        "inn": 40
+       }
+      ]
+     },
+     {
+      "text": "Tidak sekarang",
+      "then": []
+     }
+    ]
+   }
+  ],
+  "bicara_sarwa": [
+   {
+    "once": "sarwa_kenal",
+    "do": [
+     {
+      "say": "Sarwa",
+      "text": "Serpihan Ingatan? Kaca kecil yang hangat? (Ia mendekatkan kacamatanya.) Tungkuku baru saja cukup panas. Bawa tiga serpihan, dan aku lelehkan jadi sesuatu yang berguna: tubuh yang lebih tahan, Bara yang lebih besar, atau soket tambahan di senjatamu."
+     },
+     {
+      "say": "Sarwa",
+      "text": "Dan kalau senjatamu sudah punya lubang — pasang Kaca di situ. Kaca itu ingatan orang lain. Kau pinjam tangannya sebentar."
+     },
+     {
+      "say": "Rimba",
+      "text": "Ingatan siapa?"
+     },
+     {
+      "say": "Sarwa",
+      "text": "Orang yang tidak sempat selesai. Jangan tanya lagi; nanti kau tidak jadi beli."
+     }
+    ]
+   },
+   {
+    "tukang_kaca": "kios_sarwa"
+   }
+  ],
+  "adegan_arsip": [
+   {
+    "once": "arsip_adegan",
+    "do": [
+     {
+      "text": "Gulungan yang terbuka di meja berjudul: DAFTAR PELITA. Kolom nama, tahun, dan satu kata di ujung tiap baris: \"selesai\".\n\nLintang membaca nama-nama itu dengan jari, pelan, seperti anak yang baru belajar membaca. Jarinya berhenti."
+     },
+     {
+      "say": "Lintang",
+      "text": "Arya Kelana. Tahun ke-nol Musim Redup. (Jeda.) ...Tidak ada kata \"selesai\"-nya. Ada kata lain. \"Dibatalkan.\""
+     },
+     {
+      "say": "Sela",
+      "text": "Lintang..."
+     },
+     {
+      "say": "Lintang",
+      "text": "Itu nama Bapak. Aku ingat. Aku ingat sekarang. Arya Kelana. Bapak bilang tunggu di sini, karena Bapak harus ke menara, karena Bapak Pelita."
+     },
+     {
+      "text": "Tidak ada yang bicara. Di luar, lentera-lentera kota berkedip dua kali, seperti di Pelita Rendah."
+     },
+     {
+      "pause": true
+     },
+     {
+      "text": "Rimba membuka gulungan lain: DAFTAR PENJAGA MERCUSUAR. Baris terakhir: \"Guntur, Penjaga ke-31. Tahun ke-nol: mengundurkan diri. Alasan: menolak melanjutkan.\"\n\nDan catatan kecil di pinggir, tulisan tangan yang berbeda: \"Kaca Inti di Tambang dibiarkan. Tanpa Kaca Inti, tidak ada yang bisa membawa Nyala baru ke puncak. Biarkan tetap begitu. —B.\""
+     },
+     {
+      "say": "Sela",
+      "text": "B. Baskara."
+     },
+     {
+      "say": "Rimba",
+      "text": "Jadi kalau Pak Guntur mau menyalakan menara lagi, dia butuh Kaca Inti dari tambang. Dan Adipati sengaja meninggalkannya di sana."
+     },
+     {
+      "say": "Sela",
+      "text": "Tambang Kaca Ingatan. Lereng utara. Gerbang Utara dirantai, tapi rantai bisa dipotong."
+     },
+     {
+      "say": "Lintang",
+      "text": "Aku ikut. Aku mau tahu apa artinya \"dibatalkan\"."
+     },
+     {
+      "set": "arsip_dibaca"
+     },
+     {
+      "quest": "mencari_guntur",
+      "state": "tambang"
+     },
+     {
+      "quest": "nama_bapak",
+      "state": "aktif"
+     },
+     {
+      "give": {
+       "serpihan_ingatan": 1
+      }
+     }
+    ]
+   }
+  ],
+  "papan_buruan_kafilah": [
+   {
+    "once": "papan_kenal",
+    "do": [
+     {
+      "text": "Kafilah pedagang dari selatan memasang papan kayu di tiang lentera dermaga. Di atasnya, kertas-kertas dengan gambar kasar dan angka besar-besar."
+     },
+     {
+      "say": "Juru Tulis",
+      "text": "Kontrak, bukan sayembara. Kau ambil kertasnya, kau urus sendiri, kau kembali, aku bayar. Kalau kau tidak kembali, kertasnya kutempel lagi."
+     }
+    ]
+   },
+   {
+    "papan_buruan": true
+   }
+  ],
+  "arena_kafilah": [
+   {
+    "once": "arena_kenal",
+    "do": [
+     {
+      "say": "Juru Arena",
+      "text": "Lingkaran garam di geladak itu arena kami. Tiga gelombang beruntun, tanpa ramuan, tanpa jeda. Yang tumbang diangkat keluar, tidak dikubur — kami pedagang, bukan pembunuh."
+     },
+     {
+      "say": "Bagas",
+      "text": "Tanpa ramuan? Itu namanya berkelahi dengan tangan diikat."
+     },
+     {
+      "say": "Juru Arena",
+      "text": "Itu namanya berkelahi seperti waktu kau kehabisan ramuan. Yang mana, kalau kau jujur, lebih sering terjadi."
+     }
+    ]
+   },
+   {
+    "arena": true
+   }
+  ]
+ }
+}

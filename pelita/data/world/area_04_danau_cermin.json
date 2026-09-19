@@ -1,0 +1,617 @@
+{
+ "id": "danau_cermin",
+ "name": "Danau Cermin",
+ "level_range": "9–12",
+ "start": "tepi_danau",
+ "fog": false,
+ "encounter_rate": 0.38,
+ "encounters": [
+  {
+   "enemies": [
+    "ikan_cermin",
+    "ikan_cermin"
+   ],
+   "weight": 3
+  },
+  {
+   "enemies": [
+    "nelayan_hampa"
+   ],
+   "weight": 3
+  },
+  {
+   "enemies": [
+    "katak_rawa_bengkak",
+    "ikan_cermin"
+   ],
+   "weight": 2
+  },
+  {
+   "enemies": [
+    "nelayan_hampa",
+    "ikan_cermin"
+   ],
+   "weight": 2
+  },
+  {
+   "enemies": [
+    "hampa_pengembara",
+    "hampa_pengembara"
+   ],
+   "weight": 1
+  }
+ ],
+ "rooms": {
+  "tepi_danau": {
+   "name": "Tepi Danau",
+   "safe": true,
+   "text": "Kabut berhenti di sini, tepat di garis air, seperti anjing yang tidak mau masuk sungai. Danau Cermin terhampar tenang sampai ke kaki bukit. Permukaannya memantulkan langit yang lebih cerah daripada langit yang sebenarnya.",
+   "on_enter": "masuk_danau",
+   "exits": [
+    {
+     "label": "Kembali ke inti Suar (Rawa Suar)",
+     "to": "inti_suar",
+     "area": "rawa_suar"
+    },
+    {
+     "label": "Ke dermaga Desa Apung Telaga",
+     "to": "dermaga_telaga"
+    }
+   ],
+   "objects": [
+    {
+     "id": "lentera_tepi_danau",
+     "name": "Lentera penjaga (simpan & istirahat)",
+     "script": "lentera_save"
+    }
+   ]
+  },
+  "dermaga_telaga": {
+   "name": "Dermaga Desa Apung Telaga",
+   "safe": true,
+   "text": "Desa yang seluruhnya mengapung: rumah-rumah di atas rakit bambu, dihubungkan jembatan-jembatan goyang. Lentera di setiap sudut, tapi kecil-kecil; air danau sendiri yang menahan kabut. Anak-anak mengintip dari balik jendela.",
+   "on_enter": "masuk_telaga",
+   "exits": [
+    {
+     "label": "Kembali ke tepi danau",
+     "to": "tepi_danau"
+    },
+    {
+     "label": "Rumah Tetua Baruna",
+     "to": "rumah_tetua"
+    },
+    {
+     "label": "Pasar apung",
+     "to": "pasar_apung"
+    },
+    {
+     "label": "Sisi danau yang tenang",
+     "to": "sisi_danau"
+    },
+    {
+     "label": "Naik rakit ke tengah danau",
+     "to": "rakit_1",
+     "if": [
+      "telaga_izin"
+     ],
+     "locked": "Nelayan tua menahan rakitnya. \"Tidak ada yang ke tengah danau tanpa izin Tetua. Terutama malam ini.\""
+    },
+    {
+     "label": "Perahu ke Ibukota Tengara",
+     "to": "dermaga_kota",
+     "area": "tengara",
+     "if": [
+      "boss_ular_kalah"
+     ],
+     "locked": "Perahu besar ke Tengara ditambatkan. Tukang perahunya berkata tidak akan berlayar sebelum \"yang di dasar danau\" berhenti mengambil orang."
+    }
+   ],
+   "npcs": [
+    {
+     "id": "nelayan_tua",
+     "name": "Nelayan tua di dermaga",
+     "script": "bicara_nelayan"
+    }
+   ],
+   "latar_varian": [
+    {
+     "if": [
+      "boss_ular_kalah"
+     ],
+     "latar": "danau_cermin/dermaga_telaga_lega"
+    }
+   ]
+  },
+  "rumah_tetua": {
+   "name": "Rumah Tetua Baruna",
+   "safe": true,
+   "text": "Rumah apung terbesar, atapnya dari sirap kayu ulin. Di dalamnya, jaring-jaring digantung sebagai tirai dan sebuah lentera tua berbentuk ikan menyala tenang.",
+   "exits": [
+    {
+     "label": "Kembali ke dermaga",
+     "to": "dermaga_telaga"
+    }
+   ],
+   "npcs": [
+    {
+     "id": "baruna",
+     "name": "Tetua Baruna",
+     "script": "bicara_baruna"
+    }
+   ],
+   "objects": [
+    {
+     "id": "tikar_tetua",
+     "name": "Tikar tamu (istirahat, 20 Keping)",
+     "script": "inn_telaga"
+    }
+   ]
+  },
+  "pasar_apung": {
+   "name": "Pasar Apung",
+   "safe": true,
+   "text": "Perahu-perahu kecil merapat membentuk pasar. Ikan asap, lentera rawa, ramuan dari akar teratai. Nyai Kemuning menjual apa saja sambil terus mengunyah sirih.",
+   "exits": [
+    {
+     "label": "Kembali ke dermaga",
+     "to": "dermaga_telaga"
+    }
+   ],
+   "npcs": [
+    {
+     "id": "kemuning",
+     "name": "Nyai Kemuning (pedagang)",
+     "script": "bicara_kemuning"
+    }
+   ]
+  },
+  "sisi_danau": {
+   "name": "Sisi Danau yang Tenang",
+   "safe": true,
+   "text": "Rakit paling ujung, jauh dari lentera. Air di sini tidak beriak sama sekali. Orang-orang desa tidak datang ke sini; kata mereka, air ini terlalu jujur.",
+   "exits": [
+    {
+     "label": "Kembali ke dermaga",
+     "to": "dermaga_telaga"
+    }
+   ],
+   "objects": [
+    {
+     "id": "air_tenang",
+     "name": "Tatap permukaan air",
+     "script": "pantulan_sela"
+    }
+   ],
+   "latar": "danau_cermin/dermaga_telaga"
+  },
+  "rakit_1": {
+   "name": "Tengah Danau",
+   "text": "Rakit meluncur pelan. Di bawahnya, di kedalaman, kalian melihat cahaya-cahaya kecil bergerak: bukan ikan. Wajah-wajah. Danau memantulkan siapa saja yang pernah menatapnya, dan menyimpannya.",
+   "exits": [
+    {
+     "label": "Kembali ke dermaga",
+     "to": "dermaga_telaga"
+    },
+    {
+     "label": "Ke pulau batu",
+     "to": "pulau_batu"
+    }
+   ],
+   "on_enter": "sergap_rakit"
+  },
+  "pulau_batu": {
+   "name": "Pulau Batu",
+   "text": "Pulau kecil dari batu hitam licin, tepat di tengah danau. Di puncaknya, lentera penjaga tua yang masih menyala, dijaga entah oleh siapa. Di sisi lain, lubang menganga ke gua di bawah permukaan air.",
+   "exits": [
+    {
+     "label": "Kembali ke tengah danau",
+     "to": "rakit_1"
+    },
+    {
+     "label": "Turun ke gua di bawah pulau",
+     "to": "sarang_ular"
+    }
+   ],
+   "objects": [
+    {
+     "id": "lentera_pulau",
+     "name": "Lentera penjaga (simpan & istirahat)",
+     "script": "lentera_save"
+    },
+    {
+     "id": "peti_pulau",
+     "name": "Peti yang terjepit batu",
+     "script": "peti_pulau",
+     "if": [
+      "!peti_pulau_diambil"
+     ]
+    }
+   ]
+  },
+  "sarang_ular": {
+   "name": "Gua Sarang",
+   "safe": true,
+   "text": "Gua yang dindingnya seluruhnya cermin: bukan kaca, tapi air yang berdiri tegak dan tidak jatuh. Di setiap pantulan, kalian melihat diri sendiri sedikit berbeda. Lebih tua. Lebih muda. Tidak ada.",
+   "on_enter": "boss_ular",
+   "exits": [
+    {
+     "label": "Kembali ke pulau batu",
+     "to": "pulau_batu"
+    }
+   ]
+  }
+ },
+ "scripts": {
+  "lentera_save": [
+   {
+    "text": "Kau merapikan sumbu dan menuang sedikit minyak. Nyalanya menegak."
+   },
+   {
+    "heal": "all"
+   },
+   {
+    "save": true
+   },
+   {
+    "if": [
+     "has:bekal_kemah"
+    ],
+    "then": [
+     {
+      "kemah": true
+     }
+    ]
+   }
+  ],
+  "inn_telaga": [
+   {
+    "inn": 20
+   }
+  ],
+  "masuk_danau": [
+   {
+    "once": "danau_masuk_adegan",
+    "do": [
+     {
+      "say": "Lintang",
+      "text": "Kabutnya berhenti."
+     },
+     {
+      "say": "Sela",
+      "text": "Air danau. Orang-orang bilang Danau Cermin tidak pernah lupa apa pun, jadi Kabut Lupa tidak bisa masuk. Aku pikir itu dongeng nelayan."
+     },
+     {
+      "say": "Lintang",
+      "text": "Bukan dongeng. Airnya ingat. (Ia menunduk ke permukaan.) Airnya ingat terlalu banyak."
+     },
+     {
+      "text": "(Tip: Di Danau Cermin tidak ada kabut. Minyak Lentera tidak terpakai di sini.)"
+     }
+    ]
+   }
+  ],
+  "masuk_telaga": [
+   {
+    "once": "telaga_masuk_adegan",
+    "do": [
+     {
+      "text": "Seorang perempuan tua berdiri di ujung dermaga, memegang galah seolah bersiap mengusir. Ia melihat lentera Rimba, lalu perisai Sela, lalu Lintang, dan galahnya turun."
+     },
+     {
+      "say": "Baruna",
+      "text": "Penyala. Sudah lama tidak ada Penyala yang datang. Kalian membawa lentera besar. Bagus. Kami butuh orang yang membawa lentera besar malam ini."
+     },
+     {
+      "say": "Rimba",
+      "text": "Ada apa malam ini?"
+     },
+     {
+      "say": "Baruna",
+      "text": "Sama seperti empat malam sebelumnya. Seseorang akan hilang. Datang ke rumahku kalau kalian mau mendengar. Kalau tidak, pasar apung ada di sebelah kiri, dan perahu ke Tengara tidak akan berangkat."
+     }
+    ]
+   }
+  ],
+  "bicara_nelayan": [
+   {
+    "if": [
+     "boss_ular_kalah"
+    ],
+    "then": [
+     {
+      "say": "Nelayan",
+      "text": "Mereka yang hilang sudah pulang. Bingung, lapar, tapi pulang. Perahu ke Tengara berangkat kapan kalian siap."
+     }
+    ],
+    "else": [
+     {
+      "if": [
+       "telaga_izin"
+      ],
+      "then": [
+       {
+        "say": "Nelayan",
+        "text": "Tetua sudah bilang. Rakit di ujung dermaga punya kalian. Aku tidak ikut. Aku sudah lihat wajahku di air itu, dan aku tidak suka."
+       }
+      ],
+      "else": [
+       {
+        "say": "Nelayan",
+        "text": "Kakek berlentera? Ya, lewat tiga hari lalu. Tidak naik perahu. Jalan kaki memutari danau, ke utara, ke arah Tengara. Nyanyi terus. Suaranya bagus, untuk orang setua itu."
+       },
+       {
+        "quest": "mencari_guntur",
+        "state": "tengara"
+       }
+      ]
+     }
+    ]
+   }
+  ],
+  "bicara_baruna": [
+   {
+    "if": [
+     "boss_ular_kalah"
+    ],
+    "then": [
+     {
+      "once": "baruna_hadiah",
+      "do": [
+       {
+        "say": "Baruna",
+        "text": "Dua belas orang. Semuanya kembali. Mereka bilang di dalam lilitan itu hangat, dan mereka mimpi hal-hal yang sudah lama mereka lupakan. Sebagian menangis waktu bangun. Karena ingat, bukan karena takut."
+       },
+       {
+        "say": "Baruna",
+        "text": "Aku tidak tahu apakah ular itu jahat. Aku tahu ia mengambil orang, dan kami tidak boleh diambil. Terima kasih."
+       },
+       {
+        "give": {
+         "kalung_bara": 1,
+         "serpihan_ingatan": 1
+        }
+       },
+       {
+        "keping": 300
+       },
+       {
+        "say": "Baruna",
+        "text": "Kalung itu dari Penyala terakhir yang lewat sini, bertahun-tahun lalu. Ia bilang kalung itu \"mengingat api\". Mungkin kau lebih mengerti daripada aku."
+       },
+       {
+        "say": "Baruna",
+        "text": "Perahu ke Tengara akan membawa kalian. Ibukota... hati-hati. Di sana lentera besar-besar, tapi orangnya kecil-kecil."
+       }
+      ],
+      "else": [
+       {
+        "say": "Baruna",
+        "text": "Tidur dulu kalau mau. Tikar tamu kosong. Dua puluh keping untuk ikan asap dan air hangat."
+       }
+      ]
+     }
+    ],
+    "else": [
+     {
+      "once": "baruna_minta_tolong",
+      "do": [
+       {
+        "say": "Baruna",
+        "text": "Empat malam berturut-turut, satu orang hilang dari rumahnya. Tidak ada jejak Hampa. Tidak ada jejak kabut. Hanya... air. Genangan air di lantai, dari tikar sampai ke pintu."
+       },
+       {
+        "say": "Sela",
+        "text": "Sesuatu dari danau."
+       },
+       {
+        "say": "Baruna",
+        "text": "Sesuatu dari danau. Anak-anak yang berani mengintip bilang mereka melihat cermin bergerak di bawah rakit. Panjang, seperti ular. Aku tidak percaya. Lalu adikku hilang."
+       },
+       {
+        "say": "Lintang",
+        "text": "Airnya ingat mereka. Jadi airnya menyimpan mereka."
+       },
+       {
+        "say": "Baruna",
+        "text": "...Apa maksud anak ini?"
+       },
+       {
+        "say": "Rimba",
+        "text": "Kami akan periksa. Tengah danau, kan? Di mana kami bisa dapat rakit?"
+       },
+       {
+        "say": "Baruna",
+        "text": "Nelayan tua di dermaga. Bilang aku yang mengizinkan. Dan Penyala... kalau kalian menemukan mereka, jangan biarkan mereka menatap air terlalu lama."
+       },
+       {
+        "set": "telaga_izin"
+       },
+       {
+        "quest": "yang_hilang_di_telaga",
+        "state": "aktif"
+       }
+      ],
+      "else": [
+       {
+        "say": "Baruna",
+        "text": "Rakit sudah menunggu di ujung dermaga. Tengah danau, lalu pulau batu. Kembalilah sebelum fajar. Atau setelahnya. Asal kembali."
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "if": [
+     "!boss_ular_kalah"
+    ],
+    "then": [
+     {
+      "choice": [
+       {
+        "text": "Beristirahat di tikar tamu (20 Keping)",
+        "then": [
+         {
+          "inn": 20
+         }
+        ]
+       },
+       {
+        "text": "Nanti saja",
+        "then": []
+       }
+      ]
+     }
+    ]
+   }
+  ],
+  "bicara_kemuning": [
+   {
+    "say": "Kemuning",
+    "text": "Lentera rawa, tongkat perunggu, pedang bekas pengawal yang katanya \"hilang\" dari gudang istana. Jangan tanya dari mana. Tanya harganya."
+   },
+   {
+    "shop": "pasar_apung"
+   }
+  ],
+  "pantulan_sela": [
+   {
+    "once": "kenangan_sela_1",
+    "do": [
+     {
+      "text": "Kalian menatap air. Pantulan Rimba: seorang anak dengan lentera terlalu besar. Pantulan Lintang: kabut berbentuk gadis, atau gadis berbentuk kabut; sulit dibilang.\n\nPantulan Sela bukan Sela. Pantulan Sela adalah sebuah halaman istana, sebuah barisan pengawal, dan seorang kapten yang memberi perintah."
+     },
+     {
+      "say": "Sela",
+      "text": "...Jangan lihat."
+     },
+     {
+      "text": "Tapi air sudah memutarnya. Kapten itu, Rangga, menunjuk ke sekelompok warga yang berkumpul di depan gerbang istana. Warga yang membawa lentera padam. Warga yang bertanya kenapa menara tidak dinyalakan. \"Amankan mereka,\" kata Kapten. \"Perintah Adipati.\"\n\nDi pantulan, Sela muda menurunkan tombaknya. Berbalik. Berjalan keluar dari barisan. Dan tidak menoleh, karena kalau menoleh ia akan melihat kawan-kawannya melakukan yang tidak ia lakukan."
+     },
+     {
+      "say": "Sela",
+      "text": "Aku tidak menyelamatkan siapa pun hari itu. Aku cuma memastikan bukan tanganku. Itu bukan keberanian, Rimba. Itu cuma... tidak sanggup."
+     },
+     {
+      "say": "Rimba",
+      "text": "Pak Guntur bilang, orang yang keluar dari barisan biasanya yang pertama tahu barisannya salah."
+     },
+     {
+      "say": "Sela",
+      "text": "Pak Guntur-mu banyak omong. (Jeda.) Kapten itu masih ada di Tengara. Kalau kita ke sana, dia akan mengenaliku. Kau harus tahu itu sebelum kita naik perahu."
+     },
+     {
+      "say": "Rimba",
+      "text": "Aku tahu sekarang. Kita tetap naik perahu."
+     },
+     {
+      "text": "** Kenangan Sela: Barisan yang Ditinggalkan. **"
+     },
+     {
+      "give": {
+       "serpihan_ingatan": 1
+      }
+     }
+    ],
+    "else": [
+     {
+      "text": "Air tenang. Pantulan kalian bertiga, apa adanya. Sela tidak menatap lama."
+     }
+    ]
+   }
+  ],
+  "peti_pulau": [
+   {
+    "set": "peti_pulau_diambil"
+   },
+   {
+    "text": "Peti besi berkarat, terjepit di antara dua batu. Butuh bertiga untuk membukanya."
+   },
+   {
+    "give": {
+     "pedang_pengawal": 1,
+     "lentera_rawa": 1,
+     "abu_fajar": 1,
+     "cawan_nyala": 1
+    }
+   }
+  ],
+  "boss_ular": [
+   {
+    "once": "boss_ular_adegan",
+    "do": [
+     {
+      "text": "Di tengah gua, dua belas orang tidur berbaris rapi, dililit lembut oleh tubuh panjang yang seluruh sisiknya cermin. Ular itu mengangkat kepalanya. Di sisik-sisiknya, kalian melihat wajah kedua belas orang itu, tersenyum, mengulang hari-hari terbaik mereka.\n\nUlar itu tidak marah. Ia sedang *menjaga*."
+     },
+     {
+      "say": "Lintang",
+      "text": "Ia menyimpan mereka. Supaya kabut tidak dapat. Supaya mereka tidak lupa."
+     },
+     {
+      "say": "Sela",
+      "text": "Dengan cara membuat mereka tidak pernah bangun. Itu bukan menjaga, itu mengubur pelan-pelan."
+     },
+     {
+      "say": "Rimba",
+      "text": "Kita bangunkan mereka. Semuanya."
+     },
+     {
+      "text": "Ular Cermin bergerak. Di setiap sisiknya, pantulan kalian ikut bergerak, sedikit terlambat."
+     },
+     {
+      "text": "(Tip: Saat sisiknya retak, kelemahannya berubah. Perhatikan pengumuman dan coba elemen lagi.)"
+     },
+     {
+      "battle": [
+       "boss_ular_cermin"
+      ],
+      "boss": true,
+      "lose": "gameover",
+      "win": [
+       {
+        "text": "Sisik-sisik cermin berjatuhan seperti hujan kaca, dan di setiap serpihan ada satu kenangan yang kembali ke pemiliknya. Kedua belas orang itu terbatuk, membuka mata, dan menangis. Bukan karena takut.\n\nUlar itu mengecil, mengecil, sampai seukuran lengan, lalu meluncur ke dalam air dan hilang. Lintang menatapnya pergi."
+       },
+       {
+        "say": "Lintang",
+        "text": "Dia cuma tidak mau ada yang lupa."
+       },
+       {
+        "say": "Sela",
+        "text": "Aku tahu. Ayo, bantu mereka berdiri. Kaki mereka lupa cara berjalan."
+       },
+       {
+        "set": "boss_ular_kalah"
+       },
+       {
+        "quest": "yang_hilang_di_telaga",
+        "state": "selesai"
+       },
+       {
+        "heal": "all"
+       }
+      ]
+     }
+    ]
+   }
+  ],
+  "sergap_rakit": [
+   {
+    "once": "sergap_rakit_done",
+    "do": [
+     {
+      "text": "Air di sekitar rakit bergolak: pantulan-pantulan itu naik ke permukaan."
+     },
+     {
+      "battle": [
+       "ikan_cermin",
+       "ikan_cermin",
+       "nelayan_hampa"
+      ],
+      "boss": false,
+      "can_flee": false,
+      "lose": "gameover"
+     }
+    ]
+   }
+  ]
+ }
+}

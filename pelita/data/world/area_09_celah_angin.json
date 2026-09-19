@@ -1,0 +1,634 @@
+{
+ "id": "celah_angin",
+ "name": "Celah Angin",
+ "start": "kaki_celah",
+ "level_range": "Lv 23-26",
+ "fog": false,
+ "encounter_rate": 0.38,
+ "encounters": [
+  {
+   "enemies": [
+    "elang_badai"
+   ],
+   "weight": 3
+  },
+  {
+   "enemies": [
+    "elang_badai",
+    "elang_badai"
+   ],
+   "weight": 2
+  },
+  {
+   "enemies": [
+    "kambing_batu"
+   ],
+   "weight": 3
+  },
+  {
+   "enemies": [
+    "kambing_batu",
+    "elang_badai"
+   ],
+   "weight": 2
+  },
+  {
+   "enemies": [
+    "hampa_pengembara",
+    "elang_badai"
+   ],
+   "weight": 1
+  }
+ ],
+ "rooms": {
+  "kaki_celah": {
+   "name": "Kaki Celah",
+   "safe": true,
+   "text": "Jalan berbatu berakhir di mulut celah: dua dinding gunung yang berdiri terlalu dekat, dan angin yang keluar dari antaranya seperti napas sesuatu yang besar. Di belakang kalian, Lembah Larung terbentang dengan Mercusuar menyala di tengahnya. Di depan, tidak ada apa-apa yang kalian kenal.",
+   "on_enter": "masuk_celah",
+   "exits": [
+    {
+     "label": "Turun kembali ke Tengara",
+     "to": "gerbang_utara",
+     "area": "tengara"
+    },
+    {
+     "label": "Masuk ke celah",
+     "to": "jalan_angin"
+    }
+   ],
+   "objects": [
+    {
+     "id": "lentera_kaki",
+     "name": "Lentera penjaga (simpan & istirahat)",
+     "script": "lentera_save"
+    }
+   ]
+  },
+  "jalan_angin": {
+   "name": "Jalan Angin",
+   "text": "Lorong sempit di antara dua dinding batu. Angin datang bergelombang, dan tiap gelombang membawa pasir yang menggigit. Di dinding kiri ada coretan lama: garis-garis hitungan, seperti orang menghitung hari.",
+   "exits": [
+    {
+     "label": "Kembali ke kaki celah",
+     "to": "kaki_celah"
+    },
+    {
+     "label": "Terus ke jembatan",
+     "to": "jembatan_tali"
+    }
+   ],
+   "objects": [
+    {
+     "id": "coretan",
+     "name": "Coretan di dinding",
+     "script": "periksa_coretan"
+    }
+   ],
+   "on_enter": "sergap_jalan_angin"
+  },
+  "jembatan_tali": {
+   "name": "Jembatan Tali",
+   "text": "Jembatan tali membentang di atas jurang yang dasarnya tidak terlihat. Angin dari celah menghantamnya dari samping; papan-papannya berayun terlalu jauh untuk dilewati siapa pun.",
+   "on_enter": "lihat_jembatan",
+   "exits": [
+    {
+     "label": "Kembali ke jalan angin",
+     "to": "jalan_angin"
+    },
+    {
+     "label": "Seberangi jembatan",
+     "to": "ceruk_batu",
+     "if": [
+      "angin_reda"
+     ],
+     "locked": "Angin masih menghantam jembatan dari samping. Kalian tidak akan sampai setengah jalan."
+    }
+   ],
+   "objects": [
+    {
+     "id": "batu_utara",
+     "name": "Batu penahan utara",
+     "script": "dorong_utara"
+    },
+    {
+     "id": "batu_tengah",
+     "name": "Batu penahan tengah",
+     "script": "dorong_tengah"
+    },
+    {
+     "id": "batu_selatan",
+     "name": "Batu penahan selatan",
+     "script": "dorong_selatan"
+    }
+   ]
+  },
+  "ceruk_batu": {
+   "name": "Ceruk Batu",
+   "safe": true,
+   "text": "Ceruk di dinding gunung, cukup dalam untuk menahan angin. Ada bekas api unggun tua di lantainya, dan tulang-tulang kecil yang sudah bersih.",
+   "on_enter": "adegan_ceruk",
+   "exits": [
+    {
+     "label": "Kembali ke jembatan",
+     "to": "jembatan_tali"
+    },
+    {
+     "label": "Naik ke tangga angin",
+     "to": "tangga_angin"
+    }
+   ],
+   "objects": [
+    {
+     "id": "lentera_ceruk",
+     "name": "Lentera penjaga (simpan & istirahat)",
+     "script": "lentera_save"
+    },
+    {
+     "id": "peti_ceruk",
+     "name": "Buntalan di bawah batu",
+     "script": "peti_ceruk",
+     "if": [
+      "!peti_ceruk_diambil"
+     ]
+    }
+   ]
+  },
+  "tangga_angin": {
+   "name": "Tangga Angin",
+   "text": "Tangga yang dipahat langsung ke dinding celah, tanpa pegangan. Setiap anak tangga sedikit miring ke luar, seolah dibuat oleh orang yang tidak berniat siapa pun kembali.",
+   "exits": [
+    {
+     "label": "Turun ke ceruk",
+     "to": "ceruk_batu"
+    },
+    {
+     "label": "Naik terus",
+     "to": "sarang_garuda"
+    }
+   ],
+   "on_enter": "sergap_tangga"
+  },
+  "sarang_garuda": {
+   "name": "Sarang Garuda",
+   "text": "Cekungan lebar di puncak celah, penuh ranting sebesar lengan dan pecahan zirah yang sudah berkarat. Sarangnya dibangun dari barang-barang orang yang mencoba lewat.",
+   "on_enter": "boss_garuda",
+   "exits": [
+    {
+     "label": "Turun ke tangga",
+     "to": "tangga_angin"
+    },
+    {
+     "label": "Ke punggung celah",
+     "to": "punggung_celah",
+     "if": [
+      "boss_garuda_kalah"
+     ],
+     "locked": "Sesuatu yang besar masih bergerak di antara ranting-ranting itu."
+    }
+   ]
+  },
+  "punggung_celah": {
+   "name": "Punggung Celah",
+   "safe": true,
+   "text": "Sisi lain pegunungan. Di bawah sana, sejauh mata memandang, tanah berwarna abu: rata, luas, dan tanpa satu pun lentera. Di kejauhan ada titik-titik cahaya yang bergerak pelan dalam satu barisan.",
+   "on_enter": "lihat_dataran",
+   "exits": [
+    {
+     "label": "Kembali ke sarang",
+     "to": "sarang_garuda"
+    },
+    {
+     "label": "Turun ke Dataran Abu",
+     "to": "tepi_dataran",
+     "area": "dataran_abu"
+    }
+   ],
+   "objects": [
+    {
+     "id": "lentera_punggung",
+     "name": "Lentera penjaga (simpan & istirahat)",
+     "script": "lentera_save"
+    }
+   ]
+  }
+ },
+ "scripts": {
+  "lentera_save": [
+   {
+    "text": "Kau merapikan sumbu dan menuang sedikit minyak. Nyalanya menegak, meski angin menekan dari segala arah."
+   },
+   {
+    "heal": "all"
+   },
+   {
+    "save": true
+   },
+   {
+    "if": [
+     "has:bekal_kemah"
+    ],
+    "then": [
+     {
+      "kemah": true
+     }
+    ]
+   }
+  ],
+  "masuk_celah": [
+   {
+    "once": "babak2_mulai",
+    "do": [
+     {
+      "text": "Tujuh hari setelah Mercusuar menyala kembali, Dewan sementara Tengara mengeluarkan satu surat: izin melintas Pegunungan Sunyi, dan satu pengawal."
+     },
+     {
+      "say": "Rangga",
+      "text": "Aku yang menulis permohonannya. Aku juga yang menandatanganinya. Dewan menganggap itu lucu."
+     },
+     {
+      "say": "Sela",
+      "text": "Dewan menganggap kau masih berguna. Itu beda."
+     },
+     {
+      "say": "Rangga",
+      "text": "Betul. (Ia menyesuaikan tali tombaknya.) Aku tidak minta dipercaya. Aku minta ikut."
+     },
+     {
+      "say": "Rimba",
+      "text": "Kenapa?"
+     },
+     {
+      "say": "Rangga",
+      "text": "Karena aku pernah mengikuti perintah sampai ke tempat yang salah, dan berhenti hanya setelah kalian memukulku. Kali ini aku mau tahu ke mana aku berjalan sebelum sampai."
+     },
+     {
+      "pause": true
+     },
+     {
+      "join": "rangga",
+      "equip": {
+       "senjata": "tombak_pengawal",
+       "zirah": "zirah_rantai"
+      }
+     },
+     {
+      "say": "Bagas",
+      "text": "Empat orang bertarung, sisanya jaga bekal. Aturan kafilah. (Ke Rimba.) Kau bisa atur siapa yang maju lewat menu Party."
+     },
+     {
+      "text": "Angin dari celah membawa bau yang tidak ada di lembah: batu panas, dan sesuatu yang lama tidak hidup."
+     }
+    ]
+   },
+   {
+    "if": [
+     "boss_garuda_kalah"
+    ],
+    "then": [
+     {
+      "text": "Celah Angin sekarang hanya celah: berangin, dingin, dan tidak lagi dijaga siapa-siapa."
+     }
+    ]
+   }
+  ],
+  "periksa_coretan": [
+   {
+    "text": "Garis-garis hitungan, dikelompokkan lima-lima. Kau menghitungnya sampai dua ratus lebih, lalu berhenti karena garis-garisnya berubah: makin pendek, makin jarang, lalu satu garis panjang yang menggores sampai ke lantai."
+   },
+   {
+    "say": "Lintang",
+    "text": "Orang ini menghitung hari sampai lupa kenapa ia menghitung."
+   },
+   {
+    "say": "Rangga",
+    "text": "Atau sampai tidak ada lagi yang perlu dihitung."
+   },
+   {
+    "once": "coretan_dibaca",
+    "do": [
+     {
+      "give": {
+       "serpihan_ingatan": 1
+      }
+     }
+    ]
+   }
+  ],
+  "lihat_jembatan": [
+   {
+    "once": "jembatan_dilihat",
+    "do": [
+     {
+      "text": "Jembatan itu berayun terlalu jauh, dan bukan karena rapuh: angin dari celah menghantamnya tepat dari samping."
+     },
+     {
+      "say": "Rangga",
+      "text": "Tiga batu penahan di sisi ini. Dulu dipakai kafilah untuk memecah angin. Urutannya penting — yang paling dekat jurang dulu, kalau tidak batunya sendiri yang terlempar."
+     },
+     {
+      "say": "Bagas",
+      "text": "Dan kalau salah urutan?"
+     },
+     {
+      "say": "Rangga",
+      "text": "Kita dorong ulang. Angin tidak menyimpan dendam."
+     }
+    ]
+   }
+  ],
+  "dorong_utara": [
+   {
+    "if": [
+     "angin_reda"
+    ],
+    "then": [
+     {
+      "text": "Ketiga batu sudah berdiri. Angin lewat di atas jembatan, bukan menembusnya."
+     },
+     {
+      "end": true
+     }
+    ]
+   },
+   {
+    "if": [
+     "!ca_selatan"
+    ],
+    "then": [
+     {
+      "text": "Kau mendorong batu utara lebih dulu. Angin menangkap sisinya dan melemparkannya kembali ke tempat semula, nyaris menimpa kaki Bagas."
+     },
+     {
+      "unset": [
+       "ca_selatan",
+       "ca_tengah"
+      ]
+     },
+     {
+      "end": true
+     }
+    ]
+   },
+   {
+    "text": "Batu utara bergeser ke celahnya. Suara angin berubah: lebih rendah, lebih jauh."
+   },
+   {
+    "set": "ca_utara"
+   },
+   {
+    "if": [
+     "ca_selatan",
+     "ca_tengah",
+     "ca_utara"
+    ],
+    "then": [
+     {
+      "set": "angin_reda"
+     },
+     {
+      "text": "Ketiga batu berdiri membentuk tiga sisi. Angin yang tadi menghantam jembatan kini menyapu di atasnya, dan papan-papan itu berhenti berayun."
+     },
+     {
+      "say": "Rangga",
+      "text": "Kafilah yang membuat ini tidak pernah kembali lewat sini. Tapi mereka tetap merapikan jalannya."
+     }
+    ]
+   }
+  ],
+  "dorong_tengah": [
+   {
+    "if": [
+     "angin_reda"
+    ],
+    "then": [
+     {
+      "text": "Batu-batunya sudah pada tempatnya."
+     },
+     {
+      "end": true
+     }
+    ]
+   },
+   {
+    "if": [
+     "!ca_selatan"
+    ],
+    "then": [
+     {
+      "text": "Batu tengah bergeser sedikit, lalu terdorong balik oleh angin yang belum dipecah apa pun."
+     },
+     {
+      "end": true
+     }
+    ]
+   },
+   {
+    "text": "Batu tengah masuk ke celahnya. Angin terbelah dua."
+   },
+   {
+    "set": "ca_tengah"
+   }
+  ],
+  "dorong_selatan": [
+   {
+    "if": [
+     "angin_reda"
+    ],
+    "then": [
+     {
+      "text": "Batu-batunya sudah pada tempatnya."
+     },
+     {
+      "end": true
+     }
+    ]
+   },
+   {
+    "text": "Batu selatan — yang paling dekat jurang — bergeser dengan suara gerinda panjang. Angin di sisi itu langsung melemah."
+   },
+   {
+    "set": "ca_selatan"
+   }
+  ],
+  "adegan_ceruk": [
+   {
+    "once": "ceruk_adegan",
+    "do": [
+     {
+      "text": "Kalian berhenti di ceruk untuk menunggu angin malam turun. Rangga duduk paling jauh dari api, menghadap keluar, seperti kebiasaan lama yang tidak bisa ia lepas."
+     },
+     {
+      "say": "Sela",
+      "text": "Kau tidak harus jaga. Ini ceruk buntu."
+     },
+     {
+      "say": "Rangga",
+      "text": "Aku tahu."
+     },
+     {
+      "say": "Sela",
+      "text": "Lalu?"
+     },
+     {
+      "say": "Rangga",
+      "text": "Kalau aku duduk menghadap api, aku melihat kalian. Dan kalau aku melihat kalian, aku ingat bahwa dua bulan lalu aku disuruh menahan kalian di Gerbang Istana. (Jeda.) Menghadap keluar lebih mudah."
+     },
+     {
+      "text": "Sela tidak menjawab. Ia memindahkan tikarnya ke sebelah Rangga, juga menghadap keluar, dan keduanya berjaga atas hal yang sama sepanjang malam."
+     }
+    ]
+   }
+  ],
+  "peti_ceruk": [
+   {
+    "text": "Di bawah batu pipih ada buntalan kulit, terikat rapi, masih kering. Isinya perbekalan seseorang yang berniat kembali mengambilnya."
+   },
+   {
+    "give": {
+     "bekal_kemah": 2,
+     "ramuan_sari": 2
+    }
+   },
+   {
+    "kaca": {
+     "kaca_angin": 1
+    }
+   },
+   {
+    "set": "peti_ceruk_diambil"
+   }
+  ],
+  "boss_garuda": [
+   {
+    "if": [
+     "boss_garuda_kalah"
+    ],
+    "then": [
+     {
+      "text": "Sarang itu kosong sekarang. Angin masuk dan keluar tanpa ditahan apa pun."
+     },
+     {
+      "end": true
+     }
+    ]
+   },
+   {
+    "text": "Bayangan melintas di atas kalian — sekali, dua kali, makin rendah. Lalu suara sayap yang bukan suara burung: lebih seperti layar kapal yang ditarik badai."
+   },
+   {
+    "say": "Rangga",
+    "text": "Garuda Kelabu. Kupikir itu cerita pengawal untuk menakuti anak baru."
+   },
+   {
+    "say": "Bagas",
+    "text": "Cerita itu sedang mendarat, Kapten."
+   },
+   {
+    "pause": true
+   },
+   {
+    "adegan": {
+     "efek": "shake"
+    }
+   },
+   {
+    "battle": [
+     "boss_garuda_kelabu"
+    ],
+    "boss": true,
+    "win": [
+     {
+      "set": "boss_garuda_kalah"
+     },
+     {
+      "text": "Garuda itu jatuh miring ke sarangnya sendiri, dan sarang itu runtuh bersamanya. Di antara ranting yang berhamburan, ada barang-barang yang bukan miliknya."
+     },
+     {
+      "give": {
+       "serpihan_ingatan": 1,
+       "abu_fajar": 1
+      }
+     },
+     {
+      "kaca": {
+       "kaca_bumi": 1
+      }
+     },
+     {
+      "say": "Lintang",
+      "text": "Ia menjaga celah ini dari apa?"
+     },
+     {
+      "say": "Rangga",
+      "text": "Mungkin bukan menjaga. Mungkin cuma tidak mau ada yang lewat. Dua-duanya terlihat sama dari bawah."
+     }
+    ]
+   }
+  ],
+  "lihat_dataran": [
+   {
+    "once": "dataran_dilihat",
+    "do": [
+     {
+      "text": "Dataran Abu. Bukan gurun — gurun punya pasir. Ini abu: halus, kelabu, dan kalau kau injak, dalamnya masih hangat."
+     },
+     {
+      "say": "Bagas",
+      "text": "Dulu ada kota-kota di sana. Banyak. Terbakar semua waktu Kabut pertama naik."
+     },
+     {
+      "say": "Rimba",
+      "text": "Titik-titik cahaya itu?"
+     },
+     {
+      "say": "Rangga",
+      "text": "Kafilah. Mereka tidak punya desa, jadi mereka membawa lenteranya sendiri. Satu gerobak, satu lentera raksasa."
+     },
+     {
+      "say": "Sela",
+      "text": "Berarti masih ada orang di luar lembah."
+     },
+     {
+      "say": "Rangga",
+      "text": "Masih. Untuk sekarang."
+     }
+    ]
+   }
+  ],
+  "sergap_jalan_angin": [
+   {
+    "once": "sergap_jalan_angin_selesai",
+    "do": [
+     {
+      "text": "Dua bayangan lepas dari dinding celah dan menukik sebelum kalian sempat menunduk."
+     },
+     {
+      "battle": [
+       "elang_badai",
+       "elang_badai"
+      ],
+      "win": []
+     }
+    ]
+   }
+  ],
+  "sergap_tangga": [
+   {
+    "once": "sergap_tangga_selesai",
+    "do": [
+     {
+      "text": "Sesuatu bertanduk berdiri di anak tangga di atas kalian, dan tidak berniat menepi."
+     },
+     {
+      "battle": [
+       "kambing_batu",
+       "elang_badai"
+      ],
+      "win": []
+     }
+    ]
+   }
+  ]
+ }
+}
