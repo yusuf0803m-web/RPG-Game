@@ -27,9 +27,28 @@ internet. Pilihan bisa diklik atau ditekan dengan angka 1–9.
 
 Antarmuka web dibuat untuk layar sentuh: tombol besar, tata letak menyesuaikan lebar
 layar dan orientasi, dan panorama menyusut otomatis saat bertarung agar arena serta
-log tetap muat. Ada dua cara memainkannya di HP.
+log tetap muat. Ada tiga cara memainkannya di HP.
 
-**Cara 1 — server di komputer, main dari HP (paling mudah).** Komputer dan HP harus
+**Cara 1 — pasang APK (paling praktis).** Seluruh permainan, termasuk Python dan
+Flask, ikut dikemas ke dalam aplikasi; tidak perlu komputer, Termux, atau koneksi
+internet saat bermain.
+
+1. Buka tab [**Actions**](https://github.com/yusuf0803m-web/RPG-Game/actions) di repo
+   ini, pilih jalannya alur kerja **Bangun APK** paling atas yang bertanda centang
+   hijau.
+2. Di bagian **Artifacts** paling bawah, unduh `pelita-terakhir-apk`. Berkasnya
+   berupa zip (~19 MB); buka lalu ambil `app-debug.apk` di dalamnya.
+3. Di HP, buka berkas APK itu. Android akan meminta izin "Instal aplikasi tidak
+   dikenal" untuk aplikasi yang membukanya (biasanya Files atau Chrome) — izinkan,
+   lalu pasang.
+
+APK ini ditandatangani dengan kunci debug bawaan Android, jadi Play Protect mungkin
+menampilkan peringatan; pilih "Pasang saja". Aplikasi menjalankan server permainan di
+dalam dirinya sendiri dan hanya mendengarkan di `127.0.0.1`, jadi tidak ada lalu
+lintas yang keluar dari HP. Simpanan tersimpan di penyimpanan privat aplikasi dan
+ikut terhapus kalau aplikasi dicopot.
+
+**Cara 2 — server di komputer, main dari HP.** Komputer dan HP harus
 tersambung ke Wi-Fi yang sama.
 
 ```bash
@@ -43,7 +62,7 @@ lanjut main di layar besar kapan saja.
 > Mode `--lan` membuka permainan untuk siapa pun di jaringan itu dan tidak memakai
 > kata sandi. Pakai di jaringan rumah sendiri; jangan di Wi-Fi publik.
 
-**Cara 2 — langsung di HP, tanpa komputer.** Pasang [Termux](https://termux.dev) dari
+**Cara 3 — langsung di HP lewat Termux.** Pasang [Termux](https://termux.dev) dari
 F-Droid, lalu:
 
 ```bash
@@ -57,7 +76,7 @@ python -m pelita --web
 Buka `http://127.0.0.1:5000` di browser HP. Biarkan Termux berjalan di latar belakang
 selama bermain.
 
-**Pasang ke layar utama.** Di Chrome Android, buka menu titik tiga lalu
+**Pasang ke layar utama (untuk cara 2 dan 3).** Di Chrome Android, buka menu titik tiga lalu
 "Tambahkan ke Layar utama". Permainan akan terbuka layar penuh tanpa bilah alamat,
 seperti aplikasi biasa.
 
