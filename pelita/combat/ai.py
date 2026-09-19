@@ -182,6 +182,53 @@ def choose_hero_action(battle: Battle, actor: Combatant, policy: str = "pintar")
             if n > 0 and it.heal_hp:
                 return Action("item", item=it, targets=[min(hurt, key=lambda c: c.hp_ratio)])
 
+    # 1a. Pertarungan bertahan (segmen ending "Menyalakan Kembali", §2.4): gelombangnya
+    #     tidak habis-habis, jadi yang dinilai cuma berdiri sampai rondenya lewat.
+    if battle.survive_rounds:
+        sakit = [a for a in allies if a.hp_ratio < 0.75 and not a.has("kutuk")]
+        heals = [s for s in skills if s.kind == SkillKind.HEAL]
+        if sakit and heals:
+            return Action("skill", skill=heals[-1], targets=[min(sakit, key=lambda c: c.hp_ratio)])
+        pulih = [s for s in battle.usable_bara_skills(actor) if s.id == "nyala_pulih"]
+        if len(sakit) >= 2 and pulih:
+            return Action("skill", skill=pulih[0], targets=allies)
+        if sakit:
+            for iid, n in battle.inventory.items():
+                it = battle.data.items[iid]
+                if n > 0 and (it.heal_hp or it.heal_pct):
+                    return Action("item", item=it, targets=[min(sakit, key=lambda c: c.hp_ratio)])
+        return Action("jaga")
+
+    # 1b. Lawan yang tidak bisa dilukai apa pun (Kabut Terakhir, GAME_DESIGN §2.4):
+    #     memukulnya sia-sia; hanya Lagu dan Kidung yang menguraikannya.
+    if any("kabut_terakhir" in f.traits for f in foes):
+        lagu = [s for s in skills if "lagu" in s.tags]
+        if lagu:
+            pilih = min(lagu, key=lambda s: s.cost)
+            ts = battle.valid_targets(actor, pilih.target)
+            return Action("skill", skill=pilih, targets=ts if pilih.target.is_multi else ts[:1])
+        sakit = [a for a in allies if a.hp_ratio < 0.8]
+        heals = [s for s in skills if s.kind == SkillKind.HEAL]
+        if sakit and heals:
+            return Action("skill", skill=heals[-1], targets=[min(sakit, key=lambda c: c.hp_ratio)])
+        return Action("jaga")
+
+    # 1c. Lawan yang meminum Bara yang ditabung (Gema Guntur, §6.2 no. 15): belanjakan
+    #     sebelum gilirannya, apa pun yang bisa dibelanjakan.
+    ambang = min((int(t.split(":")[1]) for f in foes for s in f.skills for t in s.tags
+                  if t.startswith("nyala_penjaga:")), default=0)
+    if ambang and battle.bara >= ambang - 1:
+        kandidat = battle.usable_bara_skills(actor)
+        serangan = [s for s in kandidat if s.is_attack
+                    and not all(_known_bad(battle, f, s.element) for f in foes)]
+        if serangan:
+            best = max(serangan, key=lambda s: s.power * (len(foes) if s.target.is_multi else 1))
+            ts = foes if best.target.is_multi else [max(foes, key=lambda c: c.hp)]
+            return Action("skill", skill=best, targets=ts)
+        sembuh = [s for s in kandidat if s.kind == SkillKind.HEAL]
+        if sembuh and any(a.hp_ratio < 0.9 for a in allies):
+            return Action("skill", skill=sembuh[0], targets=allies)
+
     # 2. Jurus Bara kalau tersedia dan lawan masih banyak HP-nya
     bara_atk = [s for s in battle.usable_bara_skills(actor) if s.is_attack]
     if bara_atk and (len(foes) >= 2 or foes[0].hp_ratio > 0.5):

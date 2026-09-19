@@ -211,5 +211,72 @@
    "kaca_napas",
    "kaca_tabah"
   ]
+ },
+ "pasar_kapal": {
+  "name": "Palka Kapal Lentera",
+  "items": [
+   "ramuan_sari",
+   "ramuan_laut",
+   "cawan_nyala",
+   "kendi_nyala",
+   "guci_nyala",
+   "penawar",
+   "garam_bangun",
+   "abu_fajar",
+   "abu_pagi",
+   "bekal_kemah",
+   "dupa_sunyi",
+   "suku_cadang",
+   "bubuk_api",
+   "bubuk_es",
+   "bubuk_petir",
+   "tongkat_lentera",
+   "pedang_laut",
+   "lentera_laut",
+   "peluncur_laut",
+   "tombak_laut",
+   "kecapi_laut",
+   "pedang_sunyi",
+   "zirah_lentera",
+   "jubah_ingatan",
+   "jimat_pulang",
+   "kalung_bara_besar"
+  ],
+  "kaca": [
+   "kaca_api",
+   "kaca_es",
+   "kaca_petir",
+   "kaca_angin",
+   "kaca_bumi",
+   "kaca_fajar",
+   "kaca_kelam",
+   "kaca_napas",
+   "kaca_tabah",
+   "kaca_tajam"
+  ]
+ },
+ "kios_laut": {
+  "name": "Tungku Terakhir Mpu Darma",
+  "items": [],
+  "kaca": [
+   "kaca_api",
+   "kaca_es",
+   "kaca_petir",
+   "kaca_angin",
+   "kaca_bumi",
+   "kaca_fajar",
+   "kaca_kelam",
+   "kaca_napas",
+   "kaca_tabah",
+   "kaca_tajam",
+   "kaca_rakus",
+   "kaca_kikir",
+   "kaca_sabar",
+   "kaca_teguh",
+   "kaca_gesit",
+   "kaca_licin",
+   "kaca_kilat",
+   "kaca_sembuh"
+  ]
  }
 }

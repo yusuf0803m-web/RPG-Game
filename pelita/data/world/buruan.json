@@ -169,5 +169,30 @@
     "kaca_sembuh"
    ]
   }
+ },
+ "buruan_8_cacing_ibu": {
+  "nama": "Cacing Abu Ibu",
+  "level": 55,
+  "area": "dataran_abu",
+  "room": "sarang_cacing",
+  "syarat": [
+   "boss_nirmala_kalah"
+  ],
+  "musuh": [
+   "buruan_cacing_ibu",
+   "buruan_cacing_ibu_segmen",
+   "buruan_cacing_ibu_segmen",
+   "buruan_cacing_ibu_segmen",
+   "buruan_cacing_ibu_segmen"
+  ],
+  "deskripsi": "Yang melahirkan cacing-cacing Dataran Abu. Lima segmen; keempat segmennya menutup lukanya tiap ronde kalau kepalanya dibiarkan.",
+  "petunjuk": "Cekungan abu itu sekarang punya dasar, dan dasarnya bergerak. Yang keluar lebih dulu bukan kepalanya — empat ruas tubuh, lalu kepalanya, paling belakang.",
+  "hadiah": {
+   "keping": 30000,
+   "item": {
+    "tongkat_pelita_pertama": 1,
+    "serpihan_ingatan": 3
+   }
+  }
  }
 }

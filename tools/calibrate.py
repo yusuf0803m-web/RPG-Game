@@ -13,6 +13,7 @@ Pakai: ``python tools/calibrate.py [--n 300] [--seed 7]``
 from __future__ import annotations
 
 import argparse
+import json
 import random
 import statistics
 import sys
@@ -25,6 +26,40 @@ from pelita.combat.engine import Battle, Bestiary  # noqa: E402
 from pelita.loader import load_data  # noqa: E402
 from pelita.party import Hero  # noqa: E402
 from pelita.scenarios import SCENARIOS  # noqa: E402
+
+
+#: Aturan penurunan stat musuh dari formula §4.7. ``peran`` mengikuti tabel di sana:
+#: swarm 0.3 · rapuh 0.5-0.7 · normal 0.9-1.0 · tank 1.3-1.4 · boss 30x off (lalu ×1.5, §9.1).
+PERAN = {"swarm": 0.3, "rapuh": 0.6, "normal": 0.95, "tank": 1.35}
+
+
+def off(level: int) -> float:
+    return 9.3 + 1.83 * (level - 1)
+
+
+def stat_musuh(level: int, peran: str = "normal", boss: bool = False, zirah: float = 1.0) -> dict:
+    """Stat satu musuh yang diturunkan dari §4.7 — bukan ditebak.
+
+    ``zirah`` menaikkan DEF/RES untuk musuh berzirah/konstruk (tabel §4.7 menyebut
+    "tank/zirah lebih tinggi"). Boss memakai HP 30×off lalu ×1.5 sesuai kalibrasi
+    ulang §9.1.
+    """
+    o = off(level)
+    if boss:
+        hp = round(30 * o * 1.5)
+    else:
+        hp = round((PERAN[peran] if peran in PERAN else float(peran)) * 7 * o)
+    return {
+        "hp": hp, "mp": 0,
+        "atk": round(7.3 + 1.26 * (level - 1)),
+        "def": round(0.55 * o * zirah),
+        "mag": round(o * (0.75 if not boss else 0.78)),
+        "res": round(0.55 * o * zirah),
+        "agi": round(o * 0.25),
+        "lck": round(o * 0.12),
+        "xp": (30 if boss else 6) * level * level,
+        "keping": (5 if boss else 1) * level * level,
+    }
 
 
 def simulate(data, scenario, policy: str, seed: int, bestiary: Bestiary):
@@ -61,7 +96,17 @@ def main(argv=None) -> int:
     ap.add_argument("--n", type=int, default=200)
     ap.add_argument("--seed", type=int, default=7)
     ap.add_argument("--only", help="id skenario")
+    ap.add_argument("--musuh", nargs="+", metavar="LEVEL:PERAN[:zirah]",
+                    help="cetak stat musuh dari rumus §4.7, mis. --musuh 47:boss 45:tank")
     args = ap.parse_args(argv)
+    if args.musuh:
+        for spec in args.musuh:
+            bagian = spec.split(":")
+            lv, peran = int(bagian[0]), bagian[1]
+            zirah = float(bagian[2]) if len(bagian) > 2 else 1.0
+            st = stat_musuh(lv, peran, boss=(peran == "boss"), zirah=zirah)
+            print(spec, json.dumps(st, ensure_ascii=False))
+        return 0
     data = load_data()
     print(f"{'skenario':<12} {'kebijakan':<8} {'menang%':>8} {'ronde':>6} {'aksi/kill':>10} {'HP sisa%':>9}")
     for sc in SCENARIOS:

@@ -1,6 +1,10 @@
-"""Jalankan walkthrough otomatis Babak 1 dan cetak ringkasan: level party di tiap boss & titik gagal.
+"""Jalankan walkthrough otomatis satu babak dan cetak ringkasannya: jumlah pertarungan,
+level party, dan lama tiap boss.
 
-Pakai: python tools/walkthrough.py [--seed N] [--tail 60] [--sampai LANGKAH]
+    python tools/walkthrough.py --seed 11                 Babak 1 (berhenti di batas babak)
+    python tools/walkthrough.py --babak 2 --seed 5        Babak 2 (berhenti di batas babak)
+    python tools/walkthrough.py --babak 3 --seed 3        Babak 3 sampai tamat
+    python tools/walkthrough.py --babak 3 --ending kembali    pilih ending lain
 """
 from __future__ import annotations
 
@@ -19,6 +23,8 @@ from pelita.world.model import load_world  # noqa: E402
 from pelita.world.state import new_game  # noqa: E402
 from tests.test_babak1 import SEMUA, BerhentiUji, make_equipper  # noqa: E402
 from tests.test_babak2 import SEMUA_BABAK2, mulai_babak2  # noqa: E402
+from tests.test_babak3 import (  # noqa: E402
+    ENDING_DENDANG, ENDING_KEMBALI, ENDING_NYALA, SEMUA_BABAK3, make_pemain, mulai_babak3)
 from tests.walker import Walker  # noqa: E402
 
 BOSSES = {
@@ -26,10 +32,16 @@ BOSSES = {
         "Penambang Raksasa Terlupa", "Penjaga Mercusuar", "Adipati Baskara", "Kelam Berwajah"),
     2: ("Garuda Kelabu", "Cacing Abu Purba", "Sunan Wirya", "Penjaga Suar Wirasaba",
         "Hampa Berzirah", "Nyi Pandansari", "Juru Nyala Nirmala"),
+    3: ("Gema Pengantin", "Gema Prajurit", "Gema Guntur", "Penjaga Suar Api", "Penjaga Suar Kelam",
+        "Sang Pelita Pertama", "Gelombang Kabut A", "Kabut Terakhir"),
 }
-#: Babak 1 tidak lagi berakhir di layar judul — ceritanya mengalir ke Celah Angin,
-#: jadi walkthrough-nya berhenti di batas babak lewat langkah "#stop:babak2_mulai".
-AKHIR = {1: "berhenti", 2: "chapter_end"}
+#: Tiga ending Babak 3 (GAME_DESIGN §2.4). "dendang" butuh syarat rahasia, yang
+#: disiapkan ``mulai_babak3(lengkap=True)``.
+ENDING = {"nyala": ENDING_NYALA, "kembali": ENDING_KEMBALI, "dendang": ENDING_DENDANG}
+#: Babak 1 dan 2 tidak berakhir di layar judul — ceritanya mengalir langsung ke babak
+#: berikutnya, jadi walkthrough-nya berhenti di batas babak lewat langkah "#stop:...".
+#: Hanya Babak 3 yang benar-benar tamat (end_chapter = salah satu dari tiga ending).
+AKHIR = {1: "berhenti", 2: "berhenti", 3: "chapter_end"}
 
 
 def main(argv=None) -> int:
@@ -37,20 +49,32 @@ def main(argv=None) -> int:
     ap.add_argument("--seed", type=int, default=11)
     ap.add_argument("--tail", type=int, default=40)
     ap.add_argument("--sampai", type=int, default=None, help="jalankan hanya N langkah pertama")
-    ap.add_argument("--babak", type=int, default=1, choices=(1, 2), help="babak yang dijalankan")
+    ap.add_argument("--babak", type=int, default=1, choices=(1, 2, 3), help="babak yang dijalankan")
+    ap.add_argument("--ending", default="nyala", choices=sorted(ENDING),
+                    help="--babak 3: ending yang dipilih di Sumur Ingatan")
+    ap.add_argument("--bunuh-kelana", action="store_true",
+                    help="--babak 3: jalur 'Kelana dibunuh' (hanya ending 'kembali' tersisa)")
     args = ap.parse_args(argv)
     data = load_data()
     world = load_world(data)
+    kotak: list = []
+    hook = None
     if args.babak == 1:
         st = new_game(data)
         st.rng = random.Random(args.seed)
         semua = SEMUA
-    else:
+    elif args.babak == 2:
         st = mulai_babak2(data, args.seed)
         semua = SEMUA_BABAK2
+    else:
+        st = mulai_babak3(data, args.seed, kelana_dibunuh=args.bunuh_kelana,
+                          lengkap=(args.ending == "dendang"))
+        semua = SEMUA_BABAK3 + ENDING[args.ending]
+        hook = make_pemain(st, kotak)
     steps = semua[: args.sampai] + ["@k"] if args.sampai else semua
-    wk = Walker(steps, on_command=make_equipper(st))
+    wk = Walker(steps, on_command=hook or make_equipper(st))
     g = Game(data, world, st, wk.io, auto_battle=True, auto_script=True, auto_choice=False, save_dir=Path(tempfile.mkdtemp()))
+    kotak.append(g)
     try:
         res = g.run()
     except BerhentiUji:

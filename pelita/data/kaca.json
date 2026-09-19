@@ -54,5 +54,9 @@
   "kaca_pindai": {"name": "Kaca Pindai", "kind": "skill", "skill": "pindai", "price": 0, "langka": true,
     "description": "Memberi Pindai: buka semua afinitas satu musuh."},
   "kaca_curi": {"name": "Kaca Curi", "kind": "skill", "skill": "curi", "price": 0, "langka": true,
-    "description": "Memberi Curi. Bagas tetap yang terbaik memakainya."}
+    "description": "Memberi Curi. Bagas tetap yang terbaik memakainya."},
+
+  "kaca_penenun": {"name": "Kaca Penenun", "kind": "pasif", "price": 0, "langka": true,
+                   "passive": {"serang_adaptif": true},
+                   "description": "Serang dasar menenun dirinya jadi elemen kelemahan sasaran. Hadiah Sang Penenun (§6.3)."}
 }

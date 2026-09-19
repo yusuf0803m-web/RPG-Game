@@ -219,6 +219,7 @@ class Passive:
     biaya_mp_pct: float = 0.0      # potongan biaya MP skill
     bara_awal: int = 0             # Bara di awal pertarungan
     curi_pct: float = 0.0          # tambahan peluang Curi
+    serang_adaptif: bool = False   # Serang dasar memakai elemen kelemahan sasaran (Kaca Penenun)
     imun: list[str] = field(default_factory=list)
 
     def skala(self, tingkat: int) -> "Passive":
@@ -233,6 +234,7 @@ class Passive:
             biaya_mp_pct=self.biaya_mp_pct * f,
             bara_awal=self.bara_awal,
             curi_pct=self.curi_pct * f,
+            serang_adaptif=self.serang_adaptif,
             imun=list(self.imun),
         )
 
@@ -247,6 +249,7 @@ class Passive:
             biaya_mp_pct=self.biaya_mp_pct + other.biaya_mp_pct,
             bara_awal=self.bara_awal + other.bara_awal,
             curi_pct=self.curi_pct + other.curi_pct,
+            serang_adaptif=self.serang_adaptif or other.serang_adaptif,
             imun=sorted(set(self.imun) | set(other.imun)),
         )
         for k, v in other.stat_mult.items():
@@ -320,6 +323,7 @@ class AIPhase:
     ignore_taunt: bool = False            # kebal Provokasi
     actions_per_turn: int = 1
     announce: str = ""                    # teks saat fase dimulai
+    traits: Optional[list[str]] = None    # sifat yang menggantikan sifat musuh saat fase ini
 
 
 @dataclass
@@ -362,6 +366,7 @@ class EnemyDef:
     immune: list[str] = field(default_factory=list)    # status yang tidak mempan
     traits: list[str] = field(default_factory=list)    # sifat: "terbang", "hampa", "konstruk", "pantul"
     on_death: Optional[str] = None                     # skill yang meledak saat musuh ini mati
+    regen_pct: float = 0.0                             # pulih tiap giliran (Cacing Abu Ibu; 0 = tidak)
     lesson: str = ""                          # "pelajaran" musuh ini (dokumentasi desain)
     description: str = ""
 

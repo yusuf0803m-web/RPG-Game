@@ -9,6 +9,8 @@ Perintah yang didukung (satu objek per perintah):
     {"once": "flag", "do": [...]}               jalankan sekali, lalu set flag
     {"set": "flag" | ["f1","f2"]}   {"unset": "flag"}
     {"battle": ["id", ...], "boss": true, "can_flee": false, "win": [...], "lose": "gameover"|"continue"}
+        tambahan: "bertahan": N  (menang setelah N ronde, bukan setelah musuh habis)
+                  "bertahan_teks": "..."  (baris penutup pertarungan bertahan)
     {"join": "sela", "level": 4, "guest": false}   {"leave": "guntur"}
     {"give": {"item": n}}   {"take": {"item": n}}   {"keping": ±n}   {"xp": n}
     {"heal": "all"}                             pulihkan HP/MP semua
@@ -20,7 +22,11 @@ Perintah yang didukung (satu objek per perintah):
     {"ilustrasi": "events/...", "teks": "keterangan"}      ilustrasi layar penuh (peristiwa besar)
     {"kaca": {"kaca_api": 1}}                   beri Kaca Ingatan
     {"quest": "id", "state": "..."}
+    {"barisan": ["ratih"]}                      tarik nama-nama itu ke barisan aktif
     {"bara": true}                              aktifkan sumber daya Bara
+    {"bara": 8}                                 naikkan Bara maks ke angka itu (syarat Jurus Empat)
+    {"lucuti": true}                            lepaskan Bara, Kaca, dan Jalur seluruh party
+                                                (ending "Mengembalikan": dunia tanpa sihir)
     {"run": "skrip_lain"}   {"end": true}   {"end_chapter": "teks penutup"}
 
 Kondisi: lihat ``GameState.check``.
@@ -33,7 +39,7 @@ from typing import Callable, Optional
 from ..ui.menu import Menu
 from ..ui.terminal import IO
 from .model import Area
-from .state import XP_CADANGAN, GameState
+from .state import BARA_HOLDER_ID, PARTY_AKTIF_MAKS, XP_CADANGAN, GameState
 
 
 class ScriptEnd(Exception):
@@ -55,7 +61,7 @@ class GameOver(Exception):
 @dataclass
 class Hooks:
     """Fungsi yang disediakan loop permainan untuk skrip."""
-    battle: Callable[[list[str], bool, bool], str]          # (enemy_ids, boss, can_flee) -> "menang"|"kalah"|"kabur"
+    battle: Callable[..., str]      # (enemy_ids, boss, can_flee, **opsi) -> "menang"|"kalah"|"kabur"
     save_menu: Callable[[], None]
     shop: Callable[[str], None]
     inn: Callable[[int], None]
@@ -139,7 +145,10 @@ class ScriptRunner:
                 flags = c["unset"] if isinstance(c["unset"], list) else [c["unset"]]
                 st.flags.difference_update(flags)
             elif "battle" in c:
-                outcome = self.hooks.battle(list(c["battle"]), bool(c.get("boss", False)), bool(c.get("can_flee", False)))
+                outcome = self.hooks.battle(list(c["battle"]), bool(c.get("boss", False)),
+                                            bool(c.get("can_flee", False)),
+                                            bertahan=int(c.get("bertahan", 0)),
+                                            bertahan_teks=c.get("bertahan_teks", ""))
                 if outcome == "menang":
                     self.run_commands(area, c.get("win", []))
                 elif outcome == "kalah":
@@ -234,10 +243,44 @@ class ScriptRunner:
                 st.quests[c["quest"]] = c.get("state", "aktif")
                 self.io.line(f" ** Quest: {c['quest'].replace('_', ' ').title()} — {c.get('state', 'aktif')} **")
                 self.io.line("")
+            elif "barisan" in c:
+                # Beberapa adegan menuntut orang tertentu berdiri di depan (Ratih memimpin
+                # lagu di ending "Mendendangkan"). Rimba tetap tidak bisa digeser keluar.
+                minta = list(c["barisan"])
+                for cid in minta:
+                    h = st.hero(cid)
+                    if h is None or st.is_active(cid):
+                        continue
+                    i = st.party.index(h)
+                    for j in range(PARTY_AKTIF_MAKS - 1, -1, -1):
+                        if st.party[j].id != BARA_HOLDER_ID and st.party[j].id not in minta:
+                            st.tukar_posisi(i, j)
+                            break
+                nama = ", ".join(h.name for h in st.active_party)
+                self.io.line(f" ** Barisan aktif: {nama}. **")
+                self.io.line("")
             elif "bara" in c:
                 from ..combat.engine import BARA_MAX_DASAR
-                st.bara_max = BARA_MAX_DASAR
+                nilai = c["bara"]
+                st.bara_max = BARA_MAX_DASAR if nilai is True else max(st.bara_max, int(nilai))
                 st.flags.add("bara")
+                if nilai is not True:
+                    self.io.line(f" ** Meteran Bara melebar: maksimum {st.bara_max}. **")
+                    self.io.line("")
+            elif "lucuti" in c:
+                # Ending "Mengembalikan" (§2.4): tidak ada lagi Nyala, tidak ada lagi sihir.
+                # Ini bukan teks penutup — state-nya betul-betul kehilangan semuanya.
+                st.bara_max = 0
+                st.flags.discard("bara")
+                st.kaca.clear()
+                st.kaca_uses.clear()
+                for h in st.party:
+                    h.kaca = [None] * len(h.kaca)
+                    h.jalur = None
+                    h.hp = min(h.hp, h.max_hp)
+                    h.mp = min(h.mp, h.max_mp)
+                self.io.line(" ** Bara padam. Kaca Ingatan menjadi kaca biasa. Jalur yang kalian pilih tinggal cara berjalan. **")
+                self.io.line("")
             elif "run" in c:
                 self.run_commands(area, area.scripts[c["run"]])
             elif "end" in c:

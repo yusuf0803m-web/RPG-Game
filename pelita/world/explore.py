@@ -232,14 +232,23 @@ class Game:
         return {k["jurus"] for kid, k in self.world.kenangan.items()
                 if k.get("jurus") and kid in self.state.kenangan}
 
-    def do_battle(self, enemy_ids: list[str], boss: bool, can_flee: bool, allow_items: bool = True) -> str:
+    def bara_kenangan(self) -> int:
+        """Kenangan puncak yang sudah dilihat: satu Bara balik tiap adegan setelah
+        Padamkan Dunia (GAME_DESIGN §6.2 no. 16)."""
+        return sum(1 for kid, k in self.world.kenangan.items()
+                   if k.get("puncak") and kid in self.state.kenangan)
+
+    def do_battle(self, enemy_ids: list[str], boss: bool, can_flee: bool, allow_items: bool = True,
+                  bertahan: int = 0, bertahan_teks: str = "") -> str:
         st = self.state
         heroes = st.active_party
-        bara_start = min(2, sum(1 for h in heroes if h.equipment.get("aksesori") == "kalung_bara")) if st.bara_max else 0
+        kalung = ("kalung_bara", "kalung_bara_besar")
+        bara_start = min(2, sum(1 for h in heroes if h.equipment.get("aksesori") in kalung)) if st.bara_max else 0
         b = Battle(self.data, heroes, enemy_ids, rng=st.rng, bestiary=st.bestiary,
                    can_flee=can_flee and not boss, bara_max=st.bara_max, inventory=st.inventory, bara_start=bara_start,
                    reserves=[h for h in st.reserve_party if not h.guest], allow_items=allow_items,
-                   jurus_terbuka=self.jurus_terbuka())
+                   jurus_terbuka=self.jurus_terbuka(), survive_rounds=bertahan, survive_text=bertahan_teks,
+                   bara_kenangan=self.bara_kenangan())
         if self.area.fog and st.in_dark_fog:
             for h in b.heroes:
                 h.statuses["lupa"] = make_status("lupa")

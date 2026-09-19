@@ -29,7 +29,8 @@
    "tumbuk_nyala",
    "cahaya_penunjuk",
    "fajar",
-   "nyala_terakhir"
+   "nyala_terakhir",
+  "terang_larung"
   ],
   "weapon_type": "tongkat",
   "element_note": "Api, Cahaya",
@@ -65,7 +66,8 @@
    "bantingan_perisai",
    "tebas_menyapu",
    "tumbal_baja",
-   "sumpah_pengawal"
+   "sumpah_pengawal",
+  "pedang_dan_perisai"
   ],
   "weapon_type": "pedang",
   "element_note": "Fisik",
@@ -103,7 +105,8 @@
    "badai_es",
    "petir_bercabang",
    "tirai_kelam",
-   "malam_pengingat"
+   "malam_pengingat",
+  "kabut_dan_kilat"
   ],
   "weapon_type": "lentera",
   "element_note": "Es, Petir, Kelam",
@@ -137,7 +140,8 @@
    "peluncur_kejut",
    "jerat_bumi",
    "baterai",
-   "pindai"
+   "pindai",
+  "peluncur_tujuh"
   ],
   "weapon_type": "alat_kaca",
   "element_note": "Petir, Bumi (gadget)",

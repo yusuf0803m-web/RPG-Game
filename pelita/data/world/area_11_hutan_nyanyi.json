@@ -585,6 +585,9 @@
     "boss": true,
     "win": [
      {
+      "set": "padasuara_selamat"
+     },
+     {
       "set": "boss_wirya_kalah"
      },
      {

@@ -206,7 +206,8 @@ def test_kenangan_membuka_jurus_ganda(data, world, tmp_path):
 def test_setiap_kenangan_punya_adegan(world):
     for kid, k in world.kenangan.items():
         assert k["judul"] and k["adegan"], kid
-        assert len(k["pasangan"]) == 2, kid
+        # Kenangan biasa berpasangan; Kenangan puncak Babak 3 adalah renungan satu orang.
+        assert len(k["pasangan"]) == (1 if k.get("puncak") else 2), kid
 
 
 # -- Tukang Kaca & Serpihan -------------------------------------------------

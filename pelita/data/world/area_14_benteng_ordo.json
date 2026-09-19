@@ -445,7 +445,22 @@
       "set": "babak_2_selesai"
      },
      {
-      "end_chapter": "AKHIR BABAK 2 — TANAH LUAR\n\nOrdo Pelita berhenti memanen. Padasuara tetap menyanyi. Kelana berjalan di belakang Lintang, dan kadang memanggil namanya dengan benar.\n\nDi tepi Danau Garam, Kapal Lentera dibuka terpalnya, menghadap ke barat — ke Laut Lupa, dan ke Pusar Kabut di tepi dunia.\n\nBabak 3 — Ke Tepi Dunia: sedang ditulis (Tahap 5). Terima kasih sudah bermain sampai sini."
+      "text": "AKHIR BABAK 2 — TANAH LUAR\n\nOrdo Pelita berhenti memanen. Padasuara tetap menyanyi. Kelana berjalan di belakang Lintang, dan kadang memanggil namanya dengan benar."
+     },
+     {
+      "pause": true
+     },
+     {
+      "text": "Terpal Kapal Lentera dibuka menghadap ke barat — ke Laut Lupa, dan ke Pusar Kabut di tepi dunia."
+     },
+     {
+      "heal": "all"
+     },
+     {
+      "travel": {
+       "area": "laut_lupa",
+       "room": "kapal_dek"
+      }
      }
     ]
    }

@@ -4,9 +4,12 @@ RPG teks turn-based bergaya JRPG klasik, dibangun dengan Python. Mesin permainan
 pustaka standar; antarmuka web menambah satu dependensi, Flask.
 
 - **Dokumen desain**: [`GAME_DESIGN.md`](GAME_DESIGN.md) (edisi 20 jam, tiga babak).
-- **Status**: Tahap 4 dari rencana di §9 dokumen desain selesai — **Babak 1 dan Babak 2 bisa dimainkan
-  sampai tamat**: 14 area, 15 boss, 7 anggota party (4 aktif + 3 cadangan), sistem Kaca/Jalur/Kenangan,
-  Buruan, Arena, dan save/muat. Babak 3 berikutnya.
+- **Status**: Tahap 5 dari rencana di §9 dokumen desain selesai — **permainannya bisa ditamatkan
+  dari prolog sampai salah satu dari tiga ending.** 16 area / 124 ruang, 67 musuh (16 boss cerita,
+  satu mid-boss tujuh gelombang, satu superboss, dan target Buruan), 225 skill, 81 item, 22 Kaca,
+  14 Jalur, 23 adegan Kenangan, 8 kontrak Buruan, 5 tingkat Arena, 139 entri latar. Party lengkap
+  7 orang (4 aktif + 3 cadangan). Sisanya Tahap 6: kalibrasi harga, dungeon opsional, dan side
+  quest yang belum dibuat.
 - **Dua antarmuka**: web (grafis) dan terminal. Keduanya memakai mesin permainan yang sama.
 
 ## Bermain di browser
@@ -109,13 +112,21 @@ python -m pelita -s rawa --auto --seed 3 --no-pause
 
 ```bash
 pip install pytest
-python -m pytest -q                     # 148 tes: unit, walkthrough Babak 1 & 2, sistem Tahap 3,
-                                        # latar, API web, dan regresi menu (tiap prompt harus ada jalan keluar)
+python -m pytest -q                     # 183 tes: unit, walkthrough Babak 1-3, sistem Tahap 3,
+                                        # mekanik Babak 2 & 3, latar, API web, dan regresi menu
+                                        # (tiap prompt harus ada jalan keluar)
 python tools/calibrate.py --n 200       # simulasi rasio "2–3 pukulan" per skenario
-python tools/walkthrough.py --seed 11            # pemain otomatis: prolog sampai Akhir Babak 1
-python tools/walkthrough.py --babak 2 --seed 5   # Babak 2: Celah Angin sampai Nirmala
-                                                 # keduanya mencetak level party & lama tiap boss
+python tools/calibrate.py --musuh 52:boss 45:tank    # stat musuh dari rumus §4.7 (bukan tebakan)
+
+python tools/walkthrough.py --seed 11                  # Babak 1: prolog sampai Akhir Babak 1
+python tools/walkthrough.py --babak 2 --seed 5         # Babak 2: Celah Angin sampai Nirmala
+python tools/walkthrough.py --babak 3 --seed 3         # Babak 3: Laut Lupa sampai ending
+python tools/walkthrough.py --babak 3 --ending kembali # ending kedua
+python tools/walkthrough.py --babak 3 --ending dendang # ending rahasia
+python tools/walkthrough.py --babak 3 --ending kembali --bunuh-kelana   # jalur Kelana dibunuh
 ```
+
+Semuanya mencetak jumlah pertarungan, level party, dan lama tiap boss dalam ronde.
 
 ## Struktur
 
@@ -144,7 +155,7 @@ pelita/
     app.py         server Flask: /api/session, /state (long-poll), /input
     static/        index.html, style.css, app.js (klien), art.js (SVG prosedural)
   data/            characters, skills, enemies, items, kaca, jalur;
-                   world/area_*.json, shops, quests, kenangan, buruan, arena
+                   world/area_*.json (16 area), shops, quests, kenangan, buruan, arena, latar
 tools/             calibrate.py, walkthrough.py
 tests/             pytest (walker.py = pemain otomatis untuk tes alur;
                    test_menu_web.py = crawler yang memastikan tiap menu bisa ditinggalkan)
@@ -165,8 +176,29 @@ Semuanya data-driven; rinciannya di `GAME_DESIGN.md` §9.2.
   HP maks, Bara maks, soket tambahan, reset Jalur, atau Kaca Skill langka.
 - **Berkemah** — satu Bekal Kemah di lentera penjaga memulihkan party dan membuka adegan **Kenangan**.
   Jurus Ganda hanya terbuka lewat Kenangan pasangannya.
-- **Papan Buruan & Arena Kafilah** (Dermaga Kota) — 3 target elit dengan mekanik khas, dan 3 tingkat
-  arena berisi tiga gelombang beruntun tanpa item.
+- **Papan Buruan & Arena Kafilah** (Dermaga Kota, lalu Sanggar dan Kapal Lentera) — 8 target elit
+  dengan mekanik khas masing-masing, dan 5 tingkat arena berisi tiga gelombang beruntun tanpa item.
+
+## Babak 3 dan tiga ending (Tahap 5)
+
+Babak 3 (Laut Lupa dan Pusar Kabut) menutup ceritanya dengan **tiga akhir yang masing-masing
+punya segmen mainnya sendiri**, bukan tiga teks penutup yang berbeda:
+
+- **Menyalakan Kembali** — Kelana berjalan ke Sumur; party menahan satu gelombang Kabut yang
+  tidak habis-habis sampai tujuh Suar menyala. Menghabisi lawan tidak menyelesaikan apa pun.
+- **Mengembalikan** — Rimba membelanjakan seluruh Bara. Save-nya betul-betul kehilangan Bara,
+  Kaca Ingatan, dan skill Jalur: epilognya berjalan di dunia tanpa sihir.
+- **Mendendangkan** (rahasia) — pertarungan melawan Kabut Terakhir, yang kebal semua elemen.
+  Hanya Lagu dan Kidung Ratih yang menguraikannya. Pilihannya **tidak muncul sama sekali**
+  kalau syaratnya belum terpenuhi.
+
+Di Babak 2, setelah Hampa Berzirah jatuh, pemain memilih secara eksplisit antara menurunkan
+pedang dan menghabisinya — lengkap dengan peringatan bahwa pilihan kedua menutup dua dari tiga
+akhir cerita. Keduanya bisa ditamatkan; `tests/test_babak3.py` membuktikan keempat jalur itu.
+
+**Jurus Empat "Pelita Terakhir"** (8 Bara, §4.5) terbuka setelah meteran Bara melebar ke 8 di
+Kapal Lentera: seluruh barisan aktif memukul sekaligus, dan tiap lawan kena elemen kelemahannya
+sendiri. Itu satu-satunya cara melukai fase terakhir Sang Pelita Pertama selain Jurus Ganda.
 
 ## Latar bergambar
 

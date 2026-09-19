@@ -41,6 +41,8 @@ ITEM_BUBUK_DASAR = 10
 ITEM_BUBUK_PER_LEVEL = 4
 SUKU_CADANG = "suku_cadang"
 MAX_MUSUH = 5
+#: Berapa banyak Lagu yang dibutuhkan untuk mengurai Kabut Terakhir (ending "Mendendangkan").
+KABUT_PER_LAGU = 8
 
 
 # ---------------------------------------------------------------------------
@@ -78,6 +80,7 @@ class Combatant:
     kritikal_bonus: float = 0.0   # dari Kaca Tajam / pasif Jalur
     mp_regen: int = 0             # dari Kaca Napas / Jalur Penuntun
     curi_bonus: float = 0.0       # dari Kaca Licin / Jalur Peretas
+    serang_adaptif: bool = False  # Serang dasar mengikuti kelemahan sasaran (Kaca Penenun, §6.3)
 
     # -- properti dasar -----------------------------------------------------
     @property
@@ -174,6 +177,13 @@ class BattleResult:
     rounds: int = 0
 
 
+def is_jurus(skill: Optional[Skill]) -> bool:
+    """True untuk Jurus Ganda dan Jurus Empat — satu-satunya yang melukai fase 3
+    Sang Pelita Pertama (GAME_DESIGN §6.2 no. 16)."""
+    return bool(skill and skill.cost_type == CostType.BARA
+                and (len(skill.users) >= 2 or "jurus_empat" in skill.tags))
+
+
 class Bestiary:
     """Catatan Penyala: afinitas musuh yang sudah diketahui (GAME_DESIGN §4.4)."""
 
@@ -209,6 +219,9 @@ class Battle:
         reserves: Optional[list[Hero]] = None,
         allow_items: bool = True,
         jurus_terbuka: Optional[set[str]] = None,
+        survive_rounds: int = 0,
+        survive_text: str = "",
+        bara_kenangan: int = 0,
     ) -> None:
         self.data = data
         self.rng = rng or random.Random()
@@ -231,6 +244,18 @@ class Battle:
         self.bara_skills: list[Skill] = [s for s in data.skills.values() if s.cost_type == CostType.BARA]
         # Jurus Ganda dibuka lewat adegan Kenangan (§4.5). None = semua terbuka (prototipe & tes).
         self.jurus_terbuka = jurus_terbuka
+        # Pertarungan bertahan: menang begitu ronde ke-N lewat, bukan begitu musuh habis
+        # (segmen ending "Menyalakan Kembali", GAME_DESIGN §2.4).
+        self.survive_rounds = survive_rounds
+        self.survive_text = survive_text
+        # Bara yang kembali setelah Padamkan Dunia: satu per Kenangan puncak (§6.2 no. 16).
+        self.bara_kenangan = bara_kenangan
+        #: Jurus sekali-per-pertarungan yang dipegang party, bukan satu orang (Jurus Empat).
+        self.used_once_party: set[str] = set()
+        #: Skill yang dihapus Sang Pelita Pertama; Lagu Ratih mengembalikannya satu per satu.
+        self.skill_terhapus: list[tuple[Combatant, Skill]] = []
+        #: Apakah kepala (Cacing Abu Ibu) dipukul ronde ini — kalau tidak, segmennya pulih.
+        self.kepala_dipukul = False
 
     # -- pembuatan peserta --------------------------------------------------
     def _make_hero(self, h: Hero) -> Combatant:
@@ -240,6 +265,7 @@ class Battle:
             key=h.id, name=h.name, is_player=True, level=h.level, base=st,
             hp=min(h.hp, st.hp), mp=min(h.mp, st.mp), skills=h.skills(), hero=h,
             immune=set(p.imun), kritikal_bonus=p.kritikal, mp_regen=p.mp_regen, curi_bonus=p.curi_pct,
+            serang_adaptif=p.serang_adaptif,
         )
         w = h.equipment.get("senjata")
         if w and w in self.data.items and self.data.items[w].element != Element.NETRAL:
@@ -314,22 +340,47 @@ class Battle:
         self._emit(ev, f"{names} muncul!")
         return ev
 
-    def _new_round(self) -> None:
+    def _new_round(self, ev: list[str]) -> None:
         self.round += 1
+        if self.survive_rounds and self.round > self.survive_rounds:
+            self._bertahan_selesai(ev)
+            return
+        self._regen_segmen(ev)
         everyone = self.alive_heroes + self.alive_enemies
         # AGI tertinggi duluan; seri: party duluan (GAME_DESIGN §4.1)
         self.queue = sorted(everyone, key=lambda c: (-c.effective("agi"), 0 if c.is_player else 1))
+
+    def _bertahan_selesai(self, ev: list[str]) -> None:
+        """Ronde bertahan habis: party menang tanpa harus menghabisi siapa pun."""
+        xp = sum(e.edef.xp for e in self.enemies if e.edef)
+        keping = sum(e.edef.keping for e in self.enemies if e.edef)
+        self.result = BattleResult("menang", xp=xp, keping=keping, rounds=self.round - 1)
+        self._emit(ev, self.survive_text or "Kalian bertahan cukup lama. Itu saja yang diminta.")
+
+    def _regen_segmen(self, ev: list[str]) -> None:
+        """Segmen yang bisa menutup lukanya (Cacing Abu Ibu, §6.3) pulih kalau kepalanya
+        tidak dipukul satu ronde penuh."""
+        parts = [e for e in self.alive_enemies if e.edef and e.edef.regen_pct]
+        if parts and self.round > 1 and not self.kepala_dipukul:
+            for e in parts:
+                n = min(int(e.max_hp * e.edef.regen_pct), e.max_hp - e.hp)
+                if n > 0:
+                    e.hp += n
+                    self._emit(ev, f"{e.display_name} menutup lukanya ({n} HP) — kepalanya tidak diganggu.")
+        self.kepala_dipukul = False
 
     def next_turn(self) -> Turn:
         """Ambil peserta berikutnya. Menangani ronde baru dan giliran yang dilewati."""
         if self.over:
             return Turn(None, [], skipped=True)
+        ev: list[str] = []
         while not self.queue:
-            self._new_round()
+            self._new_round(ev)
+            if self.over:
+                return Turn(None, ev, skipped=True)
         actor = self.queue.pop(0)
         if not actor.alive:
-            return Turn(None, [], skipped=True)
-        ev: list[str] = []
+            return Turn(None, ev, skipped=True)
         if actor.actions_done > 0:
             # lanjutan aksi ganda di giliran yang sama (fase boss actions_per_turn > 1)
             return Turn(actor, ev, skipped=False)
@@ -363,6 +414,8 @@ class Battle:
             actor.affinities = dict(phase.affinities)
         actor.ignore_taunt = phase.ignore_taunt
         actor.actions_per_turn = max(1, phase.actions_per_turn)
+        if phase.traits is not None:
+            actor.traits = set(phase.traits)
         if phase.announce:
             self._emit(ev, phase.announce)
             self.log.append(phase.announce)
@@ -434,6 +487,14 @@ class Battle:
             return []
         out = []
         for s in self.bara_skills:
+            if "jurus_empat" in s.tags:
+                # Jurus Empat (§4.5): seluruh barisan aktif, Bara maks 8, sekali per pertarungan.
+                if (self.bara_max < s.cost or s.id in self.used_once_party
+                        or len(self.heroes) < 4 or not all(h.alive for h in self.heroes)):
+                    continue
+                if self.bara >= s.cost:
+                    out.append(s)
+                continue
             if actor.key not in s.users:
                 continue
             if len(s.users) >= 2 and self.jurus_terbuka is not None and s.id not in self.jurus_terbuka:
@@ -579,6 +640,10 @@ class Battle:
             return
         t = ts[0]
         elem = actor.weapon_element if actor.is_player else Element.FISIK
+        if actor.serang_adaptif:
+            # Kaca Penenun (hadiah Sang Penenun, §6.3): serangan dasar menenun dirinya
+            # mengikuti kelemahan sasaran.
+            elem = next((el for el, a in t.affinities.items() if a == Affinity.LEMAH), elem)
         self._emit(ev, f"{actor.display_name} menyerang {t.display_name}!")
         self._hit(actor, t, elem, 1.0, SkillKind.FISIK, ev, skill=None)
 
@@ -598,9 +663,12 @@ class Battle:
 
     def _skill_source(self, actor: Combatant, skill: Skill) -> Combatant:
         """Untuk Jurus Ganda: pakai stat penyerang terbaik di antara ``users``."""
-        if skill.cost_type != CostType.BARA or len(skill.users) < 2:
+        if not is_jurus(skill):
             return actor
-        users = [h for u in skill.users if (h := self.hero_by_key(u)) and h.alive]
+        if "jurus_empat" in skill.tags:
+            users = [h for h in self.heroes if h.alive]
+        else:
+            users = [h for u in skill.users if (h := self.hero_by_key(u)) and h.alive]
         stat = "atk" if skill.kind == SkillKind.FISIK else "mag"
         return max(users, key=lambda h: h.effective(stat)) if users else actor
 
@@ -625,7 +693,11 @@ class Battle:
                 and len(ts) == 1 and "pantul" in ts[0].traits and ts[0].alive):
             self._emit(ev, f"{ts[0].display_name} memantulkan {skill.name} kembali!")
             ts = [actor]
-        if skill.cost_type == CostType.BARA and len(skill.users) >= 2:
+        if "jurus_empat" in skill.tags:
+            self.used_once_party.add(skill.id)
+            names = ", ".join(h.name for h in self.heroes if h.alive)
+            self._emit(ev, f"JURUS EMPAT! {names} — {skill.name}!")
+        elif skill.cost_type == CostType.BARA and len(skill.users) >= 2:
             names = " & ".join(h.name for u in skill.users if (h := self.hero_by_key(u)))
             self._emit(ev, f"JURUS GANDA! {names}: {skill.name}!")
         else:
@@ -635,14 +707,20 @@ class Battle:
             return
         source = self._skill_source(actor, skill)
         if self._special_skill(actor, skill, ts, ev):
+            if "lagu" in skill.tags and actor.is_player:
+                self._lagu_khusus(ev)
             self._check_end(ev)
             return
         for t in ts:
             if skill.kind in (SkillKind.FISIK, SkillKind.SIHIR):
+                elem = skill.element
+                if "elemen_kelemahan" in skill.tags:
+                    # Jurus Empat: tiap musuh dipukul dengan elemen kelemahannya sendiri (§4.5).
+                    elem = next((el for el, a in t.affinities.items() if a == Affinity.LEMAH), skill.element)
                 for _ in range(max(1, skill.hits)):
                     if not t.alive:
                         break
-                    self._hit(source, t, skill.element, skill.power, skill.kind, ev, skill=skill)
+                    self._hit(source, t, elem, skill.power, skill.kind, ev, skill=skill)
             elif skill.kind == SkillKind.HEAL:
                 self._heal(source, t, skill, ev)
             elif skill.kind == SkillKind.BANGKIT:
@@ -656,6 +734,8 @@ class Battle:
             self._add_status(actor, inf.status, inf.turns, ev, source=actor)
         if skill.bara_gain:
             self._gain_bara(skill.bara_gain, ev, skill.name)
+        if "lagu" in skill.tags and actor.is_player:
+            self._lagu_khusus(ev)
         self._check_end(ev)
 
     def _do_item(self, actor: Combatant, item: ItemDef, targets: list[Combatant], ev: list[str]) -> None:
@@ -727,6 +807,10 @@ class Battle:
         else:
             off = actor.effective("mag")
             deff = 0 if (skill and skill.ignore_def) else target.effective("res")
+        # Formasi (Gema Prajurit, §6.1 no. 29): DEF/RES ×2 selama dua atau lebih masih berdiri.
+        if "formasi" in target.traits and sum(
+                1 for c in self.allies_of(target) if c.alive and "formasi" in c.traits) >= 2:
+            deff *= 2
         if offense_override is not None:
             off = offense_override
         if skill and "low_hp_x1_5" in skill.tags and actor.hp_ratio < 0.30:
@@ -751,6 +835,9 @@ class Battle:
             target.hp += sembuh
             self._emit(ev, f"{target.display_name} MENYERAP {element.label}! Pulih {sembuh} HP.")
             return dmg
+        # "Yang Ingin Dilupakan" (§6.2 no. 16): apa pun selain Jurus hanya menggores.
+        if dmg > 0 and "hanya_jurus" in target.traits and not is_jurus(skill):
+            dmg = 1
         # Tanggung (Kelana): sebagian damage pindah ke pelindung yang memasangnya.
         st_tanggung = target.statuses.get("tanggung")
         pelindung = st_tanggung.source if st_tanggung else None
@@ -765,6 +852,8 @@ class Battle:
                     self._emit(ev, f"{pelindung.display_name} tumbang!")
                     self._on_death(pelindung, ev)
         target.hp = max(0, target.hp - dmg)
+        if "kepala" in target.traits:
+            self.kepala_dipukul = True
         tag = ""
         if aff == Affinity.LEMAH:
             tag = " LEMAH!"
@@ -832,6 +921,49 @@ class Battle:
             actor.statuses["mengisi"] = make_status("mengisi")
             self._emit(ev, f"{actor.display_name} mengisi tenaga... (Goyah atau Pecah membatalkannya)")
             handled = True
+        for t in tags:
+            if t.startswith("nyala_penjaga:"):
+                # Gema Guntur (§6.2 no. 15): Bara yang tidak dibelanjakan jadi makanannya.
+                ambang = int(t.split(":")[1])
+                handled = True
+                if self.bara >= ambang:
+                    pulih = actor.max_hp - actor.hp
+                    actor.hp = actor.max_hp
+                    self._emit(ev, f"{actor.display_name} meminum Bara yang kalian simpan. Ia pulih {pulih} HP.")
+                else:
+                    self._emit(ev, f"{actor.display_name} mencari nyala di meteran kalian dan tidak menemukan cukup.")
+        if "hapus_skill" in tags:
+            # "Yang Ingin Dilupakan": satu skill party hilang tiap giliran (§6.2 no. 16).
+            handled = True
+            kandidat = [h for h in self.alive_heroes if h.skills]
+            if kandidat:
+                korban = self.rng.choice(kandidat)
+                hilang = self.rng.choice(korban.skills)
+                korban.skills.remove(hilang)
+                self.skill_terhapus.append((korban, hilang))
+                self._emit(ev, f"{korban.display_name} lupa cara memakai {hilang.name}.")
+            else:
+                self._emit(ev, "Tidak ada lagi yang bisa dilupakan.")
+        if "tenun_afinitas" in tags:
+            # Sang Penenun (§6.3): kelemahan party ditenun ulang tiap beberapa giliran.
+            handled = True
+            els = [e for e in Element if e != Element.NETRAL]
+            baru = []
+            for h in self.alive_heroes:
+                el = self.rng.choice(els)
+                h.affinities = {el: Affinity.LEMAH}
+                baru.append(f"{h.name}→{el.label}")
+            self._emit(ev, "Benang-benang ditarik ulang. Kelemahan kalian sekarang: " + ", ".join(baru))
+        if "padamkan_dunia" in tags:
+            handled = True
+            for f in self.foes_of(actor):
+                if f.alive:
+                    f.hp = 1
+            self.bara = 0
+            self._emit(ev, "PADAMKAN DUNIA. Semua HP party tersisa 1, dan meteran Bara kosong.")
+            if self.bara_kenangan > 0:
+                self.bara = min(self.bara_max, self.bara_kenangan)
+                self._emit(ev, f"...lalu yang kalian ingat bersama menyala kembali: Bara +{self.bara}.")
         if "set_hp_1" in tags:
             for f in self.foes_of(actor):
                 if f.alive:
@@ -904,6 +1036,24 @@ class Battle:
             for inf in skill.self_inflict:
                 self._add_status(actor, inf.status, inf.turns, ev, source=actor)
         return handled
+
+    def _lagu_khusus(self, ev: list[str]) -> None:
+        """Yang hanya bisa dilakukan Lagu: mengembalikan skill yang dilupakan (§6.2 no. 16)
+        dan mengurai Kabut Terakhir, yang tidak bisa dilukai apa pun (ending "Mendendangkan")."""
+        if self.skill_terhapus:
+            korban, hilang = self.skill_terhapus.pop()
+            if hilang not in korban.skills:
+                korban.skills.append(hilang)
+            self._emit(ev, f"Lagu itu mengembalikan {hilang.name} ke tangan {korban.display_name}.")
+        for e in self.alive_enemies:
+            if "kabut_terakhir" not in e.traits:
+                continue
+            n = max(1, e.max_hp // KABUT_PER_LAGU)
+            e.hp = max(0, e.hp - n)
+            self._emit(ev, f"{e.display_name} tidak terluka — ia terurai. ({n} dari meternya)")
+            if not e.alive:
+                self._emit(ev, f"{e.display_name} selesai dinyanyikan.")
+                self._on_death(e, ev)
 
     def _ketahanan(self, target: Combatant, amount: int, ev: list[str]) -> None:
         if target.ketahanan_max <= 0 or target.has("pecah"):
@@ -1026,8 +1176,24 @@ class Battle:
                 for t in [h for h in self.heroes if h.alive]:
                     self._hit(c, t, skill.element, skill.power, skill.kind, ev, skill=skill)
 
+    def _gelombang_baru(self, ev: list[str]) -> None:
+        """Pertarungan bertahan tidak selesai dengan menghabisi siapa pun: gelombang
+        berikutnya berdiri di tempat yang sama sampai rondenya habis."""
+        for e in self.enemies:
+            e.hp = e.max_hp
+            e.mp = e.base.mp
+            e.statuses.clear()
+            e.ketahanan = e.ketahanan_max
+            e.used_once.clear()
+            e.turn_count = 0
+            e.pattern_pos = 0
+        self._emit(ev, "Gelombang berikutnya naik dari Sumur. Ia tidak habis-habis.")
+
     def _check_end(self, ev: list[str]) -> None:
         if self.over:
+            return
+        if not self.alive_enemies and self.survive_rounds and self.round <= self.survive_rounds:
+            self._gelombang_baru(ev)
             return
         if not self.alive_enemies:
             xp = sum(e.edef.xp for e in self.enemies if e.edef)

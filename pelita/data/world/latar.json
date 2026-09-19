@@ -666,6 +666,198 @@
    "kategori": "lokasi",
    "prioritas": 2,
    "deskripsi": "Rumah kecil dengan bengkel di belakangnya. Alat-alatnya digantung menurut ukuran, dari yang terbesar di kiri ke yang terkecil di kanan — kebiasaan yang juga dipakai Bagas sejak kalian mengenalnya."
+  },
+  "events/kelana_dibunuh": {
+   "nama": "Peristiwa — Kelana Dihabisi",
+   "kategori": "peristiwa",
+   "prioritas": 2,
+   "deskripsi": "Zirah berat jatuh ke depan di lantai gudang panen, dan seorang anak berjongkok di sebelah tambalan kain di bahu kirinya. Tidak ada wajah yang terlihat; hanya punggung anak itu dan gerobak-gerobak kosong."
+  },
+  "laut_lupa/kapal_dek": {
+   "nama": "Laut Lupa — Kapal Lentera — Dek",
+   "kategori": "lokasi",
+   "prioritas": 1,
+   "deskripsi": "Dek kapal selebar balai desa, dan di tengahnya bukan tiang layar melainkan lentera: setinggi dua orang, berkaca delapan sisi, menyala tanpa sumbu. Kabut yang menyentuh cahayanya menyingkir seperti air dari minyak."
+  },
+  "laut_lupa/kapal_palka": {
+   "nama": "Laut Lupa — Kapal Lentera — Palka",
+   "kategori": "lokasi",
+   "prioritas": 2,
+   "deskripsi": "Ruang bawah dek yang diisi kafilah Sanggar dengan segala yang mereka kira perlu: peti bekal, gulungan kain, tungku kecil yang dibaut ke lantai, dan satu papan kayu penuh kertas yang ditempel berlapis-lapis."
+  },
+  "laut_lupa/kapal_haluan": {
+   "nama": "Laut Lupa — Kapal Lentera — Haluan",
+   "kategori": "lokasi",
+   "prioritas": 2,
+   "deskripsi": "Haluan kapal, dan di sini kabut paling tipis. Di papan besar terbentang peta laut yang digambar bukan dengan garis pantai melainkan dengan nama-nama: tempat-tempat yang pernah terjadi."
+  },
+  "laut_lupa/laut_kabut": {
+   "nama": "Laut Lupa — Laut Kabut",
+   "kategori": "lokasi",
+   "prioritas": 1,
+   "deskripsi": "Kapal berjalan di atas sesuatu yang berlapis dan pelan. Kadang di bawah lunas terlihat bentuk: atap rumah, punggung jembatan, sebuah jalan dengan pagarnya masih lengkap. Lalu lapisan berikutnya menutupnya lagi."
+  },
+  "laut_lupa/pulau_pernikahan": {
+   "nama": "Laut Lupa — Pulau Pernikahan",
+   "kategori": "lokasi",
+   "prioritas": 2,
+   "deskripsi": "Bukan pulau: satu hari, dipadatkan. Lorong bunga sepanjang dua ratus langkah berdiri di atas air, lengkap dengan kursi-kursinya, dan di ujungnya ada pelaminan yang masih menunggu. Semuanya berwarna, dan semuanya diam."
+  },
+  "laut_lupa/aula_pernikahan": {
+   "nama": "Laut Lupa — Pelaminan",
+   "kategori": "lokasi",
+   "prioritas": 2,
+   "deskripsi": "Pelaminan, dan di atasnya dua kursi kosong. Di lantai ada beras yang tidak pernah jatuh sampai bawah; butir-butirnya menggantung setinggi lutut, berhenti di tengah lemparan."
+  },
+  "laut_lupa/pulau_perang": {
+   "nama": "Laut Lupa — Pulau Perang",
+   "kategori": "lokasi",
+   "prioritas": 2,
+   "deskripsi": "Parit sepanjang mata memandang, digali ke dalam sesuatu yang bukan tanah. Di sepanjang bibir parit berdiri tombak-tombak yang ditancapkan, dan di tiap tombak tergantung satu helm. Tidak ada satu pun mayat."
+  },
+  "laut_lupa/parit_perang": {
+   "nama": "Laut Lupa — Dasar Parit",
+   "kategori": "lokasi",
+   "prioritas": 2,
+   "deskripsi": "Di dasar parit, air setinggi mata kaki yang tidak pernah surut, dan barisan yang masih berdiri menghadap satu arah — arah yang sudah delapan abad tidak didatangi siapa pun."
+  },
+  "laut_lupa/pulau_pasar": {
+   "nama": "Laut Lupa — Pulau Pasar",
+   "kategori": "lokasi",
+   "prioritas": 2,
+   "deskripsi": "Pasar pagi, seluruhnya. Lapak-lapak berjajar dengan dagangan lengkap, tenda-tenda terbentang, dan di udara ada bau yang benar: ikan asin, kopi, dan asap tungku. Yang tidak ada cuma orangnya."
+  },
+  "laut_lupa/lapak_pasar": {
+   "nama": "Laut Lupa — Lorong Lapak",
+   "kategori": "lokasi",
+   "prioritas": 2,
+   "deskripsi": "Lorong lapak yang makin ke dalam makin ramai suaranya, meski tidak ada satu pun yang bergerak. Di ujung lorong ada lapak alat: kunci, ragum, gerinda tangan, semuanya digantung menurut ukuran dari besar ke kecil."
+  },
+  "laut_lupa/pulau_nyanyi": {
+   "nama": "Laut Lupa — Pulau Nyanyi",
+   "kategori": "lokasi",
+   "prioritas": 2,
+   "deskripsi": "Pulau kecil yang seluruhnya satu ruangan: balai bambu tanpa dinding, dengan tikar melingkar dan satu kendi di tengah. Di sini suara tidak menggema — ia ditahan, seperti di ruangan yang memang dibuat untuk menyanyi."
+  },
+  "laut_lupa/pulau_sunyi": {
+   "nama": "Laut Lupa — Pulau Sunyi",
+   "kategori": "lokasi",
+   "prioritas": 2,
+   "deskripsi": "Sebuah rumah. Satu rumah saja, berdiri di atas air, dengan halaman sempit dan tali jemuran yang masih terbentang. Di jemuran ada kain-kain kecil, ukuran anak, yang kering sejak lama."
+  },
+  "laut_lupa/pulau_lentera": {
+   "nama": "Laut Lupa — Pulau Lentera",
+   "kategori": "lokasi",
+   "prioritas": 2,
+   "deskripsi": "Pulau yang seluruhnya jalan mendaki, dan di sepanjang jalan itu lentera penjaga — ratusan, berjajar seperti di Lembah Larung, semuanya menyala, semuanya persis model yang diajarkan Pak Guntur cara merapikannya."
+  },
+  "laut_lupa/puncak_lentera": {
+   "nama": "Laut Lupa — Puncak Pulau Lentera",
+   "kategori": "lokasi",
+   "prioritas": 1,
+   "deskripsi": "Puncak pulau: satu lentera, lebih besar dari semuanya, dan seseorang berdiri di depannya sambil merapikan sumbu — tiga tarikan, berhenti, periksa nyala, tiga tarikan lagi."
+  },
+  "laut_lupa/pulau_hilang": {
+   "nama": "Laut Lupa — Pulau Hilang",
+   "kategori": "lokasi",
+   "prioritas": 2,
+   "deskripsi": "Pulau kecil yang seluruhnya tertutup benang: benang di atas batu, benang di antara batu, benang yang membentang ke laut dan hilang di kabut. Di tengahnya ada sesuatu yang duduk dan bekerja tanpa berhenti."
+  },
+  "pusar_kabut/tepi_pusar": {
+   "nama": "Pusar Kabut & Kota Adiluhung — Tepi Pusar",
+   "kategori": "lokasi",
+   "prioritas": 1,
+   "deskripsi": "Laut berhenti di sini — betul-betul berhenti, seperti meja. Di depan lunas kapal, kabut turun ke dalam lubang selebar kota, berputar pelan searah jarum jam. Di dinding lubang itu ada kota: gedung, jalan, jembatan, seluruhnya menempel miring ke dalam pusaran."
+  },
+  "pusar_kabut/gerbang_adiluhung": {
+   "nama": "Pusar Kabut & Kota Adiluhung — Gerbang Adiluhung",
+   "kategori": "lokasi",
+   "prioritas": 2,
+   "deskripsi": "Gerbang kota pertama, terbaring miring, dan di daunnya terukir sesuatu yang bukan huruf mana pun yang kalian kenal. Dari sini turun jalan melingkar: lima lapis, mengitari dinding pusaran, ke bawah."
+  },
+  "pusar_kabut/lapis_1_pasar": {
+   "nama": "Pusar Kabut & Kota Adiluhung — Lapis Satu — Pasar Adiluhung",
+   "kategori": "lokasi",
+   "prioritas": 2,
+   "deskripsi": "Pasar kota pertama, lapaknya dari batu dan bukan dari kayu. Barang dagangannya masih di tempat, dan semuanya kaca: kaca yang memutar hujan, kaca yang memutar suara ibu, kaca yang memutar satu sore yang tidak istimewa sama sekali."
+  },
+  "pusar_kabut/lapis_2_arsip": {
+   "nama": "Pusar Kabut & Kota Adiluhung — Lapis Dua — Arsip Pertama",
+   "kategori": "lokasi",
+   "prioritas": 2,
+   "deskripsi": "Ruang panjang berisi rak setinggi tiga orang, dan di rak itu bukan buku: kaca, ditumpuk berlabel. Sistem pengarsipannya sama persis dengan Balai Arsip Tengara. Ordo tidak menemukan caranya; Ordo mewarisinya."
+  },
+  "pusar_kabut/lapis_3_asrama": {
+   "nama": "Pusar Kabut & Kota Adiluhung — Lapis Tiga — Asrama Penyala",
+   "kategori": "lokasi",
+   "prioritas": 2,
+   "deskripsi": "Deretan bilik tidur, persis seperti di Benteng Ordo, hanya lebih tua dan lebih kecil. Di tiap bilik ada satu kotak pribadi, dan di tiap kotak ada satu kaca berisi wajah keluarga yang ditinggalkan."
+  },
+  "pusar_kabut/lapis_4_tungku": {
+   "nama": "Pusar Kabut & Kota Adiluhung — Lapis Empat — Tungku Pertama",
+   "kategori": "lokasi",
+   "prioritas": 2,
+   "deskripsi": "Bengkel kaca sepanjang dua ratus langkah, dengan tungku yang masih hangat. Di meja kerja ada kaca setengah jadi, dan di sebelahnya catatan: takaran, suhu, lama pembakaran — dan di kolom terakhir, satu nama per baris."
+  },
+  "pusar_kabut/lapis_5_serambi": {
+   "nama": "Pusar Kabut & Kota Adiluhung — Lapis Lima — Serambi Suar",
+   "kategori": "lokasi",
+   "prioritas": 2,
+   "deskripsi": "Serambi melingkar yang mengitari dasar pusaran. Dari sini Sumur Ingatan terlihat utuh: mulut kaca delapan sisi, sebesar alun-alun, dan di sekelilingnya tujuh menara kecil yang semuanya padam."
+  },
+  "pusar_kabut/aula_suar": {
+   "nama": "Pusar Kabut & Kota Adiluhung — Aula Tujuh Suar",
+   "kategori": "lokasi",
+   "prioritas": 1,
+   "deskripsi": "Aula bundar di kaki Sumur, dengan tujuh pintu kaca di sekelilingnya. Di depan tiap pintu berdiri satu konstruk, dan tiap konstruk berwarna berbeda."
+  },
+  "pusar_kabut/turun_sumur": {
+   "nama": "Pusar Kabut & Kota Adiluhung — Mulut Sumur Ingatan",
+   "kategori": "lokasi",
+   "prioritas": 2,
+   "deskripsi": "Mulut Sumur dari dekat: kaca delapan sisi, sebesar alun-alun, dan di bawahnya tidak ada air. Yang ada di bawahnya adalah semua yang pernah diingat siapa pun, ditumpuk delapan abad, dan masih menekan ke atas."
+  },
+  "pusar_kabut/sumur_ingatan": {
+   "nama": "Pusar Kabut & Kota Adiluhung — Dasar Sumur Ingatan",
+   "kategori": "lokasi",
+   "prioritas": 1,
+   "deskripsi": "Dasar Sumur: ruang bundar tanpa langit-langit, dan seluruh dindingnya kaca. Di tengahnya berdiri seseorang yang terbakar — tidak sedang terbakar, tapi terbakar, dalam bentuk lampau yang tidak pernah selesai."
+  },
+  "events/gema_guntur": {
+   "nama": "Peristiwa — Gema Guntur",
+   "kategori": "peristiwa",
+   "prioritas": 2,
+   "deskripsi": "Seorang tua merapikan sumbu lentera raksasa di puncak pulau yang seluruhnya jalan berlentera, membelakangi anak muda yang berdiri beberapa langkah di belakangnya. Nyala lenteranya jauh lebih besar dari lenteranya."
+  },
+  "events/tujuh_penjaga": {
+   "nama": "Peristiwa — Tujuh Penjaga",
+   "kategori": "peristiwa",
+   "prioritas": 2,
+   "deskripsi": "Aula bundar dengan tujuh pintu kaca berwarna berbeda di sekelilingnya, dan di depan tiap pintu satu konstruk setinggi tiga orang. Enam mundur selangkah; satu maju."
+  },
+  "events/penenun": {
+   "nama": "Peristiwa — Penenun",
+   "kategori": "peristiwa",
+   "prioritas": 2,
+   "deskripsi": "Pulau kecil yang seluruhnya tertutup benang berkilau, dan di tengahnya sesuatu yang duduk dan bekerja tanpa berhenti. Benang-benangnya membentang keluar sampai hilang di kabut laut."
+  },
+  "events/ending_menyalakan": {
+   "nama": "Peristiwa — Ending Menyalakan",
+   "kategori": "peristiwa",
+   "prioritas": 2,
+   "deskripsi": "Tujuh menara kecil mengelilingi sumur berkaca delapan sisi, menyala berurutan, dan di tengah sumur itu satu sosok berzirah berdiri sendirian dengan cahaya menembus dari dalam."
+  },
+  "events/ending_mengembalikan": {
+   "nama": "Peristiwa — Ending Mengembalikan",
+   "kategori": "peristiwa",
+   "prioritas": 2,
+   "deskripsi": "Dua arus bertemu di satu titik di dasar sumur — satu terang, satu kelabu — dan di titik pertemuan itu keduanya berhenti menjadi apa pun. Seorang anak muda berdiri di tepinya dengan tangan kosong."
+  },
+  "events/ending_mendendangkan": {
+   "nama": "Peristiwa — Ending Mendendangkan",
+   "kategori": "peristiwa",
+   "prioritas": 2,
+   "deskripsi": "Kabut di dasar sumur terurai jadi ribuan helai halus yang pergi ke segala arah ke atas, dan di lantai kaca seorang perempuan duduk bersila menyanyi dengan sandal dilepas di sebelahnya."
   }
  }
 }

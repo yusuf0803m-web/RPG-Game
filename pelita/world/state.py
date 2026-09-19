@@ -200,6 +200,8 @@ class GameState:
             val = self.kaca.get(s[5:], 0) > 0 or any(s[5:] in h.kaca for h in self.party)
         elif s.startswith("kenangan:"):
             val = s[9:] in self.kenangan
+        elif s.startswith("buruan_selesai>="):
+            val = sum(1 for v in self.buruan.values() if v == "selesai") >= int(s[16:])
         elif s.startswith("buruan:"):
             bid, _, st = s[7:].partition("=")
             val = self.buruan.get(bid, "") == st if st else bid in self.buruan

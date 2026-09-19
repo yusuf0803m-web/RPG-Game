@@ -2287,5 +2287,1260 @@
   ],
   "lesson": "Fase dua menyerap Cahaya dan Api dan bertindak dua kali. Kelam satu-satunya yang benar-benar melukainya.",
   "description": "Pemimpin Ordo Pelita. Ia tahu persis apa yang dilakukannya, sudah sejak abad ketiga."
+ },
+ "_catatan_babak3": "Musuh Babak 3 (GAME_DESIGN §6.1 no. 28-30 dan §6.3). Stat diturunkan dari rumus §4.7 lewat `python tools/calibrate.py --musuh <level>:<peran>`, bukan ditebak.",
+ "gema_pesta": {
+  "name": "Gema Pesta",
+  "level": 44,
+  "xp": 3872,
+  "keping": 1936,
+  "stats": {
+   "hp": 585,
+   "mp": 0,
+   "atk": 61,
+   "def": 48,
+   "mag": 66,
+   "res": 48,
+   "agi": 22,
+   "lck": 11
+  },
+  "affinities": {
+   "api": "lemah"
+  },
+  "rotation": {
+   "every": 1,
+   "sets": [
+    {
+     "name": "Nyala Lilin",
+     "affinities": {
+      "api": "lemah"
+     },
+     "announce": "Gema Pesta menyalakan lilin: sekarang ia lemah terhadap Api."
+    },
+    {
+     "name": "Es di Gelas",
+     "affinities": {
+      "es": "lemah"
+     },
+     "announce": "Es berdenting di gelas: sekarang ia lemah terhadap Es."
+    },
+    {
+     "name": "Petikan Gitar",
+     "affinities": {
+      "petir": "lemah"
+     },
+     "announce": "Senar dipetik terlalu keras: sekarang ia lemah terhadap Petir."
+    },
+    {
+     "name": "Tarian",
+     "affinities": {
+      "angin": "lemah"
+     },
+     "announce": "Semua orang berdiri menari: sekarang ia lemah terhadap Angin."
+    }
+   ]
+  },
+  "ai": [
+   {
+    "action": "m_tawa_pesta",
+    "weight": 3
+   },
+   {
+    "action": "m_dentang_gelas",
+    "weight": 2
+   },
+   {
+    "action": "m_undang_menari",
+    "weight": 1
+   },
+   {
+    "action": "serang",
+    "weight": 2
+   }
+  ],
+  "immune": [
+   "lupa"
+  ],
+  "drops": [
+   {
+    "item": "ramuan_sari",
+    "chance": 0.35
+   }
+  ],
+  "lesson": "Kelemahannya berganti tiap giliran dan selalu diumumkan: Bara gampang dikumpulkan, tapi ia memukul seluruh barisan.",
+  "description": "Satu pesta pernikahan yang cukup keras diingat sehingga berdiri sendiri tanpa pengantinnya."
+ },
+ "gema_pengantin": {
+  "name": "Gema Pengantin",
+  "level": 45,
+  "xp": 4050,
+  "keping": 2025,
+  "stats": {
+   "hp": 597,
+   "mp": 0,
+   "atk": 63,
+   "def": 49,
+   "mag": 67,
+   "res": 49,
+   "agi": 22,
+   "lck": 11
+  },
+  "affinities": {
+   "api": "lemah",
+   "angin": "tahan",
+   "kelam": "tahan"
+  },
+  "ai": [
+   {
+    "action": "m_gema_lagu",
+    "weight": 1,
+    "every_n_turns": 3
+   },
+   {
+    "action": "m_sapuan_gema",
+    "weight": 2
+   },
+   {
+    "action": "m_undang_menari",
+    "weight": 2
+   },
+   {
+    "action": "serang",
+    "weight": 3
+   }
+  ],
+  "immune": [
+   "lupa",
+   "bisu"
+  ],
+  "drops": [
+   {
+    "item": "cawan_nyala",
+    "chance": 0.3
+   }
+  ],
+  "lesson": "Menguatkan Gema lain tiap tiga giliran. Pukul yang bernyanyi dulu.",
+  "description": "Ia masih menunggu di ujung lorong bunga yang sudah tidak ada."
+ },
+ "gema_prajurit": {
+  "name": "Gema Prajurit",
+  "level": 45,
+  "xp": 4050,
+  "keping": 2025,
+  "traits": [
+   "formasi"
+  ],
+  "stats": {
+   "hp": 849,
+   "mp": 0,
+   "atk": 63,
+   "def": 49,
+   "mag": 67,
+   "res": 49,
+   "agi": 22,
+   "lck": 11
+  },
+  "affinities": {
+   "kelam": "lemah",
+   "fisik": "tahan",
+   "cahaya": "tahan"
+  },
+  "ai": [
+   {
+    "action": "m_tombak_formasi",
+    "weight": 3,
+    "target_rule": "hp_terendah"
+   },
+   {
+    "action": "m_rapatkan_barisan",
+    "weight": 1,
+    "every_n_turns": 4
+   },
+   {
+    "action": "m_sapuan_gema",
+    "weight": 2
+   },
+   {
+    "action": "serang",
+    "weight": 2
+   }
+  ],
+  "immune": [
+   "lupa",
+   "tidur",
+   "provokasi"
+  ],
+  "drops": [
+   {
+    "item": "serpihan_ingatan",
+    "chance": 0.12
+   }
+  ],
+  "lesson": "DEF & RES ×2 selama dua atau lebih masih berdiri: jatuhkan sampai tinggal satu, baru pukul.",
+  "description": "Perang yang diingat terlalu sering oleh terlalu banyak orang, sampai barisannya berdiri sendiri."
+ },
+ "hampa_adiluhung": {
+  "name": "Hampa Adiluhung",
+  "level": 49,
+  "xp": 4802,
+  "keping": 2401,
+  "traits": [
+   "hampa"
+  ],
+  "stats": {
+   "hp": 918,
+   "mp": 0,
+   "atk": 68,
+   "def": 53,
+   "mag": 73,
+   "res": 53,
+   "agi": 24,
+   "lck": 12
+  },
+  "affinities": {
+   "cahaya": "lemah",
+   "kelam": "lemah",
+   "api": "serap",
+   "es": "serap",
+   "petir": "serap",
+   "angin": "serap",
+   "bumi": "serap"
+  },
+  "ai": [
+   {
+    "action": "m_sentuh_adiluhung",
+    "weight": 3,
+    "target_rule": "mag_tertinggi"
+   },
+   {
+    "action": "m_tarik_ingatan",
+    "weight": 2
+   },
+   {
+    "action": "serang",
+    "weight": 3
+   }
+  ],
+  "immune": [
+   "lupa",
+   "tidur",
+   "racun",
+   "bakar"
+  ],
+  "drops": [
+   {
+    "item": "serpihan_ingatan",
+    "chance": 0.15
+   },
+   {
+    "item": "abu_fajar",
+    "chance": 0.3
+   }
+  ],
+  "lesson": "Menyerap lima elemen sekaligus. Hanya Cahaya, Kelam, dan Fisik yang tersisa — persis build yang kalian bawa dari Babak 1.",
+  "description": "Warga kota pertama, yang sudah delapan abad tidak punya nama untuk ditanya."
+ },
+ "pelita_padam_kuno": {
+  "name": "Pelita Padam Kuno",
+  "level": 48,
+  "xp": 4608,
+  "keping": 2304,
+  "stats": {
+   "hp": 867,
+   "mp": 0,
+   "atk": 67,
+   "def": 63,
+   "mag": 71,
+   "res": 63,
+   "agi": 24,
+   "lck": 11
+  },
+  "affinities": {
+   "kelam": "lemah",
+   "cahaya": "serap",
+   "api": "tahan",
+   "fisik": "tahan"
+  },
+  "ai": [
+   {
+    "action": "m_sinar_kuno",
+    "weight": 2
+   },
+   {
+    "action": "m_serap_cahaya",
+    "weight": 2,
+    "target_rule": "hp_terendah"
+   },
+   {
+    "action": "serang",
+    "weight": 3
+   }
+  ],
+  "immune": [
+   "lupa",
+   "tidur",
+   "bakar",
+   "beku"
+  ],
+  "drops": [
+   {
+    "item": "cawan_nyala",
+    "chance": 0.4
+   }
+  ],
+  "lesson": "Pelita Padam Mercusuar, delapan abad lebih tua: masih menghukum autopilot Cahaya, tapi sekarang berzirah.",
+  "description": "Pelita yang dinyalakan di Kota Adiluhung sebelum ada Ordo yang menamainya."
+ },
+ "gema_ordo": {
+  "name": "Gema Ordo Pertama",
+  "level": 48,
+  "xp": 4608,
+  "keping": 2304,
+  "stats": {
+   "hp": 467,
+   "mp": 0,
+   "atk": 67,
+   "def": 52,
+   "mag": 71,
+   "res": 52,
+   "agi": 24,
+   "lck": 11
+  },
+  "affinities": {
+   "kelam": "lemah",
+   "cahaya": "tahan"
+  },
+  "ai": [
+   {
+    "action": "m_khotbah_pertama",
+    "weight": 2,
+    "every_n_turns": 3
+   },
+   {
+    "action": "m_pulihkan",
+    "weight": 3,
+    "target_rule": "kawan_hp_terendah"
+   },
+   {
+    "action": "m_bangkitkan",
+    "weight": 1
+   },
+   {
+    "action": "serang",
+    "weight": 2
+   }
+  ],
+  "immune": [
+   "lupa",
+   "bisu"
+  ],
+  "drops": [
+   {
+    "item": "kendi_nyala",
+    "chance": 0.4
+   }
+  ],
+  "lesson": "Menyembuhkan dan membangkitkan kawannya. Prioritas target, seperti Bayang Arsip dulu.",
+  "description": "Orang-orang yang menulis aturan pertama, masih membacakannya dengan suara yang sama."
+ },
+ "gema_party": {
+  "name": "Gema Kalian",
+  "level": 50,
+  "xp": 0,
+  "keping": 0,
+  "stats": {
+   "hp": 624,
+   "mp": 0,
+   "atk": 69,
+   "def": 54,
+   "mag": 74,
+   "res": 54,
+   "agi": 25,
+   "lck": 12
+  },
+  "affinities": {
+   "cahaya": "lemah",
+   "fisik": "tahan"
+  },
+  "ai": [
+   {
+    "action": "m_sapuan_gema",
+    "weight": 2
+   },
+   {
+    "action": "m_tarik_ingatan",
+    "weight": 2
+   },
+   {
+    "action": "serang",
+    "weight": 3
+   }
+  ],
+  "immune": [
+   "lupa",
+   "tidur"
+  ],
+  "lesson": "Klon party yang dipanggil Sang Pelita Pertama: tidak memberi XP, hanya waktu.",
+  "description": "Kalian, sebagaimana Kabut mengingat kalian: sedikit lebih muda, dan tidak ragu sama sekali."
+ },
+ "_catatan_boss_babak3": "Boss Babak 3 (GAME_DESIGN §6.2 no. 15-16, mid-boss Tujuh Penjaga Suar, dan superboss §6.3). HP boss = 30 x off(L) x 1.5 kecuali yang angkanya memang ditulis di dokumen desain (Pelita Pertama 9.999, Penenun 30.000).",
+ "boss_gema_guntur": {
+  "name": "Gema Guntur",
+  "level": 47,
+  "xp": 66270,
+  "keping": 11045,
+  "is_boss": true,
+  "ketahanan": 200,
+  "stats": {
+   "hp": 7000,
+   "mp": 0,
+   "atk": 65,
+   "def": 51,
+   "mag": 73,
+   "res": 51,
+   "agi": 23,
+   "lck": 11
+  },
+  "affinities": {
+   "api": "lemah"
+  },
+  "phases": [
+   {
+    "name": "Guru yang Mengajar",
+    "hp_above": 0.66,
+    "affinities": {
+     "api": "lemah",
+     "cahaya": "tahan"
+    },
+    "pattern": [
+     "m_guntur_pukulan",
+     "m_guntur_penjaga",
+     "m_guntur_lentera",
+     "serang"
+    ]
+   },
+   {
+    "name": "Guru yang Pergi",
+    "hp_above": 0.33,
+    "affinities": {
+     "cahaya": "lemah",
+     "api": "tahan"
+    },
+    "announce": "Ingatan berganti: bukan lagi Guntur yang mengajar, tapi Guntur yang berjalan ke Suar.",
+    "pattern": [
+     "m_guntur_ajaran",
+     "m_guntur_penjaga",
+     "serang",
+     "m_guntur_lentera"
+    ]
+   },
+   {
+    "name": "Guru yang Tidak Pernah Pamit",
+    "hp_above": 0.0,
+    "affinities": {
+     "kelam": "lemah",
+     "cahaya": "serap",
+     "api": "serap"
+    },
+    "announce": "Dan yang terakhir: Guntur yang tidak sempat berpamitan. Nyalanya berubah dingin.",
+    "pattern": [
+     "m_guntur_pelajaran",
+     "m_guntur_penjaga",
+     "m_guntur_ajaran",
+     "serang"
+    ]
+   }
+  ],
+  "immune": [
+   "lupa",
+   "tidur",
+   "bakar",
+   "bisu",
+   "racun"
+  ],
+  "drops": [
+   {
+    "item": "serpihan_ingatan",
+    "chance": 1.0
+   },
+   {
+    "item": "kaca_inti",
+    "chance": 1.0
+   }
+  ],
+  "lesson": "Nyala Penjaga memulihkannya penuh kalau Bara party 5 atau lebih saat gilirannya. Bara harus dibelanjakan, bukan ditabung.",
+  "description": "Tiga ingatan Rimba tentang mentornya, berdiri di pulau lentera dengan bentuk yang sama."
+ },
+ "penjaga_suar_api": {
+  "name": "Penjaga Suar Api",
+  "level": 49,
+  "xp": 4800,
+  "keping": 1200,
+  "traits": [
+   "konstruk"
+  ],
+  "ketahanan": 80,
+  "stats": {
+   "hp": 2200,
+   "mp": 0,
+   "atk": 68,
+   "def": 67,
+   "mag": 73,
+   "res": 67,
+   "agi": 24,
+   "lck": 12
+  },
+  "affinities": {
+   "es": "lemah",
+   "api": "serap",
+   "fisik": "tahan"
+  },
+  "ai": [
+   {
+    "action": "m_suar_api",
+    "weight": 2
+   },
+   {
+    "action": "m_derit_besar",
+    "weight": 2
+   },
+   {
+    "action": "serang",
+    "weight": 3
+   }
+  ],
+  "immune": [
+   "racun",
+   "lupa",
+   "tidur",
+   "bakar",
+   "beku",
+   "bisu",
+   "buta",
+   "berat"
+  ],
+  "drops": [
+   {
+    "item": "kendi_nyala",
+    "chance": 0.5
+   }
+  ],
+  "lesson": "Gelombang ke-1 dari tujuh. Menyerap Api; hanya Es yang menembusnya.",
+  "description": "Konstruk penjaga Suar ke-1 Kota Adiluhung, satu elemen, satu perintah, delapan abad."
+ },
+ "penjaga_suar_es": {
+  "name": "Penjaga Suar Es",
+  "level": 49,
+  "xp": 4800,
+  "keping": 1200,
+  "traits": [
+   "konstruk"
+  ],
+  "ketahanan": 80,
+  "stats": {
+   "hp": 2200,
+   "mp": 0,
+   "atk": 68,
+   "def": 67,
+   "mag": 73,
+   "res": 67,
+   "agi": 24,
+   "lck": 12
+  },
+  "affinities": {
+   "api": "lemah",
+   "es": "serap",
+   "fisik": "tahan"
+  },
+  "ai": [
+   {
+    "action": "m_suar_es",
+    "weight": 2
+   },
+   {
+    "action": "m_derit_besar",
+    "weight": 2
+   },
+   {
+    "action": "serang",
+    "weight": 3
+   }
+  ],
+  "immune": [
+   "racun",
+   "lupa",
+   "tidur",
+   "bakar",
+   "beku",
+   "bisu",
+   "buta",
+   "berat"
+  ],
+  "drops": [
+   {
+    "item": "kendi_nyala",
+    "chance": 0.5
+   }
+  ],
+  "lesson": "Gelombang ke-2 dari tujuh. Menyerap Es; hanya Api yang menembusnya.",
+  "description": "Konstruk penjaga Suar ke-2 Kota Adiluhung, satu elemen, satu perintah, delapan abad."
+ },
+ "penjaga_suar_petir": {
+  "name": "Penjaga Suar Petir",
+  "level": 49,
+  "xp": 4800,
+  "keping": 1200,
+  "traits": [
+   "konstruk"
+  ],
+  "ketahanan": 80,
+  "stats": {
+   "hp": 2200,
+   "mp": 0,
+   "atk": 68,
+   "def": 67,
+   "mag": 73,
+   "res": 67,
+   "agi": 24,
+   "lck": 12
+  },
+  "affinities": {
+   "bumi": "lemah",
+   "petir": "serap",
+   "fisik": "tahan"
+  },
+  "ai": [
+   {
+    "action": "m_suar_petir",
+    "weight": 2
+   },
+   {
+    "action": "m_derit_besar",
+    "weight": 2
+   },
+   {
+    "action": "serang",
+    "weight": 3
+   }
+  ],
+  "immune": [
+   "racun",
+   "lupa",
+   "tidur",
+   "bakar",
+   "beku",
+   "bisu",
+   "buta",
+   "berat"
+  ],
+  "drops": [
+   {
+    "item": "kendi_nyala",
+    "chance": 0.5
+   }
+  ],
+  "lesson": "Gelombang ke-3 dari tujuh. Menyerap Petir; hanya Bumi yang menembusnya.",
+  "description": "Konstruk penjaga Suar ke-3 Kota Adiluhung, satu elemen, satu perintah, delapan abad."
+ },
+ "penjaga_suar_angin": {
+  "name": "Penjaga Suar Angin",
+  "level": 49,
+  "xp": 4800,
+  "keping": 1200,
+  "traits": [
+   "konstruk"
+  ],
+  "ketahanan": 80,
+  "stats": {
+   "hp": 2200,
+   "mp": 0,
+   "atk": 68,
+   "def": 67,
+   "mag": 73,
+   "res": 67,
+   "agi": 24,
+   "lck": 12
+  },
+  "affinities": {
+   "petir": "lemah",
+   "angin": "serap",
+   "fisik": "tahan"
+  },
+  "ai": [
+   {
+    "action": "m_suar_angin",
+    "weight": 2
+   },
+   {
+    "action": "m_derit_besar",
+    "weight": 2
+   },
+   {
+    "action": "serang",
+    "weight": 3
+   }
+  ],
+  "immune": [
+   "racun",
+   "lupa",
+   "tidur",
+   "bakar",
+   "beku",
+   "bisu",
+   "buta",
+   "berat"
+  ],
+  "drops": [
+   {
+    "item": "kendi_nyala",
+    "chance": 0.5
+   }
+  ],
+  "lesson": "Gelombang ke-4 dari tujuh. Menyerap Angin; hanya Petir yang menembusnya.",
+  "description": "Konstruk penjaga Suar ke-4 Kota Adiluhung, satu elemen, satu perintah, delapan abad."
+ },
+ "penjaga_suar_bumi": {
+  "name": "Penjaga Suar Bumi",
+  "level": 49,
+  "xp": 4800,
+  "keping": 1200,
+  "traits": [
+   "konstruk"
+  ],
+  "ketahanan": 80,
+  "stats": {
+   "hp": 2200,
+   "mp": 0,
+   "atk": 68,
+   "def": 67,
+   "mag": 73,
+   "res": 67,
+   "agi": 24,
+   "lck": 12
+  },
+  "affinities": {
+   "angin": "lemah",
+   "bumi": "serap",
+   "fisik": "tahan"
+  },
+  "ai": [
+   {
+    "action": "m_suar_bumi",
+    "weight": 2
+   },
+   {
+    "action": "m_derit_besar",
+    "weight": 2
+   },
+   {
+    "action": "serang",
+    "weight": 3
+   }
+  ],
+  "immune": [
+   "racun",
+   "lupa",
+   "tidur",
+   "bakar",
+   "beku",
+   "bisu",
+   "buta",
+   "berat"
+  ],
+  "drops": [
+   {
+    "item": "kendi_nyala",
+    "chance": 0.5
+   }
+  ],
+  "lesson": "Gelombang ke-5 dari tujuh. Menyerap Bumi; hanya Angin yang menembusnya.",
+  "description": "Konstruk penjaga Suar ke-5 Kota Adiluhung, satu elemen, satu perintah, delapan abad."
+ },
+ "penjaga_suar_cahaya": {
+  "name": "Penjaga Suar Cahaya",
+  "level": 49,
+  "xp": 4800,
+  "keping": 1200,
+  "traits": [
+   "konstruk"
+  ],
+  "ketahanan": 80,
+  "stats": {
+   "hp": 2200,
+   "mp": 0,
+   "atk": 68,
+   "def": 67,
+   "mag": 73,
+   "res": 67,
+   "agi": 24,
+   "lck": 12
+  },
+  "affinities": {
+   "kelam": "lemah",
+   "cahaya": "serap",
+   "fisik": "tahan"
+  },
+  "ai": [
+   {
+    "action": "m_suar_cahaya",
+    "weight": 2
+   },
+   {
+    "action": "m_derit_besar",
+    "weight": 2
+   },
+   {
+    "action": "serang",
+    "weight": 3
+   }
+  ],
+  "immune": [
+   "racun",
+   "lupa",
+   "tidur",
+   "bakar",
+   "beku",
+   "bisu",
+   "buta",
+   "berat"
+  ],
+  "drops": [
+   {
+    "item": "kendi_nyala",
+    "chance": 0.5
+   }
+  ],
+  "lesson": "Gelombang ke-6 dari tujuh. Menyerap Cahaya; hanya Kelam yang menembusnya.",
+  "description": "Konstruk penjaga Suar ke-6 Kota Adiluhung, satu elemen, satu perintah, delapan abad."
+ },
+ "penjaga_suar_kelam": {
+  "name": "Penjaga Suar Kelam",
+  "level": 49,
+  "xp": 4800,
+  "keping": 1200,
+  "traits": [
+   "konstruk"
+  ],
+  "ketahanan": 80,
+  "stats": {
+   "hp": 2200,
+   "mp": 0,
+   "atk": 68,
+   "def": 67,
+   "mag": 73,
+   "res": 67,
+   "agi": 24,
+   "lck": 12
+  },
+  "affinities": {
+   "cahaya": "lemah",
+   "kelam": "serap",
+   "fisik": "tahan"
+  },
+  "ai": [
+   {
+    "action": "m_suar_kelam",
+    "weight": 2
+   },
+   {
+    "action": "m_derit_besar",
+    "weight": 2
+   },
+   {
+    "action": "serang",
+    "weight": 3
+   }
+  ],
+  "immune": [
+   "racun",
+   "lupa",
+   "tidur",
+   "bakar",
+   "beku",
+   "bisu",
+   "buta",
+   "berat"
+  ],
+  "drops": [
+   {
+    "item": "kendi_nyala",
+    "chance": 0.5
+   }
+  ],
+  "lesson": "Gelombang ke-7 dari tujuh. Menyerap Kelam; hanya Cahaya yang menembusnya.",
+  "description": "Konstruk penjaga Suar ke-7 Kota Adiluhung, satu elemen, satu perintah, delapan abad."
+ },
+ "boss_pelita_pertama": {
+  "name": "Sang Pelita Pertama",
+  "level": 52,
+  "xp": 81120,
+  "keping": 13520,
+  "is_boss": true,
+  "ketahanan": 220,
+  "stats": {
+   "hp": 15000,
+   "mp": 0,
+   "atk": 72,
+   "def": 56,
+   "mag": 80,
+   "res": 56,
+   "agi": 26,
+   "lck": 12
+  },
+  "affinities": {
+   "cahaya": "lemah"
+  },
+  "phases": [
+   {
+    "name": "Yang Dibakar",
+    "hp_above": 0.62,
+    "affinities": {
+     "cahaya": "lemah",
+     "kelam": "tahan"
+    },
+    "pattern": [
+     "m_kutuk_pertama",
+     "m_bara_pertama",
+     "serang",
+     "m_lupa_pertama"
+    ]
+   },
+   {
+    "name": "Yang Mengendap",
+    "hp_above": 0.28,
+    "announce": "Ia berhenti menyala dan mulai mengendap. Semua elemen yang kalian bawa diminumnya — kecuali satu.",
+    "affinities": {
+     "kelam": "lemah",
+     "cahaya": "serap",
+     "api": "serap",
+     "es": "serap",
+     "petir": "serap",
+     "angin": "serap",
+     "bumi": "serap",
+     "fisik": "tahan"
+    },
+    "pattern": [
+     "m_panggil_gema_party",
+     "m_endap_kelam",
+     "serang",
+     "m_endap_kelam"
+    ]
+   },
+   {
+    "name": "Yang Ingin Dilupakan",
+    "hp_above": 0.15,
+    "announce": "\"Aku tidak ingin balas dendam. Aku ingin berhenti diingat.\" Pukulan biasa tidak lagi meninggalkan bekas.",
+    "traits": [
+     "hanya_jurus"
+    ],
+    "affinities": {
+     "cahaya": "lemah",
+     "kelam": "lemah"
+    },
+    "pattern": [
+     "m_hapus_ingatan",
+     "m_sunyi_akhir",
+     "serang",
+     "m_hapus_ingatan"
+    ]
+   },
+   {
+    "name": "Padamkan Dunia",
+    "hp_above": 0.0,
+    "announce": "Ia menarik napas yang tidak ia punya.",
+    "traits": [
+     "hanya_jurus"
+    ],
+    "affinities": {
+     "cahaya": "lemah",
+     "kelam": "lemah"
+    },
+    "pattern": [
+     "m_padamkan_dunia",
+     "m_hapus_ingatan",
+     "m_sunyi_akhir",
+     "serang"
+    ]
+   }
+  ],
+  "immune": [
+   "lupa",
+   "tidur",
+   "bakar",
+   "beku",
+   "racun",
+   "bisu",
+   "buta",
+   "berat",
+   "provokasi"
+  ],
+  "drops": [
+   {
+    "item": "serpihan_ingatan",
+    "chance": 1.0
+   }
+  ],
+  "lesson": "Tiga fase, tiga aturan. Di fase terakhir hanya Jurus Ganda dan Jurus Empat yang melukai; serangan biasa tetap berguna untuk mengisi Bara, dan Lagu Ratih mengembalikan skill yang dihapus.",
+  "description": "Manusia pertama yang dibakar delapan abad lalu. Kesadarannya tidak hilang; ia menjadi kehendak Kabut."
+ },
+ "superboss_penenun": {
+  "name": "Sang Penenun",
+  "level": 58,
+  "xp": 100920,
+  "keping": 16820,
+  "is_boss": true,
+  "ketahanan": 300,
+  "stats": {
+   "hp": 30000,
+   "mp": 0,
+   "atk": 79,
+   "def": 62,
+   "mag": 89,
+   "res": 62,
+   "agi": 28,
+   "lck": 14
+  },
+  "affinities": {
+   "fisik": "tahan"
+  },
+  "phases": [
+   {
+    "name": "Menenun",
+    "hp_above": 0.0,
+    "pattern": [
+     "m_tenun_ulang",
+     "m_benang_tarik",
+     "m_pola_lama",
+     "serang",
+     "m_pola_lama"
+    ]
+   }
+  ],
+  "immune": [
+   "lupa",
+   "tidur",
+   "bakar",
+   "beku",
+   "racun",
+   "bisu",
+   "buta",
+   "berat",
+   "provokasi",
+   "tandai"
+  ],
+  "drops": [
+   {
+    "item": "serpihan_ingatan",
+    "chance": 1.0
+   }
+  ],
+  "lesson": "Menenun ulang kelemahan party tiap lima giliran. Tidak ada build yang benar sepanjang pertarungan; yang ada cuma build yang cepat berubah.",
+  "description": "Yang duduk di Pulau Hilang dan menyusun ulang apa pun yang datang ke sana, termasuk kalian."
+ },
+ "buruan_cacing_ibu": {
+  "name": "Cacing Abu Ibu",
+  "level": 55,
+  "xp": 45375,
+  "keping": 7560,
+  "is_boss": true,
+  "ketahanan": 200,
+  "traits": [
+   "kepala"
+  ],
+  "stats": {
+   "hp": 14000,
+   "mp": 0,
+   "atk": 75,
+   "def": 59,
+   "mag": 84,
+   "res": 59,
+   "agi": 27,
+   "lck": 13
+  },
+  "affinities": {
+   "es": "lemah",
+   "petir": "lemah",
+   "fisik": "tahan",
+   "bumi": "serap"
+  },
+  "phases": [
+   {
+    "name": "Induk",
+    "hp_above": 0.0,
+    "pattern": [
+     "m_erang_ibu",
+     "m_telan_besar@hp_terendah",
+     "m_gigit_segmen",
+     "serang"
+    ]
+   }
+  ],
+  "immune": [
+   "berat",
+   "buta",
+   "tidur",
+   "racun",
+   "provokasi"
+  ],
+  "drops": [
+   {
+    "item": "serpihan_ingatan",
+    "chance": 1.0
+   }
+  ],
+  "lesson": "Kepala. Kalau ia tidak dipukul satu ronde penuh, keempat segmennya menutup lukanya masing-masing.",
+  "description": "Yang melahirkan cacing-cacing Dataran Abu. Ia sudah di sana sebelum kota-kotanya terbakar."
+ },
+ "buruan_cacing_ibu_segmen": {
+  "name": "Segmen Cacing Abu",
+  "level": 55,
+  "xp": 0,
+  "keping": 0,
+  "regen_pct": 0.12,
+  "stats": {
+   "hp": 3500,
+   "mp": 0,
+   "atk": 75,
+   "def": 59,
+   "mag": 81,
+   "res": 59,
+   "agi": 20,
+   "lck": 13
+  },
+  "affinities": {
+   "es": "lemah",
+   "petir": "lemah",
+   "fisik": "tahan",
+   "bumi": "serap"
+  },
+  "ai": [
+   {
+    "action": "m_gigit_segmen",
+    "weight": 3
+   },
+   {
+    "action": "m_semburan_abu",
+    "weight": 1
+   },
+   {
+    "action": "serang",
+    "weight": 2
+   }
+  ],
+  "immune": [
+   "berat",
+   "buta",
+   "tidur",
+   "racun"
+  ],
+  "lesson": "Pulih 12% HP tiap ronde selama kepalanya dibiarkan.",
+  "description": "Satu ruas tubuh yang cukup besar untuk berkelahi sendiri."
+ },
+ "_catatan_ending": "Dua pertarungan khas segmen ending (GAME_DESIGN §2.4). Keduanya tidak menguji damage: yang pertama menguji bertahan, yang kedua tidak bisa dilukai sama sekali.",
+ "kabut_gelombang": {
+  "name": "Gelombang Kabut",
+  "level": 50,
+  "xp": 5000,
+  "keping": 2500,
+  "traits": [
+   "hampa"
+  ],
+  "stats": {
+   "hp": 693,
+   "mp": 0,
+   "atk": 69,
+   "def": 54,
+   "mag": 74,
+   "res": 54,
+   "agi": 25,
+   "lck": 12
+  },
+  "affinities": {
+   "cahaya": "lemah",
+   "kelam": "serap"
+  },
+  "ai": [
+   {
+    "action": "m_gelombang_akhir",
+    "weight": 1,
+    "every_n_turns": 3
+   },
+   {
+    "action": "m_cakar_kabut",
+    "weight": 3,
+    "target_rule": "hp_terendah"
+   },
+   {
+    "action": "serang",
+    "weight": 4
+   }
+  ],
+  "immune": [
+   "lupa",
+   "tidur",
+   "racun",
+   "bakar"
+  ],
+  "lesson": "Tidak perlu dihabisi. Cukup ditahan sampai tujuh Suar menyala.",
+  "description": "Kabut yang mengalir kembali ke Sumur, dan segala yang ikut di dalamnya."
+ },
+ "kabut_terakhir": {
+  "name": "Kabut Terakhir",
+  "level": 52,
+  "xp": 40000,
+  "keping": 6000,
+  "is_boss": true,
+  "traits": [
+   "kabut_terakhir"
+  ],
+  "stats": {
+   "hp": 2400,
+   "mp": 0,
+   "atk": 70,
+   "def": 56,
+   "mag": 78,
+   "res": 56,
+   "agi": 20,
+   "lck": 12
+  },
+  "affinities": {
+   "fisik": "imun",
+   "api": "imun",
+   "es": "imun",
+   "petir": "imun",
+   "angin": "imun",
+   "bumi": "imun",
+   "cahaya": "imun",
+   "kelam": "imun"
+  },
+  "ai": [
+   {
+    "action": "m_kabut_menelan",
+    "weight": 3
+   },
+   {
+    "action": "m_kabut_hening",
+    "weight": 2
+   },
+   {
+    "action": "serang",
+    "weight": 2
+   }
+  ],
+  "immune": [
+   "lupa",
+   "tidur",
+   "racun",
+   "bakar",
+   "beku",
+   "bisu",
+   "buta",
+   "berat",
+   "goyah",
+   "provokasi",
+   "tandai"
+  ],
+  "lesson": "Tidak ada satu pun serangan yang melukainya. Hanya Lagu dan Kidung yang menguraikannya, delapan kali.",
+  "description": "Seluruh Kabut dunia, berdiri sekali saja dalam bentuk yang bisa dihadapi — dan minta dinyanyikan, bukan dibunuh."
  }
 }

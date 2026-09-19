@@ -1046,8 +1046,8 @@ waktu. Audio ditunda sebagai pekerjaan tersendiri agar tidak menggemukkan APK se
 | 2 | **Babak 1 lengkap** (area 1–6, 4 karakter, 7 boss, 6 side quest) | Game 6,5 jam yang bisa tamat — **selesai** (lihat §9.1) |
 | 3 | Sistem lanjutan: Ganti/cadangan, Jalur, Kaca, Berkemah/Kenangan, Buruan, Arena | Fondasi Babak 2 — **selesai** (lihat §9.2) |
 | 4 | Babak 2 (area 7–12, 3 karakter baru, 7 boss) | Game 15 jam — **selesai** (lihat §9.3) |
-| 5 | Babak 3 + 3 ending + dungeon opsional + superboss | Game 20 jam |
-| 6 | Kalibrasi, penulisan ulang naskah, playtest | Rilis |
+| 5 | Babak 3 + 3 ending + superboss | Game 20 jam — **selesai** (lihat §9.4) |
+| 6 | Kalibrasi harga, dungeon opsional, side quest sisa, penulisan ulang naskah, playtest | Rilis |
 
 Tahap 2 adalah tonggak terpenting: kalau Babak 1 terasa enak dimainkan, sistemnya terbukti dan
 Babak 2–3 tinggal soal isi. Kalau tidak, lebih murah membetulkannya di sana.
@@ -1230,3 +1230,105 @@ Penyimpangan dari desain awal, dan alasannya:
 - **Keping menumpuk** (±110.000 di akhir Babak 2). Harga toko Babak 2 belum mengejar; ini dicatat
   sebagai pekerjaan kalibrasi Tahap 6, bukan bug.
 
+### 9.4 Catatan implementasi Tahap 5 (Babak 3)
+
+Dua area baru (Laut Lupa, Pusar Kabut & Kota Adiluhung), 25 ruang, 3 boss besar plus mid-boss
+tujuh gelombang, satu superboss, satu Buruan puncak, 7 adegan Kenangan puncak, 19 skill baru
+(termasuk Jurus Empat), dan **tiga ending yang masing-masing punya segmen mainnya sendiri**.
+
+```
+python tools/walkthrough.py --babak 3 --seed 3                     ending "Menyalakan Kembali"
+python tools/walkthrough.py --babak 3 --ending kembali --seed 3    ending "Mengembalikan"
+python tools/walkthrough.py --babak 3 --ending dendang --seed 3    ending "Mendendangkan"
+python tools/walkthrough.py --babak 3 --ending kembali --bunuh-kelana
+```
+
+Party tamat di **Lv 51–52**, sesuai rentang §2.4. Lama boss: Gema Guntur 11–19 ronde (lihat
+catatan Nyala Penjaga di bawah), Tujuh Penjaga Suar 3–5 ronde per gelombang, Sang Pelita
+Pertama 14–16 ronde, segmen bertahan ending 1 tepat 6 ronde, Kabut Terakhir tepat 8 lagu.
+
+**Mekanik baru di mesin** (semuanya dipakai isi Babak 3, bukan dibangun untuk nanti):
+
+- **Jurus Empat** (`tags: ["jurus_empat"]`): satu-satunya jurus Bara tanpa daftar `users` —
+  syaratnya keempat anggota barisan aktif hidup, Bara maks 8, dan sekali per pertarungan untuk
+  seluruh party (`Battle.used_once_party`, bukan `Combatant.used_once`).
+- **`elemen_kelemahan`**: tiap sasaran dipukul dengan elemen kelemahannya sendiri.
+- **`formasi`** (Gema Prajurit): DEF/RES ×2 selama dua atau lebih yang sejenis masih berdiri.
+- **`nyala_penjaga:N`** (Gema Guntur): boss pulih penuh kalau Bara party ≥ N saat gilirannya.
+- **`hanya_jurus`** (sifat fase, bukan sifat musuh): apa pun selain Jurus Ganda/Jurus Empat
+  hanya menggores 1 damage. Pukulan kelemahan tetap memberi +1 Bara, jadi serangan biasa
+  berubah fungsi dari "melukai" jadi "membiayai".
+- **`hapus_skill`** dan tag **`lagu`**: skill party hilang satu per satu; tiap Lagu Ratih
+  mengembalikan satu (`Battle.skill_terhapus`).
+- **`padamkan_dunia`**: HP semua jadi 1, Bara jadi 0, lalu +1 Bara per Kenangan puncak yang
+  sudah dilihat (`Battle.bara_kenangan`, dihitung dari `kenangan.json` bertanda `"puncak": true`).
+- **`tenun_afinitas`** (Sang Penenun) dan pasif **`serang_adaptif`** (hadiah Kaca Penenun):
+  keduanya menulis ulang afinitas — yang pertama ke party, yang kedua ke serangan dasar.
+- **`regen_pct`** pada musuh + sifat `kepala`: segmen Cacing Abu Ibu pulih tiap ronde selama
+  kepalanya tidak dipukul.
+- **Pertarungan bertahan** (`{"battle": [...], "bertahan": N}`): menang saat ronde ke-N lewat,
+  dan gelombangnya berdiri lagi tiap kali dihabisi — menghabisi lawan bukan jalan keluarnya.
+- **`{"lucuti": true}`** dan **`{"barisan": [...]}`**: perintah skrip untuk ending 2 dan 3.
+- **`{"bara": 8}`**: menaikkan Bara maks lewat cerita, bukan cuma lewat penukaran Serpihan.
+
+Penyimpangan dari desain awal, dan alasannya:
+
+- **Babak 2 tidak lagi berakhir di layar judul.** Sama seperti batas Babak 1 (§9.3): setelah
+  Nirmala jatuh, party langsung berdiri di dek Kapal Lentera. `end_chapter` sekarang hanya
+  dipakai sekali di seluruh permainan — untuk ending yang dipilih pemain. Walkthrough Babak 2
+  karena itu berhenti lewat `#stop:babak_2_selesai`.
+- **Tujuh Penjaga Suar = tujuh pertarungan beruntun tanpa jeda**, bukan satu pertarungan berisi
+  tujuh musuh. Batas arena adalah lima musuh (`MAX_MUSUH`), dan "bergelombang" di §2.4 memang
+  menggambarkan urutan. Tidak ada pemulihan di antaranya, jadi terasanya tetap satu pertarungan
+  panjang; pemulihan penuh baru diberikan setelah gelombang ketujuh.
+- **Sang Pelita Pertama punya empat fase, bukan tiga.** Fase "Padamkan Dunia" dipisah dari fase
+  3 supaya pemicunya benar-benar HP < 15% seperti yang ditulis §6.2, bukan sekadar satu langkah
+  di dalam pola fase 3.
+- **HP boss dikalibrasi ulang ke atas setelah walkthrough**, pola yang sama dengan §9.1: Gema
+  Guntur 4.207 → **7.000**, Sang Pelita Pertama 9.999 → **15.000**, tiap Penjaga Suar 680 →
+  **2.200**, Cacing Abu Ibu 2.919 + 4×1.022 → **6.000 + 4×2.000**. Sebabnya rumus §4.7
+  memakai `off(L)` sebagai *stat dasar* party, sementara di Lv 50 senjata Babak 3 sendiri
+  menyumbang 30–40% serangan; tanpa penyesuaian ini boss akhir jatuh dalam 7 ronde.
+  Angka 9.999 di §6.2 tetap benar sebagai *bagian* yang dipegang fase 3–4 kalau dihitung dari
+  porsi HP-nya. Sang Penenun tetap 30.000 dan Ketahanan 300 seperti tertulis di §6.3 — hasilnya
+  pertarungan ketahanan 60–99 ronde yang baru bisa dimenangkan di Lv 56+, dan itu memang yang
+  dimaksud "Lv 58" di §6.3. Cacing Abu Ibu justru sebaliknya: lima sasaran sekaligus membuat
+  skill area berkelemahan Lintang sangat efisien, jadi HP-nya dinaikkan ke 14.000 + 4×3.500
+  dan tetap jatuh dalam 5–8 ronde. Itu dibiarkan: buruan itu memang hadiah untuk party yang
+  sudah membangun barisannya dengan benar.
+- **XP musuh biasa Babak 3 = 2·L², bukan 6·L².** Dengan 6·L² party tiba di Sumur Ingatan pada
+  Lv 58–60, jauh di atas rentang §2.4. Penyebabnya kurva 20·n²: di Lv 45+ satu level berharga
+  ~45.000 XP sementara satu musuh menyumbang ~13.000, jadi dua area saja sudah cukup untuk
+  sembilan level. Boss tetap 30·L². Tujuh Penjaga Suar dibayar sebagai **satu** mid-boss yang
+  dibagi tujuh (4.800 XP per gelombang), bukan tujuh musuh Lv 49 penuh.
+- **Skill Lv 47 bawaan ditambahkan untuk empat karakter Babak 1.** §4.9 hanya menjanjikan satu
+  skill puncak per Jalur di Lv 45; tapi Rimba, Sela, Lintang, dan Bagas tidak punya skill
+  bawaan baru sejak Lv 18–22, jadi sepanjang Babak 3 mereka cuma menunggu. Masing-masing dapat
+  satu skill Lv 47 (Terang Larung, Pedang dan Perisai, Kabut dan Kilat, Peluncur Tujuh Laras).
+- **Bara maks 8 diberikan cerita, bukan cuma penukaran Serpihan.** Menaikkan 5 → 8 lewat Tukang
+  Kaca berharga 9 Serpihan Ingatan; pemain yang tidak mengumpulkannya tidak akan pernah melihat
+  Jurus Empat, padahal itu isi §4.5. Nyai Rukmini melebarkan meteran setelah empat pulau wajib.
+  Penukaran Serpihan tetap ada untuk yang sampai 8 lebih awal.
+- **Ending 3 disembunyikan total** kalau syaratnya kurang (semua Kenangan Ratih + 7 Buruan
+  selesai + Padasuara selamat + Kelana tidak dibunuh). Pilihannya tidak muncul sama sekali —
+  bukan "terkunci dengan alasan". Syarat "7 Buruan" dibaca lewat kondisi baru
+  `buruan_selesai>=7`, dan "Padasuara selamat" lewat flag `padasuara_selamat` yang dipasang
+  saat Sunan Wirya jatuh.
+- **Membunuh Kelana adalah pilihan eksplisit berperingatan dua tahap** (§6.2 no. 12): setelah
+  Hampa Berzirah jatuh pemain memilih "Turunkan pedangmu" atau "Habisi dia", dan opsi kedua
+  mengulang konsekuensinya sekali lagi sebelum dijalankan. Kalau dibunuh: Kelana tidak pernah
+  bergabung, Lintang berubah sepanjang Babak 3 (Pulau Sunyi, gerbang Adiluhung, mulut Sumur),
+  dan ending 1 & 3 tidak muncul di pilihan akhir.
+- **Kenangan puncak adalah renungan satu orang**, bukan obrolan berpasangan seperti Kenangan
+  §5.6 lainnya. Tujuh adegan, satu per anggota party, terbuka di pulau yang "memanggil" mereka.
+  Keduanya hidup di `kenangan.json` yang sama; yang membedakan cuma panjang `pasangan`.
+- **Kebijakan otomatis party dilatih tiga hal baru**, supaya walkthrough menguji desainnya dan
+  bukan cuma kesabaran: membelanjakan Bara di depan lawan ber-`nyala_penjaga`, menyanyi alih-alih
+  memukul di depan Kabut Terakhir, dan bertahan (Jaga/heal) di pertarungan bertahan.
+- **Harga toko Babak 3 sengaja besar** (senjata 9.000, zirah 7.000–8.000, aksesori 6.000–6.500)
+  untuk menyerap Keping yang menumpuk di akhir Babak 2. Itu belum menutup catatan §9.3: pemain
+  otomatis tetap tamat dengan ~250.000 Keping. Kalibrasi harga menyeluruh tetap pekerjaan Tahap 6.
+- **Masih terbuka setelah Tahap 5**: Buruan 8 dari 11, side quest 7 dari 18, dan tiga dungeon
+  opsional (Gua Bawah Danau di Babak 1, Reruntuhan Suar Ketiga di Babak 2, dan satu lagi di
+  Laut Lupa) belum dibuat. Pulau Hilang dan Cacing Abu Ibu adalah konten opsional Babak 3 yang
+  sudah ada.

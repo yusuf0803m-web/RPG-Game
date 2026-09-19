@@ -121,7 +121,8 @@ def parse_enemy(eid: str, d: dict) -> EnemyDef:
         ]
         phases = [AIPhase(float(p["hp_above"]), list(p["pattern"]), p.get("name", ""),
                           {Element(k): Affinity(v) for k, v in p["affinities"].items()} if "affinities" in p else None,
-                          bool(p.get("ignore_taunt", False)), int(p.get("actions_per_turn", 1)), p.get("announce", ""))
+                          bool(p.get("ignore_taunt", False)), int(p.get("actions_per_turn", 1)), p.get("announce", ""),
+                          list(p["traits"]) if "traits" in p else None)
                   for p in d.get("phases", [])]
         rotation = None
         if "rotation" in d:
@@ -147,6 +148,7 @@ def parse_enemy(eid: str, d: dict) -> EnemyDef:
             immune=list(d.get("immune", [])),
             traits=list(d.get("traits", [])),
             on_death=d.get("on_death"),
+            regen_pct=float(d.get("regen_pct", 0.0)),
             lesson=d.get("lesson", ""),
             description=d.get("description", ""),
         )
@@ -189,6 +191,7 @@ def parse_passive(d: dict) -> Passive:
         biaya_mp_pct=float(d.get("biaya_mp_pct", 0.0)),
         bara_awal=int(d.get("bara_awal", 0)),
         curi_pct=float(d.get("curi_pct", 0.0)),
+        serang_adaptif=bool(d.get("serang_adaptif", False)),
         imun=list(d.get("imun", [])),
     )
 
@@ -282,8 +285,8 @@ class GameData:
             for uid in s.users:
                 if uid not in self.characters:
                     raise DataError(f"skill '{s.id}' merujuk karakter '{uid}' yang tidak ada")
-            if s.cost_type == CostType.BARA and not s.users:
-                raise DataError(f"skill Bara '{s.id}' harus punya 'users'")
+            if s.cost_type == CostType.BARA and not s.users and "jurus_empat" not in s.tags:
+                raise DataError(f"skill Bara '{s.id}' harus punya 'users' (kecuali Jurus Empat)")
         for k in self.kaca.values():
             if k.kind not in ("elemen", "pasif", "skill"):
                 raise DataError(f"kaca '{k.id}': jenis '{k.kind}' tidak dikenal")

@@ -676,5 +676,294 @@
     "text": "Kalau kau tidak bisa mendengar namamu, aku yang akan menyanyikannya. Tiap malam, sampai kau ingat."
    }
   ]
+ },
+ "puncak_rimba": {
+  "pasangan": [
+   "rimba"
+  ],
+  "tingkat": 4,
+  "puncak": true,
+  "judul": "Yang Tidak Diajarkan Pak Guntur",
+  "syarat": [
+   "pulau_lentera_dilihat"
+  ],
+  "adegan": [
+   {
+    "text": "Rimba duduk paling jauh dari api, memegang lentera sakunya yang sudah retak sejak Rawa Suar, dan merapikan sumbunya untuk kesekian kali malam itu."
+   },
+   {
+    "say": "Rimba",
+    "text": "Dia ingat semuanya. Cara memegang, cara menakar minyak, bahkan cara dia berdehem sebelum menyuruh aku pulang."
+   },
+   {
+    "say": "Rimba",
+    "text": "Satu-satunya yang tidak dia punya adalah hari waktu dia masuk ke Suar. Dan aku juga tidak punya. Aku tidak ada di sana."
+   },
+   {
+    "text": "Ia berhenti merapikan."
+   },
+   {
+    "say": "Rimba",
+    "text": "Aku selalu kira aku marah karena dia pergi. Ternyata aku marah karena dia pergi tanpa pamit, dan itu dua hal yang sangat berbeda, dan aku baru tahu malam ini."
+   },
+   {
+    "say": "Rimba",
+    "text": "Pak Guntur. Kalau Bapak dengar. (Jeda.) Sudah. Tidak apa-apa."
+   },
+   {
+    "text": "Nyala lentera sakunya menegak sendiri, sedikit, dan tidak ada angin di kemah itu."
+   }
+  ]
+ },
+ "puncak_sela": {
+  "pasangan": [
+   "sela"
+  ],
+  "tingkat": 4,
+  "puncak": true,
+  "judul": "Delapan Jam dan Tidak Ada yang Terjadi",
+  "syarat": [
+   "pulau_pernikahan_dilihat"
+  ],
+  "adegan": [
+   {
+    "text": "Sela mengasah pedangnya, tiga tarikan, berhenti, tiga tarikan lagi. Malam ini ia berhenti lebih lama di antara tarikan."
+   },
+   {
+    "say": "Sela",
+    "text": "Pernikahan di Tengara itu. Aku jaga pintu delapan jam."
+   },
+   {
+    "say": "Sela",
+    "text": "Tidak ada yang mencoba masuk. Tidak ada yang mabuk. Tidak ada yang berkelahi. Aku berdiri delapan jam dan pulang."
+   },
+   {
+    "say": "Sela",
+    "text": "Waktu itu aku pikir aku disia-siakan. Pengawal terbaik angkatanku, disuruh berdiri di pintu orang kawin."
+   },
+   {
+    "text": "Ia meletakkan batu asahnya."
+   },
+   {
+    "say": "Sela",
+    "text": "Sekarang aku tahu itu justru pekerjaannya. Berdiri di pintu supaya delapan jam itu betul-betul tidak terjadi apa-apa."
+   },
+   {
+    "say": "Sela",
+    "text": "Itu yang aku mau. Bukan menang. Cuma supaya ada delapan jam di mana tidak terjadi apa-apa, dan ada yang menjaganya."
+   }
+  ]
+ },
+ "puncak_lintang": {
+  "pasangan": [
+   "lintang"
+  ],
+  "tingkat": 4,
+  "puncak": true,
+  "judul": "Tali Jemuran",
+  "syarat": [
+   "pulau_sunyi_dilihat"
+  ],
+  "adegan": [
+   {
+    "text": "Lintang tidak tidur. Ia duduk memegang salah satu kain kecil dari jemuran pulau itu, yang entah kapan ia bawa pulang."
+   },
+   {
+    "say": "Lintang",
+    "text": "Aku ingat tinggi tali itu. Aku ingat aku harus jinjit untuk sampai ke jepitannya."
+   },
+   {
+    "say": "Lintang",
+    "text": "Waktu aku berdiri di halaman tadi, talinya setinggi dadaku. Aku yang berubah. Talinya tidak."
+   },
+   {
+    "text": "Ia melipat kain itu, dengan lipatan yang jelas diajarkan seseorang."
+   },
+   {
+    "say": "Lintang",
+    "text": "Aku dulu kira Kabut itu yang mengambil orang. Ternyata Kabut cuma menyimpan. Yang mengambil orang selalu orang."
+   },
+   {
+    "say": "Lintang",
+    "text": "Kalau sampai di sana nanti dan ada yang harus memutuskan sesuatu yang besar, aku mau ikut memutuskan. Bukan cuma ikut."
+   }
+  ]
+ },
+ "puncak_bagas": {
+  "pasangan": [
+   "bagas"
+  ],
+  "tingkat": 4,
+  "puncak": true,
+  "judul": "Sesudah Tukang Kuningan",
+  "syarat": [
+   "pulau_pasar_dilihat"
+  ],
+  "adegan": [
+   {
+    "text": "Bagas memutar-mutar kunci pas terkecil yang ia ambil dari lapak alat di Pulau Pasar. Ukurannya terlalu kecil untuk apa pun di peluncurnya."
+   },
+   {
+    "say": "Bagas",
+    "text": "Ibuku jualan di lapak sesudah tukang kuningan. Aku hafal jaraknya: dua puluh tiga langkah dari pintu pasar, kalau langkah anak-anak."
+   },
+   {
+    "say": "Bagas",
+    "text": "Aku menghitungnya tadi. Dua puluh tiga langkah, kalau langkah anak-anak. Pas."
+   },
+   {
+    "text": "Ia tertawa satu kali, pendek, dan berhenti."
+   },
+   {
+    "say": "Bagas",
+    "text": "Aku menghitung orang terus sejak Wirasaba. Dua ribu empat ratus sebelas. Tiga ratus dua puluh tujuh. Aku pikir kalau aku hitung semuanya, ada yang bisa kukembalikan."
+   },
+   {
+    "say": "Bagas",
+    "text": "Tidak ada. Menghitung itu cuma supaya aku punya kerjaan sambil takut."
+   },
+   {
+    "say": "Bagas",
+    "text": "Tapi aku akan tetap menghitung. Kalau tidak dihitung, tidak ada yang tahu ada berapa."
+   }
+  ]
+ },
+ "puncak_rangga": {
+  "pasangan": [
+   "rangga"
+  ],
+  "tingkat": 4,
+  "puncak": true,
+  "judul": "Helm yang Digantung",
+  "syarat": [
+   "pulau_perang_dilihat"
+  ],
+  "adegan": [
+   {
+    "text": "Rangga membersihkan tombaknya lebih lama daripada perlu, seperti tiap malam sejak Pulau Perang."
+   },
+   {
+    "say": "Rangga",
+    "text": "Mereka menggantung helm di tombak supaya yang datang tahu berapa yang masih hidup. Itu bukan pertahanan. Itu laporan."
+   },
+   {
+    "say": "Rangga",
+    "text": "Delapan abad mereka siap untuk sesuatu yang tidak pernah datang, dan tidak satu pun dari mereka meninggalkan posnya."
+   },
+   {
+    "say": "Rangga",
+    "text": "Aku meninggalkan posku. Di Gerbang Istana aku berdiri di pos yang salah, dan aku baru turun setelah kalian memukulku turun."
+   },
+   {
+    "text": "Ia meletakkan tombaknya melintang di depan kakinya, sama persis seperti yang dilakukan Gema terakhir di parit itu."
+   },
+   {
+    "say": "Rangga",
+    "text": "Kalau nanti di bawah sana ada perintah yang harus kutolak, aku mau menolaknya sebelum ada yang memukulku."
+   },
+   {
+    "say": "Rangga",
+    "text": "Sekali saja. Itu yang belum pernah kulakukan."
+   }
+  ]
+ },
+ "puncak_ratih": {
+  "pasangan": [
+   "ratih"
+  ],
+  "tingkat": 4,
+  "puncak": true,
+  "judul": "Tikar yang Lowong Satu",
+  "syarat": [
+   "pulau_nyanyi_dilihat"
+  ],
+  "adegan": [
+   {
+    "text": "Ratih tidak memegang kecapinya malam ini. Ia duduk bersila di luar lingkaran api, menghadap ke barat."
+   },
+   {
+    "say": "Ratih",
+    "text": "Di balai itu tikarnya lowong satu. Mereka menunggu satu orang lagi supaya bisa mulai."
+   },
+   {
+    "say": "Ratih",
+    "text": "Di Padasuara juga begitu. Tiap lingkaran nyanyi selalu menyisakan satu tempat. Aku dulu kira itu sopan santun."
+   },
+   {
+    "say": "Ratih",
+    "text": "Ternyata itu aturan: lagu tujuh Suar tidak boleh dinyanyikan sendirian. Bukan karena tidak bisa — karena tidak boleh."
+   },
+   {
+    "text": "Ia menarik napas, dan menahannya lebih lama daripada yang dilakukan penyanyi biasa."
+   },
+   {
+    "say": "Ratih",
+    "text": "Kalau di bawah sana aku harus menyanyi, aku tidak akan menyanyi sendirian. Aku akan memanggil semuanya."
+   },
+   {
+    "say": "Ratih",
+    "text": "Semua yang pernah kuajari di jalan. Semua yang pernah mengajariku. Semua yang tikarnya lowong."
+   },
+   {
+    "say": "Ratih",
+    "text": "Itu bukan mukjizat. Itu cuma banyak orang yang kebetulan hafal lagu yang sama."
+   }
+  ]
+ },
+ "puncak_kelana": {
+  "pasangan": [
+   "kelana"
+  ],
+  "tingkat": 4,
+  "puncak": true,
+  "judul": "Yang Dipasang Sendiri",
+  "syarat": [
+   "pulau_sunyi_dilihat"
+  ],
+  "setelah": "puncak_lintang",
+  "adegan": [
+   {
+    "text": "Kelana duduk menghadap api, yang sudah lama tidak ia lakukan. Biasanya ia menghadap keluar."
+   },
+   {
+    "say": "Kelana",
+    "text": "Tali itu. Aku yang pasang."
+   },
+   {
+    "say": "Lintang",
+    "text": "Iya, Pak."
+   },
+   {
+    "say": "Kelana",
+    "text": "Hari Sabtu. Pagi. Kau pegang ujungnya yang sebelah sana dan kau tidak cukup tinggi."
+   },
+   {
+    "text": "Lintang berhenti bernapas sebentar."
+   },
+   {
+    "say": "Lintang",
+    "text": "Bapak ingat harinya?"
+   },
+   {
+    "say": "Kelana",
+    "text": "(Jeda panjang.) Barusan. Sekarang. Tidak tadi."
+   },
+   {
+    "say": "Kelana",
+    "text": "Yang balik itu bukan satu-satu. Yang balik itu sekaligus, sedikit-sedikit, dan aku tidak bisa memilih yang mana."
+   },
+   {
+    "say": "Kelana",
+    "text": "Lintang."
+   },
+   {
+    "say": "Lintang",
+    "text": "Iya, Pak. Masih di sini."
+   },
+   {
+    "say": "Kelana",
+    "text": "Aku tahu. Aku cuma mau memanggil."
+   }
+  ]
  }
 }

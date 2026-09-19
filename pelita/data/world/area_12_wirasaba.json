@@ -441,41 +441,174 @@
     "boss": true,
     "win": [
      {
-      "set": "kelana_berhenti"
+      "text": "Ayunannya melambat, lalu berhenti. Zirah itu berdiri miring, masih bersenjata, masih hidup — dan untuk pertama kalinya menoleh ke arah Lintang, bukan ke arah kalian."
      },
      {
-      "text": "Zirah itu berhenti di tengah ayunan terakhir. Pedangnya turun pelan, bukan jatuh."
+      "say": "Rangga",
+      "text": "Rimba. Ini keputusanmu, dan cuma ada satu kesempatan."
      },
      {
-      "say": "Kelana",
-      "text": "...Lintang."
+      "pause": true
      },
      {
-      "text": "Satu kata, dengan suara yang sudah lama tidak dipakai. Lalu ia duduk bersandar di roda gerobak, dan tidak bergerak lagi."
-     },
-     {
-      "say": "Lintang",
-      "text": "Ayah."
-     },
-     {
-      "say": "Bagas",
-      "text": "(Sangat pelan, ke Rimba.) Jangan ada yang bilang apa-apa dulu."
-     },
-     {
-      "give": {
-       "serpihan_ingatan": 1
-      }
-     },
-     {
-      "ilustrasi": "events/kelana_berhenti",
-      "teks": "Satu nama, diingat oleh sesuatu yang seharusnya sudah tidak mengingat apa pun."
-     },
-     {
-      "text": "Kalian membuka kurungan kaca di gerobak-gerobak itu satu per satu. Para Hampa keluar pelan, tidak ke mana-mana, hanya keluar — dan Bagas berdiri di pintu gudang menghitung mereka sampai selesai, tanpa suara."
-     },
-     {
-      "quest": "keluarga_bagas",
-      "state": "selesai"
+      "choice": [
+       {
+        "text": "Turunkan pedangmu.",
+        "then": [
+         {
+          "set": "kelana_berhenti"
+         },
+         {
+          "text": "Rimba menurunkan tongkatnya lebih dulu. Sela menurunkan pedangnya kedua. Lintang tidak pernah mengangkat apa pun."
+         },
+         {
+          "text": "Zirah itu berhenti di tengah ayunan terakhir. Pedangnya turun pelan, bukan jatuh."
+         },
+         {
+          "say": "Kelana",
+          "text": "...Lintang."
+         },
+         {
+          "text": "Satu kata, dengan suara yang sudah lama tidak dipakai. Lalu ia duduk bersandar di roda gerobak, dan tidak bergerak lagi."
+         },
+         {
+          "say": "Lintang",
+          "text": "Ayah."
+         },
+         {
+          "say": "Bagas",
+          "text": "(Sangat pelan, ke Rimba.) Jangan ada yang bilang apa-apa dulu."
+         },
+         {
+          "give": {
+           "serpihan_ingatan": 1
+          }
+         },
+         {
+          "ilustrasi": "events/kelana_berhenti",
+          "teks": "Satu nama, diingat oleh sesuatu yang seharusnya sudah tidak mengingat apa pun."
+         },
+         {
+          "text": "Kalian membuka kurungan kaca di gerobak-gerobak itu satu per satu. Para Hampa keluar pelan, tidak ke mana-mana, hanya keluar — dan Bagas berdiri di pintu gudang menghitung mereka sampai selesai, tanpa suara."
+         },
+         {
+          "quest": "keluarga_bagas",
+          "state": "selesai"
+         }
+        ]
+       },
+       {
+        "text": "Habisi dia. (PERINGATAN: ia tidak akan pernah bergabung, dan dua dari tiga akhir cerita tertutup.)",
+        "then": [
+         {
+          "text": "Peringatan: menghabisi sosok ini menutup jalan tertentu untuk selamanya. Ia tidak akan pernah ikut, Lintang tidak akan pulih sepanjang Babak 3, dan hanya satu akhir cerita yang tersisa: \"Mengembalikan\"."
+         },
+         {
+          "choice": [
+           {
+            "text": "Tidak. Turunkan pedangmu.",
+            "then": [
+             {
+              "set": "kelana_berhenti"
+             },
+             {
+              "text": "Rimba menurunkan tongkatnya lebih dulu. Sela menurunkan pedangnya kedua. Lintang tidak pernah mengangkat apa pun."
+             },
+             {
+              "text": "Zirah itu berhenti di tengah ayunan terakhir. Pedangnya turun pelan, bukan jatuh."
+             },
+             {
+              "say": "Kelana",
+              "text": "...Lintang."
+             },
+             {
+              "text": "Satu kata, dengan suara yang sudah lama tidak dipakai. Lalu ia duduk bersandar di roda gerobak, dan tidak bergerak lagi."
+             },
+             {
+              "say": "Lintang",
+              "text": "Ayah."
+             },
+             {
+              "say": "Bagas",
+              "text": "(Sangat pelan, ke Rimba.) Jangan ada yang bilang apa-apa dulu."
+             },
+             {
+              "give": {
+               "serpihan_ingatan": 1
+              }
+             },
+             {
+              "ilustrasi": "events/kelana_berhenti",
+              "teks": "Satu nama, diingat oleh sesuatu yang seharusnya sudah tidak mengingat apa pun."
+             },
+             {
+              "text": "Kalian membuka kurungan kaca di gerobak-gerobak itu satu per satu. Para Hampa keluar pelan, tidak ke mana-mana, hanya keluar — dan Bagas berdiri di pintu gudang menghitung mereka sampai selesai, tanpa suara."
+             },
+             {
+              "quest": "keluarga_bagas",
+              "state": "selesai"
+             }
+            ]
+           },
+           {
+            "text": "Ya. Habisi dia.",
+            "then": [
+             {
+              "set": [
+               "kelana_berhenti",
+               "kelana_dibunuh"
+              ]
+             },
+             {
+              "adegan": {
+               "efek": "gelap"
+              }
+             },
+             {
+              "text": "Kalian menghabisinya. Zirah itu jatuh ke depan, sekali, dan tidak bergerak lagi. Tidak ada kata terakhir; tidak ada yang tersisa di dalamnya untuk mengucapkannya."
+             },
+             {
+              "say": "Lintang",
+              "text": "..."
+             },
+             {
+              "text": "Lintang tidak menjerit. Ia berjongkok di sebelah tambalan di bahu kiri zirah itu, memegangnya cukup lama, lalu berdiri dan berjalan keluar gudang lebih dulu dari siapa pun."
+             },
+             {
+              "say": "Sela",
+              "text": "Lintang."
+             },
+             {
+              "say": "Lintang",
+              "text": "Jangan. (Jeda.) Bukan marah. Aku cuma tidak punya kalimat."
+             },
+             {
+              "say": "Bagas",
+              "text": "(Sangat pelan, ke Rimba.) Jangan ada yang bilang apa-apa. Untuk waktu yang lama."
+             },
+             {
+              "give": {
+               "serpihan_ingatan": 1
+              }
+             },
+             {
+              "ilustrasi": "events/kelana_dibunuh",
+              "teks": "Sesuatu yang mengingat satu nama, dihentikan sebelum sempat mengucapkannya."
+             },
+             {
+              "text": "Kalian membuka kurungan kaca di gerobak-gerobak itu satu per satu. Para Hampa keluar pelan, tidak ke mana-mana, hanya keluar — dan Bagas berdiri di pintu gudang menghitung mereka sampai selesai, tanpa suara."
+             },
+             {
+              "quest": "keluarga_bagas",
+              "state": "selesai"
+             }
+            ]
+           }
+          ]
+         }
+        ]
+       }
+      ]
      }
     ]
    }
@@ -496,29 +629,56 @@
       "text": "Peta Tengara juga menandai desaku sebagai hutan kosong."
      },
      {
-      "text": "Di belakang kalian, dari pintu gudang, Kelana berdiri. Ia berjalan tiga langkah, berhenti, dan menunggu — menghadap ke arah Lintang, bukan ke arah danau."
-     },
-     {
-      "say": "Lintang",
-      "text": "Dia ikut."
-     },
-     {
-      "say": "Sela",
-      "text": "Lintang, dia—"
-     },
-     {
-      "say": "Lintang",
-      "text": "Dia ikut."
-     },
-     {
-      "join": "kelana",
-      "equip": {
-       "senjata": "pedang_karat",
-       "zirah": "zirah_kaca_wirasaba"
-      }
-     },
-     {
-      "set": "kelana_gabung"
+      "if": [
+       "!kelana_dibunuh"
+      ],
+      "then": [
+       {
+        "text": "Di belakang kalian, dari pintu gudang, Kelana berdiri. Ia berjalan tiga langkah, berhenti, dan menunggu — menghadap ke arah Lintang, bukan ke arah danau."
+       },
+       {
+        "say": "Lintang",
+        "text": "Dia ikut."
+       },
+       {
+        "say": "Sela",
+        "text": "Lintang, dia—"
+       },
+       {
+        "say": "Lintang",
+        "text": "Dia ikut."
+       },
+       {
+        "join": "kelana",
+        "equip": {
+         "senjata": "pedang_karat",
+         "zirah": "zirah_kaca_wirasaba"
+        }
+       },
+       {
+        "set": "kelana_gabung"
+       }
+      ],
+      "else": [
+       {
+        "text": "Di belakang kalian, pintu gudang panen terbuka ke ruangan yang sekarang kosong. Tidak ada yang menyusul."
+       },
+       {
+        "say": "Lintang",
+        "text": "Ayo jalan."
+       },
+       {
+        "say": "Sela",
+        "text": "Lintang—"
+       },
+       {
+        "say": "Lintang",
+        "text": "Ayo jalan, Sela."
+       },
+       {
+        "set": "lintang_dingin"
+       }
+      ]
      }
     ]
    }

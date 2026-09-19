@@ -12,6 +12,7 @@ from pathlib import Path
 import pytest
 
 from pelita.loader import load_data
+from pelita.party import xp_to_reach
 from pelita.world.explore import Game
 from pelita.world.model import load_world
 from pelita.world.state import new_game
@@ -61,6 +62,9 @@ WIRASABA = [
     "Ke alun-alun Suar",
     "Kembali ke jalan kaca",
     "Ke gudang di sisi utara",
+    # Setelah Hampa Berzirah jatuh, pemain memilih secara eksplisit (GAME_DESIGN §6.2 no. 12).
+    # Jalur "Habisi dia" diuji terpisah di tests/test_babak3.py.
+    "Turunkan pedangmu",
     "Keluar lewat gerbang barat",
     "Lentera penjaga",
 ]
@@ -87,6 +91,9 @@ BENTENG = [
     "Naik ke tingkat atas",
     "Lentera penjaga",
     "Masuk ke Suar Benteng",
+    # Seperti batas Babak 1 (§9.3), ceritanya mengalir langsung: setelah Nirmala jatuh
+    # party sudah berdiri di dek Kapal Lentera, awal Babak 3.
+    "#stop:babak_2_selesai",
 ]
 SEMUA_BABAK2 = CELAH + DATARAN + HUTAN + WIRASABA + GARAM + BENTENG
 
@@ -100,6 +107,7 @@ def mulai_babak2(data, seed):
                      "boss_rangga_kalah", "boss_penambang_kalah", "boss_penjaga_kalah",
                      "babak_1_selesai", "guntur_hilang", "desa_epilog"})
     st.party[0].level = 24
+    st.party[0].xp = xp_to_reach(24)          # tanpa ini Rimba tertinggal dari yang lain
     st.party[0].equipment.update({"senjata": "tongkat_guntur", "zirah": "jubah_penyala"})
     for cid, senjata, zirah in (("sela", "pedang_sumpah", "zirah_kaca_lapis"),
                                 ("lintang", "lentera_kaca", "zirah_rantai"),
@@ -136,9 +144,11 @@ def jalankan(steps, seed, tmp_path):
 def test_babak2_tamat(seed, tmp_path):
     res, st, wk = jalankan(SEMUA_BABAK2, seed, tmp_path)
     txt = wk.text
-    assert res == "chapter_end", txt[-3000:]
+    assert res == "berhenti", txt[-3000:]
     assert "AKHIR BABAK 2" in txt
     assert "babak_2_selesai" in st.flags
+    # Cerita mengalir langsung ke Babak 3, bukan kembali ke layar judul.
+    assert st.area_id == "laut_lupa", f"{st.area_id}/{st.room_id}"
     for flag in ("boss_garuda_kalah", "boss_cacing_kalah", "boss_wirya_kalah",
                  "boss_penjaga_suar_kalah", "kelana_berhenti", "boss_pandansari_kalah",
                  "boss_nirmala_kalah"):

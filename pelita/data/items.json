@@ -102,5 +102,42 @@
   "lensa_juru_kaca":  {"name": "Lensa Juru Kaca", "kind": "aksesori", "price": 1800,
                        "stats": {"lck": 12, "agi": 4}, "description": "Melihat jahitan di benda apa pun, termasuk kantong orang."},
   "jimat_kafilah":    {"name": "Jimat Kafilah", "kind": "aksesori", "price": 2000,
-                       "stats": {"hp": 50, "res": 10, "agi": 4}, "description": "Kaca kecil berisi abu kota sendiri. Kafilah memberikannya pada yang ikut jauh."}
+                       "stats": {"hp": 50, "res": 10, "agi": 4}, "description": "Kaca kecil berisi abu kota sendiri. Kafilah memberikannya pada yang ikut jauh."},
+
+  "_catatan_babak3": "Perlengkapan Babak 3 (Lv 43-52). Harganya sengaja besar: Keping menumpuk di akhir Babak 2 dan Kapal Lentera adalah tempat terakhir untuk membelanjakannya (GAME_DESIGN §9.4).",
+
+  "ramuan_laut":        {"name": "Ramuan Laut", "kind": "konsumsi", "price": 520, "heal_hp": 900, "target": "satu_kawan",
+                         "description": "Air tawar terakhir yang dibawa Kapal Lentera, direbus dengan akar pahit."},
+  "guci_nyala":         {"name": "Guci Nyala", "kind": "konsumsi", "price": 700, "heal_mp": 300,
+                         "description": "Satu guci minyak nyala. Cukup untuk menyeberangi laut."},
+  "abu_pagi":           {"name": "Abu Pagi", "kind": "konsumsi", "price": 900, "revive_pct": 0.8, "target": "kawan_pingsan",
+                         "description": "Membangunkan kawan yang pingsan dengan 80% HP."},
+
+  "tongkat_lentera":    {"name": "Tongkat Lentera", "kind": "senjata", "price": 9000, "weapon_for": "rimba",
+                         "stats": {"atk": 34, "mag": 26}, "slots": 3},
+  "pedang_laut":        {"name": "Pedang Laut Lupa", "kind": "senjata", "price": 9000, "weapon_for": "sela",
+                         "stats": {"atk": 40, "def": 14}, "slots": 3},
+  "lentera_laut":       {"name": "Lentera Laut", "kind": "senjata", "price": 9000, "weapon_for": "lintang",
+                         "stats": {"mag": 40, "res": 12}, "slots": 3},
+  "peluncur_laut":      {"name": "Peluncur Tujuh Laras", "kind": "senjata", "price": 9000, "weapon_for": "bagas",
+                         "stats": {"atk": 32, "agi": 13, "lck": 11}, "slots": 3},
+  "tombak_laut":        {"name": "Tombak Lunas", "kind": "senjata", "price": 9000, "weapon_for": "rangga",
+                         "stats": {"atk": 37, "def": 11}, "slots": 3},
+  "kecapi_laut":        {"name": "Kecapi Laut Lupa", "kind": "senjata", "price": 9000, "weapon_for": "ratih",
+                         "stats": {"mag": 38, "res": 12}, "slots": 3},
+  "pedang_sunyi":       {"name": "Pedang Sunyi", "kind": "senjata", "price": 9000, "weapon_for": "kelana",
+                         "stats": {"atk": 43, "def": 7}, "slots": 3},
+  "tongkat_pelita_pertama": {"name": "Tongkat Pelita Pertama", "kind": "senjata", "price": 0, "weapon_for": "rimba",
+                         "stats": {"atk": 44, "mag": 36}, "slots": 4,
+                         "description": "Tongkat yang dipegang orang pertama yang dibakar. Hadiah Cacing Abu Ibu (§6.3)."},
+
+  "zirah_lentera":      {"name": "Zirah Lentera", "kind": "zirah", "price": 7000,
+                         "stats": {"def": 32, "res": 26, "hp": 90}},
+  "jubah_ingatan":      {"name": "Jubah Ingatan", "kind": "zirah", "price": 8000,
+                         "stats": {"def": 24, "res": 34, "mp": 40}},
+  "jimat_pulang":       {"name": "Jimat Pulang", "kind": "aksesori", "price": 6000,
+                         "stats": {"hp": 90, "res": 14, "agi": 6}},
+  "kalung_bara_besar":  {"name": "Kalung Bara Besar", "kind": "aksesori", "price": 6500,
+                         "stats": {"mag": 10, "hp": 40},
+                         "description": "Seperti Kalung Bara, hanya lebih berat: party mulai dengan Bara di meteran."}
 }

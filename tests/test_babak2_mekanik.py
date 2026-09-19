@@ -94,7 +94,7 @@ def test_badai_bulu_lebih_sakit_untuk_yang_terbang(data):
 def test_perintah_terakhir_memberi_giliran_tambahan(data):
     b = battle(data, ["rangga", "sela"], level=41)
     rangga, sela = b.heroes
-    b._new_round()
+    b._new_round([])
     panjang = len(b.queue)
     pakai(b, rangga, "r_perintah_terakhir", target=[sela])
     assert len(b.queue) == panjang + 1 and b.queue[0] is sela
