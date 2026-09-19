@@ -1232,9 +1232,11 @@ Penyimpangan dari desain awal, dan alasannya:
 
 ### 9.4 Catatan implementasi Tahap 5 (Babak 3)
 
-Dua area baru (Laut Lupa, Pusar Kabut & Kota Adiluhung), 25 ruang, 3 boss besar plus mid-boss
-tujuh gelombang, satu superboss, satu Buruan puncak, 7 adegan Kenangan puncak, 19 skill baru
-(termasuk Jurus Empat), dan **tiga ending yang masing-masing punya segmen mainnya sendiri**.
+Dua area baru (Laut Lupa, Pusar Kabut & Kota Adiluhung), 25 ruang, boss Gema Guntur, mid-boss
+Tujuh Penjaga Suar, final Sang Pelita Pertama, superboss Sang Penenun, Buruan puncak Cacing Abu
+Ibu, 7 adegan Kenangan puncak, 56 skill baru (14 puncak Jalur Lv 45, 4 skill bawaan Lv 47,
+Jurus Empat, dan 37 skill musuh), dan **tiga ending yang masing-masing punya segmen mainnya
+sendiri**.
 
 ```
 python tools/walkthrough.py --babak 3 --seed 3                     ending "Menyalakan Kembali"
