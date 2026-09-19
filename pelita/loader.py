@@ -145,6 +145,8 @@ def parse_enemy(eid: str, d: dict) -> EnemyDef:
             phases=phases,
             rotation=rotation,
             immune=list(d.get("immune", [])),
+            traits=list(d.get("traits", [])),
+            on_death=d.get("on_death"),
             lesson=d.get("lesson", ""),
             description=d.get("description", ""),
         )
@@ -261,13 +263,16 @@ class GameData:
                 if sid not in self.skills:
                     raise DataError(f"karakter '{c.id}' merujuk skill '{sid}' yang tidak ada")
         for e in self.enemies.values():
-            refs = [a.action for a in e.ai] + [x.partition("@")[0] for p in e.phases for x in p.pattern] + list(e.skills)
+            refs = ([a.action for a in e.ai] + [x.partition("@")[0] for p in e.phases for x in p.pattern]
+                    + list(e.skills) + ([e.on_death] if e.on_death else []))
             for sid in refs:
                 if sid != "serang" and sid not in self.skills:
                     raise DataError(f"musuh '{e.id}' merujuk skill '{sid}' yang tidak ada")
             for d in e.drops:
                 if d.item not in self.items:
                     raise DataError(f"musuh '{e.id}' menjatuhkan item '{d.item}' yang tidak ada")
+            if e.steal and e.steal not in self.items:
+                raise DataError(f"musuh '{e.id}' bisa dicuri item '{e.steal}' yang tidak ada")
             if e.phases and e.ai:
                 raise DataError(f"musuh '{e.id}' punya 'ai' dan 'phases' sekaligus; pilih salah satu")
         for s in self.skills.values():

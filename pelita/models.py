@@ -360,6 +360,8 @@ class EnemyDef:
     phases: list[AIPhase] = field(default_factory=list)
     rotation: Optional[Rotation] = None
     immune: list[str] = field(default_factory=list)    # status yang tidak mempan
+    traits: list[str] = field(default_factory=list)    # sifat: "terbang", "hampa", "konstruk", "pantul"
+    on_death: Optional[str] = None                     # skill yang meledak saat musuh ini mati
     lesson: str = ""                          # "pelajaran" musuh ini (dokumentasi desain)
     description: str = ""
 

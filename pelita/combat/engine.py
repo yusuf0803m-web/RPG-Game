@@ -29,7 +29,7 @@ from ..loader import GameData
 from ..models import Affinity, CostType, Element, EnemyDef, ItemDef, Skill, SkillKind, Stats, Target
 from ..party import Hero
 from . import formulas as F
-from .status import BAD_STATUSES, STATUS_DEFS, StatusInstance, make_stat_mod, make_status
+from .status import BAD_STATUSES, LAGU, STATUS_DEFS, StatusInstance, make_stat_mod, make_status
 
 BARA_MAX_DASAR = 5
 BARA_HOLDER = "rimba"
@@ -74,6 +74,7 @@ class Combatant:
     actions_done: int = 0
     stolen: bool = False
     rotation_index: int = -1
+    traits: set[str] = field(default_factory=set)   # sifat musuh: "terbang", "hampa", ...
     kritikal_bonus: float = 0.0   # dari Kaca Tajam / pasif Jalur
     mp_regen: int = 0             # dari Kaca Napas / Jalur Penuntun
     curi_bonus: float = 0.0       # dari Kaca Licin / Jalur Peretas
@@ -267,7 +268,7 @@ class Battle:
             out.append(Combatant(
                 key=eid, name=edef.name, is_player=False, level=edef.level, base=edef.stats.copy(),
                 hp=edef.stats.hp, mp=edef.stats.mp, skills=skills, affinities=dict(edef.affinities),
-                immune=set(edef.immune), label=label, edef=edef,
+                immune=set(edef.immune), traits=set(edef.traits), label=label, edef=edef,
                 ketahanan_max=edef.ketahanan, ketahanan=edef.ketahanan,
             ))
         return out
@@ -378,6 +379,12 @@ class Battle:
             if st is None:
                 continue
             sdef = st.sdef
+            if sdef and (sdef.regen_pct or sdef.regen_mag) and actor.alive:
+                jml = int(actor.max_hp * sdef.regen_pct)
+                if sdef.regen_mag and isinstance(st.source, Combatant):
+                    jml += int(st.source.effective("mag") * sdef.regen_mag)
+                if jml > 0 and actor.hp < actor.max_hp:
+                    self._restore_hp(actor, jml, ev)
             if sdef and sdef.dot_pct and actor.alive:
                 dmg = max(1, int(actor.max_hp * sdef.dot_pct))
                 actor.hp = max(0, actor.hp - dmg)
@@ -517,6 +524,15 @@ class Battle:
         self._emit(ev, f"{actor.display_name} mundur; {masuk.display_name} maju ke barisan!")
         return True
 
+    def _pasang_status(self, target: Combatant, sid: str, turns: Optional[int], source: Combatant) -> None:
+        """Pasang status yang sumbernya penting (Lagu, Panji, Tanggung)."""
+        if sid in LAGU:
+            for lama in LAGU:
+                target.statuses.pop(lama, None)
+        st = make_status(sid, turns, source=source)
+        st.applied_turn = target.turn_count
+        target.statuses[sid] = st
+
     def _do_guard(self, actor: Combatant, ev: list[str]) -> None:
         actor.statuses["jaga"] = make_status("jaga")
         gain = max(1, int(actor.max_mp * JAGA_MP_PCT)) if actor.max_mp else 0
@@ -604,6 +620,11 @@ class Battle:
         if "needs_charge" in skill.tags:
             actor.statuses.pop("mengisi", None)
         ts = self._resolve_targets(actor, skill.target, targets)
+        # Cermin Berjalan memantulkan sihir satu sasaran ke penggunanya (§6.1).
+        if (skill.kind == SkillKind.SIHIR and skill.target == Target.SATU_MUSUH
+                and len(ts) == 1 and "pantul" in ts[0].traits and ts[0].alive):
+            self._emit(ev, f"{ts[0].display_name} memantulkan {skill.name} kembali!")
+            ts = [actor]
         if skill.cost_type == CostType.BARA and len(skill.users) >= 2:
             names = " & ".join(h.name for u in skill.users if (h := self.hero_by_key(u)))
             self._emit(ev, f"JURUS GANDA! {names}: {skill.name}!")
@@ -712,6 +733,11 @@ class Battle:
             power *= 1.5
         if skill and "ally_down_x2" in skill.tags and any(not a.alive for a in self.allies_of(actor)):
             power *= 2.0
+        for t in (skill.tags if skill else []):
+            if t.startswith("vs:"):
+                _, sifat, pengali = t.split(":")
+                if sifat in target.traits:
+                    power *= float(pengali)
         if skill and "vs_tandai_x3" in skill.tags and target.has("tandai"):
             power *= 3.0
             del target.statuses["tandai"]
@@ -725,6 +751,19 @@ class Battle:
             target.hp += sembuh
             self._emit(ev, f"{target.display_name} MENYERAP {element.label}! Pulih {sembuh} HP.")
             return dmg
+        # Tanggung (Kelana): sebagian damage pindah ke pelindung yang memasangnya.
+        st_tanggung = target.statuses.get("tanggung")
+        pelindung = st_tanggung.source if st_tanggung else None
+        if (st_tanggung and st_tanggung.sdef and isinstance(pelindung, Combatant)
+                and pelindung is not target and pelindung.alive):
+            pindah = int(dmg * st_tanggung.sdef.redirect)
+            if pindah > 0:
+                dmg -= pindah
+                pelindung.hp = max(0, pelindung.hp - pindah)
+                self._emit(ev, f"{pelindung.display_name} menanggung {pindah} damage untuk {target.display_name}.")
+                if not pelindung.alive:
+                    self._emit(ev, f"{pelindung.display_name} tumbang!")
+                    self._on_death(pelindung, ev)
         target.hp = max(0, target.hp - dmg)
         tag = ""
         if aff == Affinity.LEMAH:
@@ -823,6 +862,32 @@ class Battle:
             t.mp += n
             self._emit(ev, f"{actor.display_name} menyalurkan {n} MP ke {t.display_name}.")
             handled = True
+        if "rampas" in tags and ts and not actor.is_player:
+            barang = [i for i, n in sorted(self.inventory.items())
+                      if n > 0 and self.data.items[i].kind == "konsumsi"]
+            handled = True
+            if barang and not actor.stolen:
+                iid = self.rng.choice(barang)
+                self.inventory[iid] -= 1
+                actor.stolen = True                      # bisa direbut kembali lewat Curi
+                if actor.edef:
+                    object.__setattr__(actor.edef, "steal", iid)
+                self._emit(ev, f"{actor.display_name} merampas {self.data.items[iid].name}!")
+            else:
+                self._emit(ev, f"{actor.display_name} menggeledah, tapi tidak dapat apa-apa.")
+        if "sedot_bara" in tags and not actor.is_player:
+            handled = True
+            if self.bara > 0:
+                self.bara -= 1
+                self._emit(ev, f"{actor.display_name} menyedot satu Bara dari party!")
+            else:
+                self._emit(ev, f"{actor.display_name} mencari Bara, tapi meteran kalian kosong.")
+        if "giliran_lagi" in tags and ts:
+            t = ts[0]
+            if t is not actor and t.alive:
+                self.queue.insert(0, t)
+                self._emit(ev, f"{t.display_name} bergerak lagi atas perintah {actor.display_name}!")
+            handled = True
         if "pindai" in tags and ts:
             t = ts[0]
             for el in Element:
@@ -917,7 +982,10 @@ class Battle:
             if not quiet:
                 self._emit(ev, f"{target.display_name} kebal terhadap {STATUS_DEFS[sid].name}.")
             return False
-        if sid in target.statuses and sid != "goyah":
+        if sid in LAGU:
+            for lama in LAGU:
+                target.statuses.pop(lama, None)
+        elif sid in target.statuses and sid != "goyah":
             return False
         if sid == "goyah":
             if target.statuses.pop("mengisi", None) is not None:
@@ -950,6 +1018,13 @@ class Battle:
                 st = h.statuses.get("terjerat")
                 if st is not None and st.source is c:
                     del h.statuses["terjerat"]
+            # Pelita Hidup Muda meledak saat padam (GAME_DESIGN §6.1).
+            if c.edef and c.edef.on_death and not c.used_once:
+                c.used_once.add("on_death")
+                skill = self.data.skill(c.edef.on_death)
+                self._emit(ev, f"{c.display_name} padam — dan meledak!")
+                for t in [h for h in self.heroes if h.alive]:
+                    self._hit(c, t, skill.element, skill.power, skill.kind, ev, skill=skill)
 
     def _check_end(self, ev: list[str]) -> None:
         if self.over:
