@@ -33,7 +33,7 @@ from pelita.web.session import WebIO
 from pelita.world.explore import Game
 from pelita.world.model import load_world
 from pelita.world.state import GameState, new_game
-from tests.test_babak1 import SEMUA, make_equipper
+from tests.test_babak1 import SEMUA, BerhentiUji, make_equipper
 
 #: Satu-satunya prompt yang boleh tampil tanpa tombol keluar, beserta alasannya.
 ALASAN_TANPA_KELUAR = {"aksi pertarungan", "pilihan cerita"}
@@ -255,8 +255,9 @@ class WebWalker:
             return ""
         while self.steps and str(self.steps[0]).startswith("#"):
             cmd = self.steps.popleft()
-            if self.on_command:
-                self.on_command(cmd[1:])
+            if self.on_command and self.on_command(cmd[1:]) is False:
+                self.steps.appendleft(cmd)      # syaratnya belum terpenuhi; coba lagi nanti
+                break
         if not self.steps:
             return "n" if p["kind"] == "confirm" else "0"
         step = self.steps[0]
@@ -281,7 +282,12 @@ def test_walkthrough_babak1_lewat_web(data, world, tmp_path):
     sesi = FakeSession(walker)
     g = Game(data, world, st, sesi.io, auto_battle=True, auto_script=True,
              auto_choice=False, auto_menus=False, save_dir=tmp_path)
-    assert g.run() == "chapter_end"
+    try:
+        hasil = g.run()
+    except BerhentiUji:
+        hasil = "berhenti"
+    assert hasil == "berhenti"
+    assert st.area_id == "celah_angin", f"{st.area_id}/{st.room_id}"
     assert not walker.steps, f"langkah tersisa: {list(walker.steps)}"
     assert len(sesi.menus()) > 50, "walkthrough seharusnya melewati puluhan menu berbeda"
 

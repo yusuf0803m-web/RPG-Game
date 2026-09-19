@@ -1045,7 +1045,7 @@ waktu. Audio ditunda sebagai pekerjaan tersendiri agar tidak menggemukkan APK se
 | 1 | Prototipe combat: 3 karakter, 5 musuh, formula §4.7, Bara, Pecah | Rasio "2–3 pukulan" terverifikasi — **selesai** (`tools/calibrate.py`) |
 | 2 | **Babak 1 lengkap** (area 1–6, 4 karakter, 7 boss, 6 side quest) | Game 6,5 jam yang bisa tamat — **selesai** (lihat §9.1) |
 | 3 | Sistem lanjutan: Ganti/cadangan, Jalur, Kaca, Berkemah/Kenangan, Buruan, Arena | Fondasi Babak 2 — **selesai** (lihat §9.2) |
-| 4 | Babak 2 (area 7–12, 3 karakter baru, 7 boss) | Game 15 jam |
+| 4 | Babak 2 (area 7–12, 3 karakter baru, 7 boss) | Game 15 jam — **selesai** (lihat §9.3) |
 | 5 | Babak 3 + 3 ending + dungeon opsional + superboss | Game 20 jam |
 | 6 | Kalibrasi, penulisan ulang naskah, playtest | Rilis |
 
@@ -1190,3 +1190,43 @@ tes mana pun:
   akan terlihat dari daftar opsi (daftarnya kosong atau tidak lengkap).
 - **`judul_bukan_log`** — judul sebuah prompt tidak boleh juga muncul sebagai baris log. Ini
   yang menjaga agar header menu tidak kembali ditulis dengan `io.line()`.
+
+### 9.3 Catatan implementasi Tahap 4 (Babak 2)
+
+Enam area baru (Celah Angin, Dataran Abu & Sanggar, Hutan Nyanyi & Padasuara, Kota Kaca Wirasaba,
+Danau Garam & Menara Terapung, Benteng Ordo Pelita), 41 ruang, 7 boss, 15 musuh biasa, dan tiga
+anggota party terakhir. `python tools/walkthrough.py --babak 2 --seed 5` menjalankannya dari Kaki
+Celah sampai Nirmala jatuh; party tamat di **Lv 42–45**, sesuai rentang §2.3.
+
+**Mekanik baru di mesin** (semuanya dipakai isi Babak 2, bukan dibangun untuk nanti):
+
+- **Lagu** Ratih dan **Panji** Rangga: status ber-regen yang memulihkan tiap akhir giliran
+  pemiliknya. Hanya satu Lagu boleh aktif; memasang lagu baru mengganti yang lama.
+- **Tanggung** Kelana: 70% damage yang mengenai kawan pindah ke Kelana.
+- **Perintah Terakhir** Rangga: satu kawan bertindak lagi segera, sekali per pertarungan.
+- **Sifat musuh** (`terbang`, `hampa`, `konstruk`, `pantul`) dengan tag skill `vs:<sifat>:<pengali>`;
+  Badai Bulu Ratih memakainya untuk melukai musuh terbang 1,5×.
+- Musuh bisa **merampas item** dan **menyedot Bara**, **meledak saat mati** (`on_death`), dan
+  **Cermin Berjalan** memantulkan sihir satu sasaran kembali ke penggunanya.
+
+Penyimpangan dari desain awal, dan alasannya:
+
+- **Babak 1 tidak lagi berakhir di layar judul.** Ceritanya mengalir langsung ke Celah Angin, dan
+  Rangga bergabung di sana. Walkthrough Babak 1 karena itu berhenti di batas babak lewat penanda
+  `#stop:babak2_mulai`, bukan lewat `end_chapter`.
+- **14 pertarungan terskrip** ditambahkan sebagai penjaga pacing (pola yang sama dengan §9.1), dan
+  encounter acak dinaikkan 6 poin. Tanpa itu party tiba di Nirmala sekitar Lv 36 dan kalah.
+- **Nirmala fase 2 bertindak sekali per giliran**, bukan dua kali. Dua aksi ditambah Nyala Penuh
+  area membunuh party dalam lima ronde tanpa ruang bereaksi; §6.2 memang hanya menyebut "damage
+  Cahaya besar tiap 3 giliran".
+- **Kebijakan otomatis party tidak lagi menyembuhkan kawan yang terkena Kutuk**, dan membersihkan
+  kutukannya dulu kalau bisa. Bug ini menewaskan party di Nirmala: heal 248 berbalik jadi damage.
+- **Arena dan papan Buruan Babak 2 ditaruh di Sanggar**, sesuai §2.3 — ini sekaligus menutup catatan
+  §9.2 bahwa dua tingkat Arena terakhir menunggu hub kedua. Buruan Babak 2 baru 4 dari 5 yang
+  direncanakan; sisanya menyusul bersama dungeon opsional.
+- **Kelana bergabung lewat cerita, bukan lewat kemenangan.** Boss "Hampa Berzirah" tetap bisa
+  dibunuh, tapi jalur yang disiapkan adalah membuatnya berhenti; konsekuensi ending-nya baru
+  dipasang di Babak 3.
+- **Keping menumpuk** (±110.000 di akhir Babak 2). Harga toko Babak 2 belum mengejar; ini dicatat
+  sebagai pekerjaan kalibrasi Tahap 6, bukan bug.
+

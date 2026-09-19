@@ -644,7 +644,27 @@
           "teks": "Tujuh ratus tahun cahaya, satu malam gelap, dan pagi yang dinyalakan tangan manusia."
          },
          {
-          "end_chapter": "AKHIR BABAK 1 — LEMBAH LARUNG\n\nMercusuar Langit menyala kembali. Dewan sementara Tengara dibentuk. Kapten Rangga ditunjuk mengawal Rimba, Sela, Lintang, dan Bagas menyeberangi Pegunungan Sunyi.\n\nBabak 2 — Tanah Luar: sedang ditulis (Tahap 4). Terima kasih sudah bermain sampai sini."
+          "text": "Tujuh hari kemudian, Dewan sementara Tengara mengeluarkan dua surat. Yang pertama membubarkan pos Ordo Pelita di lembah. Yang kedua, jauh lebih pendek, memberi izin melintas Pegunungan Sunyi."
+         },
+         {
+          "say": "Rimba",
+          "text": "Nirmala tidak akan berhenti karena satu Mercusuar menyala."
+         },
+         {
+          "say": "Sela",
+          "text": "Tidak. Jadi kita yang berjalan ke sana."
+         },
+         {
+          "text": "── AKHIR BABAK 1 — LEMBAH LARUNG ──"
+         },
+         {
+          "pause": true
+         },
+         {
+          "travel": {
+           "area": "celah_angin",
+           "room": "kaki_celah"
+          }
          }
         ]
        }

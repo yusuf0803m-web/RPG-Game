@@ -127,5 +127,89 @@
    "kaca_licin",
    "kaca_kilat"
   ]
+ },
+ "pasar_sanggar": {
+  "name": "Pasar Kafilah Sanggar",
+  "items": [
+   "ramuan_akar",
+   "ramuan_sari",
+   "cawan_nyala",
+   "kendi_nyala",
+   "penawar",
+   "garam_bangun",
+   "abu_fajar",
+   "dupa_sunyi",
+   "bekal_kemah",
+   "suku_cadang",
+   "bubuk_api",
+   "bubuk_es",
+   "bubuk_petir",
+   "tongkat_kafilah",
+   "pedang_kafilah",
+   "lentera_kafilah",
+   "peluncur_kafilah",
+   "tombak_kafilah",
+   "zirah_kafilah",
+   "jimat_kafilah",
+   "lensa_juru_kaca",
+   "sabuk_karat"
+  ],
+  "kaca": [
+   "kaca_api",
+   "kaca_es",
+   "kaca_petir",
+   "kaca_angin",
+   "kaca_bumi",
+   "kaca_teguh",
+   "kaca_gesit",
+   "kaca_licin",
+   "kaca_kilat",
+   "kaca_napas"
+  ]
+ },
+ "kios_darma": {
+  "name": "Tungku Berjalan Mpu Darma",
+  "items": [],
+  "kaca": [
+   "kaca_api",
+   "kaca_es",
+   "kaca_petir",
+   "kaca_angin",
+   "kaca_bumi",
+   "kaca_fajar",
+   "kaca_kelam",
+   "kaca_napas",
+   "kaca_tabah",
+   "kaca_tajam",
+   "kaca_rakus",
+   "kaca_kikir",
+   "kaca_sabar",
+   "kaca_teguh",
+   "kaca_gesit",
+   "kaca_licin",
+   "kaca_kilat"
+  ]
+ },
+ "penjaja_padasuara": {
+  "name": "Penjaja Padasuara",
+  "items": [
+   "ramuan_akar",
+   "ramuan_sari",
+   "cawan_nyala",
+   "kendi_nyala",
+   "penawar",
+   "garam_bangun",
+   "abu_fajar",
+   "bekal_kemah",
+   "kecapi_nyanyi",
+   "jubah_pendendang",
+   "anting_pendendang"
+  ],
+  "kaca": [
+   "kaca_angin",
+   "kaca_fajar",
+   "kaca_napas",
+   "kaca_tabah"
+  ]
  }
 }

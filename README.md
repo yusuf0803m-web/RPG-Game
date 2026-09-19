@@ -4,8 +4,9 @@ RPG teks turn-based bergaya JRPG klasik, dibangun dengan Python. Mesin permainan
 pustaka standar; antarmuka web menambah satu dependensi, Flask.
 
 - **Dokumen desain**: [`GAME_DESIGN.md`](GAME_DESIGN.md) (edisi 20 jam, tiga babak).
-- **Status**: Tahap 2 dari rencana di §9 dokumen desain selesai — **Babak 1 (Lembah Larung) bisa dimainkan
-  sampai tamat**: 8 area, 8 boss, 4 anggota party, 5 side quest, save/muat.
+- **Status**: Tahap 4 dari rencana di §9 dokumen desain selesai — **Babak 1 dan Babak 2 bisa dimainkan
+  sampai tamat**: 14 area, 15 boss, 7 anggota party (4 aktif + 3 cadangan), sistem Kaca/Jalur/Kenangan,
+  Buruan, Arena, dan save/muat. Babak 3 berikutnya.
 - **Dua antarmuka**: web (grafis) dan terminal. Keduanya memakai mesin permainan yang sama.
 
 ## Bermain di browser
@@ -108,11 +109,12 @@ python -m pelita -s rawa --auto --seed 3 --no-pause
 
 ```bash
 pip install pytest
-python -m pytest -q                     # 120 tes: unit, walkthrough Babak 1, sistem Tahap 3,
-                                        # API web, dan regresi menu (tiap prompt harus ada jalan keluar)
+python -m pytest -q                     # 148 tes: unit, walkthrough Babak 1 & 2, sistem Tahap 3,
+                                        # latar, API web, dan regresi menu (tiap prompt harus ada jalan keluar)
 python tools/calibrate.py --n 200       # simulasi rasio "2–3 pukulan" per skenario
-python tools/walkthrough.py --seed 11   # pemain otomatis dari prolog sampai Akhir Babak 1;
-                                        # mencetak level party & lama tiap boss
+python tools/walkthrough.py --seed 11            # pemain otomatis: prolog sampai Akhir Babak 1
+python tools/walkthrough.py --babak 2 --seed 5   # Babak 2: Celah Angin sampai Nirmala
+                                                 # keduanya mencetak level party & lama tiap boss
 ```
 
 ## Struktur

@@ -1,0 +1,562 @@
+{
+ "id": "wirasaba",
+ "name": "Kota Kaca Wirasaba",
+ "start": "gerbang_wirasaba",
+ "level_range": "Lv 32-36",
+ "fog": true,
+ "encounter_rate": 0.42,
+ "encounters": [
+  {
+   "enemies": [
+    "warga_wirasaba",
+    "warga_wirasaba"
+   ],
+   "weight": 3
+  },
+  {
+   "enemies": [
+    "warga_wirasaba",
+    "warga_wirasaba",
+    "warga_wirasaba"
+   ],
+   "weight": 2
+  },
+  {
+   "enemies": [
+    "cermin_berjalan"
+   ],
+   "weight": 2
+  },
+  {
+   "enemies": [
+    "konstruk_kaca"
+   ],
+   "weight": 2
+  },
+  {
+   "enemies": [
+    "konstruk_kaca",
+    "warga_wirasaba"
+   ],
+   "weight": 1
+  },
+  {
+   "enemies": [
+    "pemanen_ordo",
+    "warga_wirasaba"
+   ],
+   "weight": 1
+  }
+ ],
+ "rooms": {
+  "gerbang_wirasaba": {
+   "name": "Gerbang Timur",
+   "safe": true,
+   "text": "Gerbang kota setinggi delapan orang, dan di kedua daunnya terpasang kaca — bukan jendela, tapi lembaran kaca ingatan sebesar pintu. Kalau kau berdiri terlalu lama di depannya, kaca itu mulai memutar sesuatu: pasar, pagi, seseorang memanggil nama anaknya.",
+   "on_enter": "masuk_wirasaba",
+   "exits": [
+    {
+     "label": "Kembali ke jalan Wirasaba",
+     "to": "jalan_wirasaba",
+     "area": "hutan_nyanyi"
+    },
+    {
+     "label": "Masuk ke distrik pasar",
+     "to": "distrik_pasar"
+    }
+   ],
+   "objects": [
+    {
+     "id": "lentera_gerbang_w",
+     "name": "Lentera penjaga (simpan & istirahat)",
+     "script": "lentera_save"
+    }
+   ]
+  },
+  "distrik_pasar": {
+   "name": "Distrik Pasar",
+   "text": "Pasar yang masih buka. Itu masalahnya. Orang-orang berdiri di lapak masing-masing, menawar dengan suara yang tidak keluar, menimbang barang yang tidak ada. Mereka mengulang hari terakhir mereka, dan sudah mengulangnya selama dua puluh tahun.",
+   "exits": [
+    {
+     "label": "Kembali ke gerbang",
+     "to": "gerbang_wirasaba"
+    },
+    {
+     "label": "Ke jalan rumah-rumah",
+     "to": "jalan_rumah"
+    },
+    {
+     "label": "Ke jalan kaca",
+     "to": "jalan_kaca"
+    }
+   ],
+   "on_enter": "sergap_pasar_w"
+  },
+  "jalan_rumah": {
+   "name": "Jalan Rumah-Rumah",
+   "text": "Jalan sempit dengan rumah-rumah berhimpit. Beberapa pintu terbuka. Di dalam ada meja yang masih tertata untuk makan malam yang tidak pernah dimakan.",
+   "exits": [
+    {
+     "label": "Kembali ke pasar",
+     "to": "distrik_pasar"
+    },
+    {
+     "label": "Rumah ketiga dari ujung",
+     "to": "rumah_bagas"
+    }
+   ],
+   "latar": "wirasaba/distrik_pasar"
+  },
+  "rumah_bagas": {
+   "name": "Rumah Ketiga dari Ujung",
+   "safe": true,
+   "text": "Rumah kecil dengan bengkel di belakangnya. Alat-alatnya digantung menurut ukuran, dari yang terbesar di kiri ke yang terkecil di kanan — kebiasaan yang juga dipakai Bagas sejak kalian mengenalnya.",
+   "on_enter": "adegan_rumah_bagas",
+   "exits": [
+    {
+     "label": "Keluar ke jalan rumah",
+     "to": "jalan_rumah"
+    }
+   ],
+   "objects": [
+    {
+     "id": "kotak_alat",
+     "name": "Kotak alat di bawah meja",
+     "script": "peti_bagas",
+     "if": [
+      "!peti_bagas_diambil"
+     ]
+    }
+   ]
+  },
+  "jalan_kaca": {
+   "name": "Jalan Kaca",
+   "text": "Jalan utama kota, dan gedung-gedung di kedua sisinya seluruhnya kaca ingatan: lantai demi lantai memutar potongan hidup orang yang pernah tinggal di dalamnya. Berjalan di sini seperti berjalan menembus dua puluh ribu ingatan sekaligus.",
+   "exits": [
+    {
+     "label": "Kembali ke pasar",
+     "to": "distrik_pasar"
+    },
+    {
+     "label": "Ke alun-alun Suar",
+     "to": "alun_suar"
+    },
+    {
+     "label": "Ke gudang di sisi utara",
+     "to": "gudang_panen",
+     "if": [
+      "boss_penjaga_suar_kalah"
+     ],
+     "locked": "Gerobak-gerobak Ordo berjajar menutup jalan ke sana, dan konstruk Suar masih berjaga."
+    }
+   ],
+   "objects": [
+    {
+     "id": "lentera_kaca",
+     "name": "Lentera penjaga (simpan & istirahat)",
+     "script": "lentera_save"
+    }
+   ],
+   "on_enter": "sergap_jalan_kaca"
+  },
+  "alun_suar": {
+   "name": "Alun-Alun Suar",
+   "text": "Alun-alun bundar dengan Suar Wirasaba di tengahnya: menara kaca setinggi tujuh lantai, gelap dari pangkal sampai puncak. Di kakinya, sesuatu setinggi tiga orang berdiri diam menghadap pintu.",
+   "on_enter": "boss_penjaga_suar",
+   "exits": [
+    {
+     "label": "Kembali ke jalan kaca",
+     "to": "jalan_kaca"
+    }
+   ]
+  },
+  "gudang_panen": {
+   "name": "Gudang Panen",
+   "text": "Gudang besar berisi gerobak-gerobak dengan kurungan kaca di atasnya. Di dalam kurungan: Hampa, berdiri diam, masing-masing masih mengulang satu gerakan kecil. Di depan pintu gudang, satu sosok berzirah berdiri menghadap kalian.",
+   "on_enter": "boss_kelana",
+   "exits": [
+    {
+     "label": "Kembali ke jalan kaca",
+     "to": "jalan_kaca"
+    },
+    {
+     "label": "Keluar lewat gerbang barat",
+     "to": "gerbang_barat_w",
+     "if": [
+      "kelana_berhenti"
+     ],
+     "locked": "Sosok berzirah itu masih berdiri di antara kalian dan pintu."
+    }
+   ],
+   "latar_varian": [
+    {
+     "if": [
+      "kelana_berhenti"
+     ],
+     "latar": "wirasaba/gudang_panen_terbuka"
+    }
+   ]
+  },
+  "gerbang_barat_w": {
+   "name": "Gerbang Barat",
+   "safe": true,
+   "text": "Sisi lain kota. Di luar gerbang, tanah menurun panjang ke arah putih yang terlalu terang untuk salju dan terlalu diam untuk laut.",
+   "on_enter": "lihat_danau_garam",
+   "exits": [
+    {
+     "label": "Kembali ke gudang",
+     "to": "gudang_panen"
+    },
+    {
+     "label": "Turun ke Danau Garam",
+     "to": "tepi_garam",
+     "area": "danau_garam"
+    }
+   ],
+   "objects": [
+    {
+     "id": "lentera_barat_w",
+     "name": "Lentera penjaga (simpan & istirahat)",
+     "script": "lentera_save"
+    }
+   ]
+  }
+ },
+ "scripts": {
+  "lentera_save": [
+   {
+    "text": "Kau menyalakan sumbu. Di kota ini nyala kecil itu satu-satunya yang tidak mengulang apa pun."
+   },
+   {
+    "heal": "all"
+   },
+   {
+    "save": true
+   },
+   {
+    "if": [
+     "has:bekal_kemah"
+    ],
+    "then": [
+     {
+      "kemah": true
+     }
+    ]
+   }
+  ],
+  "masuk_wirasaba": [
+   {
+    "once": "wirasaba_masuk",
+    "do": [
+     {
+      "text": "Kaca di daun gerbang menyala saat kalian mendekat, dan memutar hal yang sama seperti yang sudah diputarnya dua puluh tahun: pagi hari, pasar ramai, seorang perempuan memanggil dua nama."
+     },
+     {
+      "say": "Bagas",
+      "text": "Itu ibuku."
+     },
+     {
+      "text": "Tidak ada yang menjawab. Bagas berdiri di depan gerbang itu lebih lama dari yang nyaman untuk ditonton, lalu mengangguk sekali dan masuk duluan."
+     },
+     {
+      "say": "Bagas",
+      "text": "Ayo. Kabut di sini menempel kalau kita diam."
+     }
+    ]
+   }
+  ],
+  "adegan_rumah_bagas": [
+   {
+    "once": "rumah_bagas_adegan",
+    "do": [
+     {
+      "text": "Bagas berhenti di ambang pintu, lalu masuk seperti orang yang takut membangunkan seseorang."
+     },
+     {
+      "text": "Rumah itu kosong. Tidak ada Hampa di dalamnya, tidak ada siapa-siapa. Hanya alat-alat yang digantung rapi menurut ukuran, dan empat mangkuk yang sudah dicuci dan ditelungkupkan."
+     },
+     {
+      "say": "Bagas",
+      "text": "Mereka tidak di sini."
+     },
+     {
+      "say": "Lintang",
+      "text": "Mereka ada di gudang panen. Aku bisa merasakan kumpulan besar di sisi utara."
+     },
+     {
+      "pause": true
+     },
+     {
+      "say": "Bagas",
+      "text": "Dua belas tahun aku bilang ke diriku sendiri: mereka sudah pergi, Bagas. Sudah selesai. Jangan dicari."
+     },
+     {
+      "say": "Bagas",
+      "text": "Ternyata mereka cuma diangkut, dijejer, dan disimpan."
+     },
+     {
+      "say": "Sela",
+      "text": "Kita keluarkan mereka."
+     },
+     {
+      "say": "Bagas",
+      "text": "Keluarkan ke mana? Mereka Hampa. Tidak ada yang bisa dikembalikan. (Ia mengambil satu obeng dari gantungan dan memasukkannya ke saku.) Tapi aku tidak akan meninggalkan mereka di kurungan kaca milik orang yang menyebut ini membebaskan."
+     }
+    ]
+   }
+  ],
+  "peti_bagas": [
+   {
+    "text": "Kotak alat di bawah meja kerja, masih terkunci dengan kunci yang Bagas hafal letaknya. Di dalamnya: peluncur setengah jadi dan catatan tangan ayahnya."
+   },
+   {
+    "give": {
+     "peluncur_wirasaba": 1,
+     "suku_cadang": 5,
+     "serpihan_ingatan": 1
+    }
+   },
+   {
+    "set": "peti_bagas_diambil"
+   }
+  ],
+  "boss_penjaga_suar": [
+   {
+    "if": [
+     "boss_penjaga_suar_kalah"
+    ],
+    "then": [
+     {
+      "text": "Konstruk itu duduk bersandar di pintu Suar, pecah di bagian dada, masih menghadap ke arah yang sama."
+     },
+     {
+      "end": true
+     }
+    ]
+   },
+   {
+    "text": "Sosok setinggi tiga orang itu berbalik. Kacanya berderit — bukan bunyi mesin, bunyi kaca yang hampir retak sejak lama."
+   },
+   {
+    "say": "Rangga",
+    "text": "Konstruk Suar. Tengara punya dua yang seperti itu, disimpan di gudang istana. Yang ini masih bertugas."
+   },
+   {
+    "say": "Bagas",
+    "text": "Bertugas menjaga menara yang sudah padam dua puluh tahun."
+   },
+   {
+    "say": "Rangga",
+    "text": "Itu yang dilakukan penjaga kalau tidak ada yang membebastugaskan."
+   },
+   {
+    "pause": true
+   },
+   {
+    "battle": [
+     "boss_penjaga_suar_wirasaba"
+    ],
+    "boss": true,
+    "win": [
+     {
+      "set": "boss_penjaga_suar_kalah"
+     },
+     {
+      "text": "Konstruk itu berlutut, lalu duduk, lalu berhenti. Pintu Suar di belakangnya terbuka sedikit karena getarannya — dan di dalamnya, gelap total."
+     },
+     {
+      "give": {
+       "serpihan_ingatan": 1,
+       "kaca_inti": 1
+      }
+     },
+     {
+      "kaca": {
+       "kaca_petir": 1
+      }
+     },
+     {
+      "say": "Lintang",
+      "text": "Suar ini tidak padam sendiri. Ada yang mematikannya dari dalam."
+     }
+    ]
+   }
+  ],
+  "boss_kelana": [
+   {
+    "if": [
+     "kelana_berhenti"
+    ],
+    "then": [
+     {
+      "text": "Sosok berzirah itu duduk bersandar di roda gerobak, pedangnya di pangkuan, menghadap Lintang."
+     },
+     {
+      "end": true
+     }
+    ]
+   },
+   {
+    "text": "Sosok berzirah itu tidak menyerang lebih dulu. Ia hanya berdiri di antara kalian dan gerobak-gerobak, dan menunggu kalian mendekat."
+   },
+   {
+    "say": "Rangga",
+    "text": "Hampa berzirah. Mereka memakai yang paling kuat sebagai penjaga panen sendiri."
+   },
+   {
+    "say": "Lintang",
+    "text": "..."
+   },
+   {
+    "say": "Rimba",
+    "text": "Lintang?"
+   },
+   {
+    "say": "Lintang",
+    "text": "Zirahnya. Ada tambalan di bahu kiri. Ibu yang menambalnya. Aku memegang kainnya waktu ibu menjahit."
+   },
+   {
+    "pause": true
+   },
+   {
+    "adegan": {
+     "efek": "gelap"
+    }
+   },
+   {
+    "say": "Sela",
+    "text": "Lintang. Mundur dulu."
+   },
+   {
+    "say": "Lintang",
+    "text": "Tidak. (Ia melangkah maju, bukan mundur.) Kalau dia masih ingat satu hal, aku mau tahu apa."
+   },
+   {
+    "text": "Zirah itu mengangkat pedangnya. Kalian tidak punya pilihan selain menahannya — tapi Lintang terus bicara, dan tiap kali ia bicara, ayunan itu melambat sedikit."
+   },
+   {
+    "battle": [
+     "boss_kelana_berzirah"
+    ],
+    "boss": true,
+    "win": [
+     {
+      "set": "kelana_berhenti"
+     },
+     {
+      "text": "Zirah itu berhenti di tengah ayunan terakhir. Pedangnya turun pelan, bukan jatuh."
+     },
+     {
+      "say": "Kelana",
+      "text": "...Lintang."
+     },
+     {
+      "text": "Satu kata, dengan suara yang sudah lama tidak dipakai. Lalu ia duduk bersandar di roda gerobak, dan tidak bergerak lagi."
+     },
+     {
+      "say": "Lintang",
+      "text": "Ayah."
+     },
+     {
+      "say": "Bagas",
+      "text": "(Sangat pelan, ke Rimba.) Jangan ada yang bilang apa-apa dulu."
+     },
+     {
+      "give": {
+       "serpihan_ingatan": 1
+      }
+     },
+     {
+      "ilustrasi": "events/kelana_berhenti",
+      "teks": "Satu nama, diingat oleh sesuatu yang seharusnya sudah tidak mengingat apa pun."
+     },
+     {
+      "text": "Kalian membuka kurungan kaca di gerobak-gerobak itu satu per satu. Para Hampa keluar pelan, tidak ke mana-mana, hanya keluar — dan Bagas berdiri di pintu gudang menghitung mereka sampai selesai, tanpa suara."
+     },
+     {
+      "quest": "keluarga_bagas",
+      "state": "selesai"
+     }
+    ]
+   }
+  ],
+  "lihat_danau_garam": [
+   {
+    "once": "danau_garam_terlihat",
+    "do": [
+     {
+      "text": "Danau Garam: putih, rata, dan diam. Di tengahnya ada sesuatu yang berdiri — menara, condong sedikit, mengapung tanpa penyangga apa pun."
+     },
+     {
+      "say": "Rangga",
+      "text": "Suar ketiga. Peta Tengara menandainya sebagai 'tidak dapat dicapai'."
+     },
+     {
+      "say": "Ratih",
+      "text": "Peta Tengara juga menandai desaku sebagai hutan kosong."
+     },
+     {
+      "text": "Di belakang kalian, dari pintu gudang, Kelana berdiri. Ia berjalan tiga langkah, berhenti, dan menunggu — menghadap ke arah Lintang, bukan ke arah danau."
+     },
+     {
+      "say": "Lintang",
+      "text": "Dia ikut."
+     },
+     {
+      "say": "Sela",
+      "text": "Lintang, dia—"
+     },
+     {
+      "say": "Lintang",
+      "text": "Dia ikut."
+     },
+     {
+      "join": "kelana",
+      "equip": {
+       "senjata": "pedang_karat",
+       "zirah": "zirah_kaca_wirasaba"
+      }
+     },
+     {
+      "set": "kelana_gabung"
+     }
+    ]
+   }
+  ],
+  "sergap_pasar_w": [
+   {
+    "once": "sergap_pasar_w_selesai",
+    "do": [
+     {
+      "text": "Tiga penawar menoleh bersamaan ke arah kalian, dan untuk pertama kalinya berhenti menawar."
+     },
+     {
+      "battle": [
+       "warga_wirasaba",
+       "warga_wirasaba",
+       "warga_wirasaba"
+      ],
+      "win": []
+     }
+    ]
+   }
+  ],
+  "sergap_jalan_kaca": [
+   {
+    "once": "sergap_jalan_kaca_selesai",
+    "do": [
+     {
+      "text": "Sesuatu setinggi dua orang melangkah keluar dari etalase kaca yang tadinya cuma pantulan."
+     },
+     {
+      "battle": [
+       "konstruk_kaca",
+       "warga_wirasaba"
+      ],
+      "win": []
+     }
+    ]
+   }
+  ]
+ }
+}

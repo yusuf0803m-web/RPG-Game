@@ -156,7 +156,20 @@ def choose_hero_action(battle: Battle, actor: Combatant, policy: str = "pintar")
             return Action("skill", skill=taunt, targets=[])
 
     # 1. Darurat: heal
+    #    Kawan yang kena Kutuk TIDAK disembuhkan: penyembuhannya berbalik jadi damage
+    #    (GAME_DESIGN §4.8). Bersihkan kutukannya dulu kalau ada yang bisa.
     hurt = [a for a in allies if a.hp_ratio < 0.35]
+    terkutuk = [a for a in hurt if a.has("kutuk")]
+    if terkutuk:
+        pembersih = next((s for s in skills if s.cure and ("kutuk" in s.cure or "*" in s.cure)), None)
+        if pembersih:
+            return Action("skill", skill=pembersih, targets=[terkutuk[0]])
+        obat = next((battle.data.items[i] for i, n in battle.inventory.items()
+                     if n > 0 and ("kutuk" in battle.data.items[i].cure
+                                   or "*" in battle.data.items[i].cure)), None)
+        if obat:
+            return Action("item", item=obat, targets=[terkutuk[0]])
+    hurt = [a for a in hurt if not a.has("kutuk")]
     if hurt:
         heals = [s for s in skills if s.kind == SkillKind.HEAL]
         if heals:

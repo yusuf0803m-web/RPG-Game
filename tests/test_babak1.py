@@ -73,12 +73,24 @@ MERCUSUAR = [
     "#equip:rimba:senjata:tongkat_guntur",
     "Naik ke Lantai Penjaga", "Lentera penjaga", "Naik ke Puncak",
 ]
-SEMUA = AREA1 + RAWA + DANAU + TENGARA_1 + LORONG + TENGARA_2 + TAMBANG + MERCUSUAR
+# "#stop" menghentikan walkthrough tepat setelah Babak 1 selesai: ceritanya sendiri
+# langsung berlanjut ke Celah Angin (Babak 2), yang diuji terpisah.
+SEMUA = AREA1 + RAWA + DANAU + TENGARA_1 + LORONG + TENGARA_2 + TAMBANG + MERCUSUAR + ["#stop:babak2_mulai"]
+
+
+class BerhentiUji(Exception):
+    """Langkah "#stop": hentikan walkthrough di batas babak, bukan dengan keluar permainan."""
 
 
 def make_equipper(state):
     def on_command(cmd: str) -> None:
         kind, *args = cmd.split(":")
+        if kind == "stop":
+            # "#stop:flag" baru berhenti setelah flag-nya menyala; sebelum itu
+            # langkahnya dikembalikan ke antrean (lihat Walker.on_command).
+            if args and args[0] not in state.flags:
+                return False
+            raise BerhentiUji()
         if kind == "equip":
             cid, slot, iid = args
             h = state.hero(cid)
@@ -99,7 +111,10 @@ def run_walkthrough(steps, seed, tmp_path):
     st.rng = random.Random(seed)
     wk = Walker(steps, on_command=make_equipper(st))
     g = Game(data, world, st, wk.io, auto_battle=True, auto_script=True, auto_choice=False, save_dir=tmp_path)
-    res = g.run()
+    try:
+        res = g.run()
+    except BerhentiUji:
+        res = "berhenti"
     return res, st, wk
 
 
@@ -107,10 +122,13 @@ def run_walkthrough(steps, seed, tmp_path):
 def test_babak1_tamat(seed, tmp_path):
     res, st, wk = run_walkthrough(SEMUA, seed, tmp_path)
     txt = wk.text
-    assert res == "chapter_end", txt[-3000:]
+    assert res == "berhenti", txt[-3000:]
     assert "AKHIR BABAK 1" in txt
+    # Cerita mengalir langsung ke Babak 2, bukan kembali ke layar judul.
+    assert st.area_id == "celah_angin", f"{st.area_id}/{st.room_id}"
     assert "babak_1_selesai" in st.flags
-    assert [h.id for h in st.party] == ["rimba", "sela", "lintang", "bagas"]
+    # Rangga bergabung begitu party tiba di Celah Angin, di awal Babak 2.
+    assert [h.id for h in st.party] == ["rimba", "sela", "lintang", "bagas", "rangga"]
     for flag in ("boss_hutan_kalah", "boss_katak_kalah", "boss_ular_kalah", "boss_rangga_kalah",
                  "boss_penambang_kalah", "boss_penjaga_kalah"):
         assert flag in st.flags, flag

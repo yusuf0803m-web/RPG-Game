@@ -19,7 +19,7 @@ class Walker:
 
     def __init__(self, steps: Iterable[str], on_command=None) -> None:
         self.steps: deque[str] = deque(steps)
-        self.on_command = on_command          # dipanggil untuk langkah yang diawali '#'
+        self.on_command = on_command          # dipanggil untuk langkah '#...'; False = jangan dikonsumsi
         self.out: list[str] = []
         self.answers: list[str] = []
         self._since_prompt: list[str] = []
@@ -48,8 +48,9 @@ class Walker:
             return "k"          # keluar
         while self.steps and self.steps[0].startswith("#"):
             cmd = self.steps.popleft()
-            if self.on_command:
-                self.on_command(cmd[1:])
+            if self.on_command and self.on_command(cmd[1:]) is False:
+                self.steps.appendleft(cmd)      # syaratnya belum terpenuhi; coba lagi nanti
+                break
         if not self.steps:
             return "k"
         step = self.steps[0]
