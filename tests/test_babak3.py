@@ -184,6 +184,22 @@ def test_babak3_tamat(seed, tmp_path):
     assert not wk.steps, f"langkah tersisa: {list(wk.steps)}"
 
 
+@pytest.mark.parametrize("seed", [3, 19])
+def test_sang_pelita_pertama_melalui_keempat_fasenya(seed, tmp_path):
+    """Boss yang kelemahannya dipukul tiap ronde pernah tidak pernah keluar dari fase satu
+    (fase dievaluasi setelah Goyah). Tes ini menjaga agar ketiga pergantian fase — termasuk
+    fase yang mengunci serangan biasa — benar-benar terjadi di pertarungan sungguhan."""
+    res, st, wk = jalankan(SEMUA_BABAK3 + ENDING_NYALA, seed, tmp_path)
+    awal = wk.text.find("Sang Pelita Pertama muncul!")
+    assert awal > 0
+    laga = wk.text[awal:]
+    laga = laga[:laga.find("Hasil:")]
+    assert "mulai mengendap" in laga, "fase 2 tidak pernah tercapai"
+    assert "tidak lagi meninggalkan bekas" in laga, "fase 3 tidak pernah tercapai"
+    assert "terkena 1 damage" in laga, "serangan biasa seharusnya cuma menggores di fase 3"
+    assert "Nyala Pamungkas" in laga or "JURUS" in laga, "party harus memakai jurus Bara"
+
+
 def test_level_akhir_sesuai_rentang(tmp_path):
     """Party tamat di rentang §2.4 (Lv 47-52 di Pusar Kabut)."""
     res, st, wk = jalankan(SEMUA_BABAK3 + ENDING_NYALA, 3, tmp_path)

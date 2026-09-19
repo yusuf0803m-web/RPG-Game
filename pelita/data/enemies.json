@@ -2664,12 +2664,14 @@
   },
   "ai": [
    {
-    "action": "m_sapuan_gema",
-    "weight": 2
+    "action": "m_tombak_formasi",
+    "weight": 3,
+    "target_rule": "hp_terendah"
    },
    {
     "action": "m_tarik_ingatan",
-    "weight": 2
+    "weight": 1,
+    "every_n_turns": 3
    },
    {
     "action": "serang",
@@ -2680,7 +2682,7 @@
    "lupa",
    "tidur"
   ],
-  "lesson": "Klon party yang dipanggil Sang Pelita Pertama: tidak memberi XP, hanya waktu.",
+  "lesson": "Klon party yang dipanggil Sang Pelita Pertama sekali per pertarungan: tidak memberi XP, hanya mengambil waktu dan menyasar yang paling lemah.",
   "description": "Kalian, sebagaimana Kabut mengingat kalian: sedikit lebih muda, dan tidak ragu sama sekali."
  },
  "_catatan_boss_babak3": "Boss Babak 3 (GAME_DESIGN §6.2 no. 15-16, mid-boss Tujuh Penjaga Suar, dan superboss §6.3). HP boss = 30 x off(L) x 1.5 kecuali yang angkanya memang ditulis di dokumen desain (Pelita Pertama 9.999, Penenun 30.000).",
@@ -3178,7 +3180,7 @@
   "is_boss": true,
   "ketahanan": 220,
   "stats": {
-   "hp": 15000,
+   "hp": 12000,
    "mp": 0,
    "atk": 72,
    "def": 56,
@@ -3216,8 +3218,7 @@
      "es": "serap",
      "petir": "serap",
      "angin": "serap",
-     "bumi": "serap",
-     "fisik": "tahan"
+     "bumi": "serap"
     },
     "pattern": [
      "m_panggil_gema_party",
@@ -3241,7 +3242,7 @@
      "m_hapus_ingatan",
      "m_sunyi_akhir",
      "serang",
-     "m_hapus_ingatan"
+     "m_sunyi_akhir"
     ]
    },
    {
@@ -3280,7 +3281,7 @@
     "chance": 1.0
    }
   ],
-  "lesson": "Tiga fase, tiga aturan. Di fase terakhir hanya Jurus Ganda dan Jurus Empat yang melukai; serangan biasa tetap berguna untuk mengisi Bara, dan Lagu Ratih mengembalikan skill yang dihapus.",
+  "lesson": "Empat fase, empat aturan. Di dua fase terakhir hanya jurus Bara yang melukai — Nyala Pamungkas, Jurus Ganda, atau Jurus Empat; serangan biasa tetap berguna karena memukul kelemahan tetap mengisi Bara. Lagu Ratih mengembalikan skill yang dihapus.",
   "description": "Manusia pertama yang dibakar delapan abad lalu. Kesadarannya tidak hilang; ia menjadi kehendak Kabut."
  },
  "superboss_penenun": {

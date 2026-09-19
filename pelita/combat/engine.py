@@ -178,10 +178,13 @@ class BattleResult:
 
 
 def is_jurus(skill: Optional[Skill]) -> bool:
-    """True untuk Jurus Ganda dan Jurus Empat — satu-satunya yang melukai fase 3
-    Sang Pelita Pertama (GAME_DESIGN §6.2 no. 16)."""
-    return bool(skill and skill.cost_type == CostType.BARA
-                and (len(skill.users) >= 2 or "jurus_empat" in skill.tags))
+    """Jurus Bara: apa pun yang dibayar dengan Bara.
+
+    Di fase terakhir Sang Pelita Pertama hanya ini yang melukai (§6.2 no. 16). Jurus Ganda
+    dan Jurus Empat yang paling besar, tapi Nyala Pamungkas ikut dihitung — kalau tidak,
+    pemain yang melewatkan semua adegan Kenangan (yang menurut §9.2 memang bonus, bukan
+    syarat) tidak punya satu pun cara melukainya. Lihat §9.4."""
+    return bool(skill and skill.cost_type == CostType.BARA)
 
 
 class Bestiary:
@@ -199,6 +202,11 @@ class Bestiary:
 
     def get(self, enemy_id: str) -> dict[Element, Affinity]:
         return self.known.get(enemy_id, {})
+
+    def forget(self, enemy_id: str) -> None:
+        """Musuh yang mengganti afinitasnya (fase boss, rotasi) membatalkan catatannya:
+        catatan lama justru menyesatkan, dan perubahannya selalu diumumkan (§4.4, §4.6)."""
+        self.known.pop(enemy_id, None)
 
 
 # ---------------------------------------------------------------------------
@@ -406,12 +414,14 @@ class Battle:
             actor.rotation_index = idx
             aset = rot.sets[idx]
             actor.affinities = dict(aset.affinities)
+            self.bestiary.forget(actor.key)
             self._emit(ev, aset.announce or f"{actor.display_name} berubah: {aset.name}!")
 
     def apply_phase(self, actor: Combatant, phase, ev: list[str]) -> None:
         """Dipanggil AI saat fase boss berganti."""
         if phase.affinities is not None:
             actor.affinities = dict(phase.affinities)
+            self.bestiary.forget(actor.key)
         actor.ignore_taunt = phase.ignore_taunt
         actor.actions_per_turn = max(1, phase.actions_per_turn)
         if phase.traits is not None:

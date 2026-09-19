@@ -9,7 +9,7 @@ from __future__ import annotations
 from typing import Optional
 
 from ..models import Affinity, Element, Skill, SkillKind, Target
-from .engine import Action, Battle, Combatant
+from .engine import Action, Battle, Combatant, is_jurus
 
 
 def _pick_target(battle: Battle, actor: Combatant, rule: str, target_type: Target) -> list[Combatant]:
@@ -55,16 +55,20 @@ def _skill_action(battle: Battle, actor: Combatant, action_id: str, rule: str = 
 def choose_enemy_action(battle: Battle, actor: Combatant) -> Action:
     edef = actor.edef
     assert edef is not None
-    if actor.has("goyah"):
-        return Action("serang", targets=_pick_target(battle, actor, "acak", Target.SATU_MUSUH))
-    if edef.phases:
-        phases = sorted(edef.phases, key=lambda p: -p.hp_above)
+    # Fase adalah *keadaan* boss, bukan aksinya: ia harus diperbarui lebih dulu, bahkan
+    # saat boss Goyah. Kalau tidak, boss yang kelemahannya dipukul tiap ronde tidak pernah
+    # sampai ke fase dua — afinitas, sifat, dan pola fase berikutnya tidak pernah menyala.
+    phases = sorted(edef.phases, key=lambda p: -p.hp_above) if edef.phases else []
+    if phases:
         idx = next((i for i, p in enumerate(phases) if actor.hp_ratio > p.hp_above), len(phases) - 1)
         if idx != actor.phase_index:
             actor.phase_index = idx
             actor.pattern_pos = 0
             battle.apply_phase(actor, phases[idx], battle.pending_events)
-        pattern = phases[idx].pattern
+    if actor.has("goyah"):
+        return Action("serang", targets=_pick_target(battle, actor, "acak", Target.SATU_MUSUH))
+    if phases:
+        pattern = phases[actor.phase_index].pattern
         action_id = pattern[actor.pattern_pos % len(pattern)]
         actor.pattern_pos += 1
         action_id, _, rule = action_id.partition("@")
@@ -213,6 +217,17 @@ def choose_hero_action(battle: Battle, actor: Combatant, policy: str = "pintar")
             return Action("skill", skill=heals[-1], targets=[min(sakit, key=lambda c: c.hp_ratio)])
         return Action("jaga")
 
+    # 1bb. Lawan yang hanya bisa dilukai jurus Bara (fase terakhir Sang Pelita Pertama):
+    #      serangan biasa berubah fungsi jadi pengisi Bara, dan Bara tidak boleh dibocorkan
+    #      ke apa pun selain jurus.
+    hanya_jurus = any("hanya_jurus" in f.traits for f in foes)
+    if hanya_jurus:
+        jurus = [s for s in battle.usable_bara_skills(actor) if is_jurus(s) and s.is_attack]
+        if jurus:
+            best = max(jurus, key=lambda s: s.power * (len(foes) if s.target.is_multi else 1))
+            ts = foes if best.target.is_multi else [max(foes, key=lambda c: c.hp)]
+            return Action("skill", skill=best, targets=ts)
+
     # 1c. Lawan yang meminum Bara yang ditabung (Gema Guntur, §6.2 no. 15): belanjakan
     #     sebelum gilirannya, apa pun yang bisa dibelanjakan.
     ambang = min((int(t.split(":")[1]) for f in foes for s in f.skills for t in s.tags
@@ -230,7 +245,7 @@ def choose_hero_action(battle: Battle, actor: Combatant, policy: str = "pintar")
             return Action("skill", skill=sembuh[0], targets=allies)
 
     # 2. Jurus Bara kalau tersedia dan lawan masih banyak HP-nya
-    bara_atk = [s for s in battle.usable_bara_skills(actor) if s.is_attack]
+    bara_atk = [] if hanya_jurus else [s for s in battle.usable_bara_skills(actor) if s.is_attack]
     if bara_atk and (len(foes) >= 2 or foes[0].hp_ratio > 0.5):
         best = max(bara_atk, key=lambda s: s.power * (len(foes) if s.target.is_multi else 1))
         return Action("skill", skill=best, targets=[max(foes, key=lambda c: c.hp)])

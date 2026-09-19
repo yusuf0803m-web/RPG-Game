@@ -1245,9 +1245,9 @@ python tools/walkthrough.py --babak 3 --ending dendang --seed 3    ending "Mende
 python tools/walkthrough.py --babak 3 --ending kembali --bunuh-kelana
 ```
 
-Party tamat di **Lv 51–52**, sesuai rentang §2.4. Lama boss: Gema Guntur 11–19 ronde (lihat
-catatan Nyala Penjaga di bawah), Tujuh Penjaga Suar 3–5 ronde per gelombang, Sang Pelita
-Pertama 14–16 ronde, segmen bertahan ending 1 tepat 6 ronde, Kabut Terakhir tepat 8 lagu.
+Party tamat di **Lv 51–52**, sesuai rentang §2.4. Lama boss (diukur di lima seed):
+Gema Guntur 5–8 ronde, Tujuh Penjaga Suar 3–5 ronde per gelombang, Sang Pelita Pertama
+16–19 ronde, segmen bertahan ending 1 tepat 6 ronde, Kabut Terakhir 8–13 lagu.
 
 **Mekanik baru di mesin** (semuanya dipakai isi Babak 3, bukan dibangun untuk nanti):
 
@@ -1273,8 +1273,30 @@ Pertama 14–16 ronde, segmen bertahan ending 1 tepat 6 ronde, Kabut Terakhir te
 - **`{"lucuti": true}`** dan **`{"barisan": [...]}`**: perintah skrip untuk ending 2 dan 3.
 - **`{"bara": 8}`**: menaikkan Bara maks lewat cerita, bukan cuma lewat penukaran Serpihan.
 
+**Dua bug lama yang baru ketahuan lewat Babak 3** (keduanya memengaruhi boss Babak 1 dan 2
+juga, dan ikut diperbaiki):
+
+- **Fase boss tidak pernah maju kalau boss terus Goyah.** `choose_enemy_action` memeriksa Goyah
+  sebelum mengevaluasi fase, jadi boss yang kelemahannya dipukul tiap ronde — persis yang
+  dianjurkan sistem Bara — berhenti di fase satu selamanya: afinitas, sifat, dan pola fase
+  berikutnya tidak pernah menyala. Fase adalah *keadaan* boss, bukan aksinya, jadi sekarang ia
+  diperbarui lebih dulu dan Goyah tetap memaksa Serang biasa sesudahnya. Efeknya langsung
+  terlihat: Sang Pelita Pertama akhirnya sampai ke fase "Yang Ingin Dilupakan".
+- **Catatan Penyala tidak pernah dibatalkan** saat boss mengganti afinitasnya (fase atau rotasi),
+  padahal §4.4 mencatat kelemahan "permanen" dengan asumsi kelemahannya memang permanen. Catatan
+  basi itu bukan cuma menyesatkan pemain — kebijakan otomatis party memakainya juga, jadi ia
+  terus menembakkan elemen yang sekarang diserap boss. Sekarang `Bestiary.forget()` dipanggil
+  tiap kali afinitas musuh diganti; perubahannya memang selalu diumumkan.
+
 Penyimpangan dari desain awal, dan alasannya:
 
+- **Fase terakhir menerima semua jurus Bara, bukan hanya Jurus Ganda dan Jurus Empat.** §6.2
+  no. 16 menulis "hanya Jurus Ganda & Jurus Empat yang melukai", tapi §9.2 berjanji Kenangan
+  (satu-satunya sumber Jurus Ganda) adalah bonus, bukan syarat — dan Jurus Empat hanya sekali
+  per pertarungan. Pemain yang melewatkan semua Kenangan karena itu benar-benar terkunci.
+  `is_jurus()` sekarang berarti "apa pun yang dibayar dengan Bara", jadi **Nyala Pamungkas**
+  ikut melukai. Pelajarannya tidak berubah — Bara harus dibelanjakan, serangan biasa berubah
+  fungsi jadi pengisinya — tapi jalannya selalu ada.
 - **Babak 2 tidak lagi berakhir di layar judul.** Sama seperti batas Babak 1 (§9.3): setelah
   Nirmala jatuh, party langsung berdiri di dek Kapal Lentera. `end_chapter` sekarang hanya
   dipakai sekali di seluruh permainan — untuk ending yang dipilih pemain. Walkthrough Babak 2
@@ -1287,7 +1309,7 @@ Penyimpangan dari desain awal, dan alasannya:
   3 supaya pemicunya benar-benar HP < 15% seperti yang ditulis §6.2, bukan sekadar satu langkah
   di dalam pola fase 3.
 - **HP boss dikalibrasi ulang ke atas setelah walkthrough**, pola yang sama dengan §9.1: Gema
-  Guntur 4.207 → **7.000**, Sang Pelita Pertama 9.999 → **15.000**, tiap Penjaga Suar 680 →
+  Guntur 4.207 → **7.000**, Sang Pelita Pertama 9.999 → **12.000**, tiap Penjaga Suar 680 →
   **2.200**, Cacing Abu Ibu 2.919 + 4×1.022 → **6.000 + 4×2.000**. Sebabnya rumus §4.7
   memakai `off(L)` sebagai *stat dasar* party, sementara di Lv 50 senjata Babak 3 sendiri
   menyumbang 30–40% serangan; tanpa penyesuaian ini boss akhir jatuh dalam 7 ronde.

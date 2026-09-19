@@ -112,7 +112,7 @@ python -m pelita -s rawa --auto --seed 3 --no-pause
 
 ```bash
 pip install pytest
-python -m pytest -q                     # 183 tes: unit, walkthrough Babak 1-3, sistem Tahap 3,
+python -m pytest -q                     # 189 tes: unit, walkthrough Babak 1-3, sistem Tahap 3,
                                         # mekanik Babak 2 & 3, latar, API web, dan regresi menu
                                         # (tiap prompt harus ada jalan keluar)
 python tools/calibrate.py --n 200       # simulasi rasio "2–3 pukulan" per skenario

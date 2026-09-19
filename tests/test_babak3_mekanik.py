@@ -7,7 +7,9 @@ import random
 
 import pytest
 
-from pelita.combat.engine import Action, Battle
+from pelita.combat import ai
+from pelita.combat.engine import Action, Battle, is_jurus
+from pelita.combat.status import make_status
 from pelita.loader import load_data
 from pelita.models import Affinity, Element
 from pelita.party import Hero
@@ -263,3 +265,58 @@ def test_bertahan_tidak_selesai_walau_musuhnya_dihabisi(data):
     b._check_end(ev)
     assert not b.over
     assert b.enemies[0].alive and "Gelombang berikutnya" in "\n".join(ev)
+
+
+# -- Fase boss --------------------------------------------------------------
+def test_fase_tetap_maju_walau_boss_goyah(data):
+    """Bug yang ditemukan lewat walkthrough Babak 3: fase dievaluasi *setelah* Goyah,
+    jadi boss yang kelemahannya dipukul tiap ronde tidak pernah sampai ke fase dua —
+    afinitas, sifat, dan pola fase berikutnya tidak pernah menyala."""
+    b = battle(data, ["sela"], enemies=("boss_pelita_pertama",))
+    boss = b.enemies[0]
+    ai.choose_enemy_action(b, boss)                 # fase 1
+    assert boss.phase_index == 0
+    boss.hp = int(boss.max_hp * 0.40)               # masuk wilayah fase 2
+    boss.statuses["goyah"] = make_status("goyah")
+    aksi = ai.choose_enemy_action(b, boss)
+    assert aksi.kind == "serang", "Goyah tetap memaksa Serang biasa"
+    assert boss.phase_index == 1, "fase harus tetap maju walau boss sedang Goyah"
+
+
+def test_semua_fase_pelita_pertama_tercapai_berurutan(data):
+    b = battle(data, ["sela"], enemies=("boss_pelita_pertama",))
+    boss = b.enemies[0]
+    urut = []
+    for rasio in (1.0, 0.50, 0.20, 0.05):
+        boss.hp = max(1, int(boss.max_hp * rasio))
+        ai.choose_enemy_action(b, boss)
+        urut.append(boss.phase_index)
+    assert urut == [0, 1, 2, 3], urut
+    assert "hanya_jurus" in boss.traits, "dua fase terakhir mengunci serangan biasa"
+
+
+def test_catatan_penyala_dilupakan_saat_afinitas_boss_berganti(data):
+    """Catatan afinitas yang sudah basi justru menyesatkan; perubahannya selalu diumumkan."""
+    b = battle(data, ["rimba"], enemies=("boss_pelita_pertama",))
+    boss = b.enemies[0]
+    pakai(b, b.heroes[0], "sinar_lentera", target=[boss])
+    assert b.bestiary.get(boss.key), "fase 1 lemah Cahaya, seharusnya tercatat"
+    boss.hp = int(boss.max_hp * 0.40)
+    ai.choose_enemy_action(b, boss)                 # pindah ke fase 2 (Cahaya jadi Serap)
+    assert not b.bestiary.get(boss.key), "catatan lama harus dibatalkan"
+
+
+def test_nyala_pamungkas_ikut_melukai_fase_hanya_jurus(data):
+    """Pemain yang melewatkan semua Kenangan tidak punya Jurus Ganda; Nyala Pamungkas
+    adalah jalan yang selalu ada (lihat GAME_DESIGN §9.4)."""
+    assert is_jurus(data.skill("nyala_pamungkas"))
+    assert is_jurus(data.skill("jurus_pelita_terakhir"))
+    assert is_jurus(data.skill("jg_pulang"))
+    assert not is_jurus(data.skill("fajar"))
+    b = battle(data, ["rimba", "sela"], enemies=("boss_pelita_pertama",),
+               bara_max=8, bara_start=8)
+    boss = b.enemies[0]
+    boss.traits.add("hanya_jurus")
+    sebelum = boss.hp
+    pakai_bara(b, b.heroes[0], "nyala_pamungkas")
+    assert sebelum - boss.hp > 100, "Nyala Pamungkas harus tetap melukai"
