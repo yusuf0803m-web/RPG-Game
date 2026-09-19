@@ -5,11 +5,12 @@ terskrip tanpa terminal sungguhan.
 """
 from __future__ import annotations
 
-from typing import Callable, Optional
+from typing import Callable, Optional, Sequence
 
 from ..combat import ai
 from ..combat.engine import Action, Battle, Combatant
 from ..models import Affinity, Element, Skill, Target
+from .menu import Menu, Option, numbered
 
 LEBAR = 66
 
@@ -34,6 +35,60 @@ class IO:
 
     def emit(self, kind: str, payload: dict) -> None:
         """Kanal terstruktur untuk UI selain terminal (web). Terminal mengabaikannya."""
+
+    # -- prompt bertombol ---------------------------------------------------
+    # Semua menu permainan lewat sini (lihat ``pelita/ui/menu.py``). Terminal
+    # mencetak satu opsi per baris; antarmuka lain (web) menimpa metode ini dan
+    # mengirim daftar opsinya sebagai data.
+    def menu(self, options: Sequence[Option], prompt: str = "> ", auto: Optional[str] = None,
+             required: Optional[str] = None) -> str:
+        """Tampilkan daftar opsi, kembalikan key yang dipilih (sudah lowercase)."""
+        keys = {o.key.lower(): o for o in options}
+        keluar = next((o.key.lower() for o in options if o.back), None)
+        # Enter = jalan keluar, tapi hanya untuk opsi "0) Kembali"; pintasan huruf
+        # seperti [K]eluar (keluar ke layar judul) tidak boleh terpicu tanpa sengaja.
+        enter = next((o.key.lower() for o in options if o.back and not o.meta), None)
+        while True:
+            self.render_options(options)
+            if auto is not None:
+                return auto.lower()
+            s = self.ask(prompt).strip().lower()
+            if s in keys:
+                return s
+            if s == "" and enter is not None:
+                return enter
+            if s in ("q", "quit", "keluar"):
+                if keluar is None:
+                    raise KeyboardInterrupt
+                return keluar
+            self.line("  Pilihan tidak dikenal.")
+
+    def render_options(self, options: Sequence[Option]) -> None:
+        """Cetak menu: satu opsi per baris, pintasan huruf dirangkum di baris terakhir."""
+        for o in options:
+            if o.meta:
+                continue
+            self.line(o.text)
+            for d in o.detail:
+                self.line(d)
+        huruf = [o.text for o in options if o.meta]
+        if huruf:
+            self.line("  " + "  ".join(huruf))
+
+    def pick(self, prompt: str, labels: Sequence[str], back: Optional[str] = "Kembali",
+             auto: Optional[str] = None, required: Optional[str] = None) -> Optional[int]:
+        """Menu bernomor sederhana: kembalikan indeks pilihan, None kalau kembali."""
+        return numbered(labels, back=back, required=required).pick(self, prompt, auto=auto)
+
+    def confirm(self, question: str, auto: Optional[bool] = None) -> bool:
+        """Pertanyaan ya/tidak. Web menampilkannya sebagai dua tombol."""
+        if auto is not None:
+            return auto
+        return self.ask(f"  {question} (y/N) ").strip().lower() in ("y", "ya")
+
+    def pause(self) -> None:
+        """Tunggu pemain menekan Enter (web: tombol 'Lanjut')."""
+        self.ask("(Enter) ")
 
 
 def bar(ratio: float, width: int = 10) -> str:
@@ -113,19 +168,8 @@ def render_screen(battle: Battle, title: str, io: IO) -> None:
 
 def _pick(io: IO, prompt: str, options: list[str], allow_back: bool = True) -> Optional[int]:
     """Tampilkan daftar bernomor, kembalikan indeks pilihan (None = batal)."""
-    for i, o in enumerate(options, 1):
-        io.line(f"  {i}) {o}")
-    if allow_back:
-        io.line("  0) Kembali")
-    while True:
-        s = io.ask(prompt)
-        if s.lower() in ("q", "quit", "keluar"):
-            raise KeyboardInterrupt
-        if allow_back and s in ("0", ""):
-            return None
-        if s.isdigit() and 1 <= int(s) <= len(options):
-            return int(s) - 1
-        io.line("  Pilihan tidak dikenal.")
+    return io.pick(prompt, options, back="Kembali" if allow_back else None,
+                   required=None if allow_back else "aksi pertarungan")
 
 
 def _skill_label(battle: Battle, actor: Combatant, s: Skill) -> str:
@@ -235,7 +279,7 @@ def run_battle(battle: Battle, title: str, io: IO, auto: bool = False, pause: bo
         if not actor.is_player:
             io.emit("battle", battle_snapshot(battle, title))
         if pause and not actor.is_player and not auto and not battle.over:
-            io.ask("(Enter) ")
+            io.pause()
     io.line("═" * LEBAR)
     r = battle.result
     assert r is not None

@@ -10,8 +10,10 @@ import pytest
 
 flask = pytest.importorskip("flask", reason="antarmuka web butuh Flask")
 
+from pelita.ui.menu import Menu  # noqa: E402
 from pelita.web.app import create_app  # noqa: E402
 from pelita.web.session import SessionStore  # noqa: E402
+from pelita.world.state import new_game  # noqa: E402
 
 
 @pytest.fixture
@@ -254,20 +256,59 @@ def test_simpan_lalu_muat_slot(client, tmp_path):
 
 
 # ── Unit: WebIO ──────────────────────────────────────────────────────────
-def test_webio_mengumpulkan_opsi(tmp_path):
+def idle_session(tmp_path):
+    """Sesi yang belum dijalankan: aman untuk memanggil IO-nya langsung."""
+    from pelita.web.session import WebSession
     store = SessionStore(tmp_path)
-    s = store.create()
-    try:
-        io = s.io
-        io._pending_options = []
-        io.line("  1) Masuk ke jalan desa")
-        io.line("  2) Bicara: Bu Ratna")
-        io.line("  [P]arty  [I]tem  [K]eluar")
-        assert [o["key"] for o in io._pending_options] == ["1", "2", "p", "i", "k"]
-        assert io._pending_options[0]["label"] == "Masuk ke jalan desa"
-        assert io._pending_options[2]["meta"] is True
-    finally:
-        store.drop(s.id)
+    return WebSession(store.data, store.world, new_game(store.data), tmp_path)
+
+
+def test_webio_mengirim_opsi_sebagai_data(tmp_path):
+    """Opsi dikirim apa adanya dari ``Menu``, bukan diurai ulang dari teks."""
+    s = idle_session(tmp_path)
+    m = Menu()
+    m.add("Masuk ke jalan desa")
+    m.add("Bicara: Bu Ratna", detail=["     Penjaga warung."])
+    m.letter("p", "Party")
+    s.send("2")
+    assert m.ask(s.io, "> ") == "2"
+
+    prompt = [e for e in s.events if e.kind == "prompt"][-1].payload
+    assert prompt["kind"] == "menu" and prompt["free"] is False
+    assert [o["key"] for o in prompt["options"]] == ["1", "2", "p", "0"]
+    assert prompt["options"][0]["label"] == "Masuk ke jalan desa"
+    assert prompt["options"][2]["meta"] is True
+    assert prompt["options"][3]["back"] is True and prompt["options"][3]["label"] == "Kembali"
+    # baris keterangan tetap masuk log, bukan jadi tombol kedua
+    assert any(e.payload.get("text") == "     Penjaga warung." for e in s.events if e.kind == "log")
+
+
+def test_webio_enter_dan_ya_tidak_punya_tombol(tmp_path):
+    """Prompt "(Enter)" dan ya/tidak juga harus bisa dijawab dengan tombol."""
+    s = idle_session(tmp_path)
+    s.send("")
+    s.io.pause()
+    s.send("y")
+    assert s.io.confirm("Berkemah?") is True
+    s.send("n")
+    assert s.io.confirm("Berkemah?") is False
+
+    kinds = [e.payload["kind"] for e in s.events if e.kind == "prompt"]
+    assert kinds == ["enter", "confirm", "confirm"]
+    ya_tidak = [e.payload for e in s.events if e.kind == "prompt"][1]
+    assert [(o["key"], o["label"]) for o in ya_tidak["options"]] == [("y", "Ya"), ("n", "Tidak")]
+    assert ya_tidak["prompt"] == "Berkemah?" and ya_tidak["options"][1]["back"] is True
+
+
+def test_webio_menolak_jawaban_di_luar_daftar(tmp_path):
+    """Jawaban ngawur dari klien: tanya ulang, jangan biarkan sesi menggantung."""
+    s = idle_session(tmp_path)
+    for jawaban in ("99", "xyz", "1"):
+        s.send(jawaban)
+    m = Menu()
+    m.add("Satu")
+    assert m.ask(s.io, "> ") == "1"
+    assert len([e for e in s.events if e.kind == "prompt"]) == 3, "prompt dikirim ulang tiap jawaban salah"
 
 
 def test_io_terminal_mengabaikan_emit():

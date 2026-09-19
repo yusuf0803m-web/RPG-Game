@@ -18,6 +18,7 @@ from .combat.engine import Battle
 from .loader import load_data
 from .party import Hero
 from .scenarios import SCENARIOS, get_scenario
+from .ui.menu import Menu
 from .ui.terminal import IO, LEBAR, run_battle
 from .world.explore import Game
 from .world.model import load_world
@@ -47,20 +48,20 @@ def load_menu(data, io: IO, save_dir: Path):
     if not any(sums):
         io.line(" Belum ada save.")
         return None
-    for i, s in enumerate(sums, 1):
-        io.line(f"  {i}) {s or '(kosong)'}")
-    io.line("  0) Kembali")
-    s = io.ask("slot> ")
-    if s.isdigit() and 1 <= int(s) <= SAVE_SLOTS and sums[int(s) - 1]:
-        return GameState.load(data, int(s), save_dir)
+    i = io.pick("slot> ", [s or "(kosong)" for s in sums])
+    if i is not None and sums[i]:
+        return GameState.load(data, i + 1, save_dir)
     return None
 
 
 def title_loop(data, world, io: IO, save_dir: Path) -> int:
     while True:
         io.line(JUDUL)
-        io.line("  1) Mulai Baru   2) Muat   3) Prototipe Combat   0) Keluar")
-        s = io.ask("> ")
+        m = Menu(back="Keluar")
+        m.add("Mulai Baru")
+        m.add("Muat")
+        m.add("Prototipe Combat")
+        s = m.ask(io, "> ")
         if s == "1":
             play(data, world, new_game(data), io, save_dir)
         elif s == "2":
@@ -69,18 +70,15 @@ def title_loop(data, world, io: IO, save_dir: Path) -> int:
                 play(data, world, st, io, save_dir)
         elif s == "3":
             prototype_menu(data, io)
-        elif s in ("0", "q", "keluar"):
+        else:
             return 0
 
 
 def prototype_menu(data, io: IO) -> None:
     io.line("Pilih skenario:")
-    for i, s in enumerate(SCENARIOS, 1):
-        io.line(f"  {i}) {s.name}")
-    io.line("  0) Kembali")
-    s = io.ask("> ")
-    if s.isdigit() and 1 <= int(s) <= len(SCENARIOS):
-        sc = SCENARIOS[int(s) - 1]
+    i = io.pick("> ", [s.name for s in SCENARIOS])
+    if i is not None:
+        sc = SCENARIOS[i]
         io.line(f"\n{sc.name}\n{sc.note}\n")
         run_battle(build_battle(data, sc), sc.name, io)
 

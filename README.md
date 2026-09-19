@@ -21,7 +21,9 @@ Antarmuka web menampilkan panorama per area, kartu musuh dengan bar HP dan meter
 Ketahanan, kartu party dengan potret dan bar HP/MP, meteran Bara, dialog bergaya,
 serta angka damage yang melayang saat pukulan mendarat. Semua gambar dibuat dari
 SVG di `pelita/web/static/art.js`, jadi tidak ada berkas aset dan tidak butuh
-internet. Pilihan bisa diklik atau ditekan dengan angka 1–9.
+internet. Pilihan bisa diklik atau ditekan lewat papan ketik (angka untuk opsi
+bernomor, huruf untuk pintasan seperti `p` Party dan `i` Item). Tiap menu selalu
+punya tombol keluar, yang ditampilkan selebar layar di baris paling bawah.
 
 ## Bermain di HP Android
 
@@ -106,7 +108,8 @@ python -m pelita -s rawa --auto --seed 3 --no-pause
 
 ```bash
 pip install pytest
-python -m pytest -q                     # 101 tes: unit, walkthrough Babak 1, sistem Tahap 3, API web
+python -m pytest -q                     # 120 tes: unit, walkthrough Babak 1, sistem Tahap 3,
+                                        # API web, dan regresi menu (tiap prompt harus ada jalan keluar)
 python tools/calibrate.py --n 200       # simulasi rasio "2–3 pukulan" per skenario
 python tools/walkthrough.py --seed 11   # pemain otomatis dari prolog sampai Akhir Babak 1;
                                         # mencetak level party & lama tiap boss
@@ -131,7 +134,9 @@ pelita/
     state.py       GameState: party aktif/cadangan, inventori, Kaca, flag, quest, kabut, save/load
     script.py      interpreter skrip cerita (narasi, dialog, if/once/choice, battle, join, ...)
     explore.py     loop eksplorasi, encounter, menu, toko, Tukang Kaca, kemah, Buruan, Arena
-  ui/terminal.py   layar pertarungan & menu teks; IO.emit() = kanal terstruktur untuk web
+  ui/
+    menu.py        Option/Menu: satu tempat menyusun daftar pilihan (satu opsi = satu tombol)
+    terminal.py    layar pertarungan & menu teks; IO.menu()/emit() = kanal terstruktur untuk web
   web/
     session.py     satu sesi = satu thread Game.run() dengan IO antrian (event ⇄ input)
     app.py         server Flask: /api/session, /state (long-poll), /input
@@ -139,7 +144,8 @@ pelita/
   data/            characters, skills, enemies, items, kaca, jalur;
                    world/area_*.json, shops, quests, kenangan, buruan, arena
 tools/             calibrate.py, walkthrough.py
-tests/             pytest (walker.py = pemain otomatis untuk tes alur)
+tests/             pytest (walker.py = pemain otomatis untuk tes alur;
+                   test_menu_web.py = crawler yang memastikan tiap menu bisa ditinggalkan)
 ```
 
 ## Sistem lanjutan (Tahap 3)
@@ -171,6 +177,14 @@ Game.run()  ──IO.line/emit──▶  antrian event  ──GET /state (long-p
      ▲                                                                        │
      └──────────────  IO.ask() menunggu  ◀── POST /input ──────────────────────┘
 ```
+
+Pilihan **tidak** ditebak dari teks yang sudah dicetak. Semua menu disusun lewat
+`Menu` di `pelita/ui/menu.py`, lalu `IO.menu()` memutuskan cara menampilkannya:
+terminal mencetak satu opsi per baris, web mengirim daftarnya sebagai data. Tiap
+prompt punya `kind` — `menu`, `confirm` (ya/tidak), atau `enter` (Lanjut) — dan
+tiap menu dapat jalan keluar secara bawaan, sehingga tidak ada menu yang bisa
+"menyangkutkan" pemain di layar sentuh. `tests/test_menu_web.py` menjelajah semua
+menu dan menggagalkan build kalau ada prompt yang kehilangan tombol keluarnya.
 
 Selain baris teks, mesin mengirim **event terstruktur** lewat `IO.emit()`: `room`
 (area, ruang, party, keping), `battle` (musuh, HP, afinitas yang sudah diketahui,

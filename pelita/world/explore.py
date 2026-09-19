@@ -11,6 +11,7 @@ from ..combat.status import make_status
 from ..loader import GameData
 from ..models import Affinity, Element, ItemDef
 from ..party import HP_BONUS_MAKS, Hero, angka_romawi, kaca_tingkat
+from ..ui.menu import Menu
 from ..ui.terminal import IO, LEBAR, run_battle
 from .model import Area, Room, World
 from .script import ChapterEnd, GameOver, Hooks, ScriptRunner, wrap
@@ -31,13 +32,15 @@ class QuitGame(Exception):
 class Game:
     def __init__(self, data: GameData, world: World, state: GameState, io: IO,
                  auto_battle: bool = False, auto_script: bool = False, save_dir: Path = SAVE_DIR,
-                 battle_policy: str = "pintar", auto_choice: Optional[bool] = None) -> None:
+                 battle_policy: str = "pintar", auto_choice: Optional[bool] = None,
+                 auto_menus: Optional[bool] = None) -> None:
         self.data = data
         self.world = world
         self.state = state
         self.io = io
         self.auto_battle = auto_battle
-        self.auto_menus = auto_battle       # toko/penginapan/save memilih default (untuk tes)
+        # toko/penginapan/save memilih default (untuk tes); bisa dipisah dari auto_battle
+        self.auto_menus = auto_battle if auto_menus is None else auto_menus
         self.save_dir = save_dir
         self.battle_policy = battle_policy
         self.runner = ScriptRunner(state, io, Hooks(self.do_battle, self.save_menu, self.shop, self.inn, self.move_to,
@@ -175,10 +178,15 @@ class Game:
 
     def menu(self) -> None:
         opts = self._options()
-        for i, (label, _) in enumerate(opts, 1):
-            self.io.line(f"  {i}) {label}")
-        self.io.line("  [P]arty  [I]tem  [C]atatan Penyala  [Q]uest  [K]eluar")
-        s = self.io.ask("> ").lower()
+        m = Menu().no_back()          # menu utama: jalan keluarnya [K]eluar
+        for label, _ in opts:
+            m.add(label)
+        m.letter("p", "Party")
+        m.letter("i", "Item")
+        m.letter("c", "Catatan Penyala")
+        m.letter("q", "Quest")
+        m.letter("k", "Keluar", back=True)
+        s = m.ask(self.io, "> ")
         if s.isdigit() and 1 <= int(s) <= len(opts):
             opts[int(s) - 1][1]()
         elif s == "p":
@@ -189,13 +197,10 @@ class Game:
             self.bestiary_menu()
         elif s == "q":
             self.quest_menu()
-        elif s in ("k", "quit", "keluar"):
-            if self.auto_menus or self.io.ask("Keluar ke layar judul? Progres yang belum disimpan hilang. (y/N) ").lower() == "y":
+        elif s == "k":
+            if self.io.confirm("Keluar ke layar judul? Progres yang belum disimpan hilang.",
+                               auto=True if self.auto_menus else None):
                 raise QuitGame()
-        elif s == "":
-            return
-        else:
-            self.io.line("  Pilihan tidak dikenal.")
 
     # -- perpindahan & encounter -------------------------------------------
     def go(self, room_id: str, area_id: Optional[str]) -> None:
@@ -258,23 +263,26 @@ class Game:
         while True:
             self.io.line("")
             self.io.line("═" * LEBAR)
+            butuh = [h.name for h in st.party if h.butuh_pilih_jalur]
+            if butuh:
+                self.io.line(f"  ! Menunggu pilihan Jalur: {', '.join(butuh)}")
+            m = Menu()
             for i, h in enumerate(st.party, 1):
                 stat = h.stats
                 posisi = "AKTIF " if i <= PARTY_AKTIF_MAKS else "cadang"
                 tag = " (tamu)" if h.guest else ""
-                self.io.line(f" {i}) [{posisi}] {h.name:<8} Lv {h.level:<3} HP {h.hp:>4}/{stat.hp:<4} MP {h.mp:>3}/{stat.mp:<3}{tag}")
-                self.io.line(f"    ATK {stat.atk:<3} DEF {stat.def_:<3} MAG {stat.mag:<3} RES {stat.res:<3} AGI {stat.agi:<3} LCK {stat.lck:<3} "
-                             f"XP {h.xp} (berikut: {self._xp_next(h)})")
                 eq = ", ".join(f"{SLOT_LABEL[k]}: {self.data.items[v].name if v else '-'}" for k, v in h.equipment.items())
-                self.io.line(f"    {eq}")
-                self.io.line(f"    Jalur: {self._jalur_label(h)}   Kaca: {self._kaca_label(h)}")
+                m.add(f"[{posisi}] {h.name} Lv {h.level} HP {h.hp}/{stat.hp} MP {h.mp}/{stat.mp}{tag}", detail=[
+                    f"    ATK {stat.atk:<3} DEF {stat.def_:<3} MAG {stat.mag:<3} RES {stat.res:<3} AGI {stat.agi:<3} LCK {stat.lck:<3} "
+                    f"XP {h.xp} (berikut: {self._xp_next(h)})",
+                    f"    {eq}",
+                    f"    Jalur: {self._jalur_label(h)}   Kaca: {self._kaca_label(h)}",
+                ])
+            m.letter("s", "Susun barisan")
+            m.letter("j", "Jalur")
             self.io.line("═" * LEBAR)
-            butuh = [h.name for h in st.party if h.butuh_pilih_jalur]
-            if butuh:
-                self.io.line(f"  ! Menunggu pilihan Jalur: {', '.join(butuh)}")
-            self.io.line("  Nomor) Equipment & skill   [S]usun barisan   [J]alur   0) Kembali")
-            s = self.io.ask("> ").lower()
-            if s in ("", "0"):
+            s = m.ask(self.io, "> ")
+            if s == "0":
                 return
             if s == "s":
                 self.susun_party()
@@ -314,17 +322,15 @@ class Game:
             return
         self.io.line("")
         self.io.line(" Empat nama teratas ikut bertarung. Rimba harus selalu aktif (ia pemegang Bara).")
-        for i, h in enumerate(st.party, 1):
-            posisi = "AKTIF " if i <= PARTY_AKTIF_MAKS else "cadang"
-            self.io.line(f"  {i}) [{posisi}] {h.name} Lv {h.level}")
-        self.io.line("  0) Kembali")
-        a = self.io.ask("tukar siapa> ")
-        if not (a.isdigit() and 1 <= int(a) <= len(st.party)):
+        labels = [f"[{'AKTIF ' if i <= PARTY_AKTIF_MAKS else 'cadang'}] {h.name} Lv {h.level}"
+                  for i, h in enumerate(st.party, 1)]
+        a = self.io.pick("tukar siapa> ", labels)
+        if a is None:
             return
-        b = self.io.ask("dengan siapa> ")
-        if not (b.isdigit() and 1 <= int(b) <= len(st.party)):
+        b = self.io.pick("dengan siapa> ", labels)
+        if b is None:
             return
-        if st.tukar_posisi(int(a) - 1, int(b) - 1):
+        if st.tukar_posisi(a, b):
             self.io.line("  Barisan disusun ulang: " + ", ".join(h.name for h in st.active_party))
         else:
             self.io.line("  Tidak bisa: Rimba harus tetap di barisan aktif.")
@@ -335,13 +341,10 @@ class Game:
         if not kandidat:
             self.io.line("  Belum ada yang cukup level untuk memilih Jalur.")
             return
-        for i, h in enumerate(kandidat, 1):
-            self.io.line(f"  {i}) {h.name} — {self._jalur_label(h)}")
-        self.io.line("  0) Kembali")
-        s = self.io.ask("siapa> ")
-        if not (s.isdigit() and 1 <= int(s) <= len(kandidat)):
+        i = self.io.pick("siapa> ", [f"{h.name} — {self._jalur_label(h)}" for h in kandidat])
+        if i is None:
             return
-        h = kandidat[int(s) - 1]
+        h = kandidat[i]
         if h.jalur:
             j = h.jalur_def()
             assert j is not None
@@ -356,15 +359,15 @@ class Game:
             return
         self.io.line("")
         self.io.line(f" ═══ Jalur {h.name} ═══")
-        for i, j in enumerate(opsi, 1):
-            self.io.line(f"  {i}) {j.name} — {j.description}")
+        m = Menu(back="Nanti saja")
+        for j in opsi:
             skill_nama = ", ".join(f"{self.data.skill(sid).name} (Lv {self.data.skill(sid).level})" for sid in j.skills)
-            self.io.line(f"     Pasif: {j.passive_note or '-'}   Skill: {skill_nama}")
-        self.io.line("  0) Nanti saja")
-        s = "1" if self.auto_menus else self.io.ask("jalur> ")
-        if not (s.isdigit() and 1 <= int(s) <= len(opsi)):
+            m.add(f"{j.name} — {j.description}",
+                  detail=[f"     Pasif: {j.passive_note or '-'}   Skill: {skill_nama}"])
+        i = m.pick(self.io, "jalur> ", auto="1" if self.auto_menus else None)
+        if i is None:
             return
-        j = opsi[int(s) - 1]
+        j = opsi[i]
         h.jalur = j.id
         h.hp = min(h.hp, h.max_hp)
         h.mp = min(h.mp, h.max_mp)
@@ -392,19 +395,19 @@ class Game:
         self.io.line(f" Jalur: {self._jalur_label(h)}")
         self.io.line(f" Kaca: {self._kaca_label(h)}" + ("" if self.kaca_bebas else "  (bongkar-pasang di Tukang Kaca atau saat berkemah)"))
         slots = list(SLOT_LABEL)
-        for i, slot in enumerate(slots, 1):
+        m = Menu()
+        for slot in slots:
             cur = h.equipment.get(slot)
-            self.io.line(f"  {i}) {SLOT_LABEL[slot]}: {self.data.items[cur].name if cur else '-'}")
+            m.add(f"{SLOT_LABEL[slot]}: {self.data.items[cur].name if cur else '-'}")
         if h.butuh_pilih_jalur:
-            self.io.line("  4) Pilih Jalur")
+            m.add("Pilih Jalur", key="j")
         if self.kaca_bebas and h.soket > 0:
-            self.io.line("  5) Soket Kaca")
-        self.io.line("  0) Kembali")
-        s = self.io.ask("slot> ")
-        if s == "4" and h.butuh_pilih_jalur:
+            m.add("Soket Kaca", key="s")
+        s = m.ask(self.io, "slot> ")
+        if s == "j" and h.butuh_pilih_jalur:
             self.pilih_jalur(h)
             return
-        if s == "5" and self.kaca_bebas and h.soket > 0:
+        if s == "s" and self.kaca_bebas and h.soket > 0:
             self.kaca_menu(h)
             return
         if not (s.isdigit() and 1 <= int(s) <= 3):
@@ -414,14 +417,10 @@ class Game:
         if not cands:
             self.io.line("  Tidak ada yang bisa dipasang.")
             return
-        for i, iid in enumerate(cands, 1):
-            it = self.data.items[iid]
-            self.io.line(f"  {i}) {it.name}  {self._stat_str(it)}")
-        self.io.line("  0) Kembali")
-        s = self.io.ask("pasang> ")
-        if not (s.isdigit() and 1 <= int(s) <= len(cands)):
+        i = self.io.pick("pasang> ", [f"{self.data.items[iid].name}  {self._stat_str(self.data.items[iid])}" for iid in cands])
+        if i is None:
             return
-        new = cands[int(s) - 1]
+        new = cands[i]
         old = h.equipment.get(slot)
         h.equipment[slot] = new
         self.state.add_item(new, -1)
@@ -459,19 +458,17 @@ class Game:
             h.rapikan_soket()
             self.io.line("")
             self.io.line(f" ═══ Soket {h.name} ═══")
+            labels = []
             for i in range(h.soket):
                 kid = h.kaca[i]
                 if kid:
                     k = self.data.kaca[kid]
-                    t = kaca_tingkat(st.kaca_uses.get(kid, 0))
-                    self.io.line(f"  {i + 1}) {k.name} {angka_romawi(t)} — {k.description}")
+                    labels.append(f"{k.name} {angka_romawi(kaca_tingkat(st.kaca_uses.get(kid, 0)))} — {k.description}")
                 else:
-                    self.io.line(f"  {i + 1}) (kosong)")
-            self.io.line("  0) Kembali")
-            sel = self.io.ask("soket> ")
-            if not (sel.isdigit() and 1 <= int(sel) <= h.soket):
+                    labels.append("(kosong)")
+            idx = self.io.pick("soket> ", labels)
+            if idx is None:
                 return
-            idx = int(sel) - 1
             if h.kaca[idx]:
                 lepas = h.kaca[idx]
                 h.kaca[idx] = None
@@ -482,15 +479,12 @@ class Game:
             if not stok:
                 self.io.line("  Tidak punya Kaca yang bisa dipasang.")
                 continue
-            for i, kid in enumerate(stok, 1):
-                k = self.data.kaca[kid]
-                t = kaca_tingkat(st.kaca_uses.get(kid, 0))
-                self.io.line(f"  {i}) {k.name} {angka_romawi(t)} ×{st.kaca[kid]} — {k.description}")
-            self.io.line("  0) Kembali")
-            pilih = self.io.ask("pasang> ")
-            if not (pilih.isdigit() and 1 <= int(pilih) <= len(stok)):
+            pilih = self.io.pick("pasang> ", [
+                f"{self.data.kaca[kid].name} {angka_romawi(kaca_tingkat(st.kaca_uses.get(kid, 0)))} "
+                f"×{st.kaca[kid]} — {self.data.kaca[kid].description}" for kid in stok])
+            if pilih is None:
                 continue
-            kid = stok[int(pilih) - 1]
+            kid = stok[pilih]
             h.kaca[idx] = kid
             st.add_kaca(kid, -1)
             h.hp, h.mp = min(h.hp, h.max_hp), min(h.mp, h.max_mp)
@@ -501,13 +495,8 @@ class Game:
         kandidat = [h for h in st.party if dengan_tamu or not h.guest]
         if not kandidat:
             return None
-        for i, h in enumerate(kandidat, 1):
-            self.io.line(f"  {i}) {h.name} Lv {h.level}")
-        self.io.line("  0) Kembali")
-        sel = self.io.ask(prompt)
-        if not (sel.isdigit() and 1 <= int(sel) <= len(kandidat)):
-            return None
-        return kandidat[int(sel) - 1]
+        i = self.io.pick(prompt, [f"{h.name} Lv {h.level}" for h in kandidat])
+        return None if i is None else kandidat[i]
 
     def tukang_kaca(self, shop_id: str = "") -> None:
         """Bengkel Kaca: pasang/lepas, beli Kaca, tukar Serpihan Ingatan (GAME_DESIGN §5.3, §5.5)."""
@@ -517,12 +506,12 @@ class Game:
             while True:
                 self.io.line("")
                 self.io.line(f" ═══ Tukang Kaca ═══  Keping: {st.keping}  Serpihan: {st.count(SERPIHAN)}")
-                self.io.line("  1) Pasang / lepas Kaca")
+                m = Menu(back="Pergi")
+                m.add("Pasang / lepas Kaca")
                 if shop_id and self.world.shops.get(shop_id, {}).get("kaca"):
-                    self.io.line("  2) Beli Kaca")
-                self.io.line(f"  3) Tukar Serpihan Ingatan ({SERPIHAN_PER_TUKAR} per penukaran)")
-                self.io.line("  0) Pergi")
-                sel = "0" if self.auto_menus else self.io.ask("> ")
+                    m.add("Beli Kaca")
+                m.add(f"Tukar Serpihan Ingatan ({SERPIHAN_PER_TUKAR} per penukaran)", key="3")
+                sel = m.ask(self.io, "> ", auto="0" if self.auto_menus else None)
                 if sel == "1":
                     h = self.pilih_anggota("pasang pada> ")
                     if h:
@@ -544,15 +533,12 @@ class Game:
                 self.io.line("  Tidak ada Kaca yang dijual di sini.")
                 return
             self.io.line("")
-            for i, kid in enumerate(daftar, 1):
-                k = self.data.kaca[kid]
-                harga = self.harga(k.price)
-                self.io.line(f"  {i}) {k.name:<16} {harga:>5} K  {k.description}  (punya {st.kaca.get(kid, 0)})")
-            self.io.line("  0) Kembali")
-            sel = self.io.ask("beli kaca> ")
-            if not (sel.isdigit() and 1 <= int(sel) <= len(daftar)):
+            sel = self.io.pick("beli kaca> ", [
+                f"{self.data.kaca[kid].name:<16} {self.harga(self.data.kaca[kid].price):>5} K  "
+                f"{self.data.kaca[kid].description}  (punya {st.kaca.get(kid, 0)})" for kid in daftar])
+            if sel is None:
                 return
-            kid = daftar[int(sel) - 1]
+            kid = daftar[sel]
             harga = self.harga(self.data.kaca[kid].price)
             if st.keping < harga:
                 self.io.line("  Keping tidak cukup.")
@@ -574,13 +560,10 @@ class Game:
             ("Reset Jalur satu anggota", self._tukar_reset_jalur),
             ("Kaca Skill langka", self._tukar_kaca_langka),
         ]
-        for i, (label, _) in enumerate(pilihan, 1):
-            self.io.line(f"  {i}) {label}")
-        self.io.line("  0) Kembali")
-        sel = self.io.ask("tukar> ")
-        if not (sel.isdigit() and 1 <= int(sel) <= len(pilihan)):
+        sel = self.io.pick("tukar> ", [label for label, _ in pilihan])
+        if sel is None:
             return
-        if pilihan[int(sel) - 1][1]():
+        if pilihan[sel][1]():
             st.add_item(SERPIHAN, -SERPIHAN_PER_TUKAR)
             self.io.line(f"  Tiga Serpihan larut jadi cahaya. Sisa: {st.count(SERPIHAN)}")
 
@@ -642,14 +625,11 @@ class Game:
         if not langka:
             self.io.line("  Tukang Kaca kehabisan barang langka.")
             return False
-        for i, kid in enumerate(langka, 1):
-            self.io.line(f"  {i}) {self.data.kaca[kid].name} — {self.data.kaca[kid].description}")
-        self.io.line("  0) Kembali")
-        sel = self.io.ask("kaca> ")
-        if not (sel.isdigit() and 1 <= int(sel) <= len(langka)):
+        sel = self.io.pick("kaca> ", [f"{self.data.kaca[kid].name} — {self.data.kaca[kid].description}" for kid in langka])
+        if sel is None:
             return False
-        st.add_kaca(langka[int(sel) - 1], 1)
-        self.io.line(f"  Dapat {self.data.kaca[langka[int(sel) - 1]].name}.")
+        st.add_kaca(langka[sel], 1)
+        self.io.line(f"  Dapat {self.data.kaca[langka[sel]].name}.")
         return True
 
     # -- berkemah & Kenangan ------------------------------------------------
@@ -659,7 +639,7 @@ class Game:
         if not st.has_item(BEKAL_KEMAH):
             self.io.line("  Butuh Bekal Kemah untuk mendirikan kemah di sini.")
             return
-        if not self.auto_menus and self.io.ask("  Pakai satu Bekal Kemah dan berkemah? (y/N) ").lower() != "y":
+        if not self.io.confirm("Pakai satu Bekal Kemah dan berkemah?", auto=True if self.auto_menus else None):
             return
         st.add_item(BEKAL_KEMAH, -1)
         st.heal_all()
@@ -670,10 +650,10 @@ class Game:
         try:
             while True:
                 self.io.line("")
-                self.io.line("  1) Mengobrol (Kenangan)")
-                self.io.line("  2) Bongkar-pasang Kaca")
-                self.io.line("  0) Bongkar kemah")
-                sel = "0" if self.auto_menus else self.io.ask("kemah> ")
+                m = Menu(back="Bongkar kemah")
+                m.add("Mengobrol (Kenangan)")
+                m.add("Bongkar-pasang Kaca")
+                sel = m.ask(self.io, "kemah> ", auto="0" if self.auto_menus else None)
                 if sel == "1":
                     self.kenangan_menu()
                 elif sel == "2":
@@ -708,14 +688,12 @@ class Game:
         if not tersedia:
             self.io.line("  Malam ini semua orang diam. (Belum ada obrolan baru.)")
             return
-        for i, (_, k) in enumerate(tersedia, 1):
-            nama = " & ".join(self.data.character(c).name for c in k["pasangan"])
-            self.io.line(f"  {i}) {nama} — {k['judul']}")
-        self.io.line("  0) Kembali")
-        sel = "1" if self.auto_menus else self.io.ask("obrol> ")
-        if not (sel.isdigit() and 1 <= int(sel) <= len(tersedia)):
+        labels = [f"{' & '.join(self.data.character(c).name for c in k['pasangan'])} — {k['judul']}"
+                  for _, k in tersedia]
+        sel = self.io.pick("obrol> ", labels, auto="1" if self.auto_menus else None)
+        if sel is None:
             return
-        kid, k = tersedia[int(sel) - 1]
+        kid, k = tersedia[sel]
         self.mainkan_kenangan(kid, k)
 
     def mainkan_kenangan(self, kid: str, k: dict) -> None:
@@ -742,17 +720,18 @@ class Game:
             if not tersedia:
                 self.io.line(" Papan kosong. Kafilah belum menempel kertas baru.")
                 return
-            for i, (bid, b) in enumerate(tersedia, 1):
+            m = Menu(back="Pergi")
+            for bid, b in tersedia:
                 tanda = " [DIAMBIL]" if st.buruan.get(bid) == "aktif" else ""
-                self.io.line(f"  {i}) {b['nama']} — Lv {b['level']}{tanda}")
-                self.io.line(f"     {b['deskripsi']}")
-                self.io.line(f"     Tempat: {self.world.area(b['area']).name} — {self.world.area(b['area']).room(b['room']).name}")
-                self.io.line(f"     Upah: {self._hadiah_label(b.get('hadiah', {}))}")
-            self.io.line("  0) Pergi")
-            sel = "0" if self.auto_menus else self.io.ask("ambil> ")
-            if not (sel.isdigit() and 1 <= int(sel) <= len(tersedia)):
+                m.add(f"{b['nama']} — Lv {b['level']}{tanda}", detail=[
+                    f"     {b['deskripsi']}",
+                    f"     Tempat: {self.world.area(b['area']).name} — {self.world.area(b['area']).room(b['room']).name}",
+                    f"     Upah: {self._hadiah_label(b.get('hadiah', {}))}",
+                ])
+            sel = m.pick(self.io, "ambil> ", auto="0" if self.auto_menus else None)
+            if sel is None:
                 return
-            bid, b = tersedia[int(sel) - 1]
+            bid, b = tersedia[sel]
             if st.buruan.get(bid) == "aktif":
                 self.io.line("  Kontrak itu sudah di tanganmu.")
                 continue
@@ -787,7 +766,7 @@ class Game:
         self.io.line("")
         for l in wrap(b.get("petunjuk", b["deskripsi"])):
             self.io.line(l)
-        if not self.auto_menus and self.io.ask(f"  Hadapi {b['nama']}? (y/N) ").lower() != "y":
+        if not self.io.confirm(f"Hadapi {b['nama']}?", auto=True if self.auto_menus else None):
             return
         hasil = self.do_battle(list(b["musuh"]), boss=True, can_flee=False)
         if hasil == "kalah":
@@ -809,18 +788,19 @@ class Game:
             self.io.line("")
             self.io.line(f" ═══ Arena Kafilah ═══  Tingkat tertamat: {st.arena}/{len(self.world.arena)}")
             self.io.line(" Aturan: tiga gelombang beruntun, tanpa item, tanpa istirahat.")
+            m = Menu(back="Pergi")
             boleh = []
             for i, t in enumerate(self.world.arena, 1):
-                kunci = "" if i <= st.arena + 1 else "  (terkunci)"
-                tamat = "  [tamat]" if i <= st.arena else ""
-                self.io.line(f"  {i}) {t['nama']} — Lv {t['level']}, upah {self._hadiah_label(t.get('hadiah', {}))}{tamat}{kunci}")
-                if i <= st.arena + 1:
-                    boleh.append(i)
-            self.io.line("  0) Pergi")
-            sel = "0" if self.auto_menus else self.io.ask("tingkat> ")
-            if not (sel.isdigit() and int(sel) in boleh):
+                label = f"{t['nama']} — Lv {t['level']}, upah {self._hadiah_label(t.get('hadiah', {}))}"
+                if i > st.arena + 1:                      # terkunci: keterangan saja, bukan tombol
+                    self.io.line(f"  — {label}  (terkunci)")
+                    continue
+                m.add(label + ("  [tamat]" if i <= st.arena else ""))
+                boleh.append(i)
+            sel = m.pick(self.io, "tingkat> ", auto="0" if self.auto_menus else None)
+            if sel is None:
                 return
-            self.mulai_arena(int(sel))
+            self.mulai_arena(boleh[sel])
 
     def mulai_arena(self, tingkat: int) -> None:
         st = self.state
@@ -850,13 +830,12 @@ class Game:
             if not items:
                 self.io.line(" Inventori kosong.")
                 return
-            for i, it in enumerate(items, 1):
-                self.io.line(f"  {i}) {it.name} ×{st.inventory[it.id]}  {self._stat_str(it) if it.kind != 'konsumsi' else it.description}")
-            self.io.line("  0) Kembali")
-            s = self.io.ask("item> ")
-            if not (s.isdigit() and 1 <= int(s) <= len(items)):
+            i = self.io.pick("item> ", [
+                f"{it.name} ×{st.inventory[it.id]}  {self._stat_str(it) if it.kind != 'konsumsi' else it.description}"
+                for it in items])
+            if i is None:
                 return
-            it = items[int(s) - 1]
+            it = items[i]
             if it.id == "dupa_sunyi":
                 st.dupa_steps = 30
                 st.add_item(it.id, -1)
@@ -869,12 +848,10 @@ class Game:
             if not targets:
                 self.io.line("  Tidak ada sasaran yang cocok.")
                 continue
-            for i, h in enumerate(targets, 1):
-                self.io.line(f"  {i}) {h.name} HP {h.hp}/{h.max_hp} MP {h.mp}/{h.max_mp}")
-            s = self.io.ask("pada> ")
-            if not (s.isdigit() and 1 <= int(s) <= len(targets)):
+            j = self.io.pick("pada> ", [f"{h.name} HP {h.hp}/{h.max_hp} MP {h.mp}/{h.max_mp}" for h in targets])
+            if j is None:
                 continue
-            h = targets[int(s) - 1]
+            h = targets[j]
             if it.revive_pct:
                 h.hp = max(1, int(h.max_hp * it.revive_pct))
             if it.heal_hp:
@@ -919,12 +896,10 @@ class Game:
         st = self.state
         self.io.line("")
         self.io.line(" Simpan di slot mana?")
-        for i, s in enumerate(st.slot_summaries(self.data, self.save_dir), 1):
-            self.io.line(f"  {i}) {s or '(kosong)'}")
-        self.io.line("  0) Batal")
-        s = "1" if self.auto_menus else self.io.ask("slot> ")
-        if s.isdigit() and 1 <= int(s) <= SAVE_SLOTS:
-            p = st.save(int(s), self.save_dir)
+        labels = [s or "(kosong)" for s in st.slot_summaries(self.data, self.save_dir)]
+        i = self.io.pick("slot> ", labels, back="Batal", auto="1" if self.auto_menus else None)
+        if i is not None:
+            p = st.save(i + 1, self.save_dir)
             self.io.line(f" Tersimpan ({p.name}).")
 
     # -- toko & penginapan --------------------------------------------------
@@ -935,8 +910,12 @@ class Game:
             self.io.line("")
             self.io.line(f" ═══ {sh['name']} ═══  Keping: {st.keping}")
             punya_kaca = bool(sh.get("kaca"))
-            self.io.line("  1) Beli   2) Jual" + ("   3) Kaca Ingatan" if punya_kaca else "") + "   0) Pergi")
-            s = "0" if self.auto_menus else self.io.ask("> ")
+            m = Menu(back="Pergi")
+            m.add("Beli")
+            m.add("Jual")
+            if punya_kaca:
+                m.add("Kaca Ingatan")
+            s = m.ask(self.io, "> ", auto="0" if self.auto_menus else None)
             if s == "1":
                 self._buy(sh)
             elif s == "2":
@@ -951,13 +930,13 @@ class Game:
         while True:
             items = [self.data.items[i] for i in sh["items"]]
             self.io.line("")
-            for i, it in enumerate(items, 1):
-                self.io.line(f"  {i}) {it.name:<22} {self.harga(it.price):>5} K  {self._stat_str(it) if it.kind != 'konsumsi' else it.description}  (punya {st.count(it.id)})")
-            self.io.line("  0) Kembali")
-            s = self.io.ask("beli> ")
-            if not (s.isdigit() and 1 <= int(s) <= len(items)):
+            i = self.io.pick("beli> ", [
+                f"{it.name:<22} {self.harga(it.price):>5} K  "
+                f"{self._stat_str(it) if it.kind != 'konsumsi' else it.description}  (punya {st.count(it.id)})"
+                for it in items])
+            if i is None:
                 return
-            it = items[int(s) - 1]
+            it = items[i]
             harga = self.harga(it.price)
             if st.keping < harga:
                 self.io.line("  Keping tidak cukup.")
@@ -974,13 +953,11 @@ class Game:
                 self.io.line("  Tidak ada yang bisa dijual.")
                 return
             self.io.line("")
-            for i, it in enumerate(items, 1):
-                self.io.line(f"  {i}) {it.name:<22} ×{st.inventory[it.id]:<3} {int(it.price * HARGA_JUAL):>5} K")
-            self.io.line("  0) Kembali")
-            s = self.io.ask("jual> ")
-            if not (s.isdigit() and 1 <= int(s) <= len(items)):
+            i = self.io.pick("jual> ", [
+                f"{it.name:<22} ×{st.inventory[it.id]:<3} {int(it.price * HARGA_JUAL):>5} K" for it in items])
+            if i is None:
                 return
-            it = items[int(s) - 1]
+            it = items[i]
             st.add_item(it.id, -1)
             st.keping += int(it.price * HARGA_JUAL)
             self.io.line(f"  Menjual {it.name}. Keping: {st.keping}")
@@ -991,9 +968,9 @@ class Game:
         if price > 0 and st.keping < price:
             self.io.line(f"  Menginap {price} Keping. Kepingmu tidak cukup.")
             return
-        if not self.auto_menus and price > 0:
-            if self.io.ask(f"  Menginap {price} Keping? (y/N) ").lower() != "y":
-                return
+        if price > 0 and not self.io.confirm(f"Menginap {price} Keping?",
+                                            auto=True if self.auto_menus else None):
+            return
         st.keping -= price
         st.heal_all()
         self.io.line("  Kalian beristirahat. HP dan MP pulih.")

@@ -283,28 +283,42 @@
   }
 
   /* ── Prompt ───────────────────────────────────────────────────────── */
+  /* Mesin mengirim jenis prompt: "menu" | "confirm" | "enter" | "free".
+     Pola teks lama dipakai sebagai cadangan untuk sesi yang belum diperbarui. */
+  function promptKind(p, prompt) {
+    if (p.kind) return p.kind;
+    if (/^\(Enter\)/i.test(prompt)) return "enter";
+    if (/\(y\/N\)|\(Y\/n\)/i.test(prompt)) return "confirm";
+    return p.options && p.options.length ? "menu" : "free";
+  }
+
   function showPrompt(p) {
     state.waiting = true;
     const prompt = (p.prompt || "").trim();
-    const isEnter = /^\(Enter\)/i.test(prompt);
-    const isYesNo = /\(y\/N\)|\(Y\/n\)/i.test(prompt);
+    const kind = promptKind(p, prompt);
 
-    el.promptLabel.textContent = isEnter ? "" : (prompt.replace(/[>：:]\s*$/, "") || "Pilih");
+    el.promptLabel.textContent = kind === "enter"
+      ? "" : (prompt.replace(/\(y\/N\)|\(Y\/n\)/i, "").replace(/[>：:]\s*$/, "").trim() || "Pilih");
     el.freeForm.hidden = true;
     el.choiceGrid.innerHTML = "";
 
-    if (isEnter) {
+    if (kind === "enter") {
       addButton("Lanjut ▸", "", "btn btn-primary");
       return;
     }
-    if (isYesNo) {
-      el.promptLabel.textContent = prompt.replace(/\(y\/N\)|\(Y\/n\)/i, "").trim();
+    if (kind === "confirm" && !(p.options || []).length) {
       addButton("Ya", "y", "btn btn-primary");
       addButton("Tidak", "n");
       return;
     }
     if (p.options && p.options.length) {
-      p.options.forEach((o) => addButton(o.label, o.key, "btn choice" + (o.meta ? " meta" : ""), o.key));
+      p.options.forEach((o) => {
+        let cls = "btn choice";
+        if (o.meta) cls += " meta";
+        if (o.back) cls += " back";
+        if (kind === "confirm" && o.key === "y") cls = "btn btn-primary";
+        addButton(o.label, o.key, cls, o.key);
+      });
       return;
     }
     el.freeForm.hidden = false;
@@ -338,8 +352,10 @@
     if (document.activeElement === el.freeText) return;
     const btns = [...el.choiceGrid.querySelectorAll("button")];
     if (e.key === "Enter" && btns.length === 1) { btns[0].click(); e.preventDefault(); return; }
-    if (/^[1-9]$/.test(e.key)) {
-      const hit = btns.find((b) => (b.querySelector(".k") || {}).textContent === e.key) || btns[Number(e.key) - 1];
+    if (/^[0-9a-z]$/i.test(e.key)) {
+      const k = e.key.toLowerCase();
+      const hit = btns.find((b) => ((b.querySelector(".k") || {}).textContent || "").toLowerCase() === k)
+        || (/^[1-9]$/.test(k) ? btns[Number(k) - 1] : null);
       if (hit) { hit.click(); e.preventDefault(); }
     }
   });

@@ -1094,3 +1094,38 @@ Penyimpangan dari desain awal, dan alasannya:
 - **Pemain tidak dipaksa memilih Jalur saat naik level.** Naik level hanya mengumumkan "bisa memilih
   Jalur"; pilihannya di menu Party, supaya pertarungan tidak terpotong dialog build.
 
+### 9.3 Catatan implementasi: menu sebagai data (perbaikan "permainan sangkut")
+
+Bug yang ditemukan saat bermain di APK: di Warung Bu Ratna pemain bisa membeli tapi tidak bisa
+keluar ke jalan desa. Penyebabnya bukan di toko itu, melainkan di lapisan antarmuka. Klien web
+dulu **menebak** pilihan dari teks yang sudah dicetak mesin permainan (pola `  N) label`), jadi:
+
+- menu yang memadatkan beberapa opsi dalam satu baris (`1) Beli   2) Jual   0) Pergi`) hanya
+  menghasilkan **satu** tombol — dan itu bukan tombol keluarnya;
+- menu yang menuliskan judul kolomnya sendiri (`Nomor) Equipment & skill   [S]usun barisan ...`)
+  tidak menghasilkan tombol keluar sama sekali.
+
+Di terminal tidak terasa, karena di sana pemain mengetik angkanya sendiri; di layar sentuh yang
+hanya punya tombol, pemain terkurung.
+
+Perbaikannya bukan menambal tiap menu, tapi menghapus tebak-tebakannya: **opsi sekarang dibawa
+sebagai data.** `pelita/ui/menu.py` (`Option`, `Menu`) adalah satu-satunya tempat daftar pilihan
+disusun, dan `IO.menu()` yang memutuskan penyajiannya — terminal mencetak satu opsi per baris,
+web mengirim daftarnya apa adanya. Konsekuensinya:
+
+- **Jalan keluar ikut secara bawaan.** `Menu()` selalu menambahkan `0) Kembali`; menu yang memang
+  tidak boleh ditinggalkan harus menyebut alasannya lewat `Menu.no_back("aksi pertarungan")`.
+  Lupa memberi tombol keluar sekarang butuh tindakan sengaja, bukan kelalaian.
+- **Tidak ada lagi prompt jawaban bebas.** Pertanyaan ya/tidak (`IO.confirm`) dan jeda Enter
+  (`IO.pause`) punya jenis prompt sendiri (`confirm`, `enter`) yang selalu bertombol. "Tukar
+  dengan siapa?" di Susun Barisan — dulu satu-satunya prompt tanpa daftar — kini bermenu juga.
+- **Keterangan panjang tidak ikut jadi tombol.** `Option.detail` (deskripsi Buruan, stat karakter
+  di menu Party) tercetak sebagai baris keterangan di terminal dan masuk log di web.
+- **Menu terkunci bukan tombol.** Tingkat Arena yang belum terbuka dicetak sebagai keterangan,
+  jadi pemain tidak menekan tombol yang pasti ditolak.
+
+`tests/test_menu_web.py` menjaga kelas bug ini, bukan satu kasusnya: pemeriksa dipasang ke `WebIO`
+yang asli dan berjalan di **tiap** prompt. Satu tes menamatkan seluruh Babak 1 lewat lapisan web;
+tes lain melepas crawler yang menekan setiap tombol yang ditemukannya (tanpa daftar menu yang
+ditulis tangan) dan keluar lewat tombol keluar tiap menu — kalau sebuah menu tidak bisa
+ditinggalkan, crawler-nya yang tersangkut dan tesnya gagal.

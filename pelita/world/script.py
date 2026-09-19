@@ -28,6 +28,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Callable, Optional
 
+from ..ui.menu import Menu
 from ..ui.terminal import IO
 from .model import Area
 from .state import XP_CADANGAN, GameState
@@ -102,7 +103,7 @@ class ScriptRunner:
 
     def pause(self) -> None:
         if not self.auto:
-            self.io.ask("(Enter) ")
+            self.io.pause()
 
     # -- eksekusi -----------------------------------------------------------
     def run(self, area: Area, script_id: str) -> None:
@@ -182,18 +183,12 @@ class ScriptRunner:
                 opts = [o for o in c["choice"] if st.check(o.get("if"))]
                 if not opts:
                     continue
-                idx = 0
-                if not self.auto_choice:
-                    for i, o in enumerate(opts, 1):
-                        self.io.line(f"  {i}) {o['text']}")
-                    while True:
-                        s = self.io.ask("> ")
-                        if s.isdigit() and 1 <= int(s) <= len(opts):
-                            idx = int(s) - 1
-                            break
-                        if s.lower() == "q":
-                            raise KeyboardInterrupt
-                self.run_commands(area, opts[idx].get("then", []))
+                # Pilihan cerita memang tidak punya "kembali": jawabannya menggerakkan adegan.
+                m = Menu().no_back("pilihan cerita")
+                for o in opts:
+                    m.add(o["text"])
+                idx = m.pick(self.io, "> ", auto="1" if self.auto_choice else None)
+                self.run_commands(area, opts[idx or 0].get("then", []))
             elif "goto" in c:
                 self.hooks.move(c["goto"], None)
             elif "travel" in c:

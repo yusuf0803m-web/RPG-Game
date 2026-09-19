@@ -2,11 +2,17 @@
 
 ``WebIO`` menggantikan terminal:
 
-- ``line(teks)``   → event ``log`` (dan, kalau berpola ``  N) label``, dikumpulkan
-  sebagai pilihan untuk prompt berikutnya — sama seperti pemain otomatis di tes)
+- ``line(teks)``   → event ``log``
 - ``emit(k, v)``   → event terstruktur (``room``, ``battle``, ``say``, ``text``, ``end``)
-- ``ask(prompt)``  → event ``prompt`` berisi daftar pilihan, lalu **memblokir**
-  sampai klien mengirim jawaban
+- ``menu(opsi)``   → event ``prompt`` berisi daftar opsi **sebagai data** (lihat
+  ``pelita/ui/menu.py``), lalu **memblokir** sampai klien mengirim jawaban
+- ``confirm``/``pause`` → prompt ya-tidak dan prompt "Lanjut", juga bertombol
+
+Tiap prompt punya ``kind``: ``menu`` | ``confirm`` | ``enter`` | ``free``.
+Mesin permainan tidak pernah lagi mengarang opsi dari teks yang sudah dicetak —
+dulu itu sumber bug "menu tanpa tombol keluar": satu baris yang memuat beberapa
+opsi hanya jadi satu tombol. ``free`` karena itu seharusnya tidak pernah muncul;
+tes ``tests/test_menu_web.py`` menjaga hal itu.
 
 Klien mengambil event lewat ``GET .../state?since=N`` dan menjawab lewat
 ``POST .../input``. Semua state permainan tetap milik mesin yang sama dengan
@@ -15,7 +21,6 @@ versi terminal; modul ini tidak menyalin aturan apa pun.
 from __future__ import annotations
 
 import queue
-import re
 import threading
 import time
 import uuid
@@ -24,12 +29,13 @@ from pathlib import Path
 from typing import Any, Optional
 
 from ..loader import GameData, load_data
+from ..ui.menu import Option
+from ..ui.terminal import IO
 from ..world.explore import Game
 from ..world.model import World, load_world
 from ..world.state import SAVE_SLOTS, GameState, new_game
 
-OPT_RE = re.compile(r"^\s*(\d+)\)\s+(.*)$")
-HURUF_RE = re.compile(r"\[([A-Za-z])\]([A-Za-z ]*)")
+YA_TIDAK = (("y", "Ya"), ("n", "Tidak"))
 TIMEOUT_INPUT = 3600.0          # sesi menganggur >1 jam dianggap ditinggalkan
 POLL_TIMEOUT = 25.0             # long-poll: tunggu event baru maksimal sekian detik
 SESSION_TTL = 6 * 3600.0
@@ -46,38 +52,74 @@ class SessionClosed(Exception):
     """Sesi dihentikan dari luar (pemain menutup permainan)."""
 
 
-class WebIO:
+def as_payload(o: Option) -> dict:
+    """Bentuk satu opsi untuk klien."""
+    return {"key": o.key, "label": o.label, "meta": o.meta, "back": o.back}
+
+
+class WebIO(IO):
+    """IO terminal, tapi keluaran & prompt-nya masuk antrian event.
+
+    Mewarisi ``IO`` supaya ``pick()``/``Menu`` yang dipakai mesin permainan
+    bekerja sama persis; hanya cara menampilkan dan membaca yang berbeda.
+    """
+
     structured = True          # klien menggambar ruang & pertarungan dari emit()
 
     def __init__(self, session: "WebSession") -> None:
+        super().__init__(read=lambda prompt="> ": self.ask(prompt), write=self.line)
         self.session = session
-        self._pending_options: list[dict] = []
-        self._pending_lines: list[str] = []
 
     # -- keluaran -----------------------------------------------------------
     def line(self, s: str = "") -> None:
-        m = OPT_RE.match(s)
-        if m:
-            self._pending_options.append({"key": m.group(1), "label": m.group(2).strip()})
-            return
-        if "[P]arty" in s or "[K]eluar" in s:
-            for key, label in HURUF_RE.findall(s):
-                self._pending_options.append({"key": key.lower(), "label": (key + label).strip(), "meta": True})
-            return
-        self._pending_lines.append(s)
         self.session.push("log", {"text": s})
 
     def emit(self, kind: str, payload: dict) -> None:
         self.session.push(kind, payload)
 
+    def render_options(self, options) -> None:
+        """Keterangan tambahan tetap masuk log; labelnya sendiri jadi tombol."""
+        for o in options:
+            for d in o.detail:
+                self.line(d)
+
     # -- masukan ------------------------------------------------------------
+    def _prompt(self, prompt: str, kind: str, options: list[dict], required: Optional[str] = None) -> str:
+        """Kirim satu prompt dan tunggu jawaban yang sah."""
+        keys = {o["key"].lower() for o in options}
+        payload = {"prompt": prompt.strip(), "kind": kind, "options": options,
+                   "free": kind == "free", "required": required}
+        while True:
+            self.session.push("prompt", payload)
+            s = self.session.wait_for_input().strip().lower()
+            if kind == "free" or kind == "enter" or s in keys:
+                return s
+            if s == "":
+                back = next((o["key"] for o in options if o.get("back") and not o.get("meta")), None)
+                if back is not None:
+                    return back
+            # klien mengirim jawaban yang tidak ada di daftar: tanya ulang, jangan
+            # membiarkan sesi menggantung.
+
+    def menu(self, options, prompt: str = "> ", auto: Optional[str] = None,
+             required: Optional[str] = None) -> str:
+        self.render_options(options)
+        if auto is not None:
+            return auto.lower()
+        return self._prompt(prompt, "menu", [as_payload(o) for o in options], required)
+
+    def confirm(self, question: str, auto: Optional[bool] = None) -> bool:
+        if auto is not None:
+            return auto
+        opsi = [{"key": k, "label": l, "meta": False, "back": k == "n"} for k, l in YA_TIDAK]
+        return self._prompt(question, "confirm", opsi) == "y"
+
+    def pause(self) -> None:
+        self._prompt("(Enter)", "enter", [])
+
     def ask(self, prompt: str = "> ") -> str:
-        options = self._pending_options
-        self._pending_options = []
-        self._pending_lines = []
-        self.session.push("prompt", {"prompt": prompt.strip(), "options": options,
-                                     "free": not options or prompt.strip().lower().endswith(("(y/n)", "(y/n) "))})
-        return self.session.wait_for_input()
+        """Jawaban bebas. Tidak dipakai lagi oleh mesin permainan; lihat docstring modul."""
+        return self._prompt(prompt, "free", [])
 
 
 class WebSession:
