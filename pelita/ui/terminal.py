@@ -10,7 +10,7 @@ from typing import Callable, Optional, Sequence
 from ..combat import ai
 from ..combat.engine import Action, Battle, Combatant
 from ..models import Affinity, Element, Skill, Target
-from .menu import Menu, Option, numbered
+from .menu import Header, Menu, Option, numbered
 
 LEBAR = 66
 
@@ -41,7 +41,7 @@ class IO:
     # mencetak satu opsi per baris; antarmuka lain (web) menimpa metode ini dan
     # mengirim daftar opsinya sebagai data.
     def menu(self, options: Sequence[Option], prompt: str = "> ", auto: Optional[str] = None,
-             required: Optional[str] = None) -> str:
+             required: Optional[str] = None, header: Optional[Header] = None) -> str:
         """Tampilkan daftar opsi, kembalikan key yang dipilih (sudah lowercase)."""
         keys = {o.key.lower(): o for o in options}
         keluar = next((o.key.lower() for o in options if o.back), None)
@@ -49,7 +49,7 @@ class IO:
         # seperti [K]eluar (keluar ke layar judul) tidak boleh terpicu tanpa sengaja.
         enter = next((o.key.lower() for o in options if o.back and not o.meta), None)
         while True:
-            self.render_options(options)
+            self.render_options(options, header)
             if auto is not None:
                 return auto.lower()
             s = self.ask(prompt).strip().lower()
@@ -63,8 +63,14 @@ class IO:
                 return keluar
             self.line("  Pilihan tidak dikenal.")
 
-    def render_options(self, options: Sequence[Option]) -> None:
-        """Cetak menu: satu opsi per baris, pintasan huruf dirangkum di baris terakhir."""
+    def render_options(self, options: Sequence[Option], header: Optional[Header] = None) -> None:
+        """Cetak menu: judul, lalu satu opsi per baris, pintasan huruf di baris terakhir."""
+        if header:
+            self.line("")
+            if header.title:
+                self.line(header.line)
+            for n in header.note:
+                self.line(n)
         for o in options:
             if o.meta:
                 continue
@@ -76,9 +82,12 @@ class IO:
             self.line("  " + "  ".join(huruf))
 
     def pick(self, prompt: str, labels: Sequence[str], back: Optional[str] = "Kembali",
-             auto: Optional[str] = None, required: Optional[str] = None) -> Optional[int]:
+             auto: Optional[str] = None, required: Optional[str] = None,
+             title: Optional[str] = None, subtitle: Optional[str] = None,
+             note: Sequence[str] = ()) -> Optional[int]:
         """Menu bernomor sederhana: kembalikan indeks pilihan, None kalau kembali."""
-        return numbered(labels, back=back, required=required).pick(self, prompt, auto=auto)
+        return numbered(labels, back=back, required=required, title=title,
+                        subtitle=subtitle, note=note).pick(self, prompt, auto=auto)
 
     def confirm(self, question: str, auto: Optional[bool] = None) -> bool:
         """Pertanyaan ya/tidak. Web menampilkannya sebagai dua tombol."""

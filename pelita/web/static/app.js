@@ -12,6 +12,7 @@
     battle: $("battle"), battleRound: $("battle-round"), bara: $("bara"), baraPips: $("bara-pips"),
     enemies: $("enemies"), party: $("party"), log: $("log"),
     choices: $("choices"), promptLabel: $("prompt-label"), choiceGrid: $("choice-grid"),
+    promptHead: $("prompt-head"), promptTitle: $("prompt-title"), promptNote: $("prompt-note"),
     freeForm: $("free-input"), freeText: $("free-text"), toast: $("toast")
   };
 
@@ -59,6 +60,7 @@
       state.id = id; state.since = 0; state.dead = false;
       el.log.innerHTML = ""; el.enemies.innerHTML = ""; el.party.innerHTML = "";
       el.battle.hidden = true; state.battleOn = false; state.lastHp.clear(); state.roomKey = null;
+      el.promptHead.hidden = true; el.choiceGrid.innerHTML = "";
       document.body.classList.remove("in-battle");
       el.title.hidden = true; el.game.hidden = false;
       setScene({ area_id: "pelita_rendah", area: "Lembah Larung", room: "…", fog: false });
@@ -297,6 +299,10 @@
     const prompt = (p.prompt || "").trim();
     const kind = promptKind(p, prompt);
 
+    /* Judul menu datang bersama prompt, bukan sebagai baris log: panel ini
+       diganti tiap prompt, jadi header toko yang digambar ulang tiap putaran
+       tidak menumpuk di log (lihat pelita/ui/menu.py). */
+    setPromptHead(p);
     el.promptLabel.textContent = kind === "enter"
       ? "" : (prompt.replace(/\(y\/N\)|\(Y\/n\)/i, "").replace(/[>：:]\s*$/, "").trim() || "Pilih");
     el.freeForm.hidden = true;
@@ -324,6 +330,17 @@
     el.freeForm.hidden = false;
     el.freeText.value = "";
     el.freeText.focus();
+  }
+
+  function setPromptHead(p) {
+    const title = (p.title || "").trim();
+    const sub = (p.subtitle || "").trim();
+    const note = (p.note || []).map((n) => String(n).trim()).filter(Boolean);
+    el.promptHead.hidden = !(title || sub || note.length);
+    el.promptTitle.innerHTML = title
+      ? esc(title) + (sub ? ` <span class="sub">${esc(sub)}</span>` : "")
+      : (sub ? `<span class="sub">${esc(sub)}</span>` : "");
+    el.promptNote.textContent = note.join("\n");
   }
 
   function addButton(label, value, cls, keyBadge) {
@@ -372,6 +389,7 @@
     state.waiting = false;
     el.choiceGrid.innerHTML = "";
     el.promptLabel.textContent = "";
+    el.promptHead.hidden = true;
     el.freeForm.hidden = true;
     if (p.error) { toast("Kesalahan: " + p.error); }
     addButton("Kembali ke layar judul", "", "btn btn-primary");

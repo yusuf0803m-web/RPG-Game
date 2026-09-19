@@ -28,7 +28,7 @@ from collections import Counter, deque
 import pytest
 
 from pelita.loader import load_data
-from pelita.ui.menu import Menu
+from pelita.ui.menu import Header, Menu
 from pelita.web.session import WebIO
 from pelita.world.explore import Game
 from pelita.world.model import load_world
@@ -40,6 +40,9 @@ ALASAN_TANPA_KELUAR = {"aksi pertarungan", "pilihan cerita"}
 
 #: Label yang masih menyembunyikan opsi lain di dalamnya ("Beli   2) Jual   0) Pergi").
 OPSI_TERSELIP = re.compile(r"\s\d+\)\s")
+
+#: Penanda opsi "N)" di mana pun dalam sebuah baris log.
+PENANDA_OPSI = re.compile(r"(?:^|\s)(\d+)\)\s")
 
 #: Angka di label (HP, harga, jumlah) diabaikan saat mengenali menu yang sama.
 ANGKA = re.compile(r"\d+")
@@ -79,6 +82,18 @@ def periksa_prompt(p: dict) -> None:
         f"opsi: {[o['label'] for o in opsi]}")
 
 
+def periksa_log(text: str) -> None:
+    """Satu baris log tidak boleh memuat lebih dari satu penanda opsi.
+
+    Jaring kedua di samping ``periksa_prompt``: menu yang mencetak pilihannya
+    sendiri dengan ``io.line()`` — tanpa lewat ``Menu`` sama sekali — tidak akan
+    ketahuan dari daftar opsi (daftarnya kosong atau tidak lengkap), tapi baris
+    padatnya ("1) Beli   2) Jual   0) Pergi") tetap terlihat di sini.
+    """
+    assert len(PENANDA_OPSI.findall(text)) <= 1, (
+        f"baris log {text!r} memuat beberapa opsi sekaligus — satu opsi satu tombol")
+
+
 class FakeSession:
     """Pengganti ``WebSession`` tanpa thread: event dikumpulkan, jawaban dari kebijakan.
 
@@ -90,13 +105,34 @@ class FakeSession:
         self.jawab = jawab
         self.events: list[tuple[str, dict]] = []
         self.prompts: list[dict] = []
+        self.baris: set[str] = set()
         self.io = WebIO(self)
 
     def push(self, kind: str, payload: dict) -> None:
         self.events.append((kind, payload))
+        if kind == "log":
+            periksa_log(payload["text"])
+            self.baris.add(payload["text"])
         if kind == "prompt":
             periksa_prompt(payload)
+            self.judul_bukan_log(payload)
             self.prompts.append(payload)
+
+    def judul_bukan_log(self, p: dict) -> None:
+        """Judul menu hidup di panel prompt, bukan di log.
+
+        Menu yang berulang dalam ``while True`` menggambar judulnya sekali tiap
+        putaran; kalau judul itu ditulis dengan ``io.line()`` maka log terisi
+        ulangan ("═══ Warung Bu Ratna ═══ Keping: 38" berkali-kali). Prompt
+        selalu *mengganti* panelnya, jadi membawa judul di situ menghilangkan
+        ulangannya — sama seperti deskripsi ruang yang hanya ditulis saat pindah.
+        """
+        if not p.get("title"):
+            return
+        judul = Header(p["title"], p.get("subtitle")).line
+        assert judul not in self.baris, (
+            f"judul menu {judul!r} juga ditulis ke log — di web ia akan menumpuk "
+            f"tiap menu digambar ulang; bawa lewat Menu(title=...) saja")
 
     def wait_for_input(self) -> str:
         return self.jawab(self.prompts[-1])
@@ -138,6 +174,51 @@ def test_aturan_menangkap_menu_tanpa_jalan_keluar():
 
     tanpa_keluar["required"] = "aksi pertarungan"          # pengecualian yang disengaja
     periksa_prompt(tanpa_keluar)
+
+
+def test_aturan_menangkap_baris_log_padat():
+    """``periksa_log`` harus menangkap baris yang memadatkan beberapa opsi."""
+    with pytest.raises(AssertionError, match="satu opsi satu tombol"):
+        periksa_log("  1) Beli   2) Jual   0) Pergi")
+    with pytest.raises(AssertionError, match="satu opsi satu tombol"):
+        periksa_log("  Nomor) Equipment & skill   [S]usun barisan   [J]alur   0) Kembali   1) x")
+    periksa_log("  1) Beli")                       # satu opsi per baris: sah
+    periksa_log(" ═══ Warung Bu Ratna ═══  Keping: 38")
+    periksa_log("  Membeli Ramuan Daun. Keping: 30")
+
+
+def test_aturan_menangkap_judul_yang_ditulis_ke_log():
+    """Kalau penjaga judul rusak, tes ulangan header di bawah jadi tidak berarti."""
+    sesi = FakeSession(lambda p: "0")
+    sesi.io.line(" ═══ Warung Bu Ratna ═══  Keping: 38")
+    with pytest.raises(AssertionError, match="menumpuk"):
+        sesi.judul_bukan_log({"title": "Warung Bu Ratna", "subtitle": "Keping: 38"})
+
+
+def test_judul_toko_tidak_berulang_di_log(data, world, tmp_path):
+    """Gejala kedua yang dilaporkan: header toko tercetak ulang tiap menu digambar.
+
+    Menu toko digambar berkali-kali (beli → kembali → beli → ...); header itu
+    harus muncul sebagai judul prompt tiap kali, dan **nol** kali di log.
+    """
+    langkah = iter(["1", "0", "1", "0", "2", "0", "0"])     # Beli, kembali, ... lalu Pergi
+
+    def jawab(p):
+        if p["kind"] != "menu":
+            return "" if p["kind"] == "enter" else "n"
+        return next(langkah, "0")
+
+    g, st, sesi = siap(data, world, jawab, tmp_path)
+    st.keping = 500
+    g.shop("warung_ratna")
+
+    judul = [p for p in sesi.prompts if (p.get("title") or "").startswith("Warung Bu Ratna")]
+    assert len(judul) >= 3, "menu toko seharusnya digambar ulang beberapa kali"
+    assert all(p["subtitle"] == f"Keping: {st.keping}" for p in judul)
+    assert not [l for l in sesi.log if "Warung Bu Ratna" in l], (
+        f"header toko masih masuk log: {[l for l in sesi.log if 'Warung Bu Ratna' in l]}")
+    assert len(sesi.log) == len(set(sesi.log)) or all(
+        not l.strip() for l in sesi.log), f"log toko memuat ulangan: {sesi.log}"
 
 
 def test_menu_baru_tanpa_jalan_keluar_ketahuan(tmp_path):

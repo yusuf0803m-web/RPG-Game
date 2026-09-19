@@ -1121,11 +1121,37 @@ web mengirim daftarnya apa adanya. Konsekuensinya:
   dengan siapa?" di Susun Barisan — dulu satu-satunya prompt tanpa daftar — kini bermenu juga.
 - **Keterangan panjang tidak ikut jadi tombol.** `Option.detail` (deskripsi Buruan, stat karakter
   di menu Party) tercetak sebagai baris keterangan di terminal dan masuk log di web.
-- **Menu terkunci bukan tombol.** Tingkat Arena yang belum terbuka dicetak sebagai keterangan,
-  jadi pemain tidak menekan tombol yang pasti ditolak.
+- **Menu terkunci bukan tombol.** Tingkat Arena yang belum terbuka masuk sebagai keterangan judul
+  (`Menu.info`), jadi pemain tidak menekan tombol yang pasti ditolak.
+- **Judul menu juga data.** Lihat di bawah.
+
+#### Judul menu: `Menu.title`, bukan `io.line()`
+
+Gejala kedua dari bug yang sama, terlihat di layar HP: header toko
+(`═══ Warung Bu Ratna ═══  Keping: 38`) tercetak sekali lagi **tiap** menu digambar ulang, jadi
+log penuh ulangan. Sebabnya sederhana — menu berulang di dalam `while True`, dan headernya ditulis
+dengan `io.line()`, yang di web berarti *menambah* baris log.
+
+Perlakuannya kini disamakan dengan deskripsi ruang, yang memang hanya ditulis saat pemain
+benar-benar pindah: judul dibawa sebagai data di `Menu.title` / `subtitle` / `note` dan ikut di
+dalam payload `prompt`, bukan sebagai event `log`. Karena tiap prompt **mengganti** panel
+pilihan di klien, judul yang digambar ulang tiap putaran tidak bisa menumpuk — bukan karena
+ada yang menyaring ulangannya, tapi karena ia tidak pernah masuk log sejak awal.
+
+Terminal tidak berubah: `IO.render_options()` tetap mencetak `═══ Judul ═══  Keterangan` di atas
+daftar opsi tiap kali menu digambar, karena di layar bergulir itulah yang diharapkan pemain.
 
 `tests/test_menu_web.py` menjaga kelas bug ini, bukan satu kasusnya: pemeriksa dipasang ke `WebIO`
 yang asli dan berjalan di **tiap** prompt. Satu tes menamatkan seluruh Babak 1 lewat lapisan web;
 tes lain melepas crawler yang menekan setiap tombol yang ditemukannya (tanpa daftar menu yang
 ditulis tangan) dan keluar lewat tombol keluar tiap menu — kalau sebuah menu tidak bisa
 ditinggalkan, crawler-nya yang tersangkut dan tesnya gagal.
+
+Dua jaring tambahan ikut berjalan di tiap event, jadi berlaku untuk semua menu yang tersentuh
+tes mana pun:
+
+- **`periksa_log`** — satu baris log tidak boleh memuat lebih dari satu penanda `N)`. Ini
+  menangkap menu yang mencetak pilihannya sendiri tanpa lewat `Menu` sama sekali, yang tidak
+  akan terlihat dari daftar opsi (daftarnya kosong atau tidak lengkap).
+- **`judul_bukan_log`** — judul sebuah prompt tidak boleh juga muncul sebagai baris log. Ini
+  yang menjaga agar header menu tidak kembali ditulis dengan `io.line()`.

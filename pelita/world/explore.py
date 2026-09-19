@@ -261,12 +261,10 @@ class Game:
     def party_menu(self) -> None:
         st = self.state
         while True:
-            self.io.line("")
-            self.io.line("═" * LEBAR)
+            m = Menu(title="Party")
             butuh = [h.name for h in st.party if h.butuh_pilih_jalur]
             if butuh:
-                self.io.line(f"  ! Menunggu pilihan Jalur: {', '.join(butuh)}")
-            m = Menu()
+                m.info(f"  ! Menunggu pilihan Jalur: {', '.join(butuh)}")
             for i, h in enumerate(st.party, 1):
                 stat = h.stats
                 posisi = "AKTIF " if i <= PARTY_AKTIF_MAKS else "cadang"
@@ -280,7 +278,6 @@ class Game:
                 ])
             m.letter("s", "Susun barisan")
             m.letter("j", "Jalur")
-            self.io.line("═" * LEBAR)
             s = m.ask(self.io, "> ")
             if s == "0":
                 return
@@ -320,14 +317,13 @@ class Game:
         if len(st.party) < 2:
             self.io.line("  Belum ada yang bisa disusun.")
             return
-        self.io.line("")
-        self.io.line(" Empat nama teratas ikut bertarung. Rimba harus selalu aktif (ia pemegang Bara).")
+        aturan = [" Empat nama teratas ikut bertarung. Rimba harus selalu aktif (ia pemegang Bara)."]
         labels = [f"[{'AKTIF ' if i <= PARTY_AKTIF_MAKS else 'cadang'}] {h.name} Lv {h.level}"
                   for i, h in enumerate(st.party, 1)]
-        a = self.io.pick("tukar siapa> ", labels)
+        a = self.io.pick("tukar siapa> ", labels, title="Susun barisan", note=aturan)
         if a is None:
             return
-        b = self.io.pick("dengan siapa> ", labels)
+        b = self.io.pick("dengan siapa> ", labels, title=f"Tukar {st.party[a].name} dengan siapa?")
         if b is None:
             return
         if st.tukar_posisi(a, b):
@@ -341,7 +337,7 @@ class Game:
         if not kandidat:
             self.io.line("  Belum ada yang cukup level untuk memilih Jalur.")
             return
-        i = self.io.pick("siapa> ", [f"{h.name} — {self._jalur_label(h)}" for h in kandidat])
+        i = self.io.pick("siapa> ", [f"{h.name} — {self._jalur_label(h)}" for h in kandidat], title="Jalur")
         if i is None:
             return
         h = kandidat[i]
@@ -357,9 +353,7 @@ class Game:
         opsi = h.jalur_tersedia()
         if not opsi:
             return
-        self.io.line("")
-        self.io.line(f" ═══ Jalur {h.name} ═══")
-        m = Menu(back="Nanti saja")
+        m = Menu(back="Nanti saja", title=f"Jalur {h.name}")
         for j in opsi:
             skill_nama = ", ".join(f"{self.data.skill(sid).name} (Lv {self.data.skill(sid).level})" for sid in j.skills)
             m.add(f"{j.name} — {j.description}",
@@ -386,16 +380,19 @@ class Game:
         return 0 if h.level >= LEVEL_MAX else xp_to_reach(h.level + 1) - h.xp
 
     def hero_menu(self, h: Hero) -> None:
-        self.io.line("")
-        self.io.line(f" {h.name} — {h.cdef.title}. {h.cdef.description}")
-        self.io.line(" Skill: " + (", ".join(f"{s.name} ({s.cost} {s.cost_type.value.upper()})" for s in h.skills()) or "-"))
+        skill = ", ".join(f"{s.name} ({s.cost} {s.cost_type.value.upper()})" for s in h.skills()) or "-"
         if h.guest:
+            self.io.line("")
+            self.io.line(f" {h.name} — {h.cdef.title}. {h.cdef.description}")
+            self.io.line(" Skill: " + skill)
             self.io.line(" (Tamu: equipment tidak bisa diganti.)")
             return
-        self.io.line(f" Jalur: {self._jalur_label(h)}")
-        self.io.line(f" Kaca: {self._kaca_label(h)}" + ("" if self.kaca_bebas else "  (bongkar-pasang di Tukang Kaca atau saat berkemah)"))
         slots = list(SLOT_LABEL)
-        m = Menu()
+        m = Menu(title=f"{h.name} — {h.cdef.title}")
+        m.info(f" {h.cdef.description}")
+        m.info(" Skill: " + skill)
+        m.info(f" Jalur: {self._jalur_label(h)}")
+        m.info(f" Kaca: {self._kaca_label(h)}" + ("" if self.kaca_bebas else "  (bongkar-pasang di Tukang Kaca atau saat berkemah)"))
         for slot in slots:
             cur = h.equipment.get(slot)
             m.add(f"{SLOT_LABEL[slot]}: {self.data.items[cur].name if cur else '-'}")
@@ -417,7 +414,8 @@ class Game:
         if not cands:
             self.io.line("  Tidak ada yang bisa dipasang.")
             return
-        i = self.io.pick("pasang> ", [f"{self.data.items[iid].name}  {self._stat_str(self.data.items[iid])}" for iid in cands])
+        i = self.io.pick("pasang> ", [f"{self.data.items[iid].name}  {self._stat_str(self.data.items[iid])}" for iid in cands],
+                         title=f"{SLOT_LABEL[slot]} untuk {h.name}")
         if i is None:
             return
         new = cands[i]
@@ -456,8 +454,6 @@ class Game:
                 self.io.line(f"  Senjata {h.name} tidak punya soket Kaca.")
                 return
             h.rapikan_soket()
-            self.io.line("")
-            self.io.line(f" ═══ Soket {h.name} ═══")
             labels = []
             for i in range(h.soket):
                 kid = h.kaca[i]
@@ -466,7 +462,7 @@ class Game:
                     labels.append(f"{k.name} {angka_romawi(kaca_tingkat(st.kaca_uses.get(kid, 0)))} — {k.description}")
                 else:
                     labels.append("(kosong)")
-            idx = self.io.pick("soket> ", labels)
+            idx = self.io.pick("soket> ", labels, title=f"Soket {h.name}")
             if idx is None:
                 return
             if h.kaca[idx]:
@@ -481,7 +477,8 @@ class Game:
                 continue
             pilih = self.io.pick("pasang> ", [
                 f"{self.data.kaca[kid].name} {angka_romawi(kaca_tingkat(st.kaca_uses.get(kid, 0)))} "
-                f"×{st.kaca[kid]} — {self.data.kaca[kid].description}" for kid in stok])
+                f"×{st.kaca[kid]} — {self.data.kaca[kid].description}" for kid in stok],
+                title=f"Pasang Kaca — soket {idx + 1} {h.name}")
             if pilih is None:
                 continue
             kid = stok[pilih]
@@ -504,9 +501,8 @@ class Game:
         self.kaca_bebas = True
         try:
             while True:
-                self.io.line("")
-                self.io.line(f" ═══ Tukang Kaca ═══  Keping: {st.keping}  Serpihan: {st.count(SERPIHAN)}")
-                m = Menu(back="Pergi")
+                m = Menu(back="Pergi", title="Tukang Kaca",
+                         subtitle=f"Keping: {st.keping}  Serpihan: {st.count(SERPIHAN)}")
                 m.add("Pasang / lepas Kaca")
                 if shop_id and self.world.shops.get(shop_id, {}).get("kaca"):
                     m.add("Beli Kaca")
@@ -532,10 +528,10 @@ class Game:
             if not daftar:
                 self.io.line("  Tidak ada Kaca yang dijual di sini.")
                 return
-            self.io.line("")
             sel = self.io.pick("beli kaca> ", [
                 f"{self.data.kaca[kid].name:<16} {self.harga(self.data.kaca[kid].price):>5} K  "
-                f"{self.data.kaca[kid].description}  (punya {st.kaca.get(kid, 0)})" for kid in daftar])
+                f"{self.data.kaca[kid].description}  (punya {st.kaca.get(kid, 0)})" for kid in daftar],
+                title="Beli Kaca Ingatan", subtitle=f"Keping: {st.keping}")
             if sel is None:
                 return
             kid = daftar[sel]
@@ -560,7 +556,8 @@ class Game:
             ("Reset Jalur satu anggota", self._tukar_reset_jalur),
             ("Kaca Skill langka", self._tukar_kaca_langka),
         ]
-        sel = self.io.pick("tukar> ", [label for label, _ in pilihan])
+        sel = self.io.pick("tukar> ", [label for label, _ in pilihan],
+                           title=f"Tukar {SERPIHAN_PER_TUKAR} Serpihan Ingatan")
         if sel is None:
             return
         if pilihan[sel][1]():
@@ -625,7 +622,8 @@ class Game:
         if not langka:
             self.io.line("  Tukang Kaca kehabisan barang langka.")
             return False
-        sel = self.io.pick("kaca> ", [f"{self.data.kaca[kid].name} — {self.data.kaca[kid].description}" for kid in langka])
+        sel = self.io.pick("kaca> ", [f"{self.data.kaca[kid].name} — {self.data.kaca[kid].description}" for kid in langka],
+                           title="Kaca Skill langka")
         if sel is None:
             return False
         st.add_kaca(langka[sel], 1)
@@ -649,8 +647,7 @@ class Game:
         self.kaca_bebas = True
         try:
             while True:
-                self.io.line("")
-                m = Menu(back="Bongkar kemah")
+                m = Menu(back="Bongkar kemah", title="Kemah")
                 m.add("Mengobrol (Kenangan)")
                 m.add("Bongkar-pasang Kaca")
                 sel = m.ask(self.io, "kemah> ", auto="0" if self.auto_menus else None)
@@ -690,7 +687,8 @@ class Game:
             return
         labels = [f"{' & '.join(self.data.character(c).name for c in k['pasangan'])} — {k['judul']}"
                   for _, k in tersedia]
-        sel = self.io.pick("obrol> ", labels, auto="1" if self.auto_menus else None)
+        sel = self.io.pick("obrol> ", labels, title="Mengobrol",
+                           auto="1" if self.auto_menus else None)
         if sel is None:
             return
         kid, k = tersedia[sel]
@@ -713,14 +711,12 @@ class Game:
         """Papan kontrak: ambil buruan, lihat yang sedang berjalan (GAME_DESIGN §5.7)."""
         st = self.state
         while True:
-            self.io.line("")
-            self.io.line(" ═══ Papan Buruan ═══")
             tersedia = [(bid, b) for bid, b in sorted(self.world.buruan.items())
                         if st.buruan.get(bid) != "selesai" and st.check(b.get("syarat", []))]
             if not tersedia:
                 self.io.line(" Papan kosong. Kafilah belum menempel kertas baru.")
                 return
-            m = Menu(back="Pergi")
+            m = Menu(back="Pergi", title="Papan Buruan")
             for bid, b in tersedia:
                 tanda = " [DIAMBIL]" if st.buruan.get(bid) == "aktif" else ""
                 m.add(f"{b['nama']} — Lv {b['level']}{tanda}", detail=[
@@ -785,15 +781,14 @@ class Game:
             self.io.line("  Arena belum dibuka.")
             return
         while True:
-            self.io.line("")
-            self.io.line(f" ═══ Arena Kafilah ═══  Tingkat tertamat: {st.arena}/{len(self.world.arena)}")
-            self.io.line(" Aturan: tiga gelombang beruntun, tanpa item, tanpa istirahat.")
-            m = Menu(back="Pergi")
+            m = Menu(back="Pergi", title="Arena Kafilah",
+                     subtitle=f"Tingkat tertamat: {st.arena}/{len(self.world.arena)}")
+            m.info(" Aturan: tiga gelombang beruntun, tanpa item, tanpa istirahat.")
             boleh = []
             for i, t in enumerate(self.world.arena, 1):
                 label = f"{t['nama']} — Lv {t['level']}, upah {self._hadiah_label(t.get('hadiah', {}))}"
                 if i > st.arena + 1:                      # terkunci: keterangan saja, bukan tombol
-                    self.io.line(f"  — {label}  (terkunci)")
+                    m.info(f"  — {label}  (terkunci)")
                     continue
                 m.add(label + ("  [tamat]" if i <= st.arena else ""))
                 boleh.append(i)
@@ -826,13 +821,12 @@ class Game:
         st = self.state
         while True:
             items = [self.data.items[i] for i, n in sorted(st.inventory.items()) if n > 0]
-            self.io.line("")
             if not items:
                 self.io.line(" Inventori kosong.")
                 return
             i = self.io.pick("item> ", [
                 f"{it.name} ×{st.inventory[it.id]}  {self._stat_str(it) if it.kind != 'konsumsi' else it.description}"
-                for it in items])
+                for it in items], title="Item")
             if i is None:
                 return
             it = items[i]
@@ -848,7 +842,8 @@ class Game:
             if not targets:
                 self.io.line("  Tidak ada sasaran yang cocok.")
                 continue
-            j = self.io.pick("pada> ", [f"{h.name} HP {h.hp}/{h.max_hp} MP {h.mp}/{h.max_mp}" for h in targets])
+            j = self.io.pick("pada> ", [f"{h.name} HP {h.hp}/{h.max_hp} MP {h.mp}/{h.max_mp}" for h in targets],
+                             title=f"Pakai {it.name} pada siapa?")
             if j is None:
                 continue
             h = targets[j]
@@ -894,10 +889,9 @@ class Game:
     # -- save / muat --------------------------------------------------------
     def save_menu(self) -> None:
         st = self.state
-        self.io.line("")
-        self.io.line(" Simpan di slot mana?")
         labels = [s or "(kosong)" for s in st.slot_summaries(self.data, self.save_dir)]
-        i = self.io.pick("slot> ", labels, back="Batal", auto="1" if self.auto_menus else None)
+        i = self.io.pick("slot> ", labels, back="Batal", title="Simpan di slot mana?",
+                         auto="1" if self.auto_menus else None)
         if i is not None:
             p = st.save(i + 1, self.save_dir)
             self.io.line(f" Tersimpan ({p.name}).")
@@ -907,10 +901,8 @@ class Game:
         st = self.state
         sh = self.world.shops[shop_id]
         while True:
-            self.io.line("")
-            self.io.line(f" ═══ {sh['name']} ═══  Keping: {st.keping}")
             punya_kaca = bool(sh.get("kaca"))
-            m = Menu(back="Pergi")
+            m = Menu(back="Pergi", title=sh["name"], subtitle=f"Keping: {st.keping}")
             m.add("Beli")
             m.add("Jual")
             if punya_kaca:
@@ -929,11 +921,10 @@ class Game:
         st = self.state
         while True:
             items = [self.data.items[i] for i in sh["items"]]
-            self.io.line("")
             i = self.io.pick("beli> ", [
                 f"{it.name:<22} {self.harga(it.price):>5} K  "
                 f"{self._stat_str(it) if it.kind != 'konsumsi' else it.description}  (punya {st.count(it.id)})"
-                for it in items])
+                for it in items], title=f"{sh['name']} — Beli", subtitle=f"Keping: {st.keping}")
             if i is None:
                 return
             it = items[i]
@@ -952,9 +943,9 @@ class Game:
             if not items:
                 self.io.line("  Tidak ada yang bisa dijual.")
                 return
-            self.io.line("")
             i = self.io.pick("jual> ", [
-                f"{it.name:<22} ×{st.inventory[it.id]:<3} {int(it.price * HARGA_JUAL):>5} K" for it in items])
+                f"{it.name:<22} ×{st.inventory[it.id]:<3} {int(it.price * HARGA_JUAL):>5} K" for it in items],
+                title="Jual", subtitle=f"Keping: {st.keping}")
             if i is None:
                 return
             it = items[i]

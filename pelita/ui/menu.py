@@ -13,11 +13,39 @@ ulang: ``Menu`` menyusun daftar ``Option`` dan ``IO.menu()`` yang memutuskan car
 menampilkannya (terminal mencetak satu opsi per baris; web mengirim daftarnya apa
 adanya). Jalan keluar ikut secara bawaan — menu tanpa jalan keluar harus
 dinyatakan dengan ``no_back()``, jadi tidak bisa terlupa.
+
+Judul menu ikut aturan yang sama. Dulu tiap menu mencetak sendiri headernya
+(``io.line(" ═══ Warung Bu Ratna ═══  Keping: 38")``) di dalam ``while True``,
+jadi header itu masuk log sekali lagi tiap menu digambar ulang dan log penuh
+ulangan. Sekarang judul dibawa ``Menu.title``/``subtitle``/``note``: terminal
+tetap mencetaknya di atas daftar opsi, web mengirimnya bersama prompt sehingga
+klien *mengganti* panel judul alih-alih menambah baris log — perlakuan yang sama
+dengan deskripsi ruang, yang juga hanya ditulis saat benar-benar berubah.
 """
 from __future__ import annotations
 
 from dataclasses import dataclass, field
 from typing import Iterable, Optional, Sequence
+
+
+@dataclass(frozen=True)
+class Header:
+    """Judul sebuah menu, dibawa sebagai data supaya tidak ikut mengotori log.
+
+    ``title``/``subtitle`` jadi satu baris ``═══ Judul ═══  Keterangan`` di terminal;
+    di web keduanya mengisi panel prompt yang diganti tiap prompt, bukan ditambahkan.
+    """
+    title: Optional[str] = None
+    subtitle: Optional[str] = None
+    note: tuple[str, ...] = ()
+
+    def __bool__(self) -> bool:
+        return bool(self.title or self.subtitle or self.note)
+
+    @property
+    def line(self) -> str:
+        """Baris judul untuk terminal."""
+        return f" ═══ {self.title} ═══" + (f"  {self.subtitle}" if self.subtitle else "")
 
 
 @dataclass(frozen=True)
@@ -54,8 +82,22 @@ class Menu:
     back_key: str = "0"
     #: alasan menu ini boleh tanpa jalan keluar (dipakai tes regresi antarmuka)
     required: Optional[str] = None
+    #: judul panel, mis. "Warung Bu Ratna" — jangan dicetak sendiri dengan io.line()
+    title: Optional[str] = None
+    #: keterangan singkat di baris judul, mis. "Keping: 38"
+    subtitle: Optional[str] = None
+    #: baris keterangan tambahan di bawah judul (aturan Arena, tingkat terkunci, ...)
+    note: list[str] = field(default_factory=list)
     _options: list[Option] = field(default_factory=list)
     _n: int = 0
+
+    def info(self, line: str) -> None:
+        """Tambah satu baris keterangan di bawah judul (bukan tombol)."""
+        self.note.append(line)
+
+    @property
+    def header(self) -> "Header":
+        return Header(self.title, self.subtitle, tuple(self.note))
 
     def add(self, label: str, key: Optional[str] = None, detail: Iterable[str] = ()) -> str:
         """Tambah satu opsi bernomor (atau dengan ``key`` sendiri). Kembalikan key-nya."""
@@ -97,7 +139,8 @@ class Menu:
 
     def ask(self, io, prompt: str = "> ", auto: Optional[str] = None) -> str:
         """Tampilkan menu dan kembalikan key yang dipilih."""
-        return io.menu(self.build(), prompt, auto=auto, required=self.required)
+        return io.menu(self.build(), prompt, auto=auto, required=self.required,
+                       header=self.header)
 
     def pick(self, io, prompt: str = "> ", auto: Optional[str] = None) -> Optional[int]:
         """Seperti ``ask``, tapi untuk menu bernomor: kembalikan indeks (0-based) atau None."""
@@ -106,9 +149,11 @@ class Menu:
 
 
 def numbered(labels: Sequence[str], back: Optional[str] = "Kembali", back_key: str = "0",
-             required: Optional[str] = None) -> Menu:
+             required: Optional[str] = None, title: Optional[str] = None,
+             subtitle: Optional[str] = None, note: Iterable[str] = ()) -> Menu:
     """Menu sederhana dari daftar label."""
-    m = Menu(back=back, back_key=back_key, required=required)
+    m = Menu(back=back, back_key=back_key, required=required, title=title,
+             subtitle=subtitle, note=list(note))
     for l in labels:
         m.add(l)
     return m

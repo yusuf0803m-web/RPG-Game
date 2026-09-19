@@ -74,6 +74,11 @@
 
   <!-- pilihan aksi -->
   <footer class="choices" id="choices">
+    <!-- judul menu: diganti tiap prompt, jadi tidak menumpuk di log -->
+    <div class="prompt-head" id="prompt-head" hidden>
+      <div class="prompt-title" id="prompt-title"></div>
+      <div class="prompt-note" id="prompt-note"></div>
+    </div>
     <div class="prompt-label" id="prompt-label"></div>
     <div class="choice-grid" id="choice-grid"></div>
     <form class="free-input" id="free-input" hidden>

@@ -14,6 +14,11 @@ dulu itu sumber bug "menu tanpa tombol keluar": satu baris yang memuat beberapa
 opsi hanya jadi satu tombol. ``free`` karena itu seharusnya tidak pernah muncul;
 tes ``tests/test_menu_web.py`` menjaga hal itu.
 
+Judul menu ikut di dalam ``prompt`` (``title``/``subtitle``/``note``), bukan
+dikirim sebagai ``log``. Karena tiap prompt *mengganti* panel pilihan, judul toko
+yang digambar ulang tiap putaran menu tidak lagi menumpuk di log — sama seperti
+deskripsi ruang yang hanya ditulis saat pemain benar-benar pindah.
+
 Klien mengambil event lewat ``GET .../state?since=N`` dan menjawab lewat
 ``POST .../input``. Semua state permainan tetap milik mesin yang sama dengan
 versi terminal; modul ini tidak menyalin aturan apa pun.
@@ -29,7 +34,7 @@ from pathlib import Path
 from typing import Any, Optional
 
 from ..loader import GameData, load_data
-from ..ui.menu import Option
+from ..ui.menu import Header, Option
 from ..ui.terminal import IO
 from ..world.explore import Game
 from ..world.model import World, load_world
@@ -77,18 +82,26 @@ class WebIO(IO):
     def emit(self, kind: str, payload: dict) -> None:
         self.session.push(kind, payload)
 
-    def render_options(self, options) -> None:
-        """Keterangan tambahan tetap masuk log; labelnya sendiri jadi tombol."""
+    def render_options(self, options, header: Optional[Header] = None) -> None:
+        """Keterangan tambahan tetap masuk log; labelnya sendiri jadi tombol.
+
+        Judul sengaja **tidak** ditulis ke log: ia ikut payload prompt supaya
+        panelnya diganti, bukan ditumpuk (lihat docstring modul).
+        """
         for o in options:
             for d in o.detail:
                 self.line(d)
 
     # -- masukan ------------------------------------------------------------
-    def _prompt(self, prompt: str, kind: str, options: list[dict], required: Optional[str] = None) -> str:
+    def _prompt(self, prompt: str, kind: str, options: list[dict], required: Optional[str] = None,
+                header: Optional[Header] = None) -> str:
         """Kirim satu prompt dan tunggu jawaban yang sah."""
         keys = {o["key"].lower() for o in options}
         payload = {"prompt": prompt.strip(), "kind": kind, "options": options,
-                   "free": kind == "free", "required": required}
+                   "free": kind == "free", "required": required,
+                   "title": header.title if header else None,
+                   "subtitle": header.subtitle if header else None,
+                   "note": list(header.note) if header else []}
         while True:
             self.session.push("prompt", payload)
             s = self.session.wait_for_input().strip().lower()
@@ -102,11 +115,11 @@ class WebIO(IO):
             # membiarkan sesi menggantung.
 
     def menu(self, options, prompt: str = "> ", auto: Optional[str] = None,
-             required: Optional[str] = None) -> str:
-        self.render_options(options)
+             required: Optional[str] = None, header: Optional[Header] = None) -> str:
+        self.render_options(options, header)
         if auto is not None:
             return auto.lower()
-        return self._prompt(prompt, "menu", [as_payload(o) for o in options], required)
+        return self._prompt(prompt, "menu", [as_payload(o) for o in options], required, header)
 
     def confirm(self, question: str, auto: Optional[bool] = None) -> bool:
         if auto is not None:
