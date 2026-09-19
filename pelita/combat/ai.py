@@ -217,9 +217,9 @@ def choose_hero_action(battle: Battle, actor: Combatant, policy: str = "pintar")
             return Action("skill", skill=heals[-1], targets=[min(sakit, key=lambda c: c.hp_ratio)])
         return Action("jaga")
 
-    # 1bb. Lawan yang hanya bisa dilukai jurus Bara (fase terakhir Sang Pelita Pertama):
-    #      serangan biasa berubah fungsi jadi pengisi Bara, dan Bara tidak boleh dibocorkan
-    #      ke apa pun selain jurus.
+    # 1c. Lawan yang hanya bisa dilukai jurus Bara (fase terakhir Sang Pelita Pertama):
+    #     serangan biasa berubah fungsi jadi pengisi Bara, dan Bara tidak boleh dibocorkan
+    #     ke apa pun selain jurus.
     hanya_jurus = any("hanya_jurus" in f.traits for f in foes)
     if hanya_jurus:
         jurus = [s for s in battle.usable_bara_skills(actor) if is_jurus(s) and s.is_attack]
@@ -228,7 +228,7 @@ def choose_hero_action(battle: Battle, actor: Combatant, policy: str = "pintar")
             ts = foes if best.target.is_multi else [max(foes, key=lambda c: c.hp)]
             return Action("skill", skill=best, targets=ts)
 
-    # 1c. Lawan yang meminum Bara yang ditabung (Gema Guntur, §6.2 no. 15): belanjakan
+    # 1d. Lawan yang meminum Bara yang ditabung (Gema Guntur, §6.2 no. 15): belanjakan
     #     sebelum gilirannya, apa pun yang bisa dibelanjakan.
     ambang = min((int(t.split(":")[1]) for f in foes for s in f.skills for t in s.tags
                   if t.startswith("nyala_penjaga:")), default=0)
