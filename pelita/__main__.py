@@ -2,6 +2,7 @@
 
     python -m pelita                      layar judul (Mulai Baru / Muat / Prototipe Combat)
     python -m pelita --web                antarmuka web di http://127.0.0.1:5000
+    python -m pelita --web --lan          antarmuka web yang bisa dibuka dari HP (satu Wi-Fi)
     python -m pelita --new                langsung mulai permainan baru
     python -m pelita --load N             muat slot N
     python -m pelita --scenario ID        prototipe pertarungan tunggal (Tahap 1)
@@ -87,6 +88,7 @@ def prototype_menu(data, io: IO) -> None:
 def main(argv=None) -> int:
     ap = argparse.ArgumentParser(prog="pelita", description="Pelita Terakhir — RPG teks turn-based")
     ap.add_argument("--web", action="store_true", help="jalankan antarmuka web (butuh Flask)")
+    ap.add_argument("--lan", action="store_true", help="--web: izinkan HP/tablet di Wi-Fi yang sama ikut main")
     ap.add_argument("--host", default="127.0.0.1", help="--web: alamat server")
     ap.add_argument("--port", type=int, default=5000, help="--web: porta server")
     ap.add_argument("--new", action="store_true", help="langsung mulai permainan baru")
@@ -109,7 +111,10 @@ def main(argv=None) -> int:
             except ImportError:
                 io.line("Antarmuka web butuh Flask:  pip install flask")
                 return 1
-            return web_main(["--host", args.host, "--port", str(args.port), "--save-dir", args.save_dir])
+            web_argv = ["--host", args.host, "--port", str(args.port), "--save-dir", args.save_dir]
+            if args.lan:
+                web_argv.append("--lan")
+            return web_main(web_argv)
         if args.list:
             for s in SCENARIOS:
                 io.line(f"  {s.id:<12} {s.name}")

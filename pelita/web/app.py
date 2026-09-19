@@ -1,7 +1,7 @@
 """Server Flask untuk antarmuka web Pelita Terakhir.
 
-    python -m pelita.web            # http://127.0.0.1:5000
-    python -m pelita --web          # sama
+    python -m pelita --web          # hanya komputer ini (http://127.0.0.1:5000)
+    python -m pelita --web --lan    # bisa dibuka dari HP di Wi-Fi yang sama
 
 API:
     GET  /                                   halaman permainan
@@ -13,6 +13,7 @@ API:
 """
 from __future__ import annotations
 
+import socket
 from pathlib import Path
 from typing import Optional
 
@@ -32,6 +33,12 @@ def create_app(save_dir: Optional[Path] = None) -> Flask:
     @app.get("/")
     def index():
         return send_from_directory(STATIC, "index.html")
+
+    @app.get("/manifest.webmanifest")
+    def manifest():
+        r = send_from_directory(STATIC, "manifest.webmanifest")
+        r.headers["Content-Type"] = "application/manifest+json"
+        return r
 
     @app.get("/api/slots")
     def slots():
@@ -73,18 +80,47 @@ def create_app(save_dir: Optional[Path] = None) -> Flask:
     return app
 
 
+def local_ip() -> str:
+    """Alamat IP komputer ini di jaringan lokal (untuk dibuka dari HP).
+
+    Memakai soket UDP yang tidak pernah mengirim apa pun; ini hanya cara
+    menanyakan ke sistem operasi antarmuka mana yang dipakai untuk keluar.
+    """
+    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    try:
+        s.connect(("10.255.255.255", 1))
+        return s.getsockname()[0]
+    except OSError:
+        return "127.0.0.1"
+    finally:
+        s.close()
+
+
 def main(argv=None) -> int:
     import argparse
 
     ap = argparse.ArgumentParser(prog="pelita.web", description="Pelita Terakhir — antarmuka web")
-    ap.add_argument("--host", default="127.0.0.1")
+    ap.add_argument("--host", default="127.0.0.1", help="alamat bind (default: hanya komputer ini)")
+    ap.add_argument("--lan", action="store_true",
+                    help="izinkan perangkat lain di Wi-Fi yang sama (mis. HP) membuka permainan")
     ap.add_argument("--port", type=int, default=5000)
     ap.add_argument("--save-dir", default=str(SAVE_DIR))
     ap.add_argument("--debug", action="store_true")
     args = ap.parse_args(argv)
+
+    host = "0.0.0.0" if args.lan else args.host      # noqa: S104 — disengaja, lihat peringatan di bawah
     app = create_app(Path(args.save_dir))
-    print(f"Pelita Terakhir — buka http://{args.host}:{args.port}")
-    app.run(host=args.host, port=args.port, debug=args.debug, threaded=True)
+    print("\n  Pelita Terakhir")
+    if args.lan or host == "0.0.0.0":
+        ip = local_ip()
+        print(f"  Di komputer ini : http://127.0.0.1:{args.port}")
+        print(f"  Di HP/tablet    : http://{ip}:{args.port}   (harus satu Wi-Fi)")
+        print("  Catatan: permainan terbuka bagi siapa pun di jaringan ini dan tidak")
+        print("  memakai kata sandi. Jangan pakai --lan di Wi-Fi publik.\n")
+    else:
+        print(f"  Buka http://{host}:{args.port}")
+        print("  Mau main dari HP? Jalankan ulang dengan --lan\n")
+    app.run(host=host, port=args.port, debug=args.debug, threaded=True)
     return 0
 
 

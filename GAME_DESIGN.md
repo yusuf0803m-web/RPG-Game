@@ -984,6 +984,11 @@ Yang ditampilkan secara grafis:
 Seni dibuat prosedural (SVG dari kode), tanpa berkas aset dan tanpa internet. Area baru otomatis
 memakai panorama bawaan sampai seni khususnya ditambahkan.
 
+**Ponsel.** Antarmuka web adalah cara bermain di HP: tata letak menyesuaikan lebar layar dan
+orientasi, target sentuh minimal 48 px, panorama menyusut saat bertarung agar arena dan log tetap
+muat, dan halaman bisa dipasang ke layar utama Android (PWA, mode layar penuh). Server dijalankan
+dengan `--lan` agar bisa dibuka dari HP di Wi-Fi yang sama, atau langsung di HP lewat Termux.
+
 ---
 
 ## 8. Yang Sengaja TIDAK Dimasukkan

@@ -118,6 +118,27 @@ def test_halaman_dan_aset(client):
     assert client.get("/static/art.js").status_code == 200
 
 
+def test_manifest_dan_ikon_pwa(client):
+    """Supaya bisa dipasang ke layar utama Android."""
+    r = client.get("/manifest.webmanifest")
+    assert r.status_code == 200
+    assert "manifest" in r.headers["Content-Type"]
+    m = r.get_json()
+    assert m["display"] == "standalone" and m["start_url"] == "/"
+    src = {i["src"] for i in m["icons"]}
+    assert src == {"/static/icon-192.png", "/static/icon-512.png"}
+    assert any(i.get("purpose") == "maskable" for i in m["icons"])
+    for path in sorted(src):
+        ic = client.get(path)
+        assert ic.status_code == 200 and ic.data[:8] == b"\x89PNG\r\n\x1a\n", path
+
+
+def test_halaman_siap_untuk_ponsel(client):
+    html = client.get("/").data.decode()
+    assert 'name="viewport"' in html and "viewport-fit=cover" in html
+    assert 'rel="manifest"' in html and 'name="theme-color"' in html
+
+
 def test_slots_kosong(client):
     d = client.get("/api/slots").get_json()
     assert d["count"] == 5 and all(s is None for s in d["slots"])

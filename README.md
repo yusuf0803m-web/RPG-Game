@@ -13,6 +13,7 @@ pustaka standar; antarmuka web menambah satu dependensi, Flask.
 ```bash
 pip install flask
 python -m pelita --web                  # lalu buka http://127.0.0.1:5000
+python -m pelita --web --lan            # izinkan HP/tablet di Wi-Fi yang sama ikut main
 python -m pelita --web --port 8000      # porta lain
 ```
 
@@ -21,6 +22,44 @@ Ketahanan, kartu party dengan potret dan bar HP/MP, meteran Bara, dialog bergaya
 serta angka damage yang melayang saat pukulan mendarat. Semua gambar dibuat dari
 SVG di `pelita/web/static/art.js`, jadi tidak ada berkas aset dan tidak butuh
 internet. Pilihan bisa diklik atau ditekan dengan angka 1–9.
+
+## Bermain di HP Android
+
+Antarmuka web dibuat untuk layar sentuh: tombol besar, tata letak menyesuaikan lebar
+layar dan orientasi, dan panorama menyusut otomatis saat bertarung agar arena serta
+log tetap muat. Ada dua cara memainkannya di HP.
+
+**Cara 1 — server di komputer, main dari HP (paling mudah).** Komputer dan HP harus
+tersambung ke Wi-Fi yang sama.
+
+```bash
+python -m pelita --web --lan
+```
+
+Perintah itu mencetak alamat yang tinggal diketik di browser HP, misalnya
+`http://192.168.1.10:5000`. Simpanan permainan tersimpan di komputer, jadi kamu bisa
+lanjut main di layar besar kapan saja.
+
+> Mode `--lan` membuka permainan untuk siapa pun di jaringan itu dan tidak memakai
+> kata sandi. Pakai di jaringan rumah sendiri; jangan di Wi-Fi publik.
+
+**Cara 2 — langsung di HP, tanpa komputer.** Pasang [Termux](https://termux.dev) dari
+F-Droid, lalu:
+
+```bash
+pkg install python git
+git clone https://github.com/yusuf0803m-web/RPG-Game
+cd RPG-Game
+pip install flask
+python -m pelita --web
+```
+
+Buka `http://127.0.0.1:5000` di browser HP. Biarkan Termux berjalan di latar belakang
+selama bermain.
+
+**Pasang ke layar utama.** Di Chrome Android, buka menu titik tiga lalu
+"Tambahkan ke Layar utama". Permainan akan terbuka layar penuh tanpa bilah alamat,
+seperti aplikasi biasa.
 
 ## Bermain di terminal
 

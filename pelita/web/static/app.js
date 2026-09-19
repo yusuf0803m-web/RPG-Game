@@ -59,6 +59,7 @@
       state.id = id; state.since = 0; state.dead = false;
       el.log.innerHTML = ""; el.enemies.innerHTML = ""; el.party.innerHTML = "";
       el.battle.hidden = true; state.battleOn = false; state.lastHp.clear(); state.roomKey = null;
+      document.body.classList.remove("in-battle");
       el.title.hidden = true; el.game.hidden = false;
       setScene({ area_id: "pelita_rendah", area: "Lembah Larung", room: "…", fog: false });
       poll();
@@ -125,6 +126,7 @@
     el.chipLentera.hidden = !r.fog;
     if (r.fog) el.chipLentera.querySelector("b").textContent = r.lentera;
     el.battle.hidden = true; state.battleOn = false;
+    document.body.classList.remove("in-battle");
     renderParty(r.party.map((h) => Object.assign({}, h, { alive: h.hp > 0 })), null);
     // Server mengirim ruang tiap kali menu digambar ulang; tulis deskripsinya
     // hanya saat pemain benar-benar pindah, supaya log tidak terisi ulangan.
@@ -160,6 +162,7 @@
   function onBattle(b) {
     state.battleOn = true;
     el.battle.hidden = false;
+    document.body.classList.add("in-battle");
     el.battleRound.textContent = "Ronde " + b.round;
     el.bara.hidden = b.bara_max <= 0;
     el.bara.classList.toggle("frozen", !!b.bara_frozen);
@@ -197,7 +200,9 @@
     if (r.outcome === "menang" && (r.xp || r.keping)) {
       addLog(`  Menang! +${r.xp} XP, +${r.keping} Keping.`);
     }
-    setTimeout(() => { if (!state.battleOn) el.battle.hidden = true; }, 400);
+    setTimeout(() => {
+      if (!state.battleOn) { el.battle.hidden = true; document.body.classList.remove("in-battle"); }
+    }, 400);
     state.battleOn = false;
   }
 
