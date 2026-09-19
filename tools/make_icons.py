@@ -14,7 +14,12 @@ import sys
 import zlib
 from pathlib import Path
 
-OUT = Path(__file__).resolve().parents[1] / "pelita" / "web" / "static"
+ROOT = Path(__file__).resolve().parents[1]
+OUT = ROOT / "pelita" / "web" / "static"
+ANDROID_RES = ROOT / "android" / "app" / "src" / "main" / "res"
+
+#: ikon launcher Android: nama folder mipmap → sisi dalam piksel
+MIPMAP = {"mdpi": 48, "hdpi": 72, "xhdpi": 96, "xxhdpi": 144, "xxxhdpi": 192}
 
 BG = (0x0E, 0x12, 0x19)
 BRONZE_DARK = (0x5D, 0x43, 0x1F)
@@ -106,7 +111,16 @@ def main() -> int:
     for size in (192, 512):
         path = OUT / f"icon-{size}.png"
         write_png(path, draw(size))
-        print(f"{path.relative_to(OUT.parents[2])}  {path.stat().st_size} bytes")
+        print(f"  {path.relative_to(ROOT)}  {path.stat().st_size} bytes")
+
+    if ANDROID_RES.exists() or "--android" in sys.argv:
+        for dpi, size in MIPMAP.items():
+            d = ANDROID_RES / f"mipmap-{dpi}"
+            d.mkdir(parents=True, exist_ok=True)
+            px = draw(size)
+            write_png(d / "ic_launcher.png", px)
+            write_png(d / "ic_launcher_round.png", px)
+            print(f"  {(d / 'ic_launcher.png').relative_to(ROOT)}  {size}x{size}")
     return 0
 
 

@@ -1,0 +1,5 @@
+// Versi plugin dipusatkan di sini supaya mudah dinaikkan bersamaan.
+plugins {
+    id 'com.android.application' version '8.5.2' apply false
+    id 'com.chaquo.python'       version '16.0.0' apply false
+}
