@@ -1,0 +1,140 @@
+{
+  "_catatan": "Adegan Kenangan saat Berkemah (GAME_DESIGN §5.6). 'pasangan' harus ada di party (aktif atau cadangan), 'syarat' memakai bahasa kondisi GameState.check, 'setelah' menuntut adegan sebelumnya sudah dilihat. Adegan yang punya 'jurus' membuka Jurus Ganda pasangan itu.",
+
+  "rimba_sela_1": {
+    "pasangan": ["rimba", "sela"], "tingkat": 1,
+    "judul": "Dua Cara Memegang Lentera",
+    "jurus": "jg_tebas_berapi",
+    "adegan": [
+      {"text": "Sela mengasah pedangnya dengan batu, tiga tarikan, berhenti, tiga tarikan lagi. Rimba menyodorkan lentera supaya ia bisa melihat matanya."},
+      {"say": "Sela", "text": "Jangan dekat-dekat. Percikannya kena minyak, kita berdua jadi obor."},
+      {"say": "Rimba", "text": "Pak Guntur bilang lentera itu harus dipegang seperti telur. Kau memegang pedang seperti itu juga."},
+      {"say": "Sela", "text": "Karena dua-duanya bisa pecah di tangan yang salah. (Ia berhenti mengasah.) Dulu aku pegang terlalu kencang. Sekarang aku pegang cukup buat tidak jatuh."},
+      {"text": "Ia mengulurkan tangan. Rimba memberikan lentera. Sela memegangnya persis seperti memegang pedang: longgar, siap."},
+      {"say": "Sela", "text": "Kalau aku maju, kau nyalakan. Jangan ragu-ragu. Api di belakang punggungku lebih aman daripada di depan."},
+      {"text": "Malam itu keduanya belajar satu gerakan yang tidak diajarkan siapa pun: tebasan yang lewat tepat di atas nyala."}
+    ]
+  },
+
+  "rimba_lintang_1": {
+    "pasangan": ["rimba", "lintang"], "tingkat": 1,
+    "judul": "Anak yang Tidak Tahu Tempe",
+    "jurus": "jg_fajar_kelabu",
+    "adegan": [
+      {"text": "Lintang memutar-mutar potongan tempe goreng di depan api, memeriksanya seperti benda arkeologi."},
+      {"say": "Lintang", "text": "Ini... kacang yang disuruh berpelukan?"},
+      {"say": "Rimba", "text": "Kurang lebih. Kau benar-benar tidak pernah makan ini?"},
+      {"say": "Lintang", "text": "Di tempatku tidak ada yang menanak apa pun. Kabut tidak lapar."},
+      {"text": "Rimba tidak bertanya lagi. Ia hanya menambahkan satu potong lagi ke piring Lintang, dan menyalakan sumbu lebih terang, supaya anak itu bisa melihat makanannya."},
+      {"say": "Lintang", "text": "Rimba. Kalau nanti aku lupa rasa ini, kau ingatkan, ya."},
+      {"say": "Rimba", "text": "Aku ingat untuk kita berdua."},
+      {"text": "Cahaya dan Kelam duduk bersebelahan sepanjang malam, dan untuk sekali ini tidak saling memakan."}
+    ]
+  },
+
+  "sela_lintang_1": {
+    "pasangan": ["sela", "lintang"], "tingkat": 1,
+    "judul": "Perisai dan Petir",
+    "jurus": "jg_badai_perisai",
+    "adegan": [
+      {"text": "Lintang mencoba mengangkat perisai Sela dengan dua tangan, dan gagal dengan bermartabat."},
+      {"say": "Lintang", "text": "Berat sekali. Bagaimana kau lari dengan ini?"},
+      {"say": "Sela", "text": "Tidak lari. Berdiri. Bedanya itu."},
+      {"say": "Lintang", "text": "Kalau aku pukulkan petir ke permukaannya, logamnya akan menyebarkan ke sekeliling. Semua yang berdiri dekat akan kena."},
+      {"say": "Sela", "text": "Termasuk aku."},
+      {"say": "Lintang", "text": "...Termasuk kau. (Hening.) Tapi kau tahan, kan?"},
+      {"text": "Sela menatapnya lama, lalu tertawa pendek — bunyi yang jarang keluar dari mulutnya."},
+      {"say": "Sela", "text": "Aku tahan. Sekali. Jangan biasakan."}
+    ]
+  },
+
+  "rimba_bagas_1": {
+    "pasangan": ["rimba", "bagas"], "tingkat": 1,
+    "judul": "Dua Belas Tahun Alat Sendiri",
+    "syarat": ["party:bagas"],
+    "adegan": [
+      {"text": "Bagas membongkar peluncurnya di atas kain, menata pegas dan baut dalam barisan rapi seperti orang yang sudah melakukannya seribu kali dalam gelap."},
+      {"say": "Bagas", "text": "Tahu kenapa aku tidak pernah pakai kata takdir? Karena takdir tidak pernah datang membawa obeng."},
+      {"say": "Rimba", "text": "Dua belas tahun di tambang. Kau tidak pernah berhenti membetulkan sesuatu?"},
+      {"say": "Bagas", "text": "Kalau aku berhenti, aku mulai mikir. Kalau aku mulai mikir, aku ingat Wirasaba."},
+      {"text": "Ia memasang pegas terakhir. Peluncur itu berbunyi klik, sehat."},
+      {"say": "Bagas", "text": "Jadi ya. Aku betulkan lentera, jerat, lift, apa saja. Sekalian kau. Duduk tegak, bahumu miring."}
+    ]
+  },
+
+  "sela_bagas_1": {
+    "pasangan": ["sela", "bagas"], "tingkat": 1,
+    "judul": "Dua Orang yang Pernah Diam",
+    "syarat": ["party:bagas"],
+    "adegan": [
+      {"text": "Sela dan Bagas berjaga bergantian, tapi keduanya terjaga."},
+      {"say": "Bagas", "text": "Kau pengawal, ya? Dulu."},
+      {"say": "Sela", "text": "Dulu."},
+      {"say": "Bagas", "text": "Berarti kau pernah berdiri di depan pintu waktu di dalamnya orang diseret keluar."},
+      {"text": "Sela tidak menjawab. Bagas juga tidak menekan. Ia hanya melempar sepotong kayu ke api."},
+      {"say": "Bagas", "text": "Aku juga diam waktu keluargaku diangkut. Bedanya aku diam karena takut, kau diam karena diperintah. Sama-sama diam."},
+      {"say": "Sela", "text": "Sekarang tidak lagi."},
+      {"say": "Bagas", "text": "Sekarang tidak lagi. (Ia menguap.) Giliranmu tidur, Bu Pengawal."}
+    ]
+  },
+
+  "lintang_bagas_1": {
+    "pasangan": ["lintang", "bagas"], "tingkat": 2,
+    "judul": "Kaca yang Mengingat",
+    "syarat": ["party:bagas"],
+    "setelah": "rimba_bagas_1",
+    "adegan": [
+      {"text": "Bagas menyorongkan sekeping Kaca Ingatan ke dekat api. Kaca itu berdengung pelan."},
+      {"say": "Bagas", "text": "Dengar itu? Kaca ini menyimpan sesuatu. Bukan gambar, bukan suara. Lebih seperti... kebiasaan."},
+      {"say": "Lintang", "text": "Kebiasaan siapa?"},
+      {"say": "Bagas", "text": "Orang yang memakainya terakhir. Kalau kau pasang di senjatamu, tanganmu lama-lama bergerak seperti tangan dia."},
+      {"say": "Lintang", "text": "Jadi kita meminjam ingatan orang mati untuk berkelahi."},
+      {"say": "Bagas", "text": "Kita meminjam ingatan orang yang tidak sempat selesai. Beda tipis. Tapi beda."},
+      {"text": "Lintang memegang kaca itu lama, dan untuk pertama kalinya tidak merasa Kabut sedang mengawasinya."}
+    ]
+  },
+
+  "rimba_sela_2": {
+    "pasangan": ["rimba", "sela"], "tingkat": 2,
+    "judul": "Yang Ditinggalkan di Gerbang",
+    "setelah": "rimba_sela_1",
+    "syarat": ["boss_rangga_kalah"],
+    "adegan": [
+      {"say": "Rimba", "text": "Kau kenal Kapten Rangga."},
+      {"say": "Sela", "text": "Aku pernah berdiri tiga langkah di belakangnya selama empat tahun."},
+      {"say": "Sela", "text": "Dia bukan orang jahat, Rimba. Itu bagian yang membuatku susah tidur. Orang jahat gampang dilawan."},
+      {"say": "Rimba", "text": "Kalau nanti dia berdiri di pihak kita?"},
+      {"text": "Sela menatap api lama sekali."},
+      {"say": "Sela", "text": "Maka aku akan berdiri tiga langkah di belakangnya lagi. Tapi kali ini karena aku memilih, bukan karena dia kapten."}
+    ]
+  },
+
+  "rimba_lintang_2": {
+    "pasangan": ["rimba", "lintang"], "tingkat": 2,
+    "judul": "Nama yang Dipanggil Kabut",
+    "setelah": "rimba_lintang_1",
+    "syarat": ["boss_ular_kalah"],
+    "adegan": [
+      {"text": "Lintang terbangun sebelum gilirannya berjaga, dan duduk menghadap gelap, bukan menghadap api."},
+      {"say": "Lintang", "text": "Kabut memanggil namaku tadi. Bukan suara ibu. Suara laki-laki."},
+      {"say": "Rimba", "text": "Ayahmu?"},
+      {"say": "Lintang", "text": "Aku tidak ingat suaranya. Itu yang menakutkan. Kalau aku tidak ingat, bagaimana aku tahu itu dia atau Kabut yang berpura-pura?"},
+      {"say": "Rimba", "text": "Kau bawa aku waktu kau pergi mencari tahu. Aku akan ingat untukmu, kalau kau lupa."},
+      {"say": "Lintang", "text": "Kau tidak tahu apa yang kau janjikan."},
+      {"say": "Rimba", "text": "Tidak. Tapi aku tetap janji."}
+    ]
+  },
+
+  "rimba_guntur_1": {
+    "pasangan": ["rimba", "guntur"], "tingkat": 1,
+    "judul": "Murid dan Sumbu",
+    "syarat": ["party:guntur"],
+    "adegan": [
+      {"say": "Guntur", "text": "Potong sumbunya rata, Nak. Sumbu miring bikin nyala miring, nyala miring bikin jelaga."},
+      {"say": "Rimba", "text": "Pak Guntur selalu bilang begitu."},
+      {"say": "Guntur", "text": "Karena kau selalu memotongnya miring. (Ia terkekeh, lalu batuk.) Dengar. Kalau nanti aku tidak ada—"},
+      {"say": "Rimba", "text": "Pak."},
+      {"say": "Guntur", "text": "—kalau nanti aku tidak ada, jangan kau nyalakan lebih terang dari yang kau mampu jaga. Itu saja. Semua kesalahan Penyala mulai dari situ."}
+    ]
+  }
+}

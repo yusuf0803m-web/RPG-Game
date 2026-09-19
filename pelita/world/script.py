@@ -15,6 +15,8 @@ Perintah yang didukung (satu objek per perintah):
     {"choice": [{"text": "...", "if": <kondisi>, "then": [...]}, ...]}
     {"goto": "ruang"}   {"travel": {"area": "...", "room": "..."}}
     {"save": true}   {"shop": "id"}   {"inn": harga}
+    {"tukang_kaca": "toko_kaca"}   {"kemah": true}   {"papan_buruan": true}   {"arena": true}
+    {"kaca": {"kaca_api": 1}}                   beri Kaca Ingatan
     {"quest": "id", "state": "..."}
     {"bara": true}                              aktifkan sumber daya Bara
     {"run": "skrip_lain"}   {"end": true}   {"end_chapter": "teks penutup"}
@@ -28,7 +30,7 @@ from typing import Callable, Optional
 
 from ..ui.terminal import IO
 from .model import Area
-from .state import GameState
+from .state import XP_CADANGAN, GameState
 
 
 class ScriptEnd(Exception):
@@ -55,6 +57,10 @@ class Hooks:
     shop: Callable[[str], None]
     inn: Callable[[int], None]
     move: Callable[[str, Optional[str]], None]               # (room, area) — pindah tanpa skrip on_enter ganda
+    tukang_kaca: Callable[[str], None] = lambda shop_id: None   # bengkel Kaca & penukaran Serpihan
+    kemah: Callable[[], None] = lambda: None                    # berkemah + adegan Kenangan
+    papan_buruan: Callable[[], None] = lambda: None             # papan kontrak Buruan
+    arena: Callable[[], None] = lambda: None                    # Arena Kafilah
 
 
 def wrap(text: str, width: int = 66, indent: str = " ") -> list[str]:
@@ -198,6 +204,19 @@ class ScriptRunner:
                 self.hooks.shop(c["shop"])
             elif "inn" in c:
                 self.hooks.inn(int(c["inn"]))
+            elif "tukang_kaca" in c:
+                self.hooks.tukang_kaca(c["tukang_kaca"] if isinstance(c["tukang_kaca"], str) else "")
+            elif "kemah" in c:
+                self.hooks.kemah()
+            elif "papan_buruan" in c:
+                self.hooks.papan_buruan()
+            elif "arena" in c:
+                self.hooks.arena()
+            elif "kaca" in c:
+                for kid, n in c["kaca"].items():
+                    st.add_kaca(kid, int(n))
+                    self.io.line(f" ** Dapat {st.data.kaca[kid].name}. **")
+                self.io.line("")
             elif "quest" in c:
                 st.quests[c["quest"]] = c.get("state", "aktif")
                 self.io.line(f" ** Quest: {c['quest'].replace('_', ' ').title()} — {c.get('state', 'aktif')} **")
@@ -216,14 +235,19 @@ class ScriptRunner:
                 raise ValueError(f"perintah skrip tidak dikenal: {c}")
 
     def grant_xp(self, amount: int) -> None:
+        """XP penuh untuk barisan aktif, 70% untuk cadangan (GAME_DESIGN §5.1)."""
         st = self.state
+        aktif = {id(h) for h in st.active_party}
         for h in st.party:
             if h.guest:
                 continue
-            before = h.level
-            levels = h.gain_xp(amount)
+            bagian = amount if id(h) in aktif else int(amount * XP_CADANGAN)
+            bagian = int(bagian * (1 + h.passive().xp_pct))
+            levels = h.gain_xp(bagian)
             if levels:
                 self.io.line(f" ** {h.name} naik ke Lv {h.level}! **")
                 for lv in levels:
                     for s in h.new_skills_at(lv):
                         self.io.line(f"    {h.name} mempelajari {s.name}!")
+                if h.butuh_pilih_jalur:
+                    self.io.line(f" ** {h.name} bisa memilih Jalur! Buka menu Party. **")

@@ -11,11 +11,13 @@ from typing import Optional
 from ..combat.engine import BARA_MAX_DASAR, Bestiary
 from ..loader import GameData
 from ..models import Affinity, Element
-from ..party import Hero
+from ..party import Hero, kaca_tingkat
 
 SAVE_DIR = Path("saves")
 SAVE_SLOTS = 5
 PARTY_AKTIF_MAKS = 4
+BARA_HOLDER_ID = "rimba"      # pemegang Bara; aturan cerita: selalu di barisan aktif (§3.1)
+XP_CADANGAN = 0.70            # cadangan ikut dapat 70% XP (§5.1)
 MINYAK_LANGKAH = 20          # satu Minyak Lentera menahan Lupa selama 20 langkah di kabut (§5.4)
 ENCOUNTER_JEDA = 2           # tidak ada dua encounter dalam 2 langkah (§4.1)
 
@@ -32,6 +34,12 @@ class GameState:
     room_id: str = ""
     bestiary: Bestiary = field(default_factory=Bestiary)
     bara_max: int = 0                 # 0 sampai Bara diperoleh (Area 1)
+    kaca: dict[str, int] = field(default_factory=dict)        # Kaca yang dimiliki tapi belum dipasang
+    kaca_uses: dict[str, int] = field(default_factory=dict)   # pertarungan per jenis Kaca (tingkat I-III)
+    slot_bonus: dict[str, int] = field(default_factory=dict)  # soket tambahan per senjata (Serpihan)
+    kenangan: set[str] = field(default_factory=set)           # adegan Kenangan yang sudah dilihat
+    buruan: dict[str, str] = field(default_factory=dict)      # id buruan -> "aktif" | "selesai"
+    arena: int = 0                                            # tingkat Arena tertinggi yang ditamatkan
     steps: int = 0
     steps_since_encounter: int = 99
     lentera_steps: int = 0
@@ -45,11 +53,38 @@ class GameState:
     def __post_init__(self) -> None:
         if self.rng is None:
             self.rng = random.Random(self.seed)
+        self.wire()
+
+    def wire(self) -> None:
+        """Bagikan tabel Kaca milik state ke semua Hero (dipakai untuk tingkat & soket)."""
+        for h in self.party:
+            h.kaca_uses = self.kaca_uses
+            h.slot_bonus = self.slot_bonus
+            h.rapikan_soket()
 
     # -- party --------------------------------------------------------------
     @property
     def active_party(self) -> list[Hero]:
+        """Empat nama pertama di ``party`` adalah barisan aktif (GAME_DESIGN §3.1)."""
         return self.party[:PARTY_AKTIF_MAKS]
+
+    @property
+    def reserve_party(self) -> list[Hero]:
+        return self.party[PARTY_AKTIF_MAKS:]
+
+    def is_active(self, cid: str) -> bool:
+        return any(h.id == cid for h in self.active_party)
+
+    def tukar_posisi(self, a: int, b: int) -> bool:
+        """Tukar dua anggota di daftar party. Rimba tidak boleh keluar dari barisan aktif."""
+        if not (0 <= a < len(self.party) and 0 <= b < len(self.party)) or a == b:
+            return False
+        p = self.party
+        p[a], p[b] = p[b], p[a]
+        if not self.is_active(BARA_HOLDER_ID) and self.hero(BARA_HOLDER_ID):
+            p[a], p[b] = p[b], p[a]
+            return False
+        return True
 
     def hero(self, cid: str) -> Optional[Hero]:
         for h in self.party:
@@ -69,7 +104,10 @@ class GameState:
             level = max(1, (lead.level if lead else 1) + cdef.join_level_offset) if not guest else 10
         h = Hero.create(self.data, cid, level)
         h.guest = guest
+        h.kaca_uses = self.kaca_uses
+        h.slot_bonus = self.slot_bonus
         self.party.append(h)
+        h.rapikan_soket()
         return h
 
     def leave(self, cid: str) -> None:
@@ -95,6 +133,29 @@ class GameState:
         self.inventory[iid] = self.inventory.get(iid, 0) + n
         if self.inventory[iid] <= 0:
             del self.inventory[iid]
+
+    def add_kaca(self, kid: str, n: int = 1) -> None:
+        if kid not in self.data.kaca:
+            raise KeyError(f"kaca '{kid}' tidak ada")
+        self.kaca[kid] = self.kaca.get(kid, 0) + n
+        if self.kaca[kid] <= 0:
+            del self.kaca[kid]
+
+    def kaca_dipakai_selesai_bertarung(self) -> list[str]:
+        """Hitung satu pertarungan untuk tiap Kaca yang terpasang; kembalikan yang naik tingkat."""
+        naik: list[str] = []
+        terpasang = {k for h in self.active_party for k in h.kaca if k}
+        for kid in terpasang:
+            sebelum = kaca_tingkat(self.kaca_uses.get(kid, 0))
+            self.kaca_uses[kid] = self.kaca_uses.get(kid, 0) + 1
+            if kaca_tingkat(self.kaca_uses[kid]) > sebelum:
+                naik.append(kid)
+        return naik
+
+    @property
+    def potongan_harga(self) -> float:
+        """Potongan harga toko terbaik dari Kaca Kikir yang sedang dipakai party."""
+        return min(0.5, max((h.passive().harga_pct for h in self.party), default=0.0))
 
     def has_item(self, iid: str, n: int = 1) -> bool:
         return self.inventory.get(iid, 0) >= n
@@ -135,6 +196,15 @@ class GameState:
         elif s.startswith("known:"):
             eid, _, el = s[6:].partition("=")
             val = Element(el) in self.bestiary.get(eid) if el else bool(self.bestiary.get(eid))
+        elif s.startswith("kaca:"):
+            val = self.kaca.get(s[5:], 0) > 0 or any(s[5:] in h.kaca for h in self.party)
+        elif s.startswith("kenangan:"):
+            val = s[9:] in self.kenangan
+        elif s.startswith("buruan:"):
+            bid, _, st = s[7:].partition("=")
+            val = self.buruan.get(bid, "") == st if st else bid in self.buruan
+        elif s.startswith("arena>="):
+            val = self.arena >= int(s[7:])
         elif s == "bara":
             val = self.bara_max > 0
         else:
@@ -179,6 +249,12 @@ class GameState:
             "room": self.room_id,
             "bestiary": {eid: {el.value: a.value for el, a in d.items()} for eid, d in self.bestiary.known.items()},
             "bara_max": self.bara_max,
+            "kaca": dict(self.kaca),
+            "kaca_uses": dict(self.kaca_uses),
+            "slot_bonus": dict(self.slot_bonus),
+            "kenangan": sorted(self.kenangan),
+            "buruan": dict(self.buruan),
+            "arena": self.arena,
             "steps": self.steps,
             "lentera_steps": self.lentera_steps,
             "seed": self.rng.randrange(1 << 30),
@@ -199,6 +275,13 @@ class GameState:
             for el, a in m.items():
                 st.bestiary.learn(eid, Element(el), Affinity(a))
         st.bara_max = int(d.get("bara_max", 0))
+        st.kaca = {k: int(v) for k, v in d.get("kaca", {}).items()}
+        st.kaca_uses = {k: int(v) for k, v in d.get("kaca_uses", {}).items()}
+        st.slot_bonus = {k: int(v) for k, v in d.get("slot_bonus", {}).items()}
+        st.kenangan = set(d.get("kenangan", []))
+        st.buruan = dict(d.get("buruan", {}))
+        st.arena = int(d.get("arena", 0))
+        st.wire()
         st.steps = int(d.get("steps", 0))
         st.lentera_steps = int(d.get("lentera_steps", 0))
         st.playtime = float(d.get("playtime", 0.0))
@@ -247,6 +330,7 @@ def new_game(data: GameData) -> GameState:
     rimba.equipment["zirah"] = "zirah_kain"
     rimba.restore()
     st.party = [rimba]
+    st.wire()
     st.inventory = {"ramuan_daun": 3, "minyak_lentera": 2}
     st.keping = 30
     st.bara_max = 0

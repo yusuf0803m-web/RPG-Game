@@ -135,17 +135,25 @@
     state.roomKey = here;
   }
 
+  // Baris kecil di bawah kartu: Jalur yang ditempuh dan Kaca yang terpasang.
+  function extras(h) {
+    const bagian = [];
+    if (h.jalur) bagian.push(`<span class="tag ${h.jalur === "pilih!" ? "tag-weak" : "tag-buff"}">${esc(h.jalur === "pilih!" ? "Jalur: pilih!" : h.jalur)}</span>`);
+    (h.kaca || []).forEach((k) => bagian.push(`<span class="tag tag-kaca">${esc(k)}</span>`));
+    return bagian.length ? `<div class="tags">${bagian.join("")}</div>` : "";
+  }
+
   function renderParty(heroes, activeKey) {
     el.party.innerHTML = heroes.map((h) => {
       const hpPct = pct(h.hp, h.max_hp);
       const lvl = hpPct <= 25 ? "low" : hpPct <= 55 ? "mid" : "";
       const st = (h.statuses || []).map((s) =>
         `<span class="tag ${s.bad ? "tag-status" : "tag-buff"}">${esc(s.name)}${s.turns ? " " + s.turns : ""}</span>`).join("");
-      return `<div class="hero ${h.alive === false || h.hp <= 0 ? "down" : ""} ${h.key === activeKey ? "active" : ""}" data-hero="${h.key}" data-name="${esc(h.name)}">
+      return `<div class="hero ${h.alive === false || h.hp <= 0 ? "down" : ""} ${h.key === activeKey ? "active" : ""} ${h.aktif === false ? "reserve" : ""}" data-hero="${h.key}" data-name="${esc(h.name)}">
         <div class="hero-top">
           <div class="hero-portrait">${Art.portrait(h.key)}</div>
           <div class="hero-id">
-            <div class="hero-name">${esc(h.name)}${h.guest ? " <small>(tamu)</small>" : ""}</div>
+            <div class="hero-name">${esc(h.name)}${h.guest ? " <small>(tamu)</small>" : ""}${h.aktif === false ? " <small>(cadangan)</small>" : ""}</div>
             <div class="hero-lv">LV ${h.level}</div>
           </div>
         </div>
@@ -153,6 +161,7 @@
         ${h.max_mp > 0 ? `<div class="bar bar-mp"><i style="width:${pct(h.mp, h.max_mp)}%"></i></div>` : ""}
         <div class="hero-nums"><span>HP ${h.hp}/${h.max_hp}</span>${h.max_mp > 0 ? `<span>MP ${h.mp}/${h.max_mp}</span>` : ""}</div>
         ${st ? `<div class="tags">${st}</div>` : ""}
+        ${extras(h)}
       </div>`;
     }).join("");
     heroes.forEach((h) => trackHp("hero-" + h.key, h.hp, `.hero[data-hero="${h.key}"]`));
@@ -193,7 +202,7 @@
       </div>`;
     }).join("");
     b.enemies.forEach((e, i) => trackHp("enemy-" + i + "-" + e.key, e.hp, `.enemy[data-enemy="${i}"]`));
-    renderParty(b.heroes, null);
+    renderParty(b.heroes.concat((b.bench || []).map((h) => Object.assign({}, h, { aktif: false }))), null);
   }
 
   function onBattleEnd(r) {

@@ -78,7 +78,9 @@ def battle_snapshot(battle: Battle, title: str) -> dict:
         "hp": h.hp, "max_hp": h.max_hp, "mp": h.mp, "max_mp": h.max_mp,
         "statuses": [{"name": s.name, "turns": s.turns_left, "bad": s.bad} for s in h.statuses.values()],
     } for h in battle.heroes]
-    return {"title": title, "round": battle.round, "enemies": enemies, "heroes": heroes,
+    bench = [{"key": h.key, "name": h.name, "alive": h.alive, "level": h.level,
+              "hp": h.hp, "max_hp": h.max_hp, "mp": h.mp, "max_mp": h.max_mp} for h in battle.bench]
+    return {"title": title, "round": battle.round, "enemies": enemies, "heroes": heroes, "bench": bench,
             "bara": battle.bara, "bara_max": battle.bara_max, "bara_frozen": battle.bara_frozen}
 
 
@@ -156,6 +158,9 @@ def choose_action_interactive(battle: Battle, actor: Combatant, io: IO) -> Actio
         bara = battle.usable_bara_skills(actor)
         if bara:
             menu.append("Bara")
+        cadangan = battle.bisa_ganti(actor)
+        if cadangan:
+            menu.append("Ganti")
         if battle.can_flee:
             menu.append("Kabur")
         i = _pick(io, "> ", menu, allow_back=False)
@@ -195,6 +200,12 @@ def choose_action_interactive(battle: Battle, actor: Combatant, io: IO) -> Actio
             ts = _choose_target(battle, actor, bara[j].target, io)
             if ts:
                 return Action("skill", skill=bara[j], targets=ts)
+        elif choice == "Ganti":
+            labels = [f"{c.name} Lv {c.level}  HP {c.hp}/{c.max_hp}  MP {c.mp}/{c.max_mp}" for c in cadangan]
+            j = _pick(io, "masuk> ", labels)
+            if j is None:
+                continue
+            return Action("ganti", targets=[cadangan[j]])
         elif choice == "Kabur":
             return Action("kabur")
 

@@ -15,6 +15,7 @@
 
   "ramuan_sari":   {"name": "Ramuan Sari", "kind": "konsumsi", "price": 150, "heal_hp": 400, "target": "satu_kawan"},
   "cawan_nyala":   {"name": "Cawan Nyala", "kind": "konsumsi", "price": 90, "heal_mp": 60, "target": "satu_kawan"},
+  "bekal_kemah":   {"name": "Bekal Kemah", "kind": "konsumsi", "price": 120, "description": "Beras, teh, dan minyak cukup untuk satu malam. Dipakai untuk berkemah di lentera penjaga."},
   "dupa_sunyi":    {"name": "Dupa Sunyi", "kind": "konsumsi", "price": 60, "description": "Tanpa encounter selama 30 langkah."},
   "suku_cadang":   {"name": "Suku Cadang", "kind": "bahan", "price": 8, "description": "Bahan bakar alat kaca Bagas."},
   "serpihan_ingatan": {"name": "Serpihan Ingatan", "kind": "bahan", "price": 0, "description": "Kaca kecil yang berdengung hangat. Tukang Kaca di Tengara tertarik."},

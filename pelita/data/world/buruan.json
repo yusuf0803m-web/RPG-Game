@@ -1,0 +1,39 @@
+{
+  "_catatan": "Papan Buruan (GAME_DESIGN §5.7). Kontrak diambil di papan Kafilah; targetnya muncul sebagai pilihan di ruang yang disebut selama kontraknya 'aktif'. Tiga target untuk Babak 1.",
+
+  "buruan_1_kunang": {
+    "nama": "Kunang Raja di Lembah Kabut",
+    "level": 7,
+    "area": "hutan_kelabu",
+    "room": "lembah_kabut",
+    "syarat": ["boss_hutan_kalah"],
+    "musuh": ["buruan_kunang_raja"],
+    "deskripsi": "Kunang sebesar kepala kerbau. Memanggil kawanan, lalu berkelahi sendirian dua kali lebih cepat.",
+    "petunjuk": "Di tengah lembah, cahaya kecil berkumpul jadi satu cahaya besar. Cahaya itu tidak menerangi apa-apa.",
+    "hadiah": {"keping": 400, "item": {"bekal_kemah": 2}, "kaca": ["kaca_tabah"]}
+  },
+
+  "buruan_2_nelayan": {
+    "nama": "Nelayan yang Tidak Pulang",
+    "level": 12,
+    "area": "danau_cermin",
+    "room": "sisi_danau",
+    "syarat": ["boss_katak_kalah"],
+    "musuh": ["buruan_nelayan_tenggelam"],
+    "deskripsi": "Sesuatu masih menebar jala di sisi danau tiap malam. Jalanya penuh, tapi tidak ada ikan di dalamnya.",
+    "petunjuk": "Jala dilempar ke arah kalian sebelum kalian sempat memanggil. Ia mengisi sesuatu di dadanya — sesuatu yang bersinar makin terang.",
+    "hadiah": {"keping": 900, "item": {"ramuan_sari": 3}, "kaca": ["kaca_napas"]}
+  },
+
+  "buruan_3_zirah": {
+    "nama": "Zirah Tanpa Nama",
+    "level": 17,
+    "area": "lorong_bawah",
+    "room": "ruang_pompa",
+    "syarat": ["boss_rangga_kalah"],
+    "musuh": ["buruan_zirah_tanpa_nama"],
+    "deskripsi": "Zirah pengawal istana yang masih menjaga pos yang sudah tidak ada. Kebal provokasi; ia hanya melihat yang paling lemah.",
+    "petunjuk": "Di ruang pompa, sesuatu berdiri tegak di air setinggi lutut, menghadap pintu yang tidak dipakai siapa pun sejak dua puluh tahun lalu.",
+    "hadiah": {"keping": 1600, "item": {"abu_fajar": 2}, "kaca": ["kaca_pindai"]}
+  }
+}

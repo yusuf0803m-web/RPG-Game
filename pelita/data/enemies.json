@@ -976,5 +976,57 @@
     ],
     "lesson": "Bergantian tiap 4 giliran; Fajar Kelabu (Jurus Ganda) mengabaikan Serap. Padamkan di <25%: siapkan Nyala Pulih.",
     "description": "Kabut yang selama ini ditahan Baskara di dalam menara, menelan dan membentuknya."
+  },
+
+  "_catatan_buruan": "Target Papan Buruan (GAME_DESIGN §5.7). Elit: punya meter Ketahanan dan satu mekanik khas, tapi bukan boss cerita.",
+
+  "buruan_kunang_raja": {
+    "name": "Kunang Raja", "level": 7, "xp": 1470, "keping": 245, "ketahanan": 60,
+    "stats": {"hp": 430, "mp": 0, "atk": 15, "def": 10, "mag": 16, "res": 12, "agi": 16, "lck": 8},
+    "affinities": {"cahaya": "lemah", "kelam": "serap", "angin": "tahan"},
+    "phases": [
+      {"name": "Kawanan", "hp_above": 0.5, "pattern": ["m_panggil_kunang", "m_kedip_gelap", "serang", "m_cakar_kabut"]},
+      {"name": "Nyala Tunggal", "hp_above": 0.0, "actions_per_turn": 2,
+       "announce": "Kunang-kunang kecil padam satu per satu, dan yang besar menyala dua kali lebih terang.",
+       "pattern": ["m_kedip_gelap", "serang"]}
+    ],
+    "immune": ["racun", "beku"],
+    "drops": [{"item": "serpihan_ingatan", "chance": 1.0}],
+    "steal": "tetes_nyala",
+    "lesson": "Buruan pertama: memanggil kawanan selama HP>50%, lalu bertindak dua kali. Habiskan anak buahnya dulu atau tekan cepat.",
+    "description": "Kunang sebesar kepala kerbau. Cahayanya bukan cahaya: lubang berbentuk cahaya."
+  },
+
+  "buruan_nelayan_tenggelam": {
+    "name": "Nelayan yang Tidak Pulang", "level": 12, "xp": 4320, "keping": 720, "ketahanan": 100,
+    "stats": {"hp": 880, "mp": 0, "atk": 24, "def": 16, "mag": 22, "res": 18, "agi": 9, "lck": 6},
+    "affinities": {"petir": "lemah", "es": "tahan", "kelam": "tahan"},
+    "phases": [
+      {"name": "Menjala", "hp_above": 0.0,
+       "pattern": ["m_jerat@hp_terendah", "m_isi_meriam", "m_meriam_nyala", "m_sentuhan_lupa"]}
+    ],
+    "immune": ["racun", "lupa", "tidur"],
+    "drops": [{"item": "serpihan_ingatan", "chance": 1.0}],
+    "steal": "ramuan_sari",
+    "lesson": "Menjerat satu anggota lalu mengisi tenaga untuk serangan besar. Goyah atau Pecah membatalkan isian; jerat lepas kalau ia Pecah.",
+    "description": "Perahunya karam dua puluh tahun lalu. Jalanya masih baru."
+  },
+
+  "buruan_zirah_tanpa_nama": {
+    "name": "Zirah Tanpa Nama", "level": 17, "xp": 8670, "keping": 1445, "ketahanan": 140,
+    "stats": {"hp": 1450, "mp": 0, "atk": 34, "def": 28, "mag": 14, "res": 22, "agi": 8, "lck": 4},
+    "affinities": {"petir": "lemah", "fisik": "tahan", "kelam": "tahan"},
+    "phases": [
+      {"name": "Berjaga", "hp_above": 0.45, "ignore_taunt": true,
+       "pattern": ["m_derit_zirah", "m_tandai@hp_terendah", "serang", "m_tebas_eksekusi@tandai"]},
+      {"name": "Tanpa Perintah", "hp_above": 0.0, "actions_per_turn": 2, "ignore_taunt": true,
+       "announce": "Zirah itu berhenti menunggu aba-aba yang tidak akan datang lagi.",
+       "pattern": ["serang", "m_ayunan_ganda", "m_derit_zirah"]}
+    ],
+    "immune": ["racun", "lupa", "tidur", "bakar", "beku", "berat"],
+    "drops": [{"item": "serpihan_ingatan", "chance": 1.0}],
+    "steal": "suku_cadang",
+    "lesson": "Kebal Provokasi: Sela tidak bisa menariknya. Menandai sasaran lalu mengeksekusi — sembuhkan atau alihkan tanda sebelum gilirannya tiba.",
+    "description": "Zirah pengawal istana tanpa lambang, tanpa nama, dan tanpa orang di dalamnya."
   }
 }

@@ -1,557 +1,567 @@
 {
-  "id": "tambang",
-  "name": "Tambang Kaca Ingatan",
-  "level_range": "15–19",
-  "start": "mulut_tambang",
-  "fog": true,
-  "encounter_rate": 0.4,
-  "encounters": [
-    {
-      "enemies": [
-        "kelelawar_kristal",
-        "kelelawar_kristal"
-      ],
-      "weight": 3
-    },
-    {
-      "enemies": [
-        "penambang_terlupa"
-      ],
-      "weight": 3
-    },
-    {
-      "enemies": [
-        "penambang_terlupa",
-        "kelelawar_kristal"
-      ],
-      "weight": 2
-    },
-    {
-      "enemies": [
-        "hampa_pengembara",
-        "hampa_pengembara",
-        "kelelawar_kristal"
-      ],
-      "weight": 1
-    },
-    {
-      "enemies": [
-        "pengawal_karat",
-        "kelelawar_kristal"
-      ],
-      "weight": 1
-    }
-  ],
-  "rooms": {
-    "mulut_tambang": {
-      "name": "Mulut Tambang",
-      "safe": true,
-      "text": "Lubang besar di lereng gunung, disangga balok-balok jati yang sudah retak. Rel lori berkarat masuk ke kegelapan. Di sisi luar, seorang pedagang kafilah membuka lapaknya di bawah tenda, satu-satunya yang berani sedekat ini.",
-      "on_enter": "masuk_tambang",
-      "exits": [
-        {
-          "label": "Turun kembali ke Gerbang Utara Tengara",
-          "to": "gerbang_utara",
-          "area": "tengara"
-        },
-        {
-          "label": "Masuk ke lorong atas",
-          "to": "lorong_atas"
-        },
-        {
-          "label": "Jalan gunung ke Mercusuar Langit",
-          "to": "kaki_menara",
-          "area": "mercusuar",
-          "if": [
-            "has:kaca_inti"
-          ],
-          "locked": "Jalan ke Mercusuar mendaki lewat punggung gunung. Tanpa Kaca Inti untuk membawa Bara, tidak ada gunanya ke sana."
-        }
-      ],
-      "npcs": [
-        {
-          "id": "pedagang_tambang",
-          "name": "Pedagang kafilah",
-          "script": "bicara_pedagang"
-        }
-      ],
-      "objects": [
-        {
-          "id": "lentera_mulut",
-          "name": "Lentera penjaga (simpan & istirahat)",
-          "script": "lentera_save"
-        }
-      ]
-    },
-    "lorong_atas": {
-      "name": "Lorong Atas",
-      "text": "Lorong lebar dengan rel lori. Dinding-dindingnya bersinar samar: urat-urat Kaca Ingatan yang belum ditambang, memutar potongan-potongan kenangan kalau disentuh. Kelelawar bergelantungan di langit-langit, sayapnya berkilat.",
-      "exits": [
-        {
-          "label": "Kembali ke mulut tambang",
-          "to": "mulut_tambang"
-        },
-        {
-          "label": "Ke ruang lift",
-          "to": "ruang_lift"
-        }
-      ],
-      "objects": [
-        {
-          "id": "urat_kaca",
-          "name": "Urat kaca di dinding",
-          "script": "urat_kaca_1"
-        }
-      ]
-    },
-    "ruang_lift": {
-      "name": "Ruang Lift",
-      "text": "Sumur vertikal dengan lift kayu tergantung pada rantai. Liftnya miring; separuh papannya hilang. Di sebelahnya, sebuah pintu dengan tulisan kapur: BENGKEL. JANGAN GANGGU. SUNGGUH.",
-      "exits": [
-        {
-          "label": "Kembali ke lorong atas",
-          "to": "lorong_atas"
-        },
-        {
-          "label": "Ke bengkel",
-          "to": "bengkel"
-        },
-        {
-          "label": "Turun dengan lift ke lorong tengah",
-          "to": "lorong_tengah",
-          "if": [
-            "lift_diperbaiki"
-          ],
-          "locked": "Lift ini tidak akan menahan berat seekor kucing. Mungkin ada yang bisa memperbaikinya."
-        }
-      ],
-      "objects": [
-        {
-          "id": "lentera_lift",
-          "name": "Lentera penjaga (simpan & istirahat)",
-          "script": "lentera_save"
-        }
-      ]
-    },
-    "bengkel": {
-      "name": "Bengkel",
-      "safe": true,
-      "text": "Ruang yang penuh sesak dengan alat: peluncur kaca, jerat pegas, lentera-lentera modifikasi, dan sebuah kompor dari kaleng lori. Semuanya rapi dengan cara yang hanya dimengerti pemiliknya.",
-      "on_enter": "temu_bagas",
-      "exits": [
-        {
-          "label": "Kembali ke ruang lift",
-          "to": "ruang_lift"
-        }
-      ],
-      "objects": [
-        {
-          "id": "rak_suku_cadang",
-          "name": "Rak suku cadang",
-          "script": "rak_suku_cadang",
-          "if": [
-            "party:bagas",
-            "!rak_diambil"
-          ]
-        }
-      ]
-    },
-    "lorong_tengah": {
-      "name": "Lorong Tengah",
-      "text": "Lorong yang lebih sempit dan lebih dingin. Kaca di dinding lebih banyak, dan potongan-potongan kenangannya lebih jelas: seseorang tertawa, seseorang memanggil nama anaknya, seseorang menghitung upah.",
-      "exits": [
-        {
-          "label": "Naik lift ke ruang lift",
-          "to": "ruang_lift"
-        },
-        {
-          "label": "Ke gua kristal",
-          "to": "gua_kristal"
-        }
-      ],
-      "objects": [
-        {
-          "id": "peti_tambang",
-          "name": "Peti lori terbalik",
-          "script": "peti_tambang",
-          "if": [
-            "!peti_tambang_diambil"
-          ]
-        }
-      ],
-      "on_enter": "sergap_tengah"
-    },
-    "gua_kristal": {
-      "name": "Gua Kristal",
-      "text": "Gua alami yang seluruh dindingnya kristal. Cahaya lentera kalian dipantulkan ribuan kali, dan di setiap pantulan ada suara. Bisikan, tawa, nyanyian. Satu suara lebih jelas dari yang lain, dan Lintang berhenti melangkah.",
-      "on_enter": "suara_bapak",
-      "exits": [
-        {
-          "label": "Kembali ke lorong tengah",
-          "to": "lorong_tengah"
-        },
-        {
-          "label": "Turun ke lorong bawah",
-          "to": "lorong_bawah_tambang"
-        }
-      ],
-      "objects": [
-        {
-          "id": "lentera_gua",
-          "name": "Lentera penjaga (simpan & istirahat)",
-          "script": "lentera_save"
-        }
-      ]
-    },
-    "lorong_bawah_tambang": {
-      "name": "Lorong Bawah Tambang",
-      "text": "Lorong terdalam. Udara berat dan hangat. Suara beliung memukul batu terdengar dari depan, teratur, tanpa lelah, sudah dua belas tahun.",
-      "exits": [
-        {
-          "label": "Kembali ke gua kristal",
-          "to": "gua_kristal"
-        },
-        {
-          "label": "Ke ruang inti",
-          "to": "ruang_inti"
-        }
-      ],
-      "on_enter": "sergap_bawah"
-    },
-    "ruang_inti": {
-      "name": "Ruang Inti",
-      "safe": true,
-      "text": "Ruang raksasa tempat urat Kaca Ingatan terbesar dulu ditambang. Di tengahnya, di atas kereta lori, Kaca Inti: bola kaca sebesar kepala, bening, dan berdengung. Di depannya, sesuatu yang besar sedang mengayunkan beliung ke dinding yang sudah tidak ada.",
-      "on_enter": "boss_penambang",
-      "exits": [
-        {
-          "label": "Kembali ke lorong bawah",
-          "to": "lorong_bawah_tambang"
-        },
-        {
-          "label": "Naik tangga darurat ke mulut tambang",
-          "to": "mulut_tambang",
-          "if": [
-            "boss_penambang_kalah"
-          ]
-        }
-      ]
-    }
+ "id": "tambang",
+ "name": "Tambang Kaca Ingatan",
+ "level_range": "15–19",
+ "start": "mulut_tambang",
+ "fog": true,
+ "encounter_rate": 0.4,
+ "encounters": [
+  {
+   "enemies": [
+    "kelelawar_kristal",
+    "kelelawar_kristal"
+   ],
+   "weight": 3
   },
-  "scripts": {
-    "lentera_save": [
-      {
-        "text": "Kau merapikan sumbu dan menuang sedikit minyak. Nyalanya menegak."
-      },
-      {
-        "heal": "all"
-      },
-      {
-        "save": true
-      }
-    ],
-    "masuk_tambang": [
-      {
-        "once": "tambang_masuk_adegan",
-        "do": [
-          {
-            "say": "Sela",
-            "text": "Tambang Kaca Ingatan. Semua lentera di lembah memakai kaca dari sini. Ditutup tepat waktu menara padam. Orang bilang para penambangnya tidak pernah keluar."
-          },
-          {
-            "say": "Lintang",
-            "text": "Mereka masih di dalam. Aku bisa dengar."
-          },
-          {
-            "text": "(Tip: Kelelawar Kristal sangat cepat dan menguras MP; skill area membantu. Penambang Terlupa memukul keras tapi lambat: Jaga saat ia mengayun.)"
-          }
-        ]
-      }
-    ],
-    "bicara_pedagang": [
-      {
-        "say": "Pedagang",
-        "text": "Kafilah kami tidak masuk tambang. Tapi kami menjual pada orang gila yang masuk. Ramuan, suku cadang bekas, dan minyak yang lebih baik dari punyamu."
-      },
-      {
-        "shop": "kafilah_tambang"
-      }
-    ],
-    "urat_kaca_1": [
-      {
-        "text": "Kau menyentuh urat kaca. Suara seorang lelaki: \"...tiga lori lagi, lalu pulang. Anakku ulang tahun.\" Lalu tawa. Lalu hening."
-      },
-      {
-        "once": "urat_kaca_1_serpihan",
-        "do": [
-          {
-            "text": "Sepotong kecil kaca terlepas ke tanganmu, hangat."
-          },
-          {
-            "give": {
-              "serpihan_ingatan": 1
-            }
-          }
-        ]
-      }
-    ],
-    "temu_bagas": [
-      {
-        "once": "temu_bagas_adegan",
-        "do": [
-          {
-            "text": "Pintu bengkel terbuka sebelum kalian mengetuk. Seorang lelaki berkacamata las, jenggot tidak rapi, dengan sarung tangan kulit dan peluncur kaca di bahu, mengarahkan peluncur itu ke dada Sela."
-          },
-          {
-            "say": "???",
-            "text": "Tiga hal. Satu: kalian bukan Hampa, karena Hampa tidak membaca tulisan di pintu, dan kalian jelas membaca lalu mengabaikannya. Dua: kalian bukan pengawal Adipati, karena pengawal tidak membawa anak kecil berlentera retak. Tiga: siapa kalian dan kenapa lentera anak itu berdengung ke arah Kaca Inti?"
-          },
-          {
-            "say": "Rimba",
-            "text": "Kami butuh Kaca Inti. Untuk membawa Nyala ke puncak Mercusuar."
-          },
-          {
-            "say": "???",
-            "text": "(Ia menurunkan peluncurnya.) ...Dua belas tahun tidak ada yang bilang kalimat itu. Bagas. Juru kaca. Aku yang memotong Kaca Inti itu, dua belas tahun lalu, dan aku yang menjaganya sejak Adipati bilang \"biarkan\"."
-          },
-          {
-            "say": "Sela",
-            "text": "Kau di sini dua belas tahun? Sendirian?"
-          },
-          {
-            "say": "Bagas",
-            "text": "Tidak sendirian. Ada dua ratus penambang. Mereka cuma... tidak ingat aku. (Ia mengetuk kacamatanya.) Kaca Inti ada di ruang paling bawah. Ada Hampa besar yang menjaganya. Bukan menjaga: ia cuma terus menambang, dan Kaca Inti kebetulan ada di jalurnya."
-          },
-          {
-            "say": "Bagas",
-            "text": "Aku ikut. Bukan karena percaya kalian. Karena kalau kalian pecahkan Kaca Inti dengan tangan-tangan amatir itu, aku yang harus memotong lagi, dan uratnya sudah habis."
-          },
-          {
-            "say": "Lintang",
-            "text": "Kau lucu."
-          },
-          {
-            "say": "Bagas",
-            "text": "Aku tidak lucu. Aku *tepat*. Orang sering salah membedakan."
-          },
-          {
-            "join": "bagas",
-            "equip": {
-              "senjata": "peluncur_tua",
-              "zirah": "zirah_kulit"
-            }
-          },
-          {
-            "give": {
-              "suku_cadang": 8
-            }
-          },
-          {
-            "text": "(Tip: Alat kaca Bagas memakai Suku Cadang, bukan MP. Curi mengambil barang musuh. Baterai menyalurkan MP ke kawan. Party aktif maksimal 4.)"
-          },
-          {
-            "say": "Bagas",
-            "text": "Lift-nya kuperbaiki dulu. Dua menit. Jangan sentuh apa-apa."
-          },
-          {
-            "set": "lift_diperbaiki"
-          },
-          {
-            "heal": "all"
-          }
-        ]
-      }
-    ],
-    "rak_suku_cadang": [
-      {
-        "set": "rak_diambil"
-      },
-      {
-        "say": "Bagas",
-        "text": "Ambil secukupnya. Secukupnya artinya yang kuizinkan."
-      },
-      {
-        "give": {
-          "suku_cadang": 6,
-          "peluncur_kaca": 1
-        }
-      }
-    ],
-    "peti_tambang": [
-      {
-        "set": "peti_tambang_diambil"
-      },
-      {
-        "text": "Peti lori terbalik. Di bawahnya, barang-barang penambang yang tidak sempat dibawa pulang."
-      },
-      {
-        "give": {
-          "pedang_besi_tambang": 1,
-          "lentera_kaca": 1,
-          "ramuan_akar": 3,
-          "suku_cadang": 4
-        }
-      }
-    ],
-    "suara_bapak": [
-      {
-        "once": "suara_bapak_adegan",
-        "do": [
-          {
-            "text": "Suara dari kristal: \"Lintang. Tunggu di sini. Bapak harus ke menara. Bapak akan... Bapak akan jadi lentera, Nak. Supaya kau bisa lihat jalan pulang.\"\n\nLalu suara lain, lebih jauh, tegas dan pelan: \"Hentikan. Hentikan ritualnya. Aku tidak bisa. Aku tidak bisa membakar orang setiap tahun.\" Dan suara pertama, patah: \"Tapi sudah setengah... jangan... jangan berhenti di tengah, aku tidak akan utuh, aku tidak akan..."
-          },
-          {
-            "text": "Kristal itu berhenti. Lintang berdiri sangat diam."
-          },
-          {
-            "say": "Lintang",
-            "text": "Dibatalkan. Itu artinya. Bapak sudah setengah jadi lentera waktu Adipati berhenti. Setengahnya dibakar. Setengahnya... jalan pulang ke aku. Dan lupa di tengah jalan."
-          },
-          {
-            "say": "Sela",
-            "text": "Lintang, kau tidak harus..."
-          },
-          {
-            "say": "Lintang",
-            "text": "Aku harus. Aku satu-satunya yang ingat dia. Kalau aku tidak ingat, dia benar-benar habis."
-          },
-          {
-            "say": "Bagas",
-            "text": "(pelan, untuk pertama kalinya tanpa sarkasme) Kristal menyimpan apa yang disentuhkan padanya. Dia menyentuh kristal ini waktu turun. Artinya dia lewat sini, Nak. Setelah dibatalkan. Dia mencoba pulang."
-          },
-          {
-            "say": "Rimba",
-            "text": "Hampa pertama."
-          },
-          {
-            "say": "Lintang",
-            "text": "Bapak."
-          },
-          {
-            "text": "** Kenangan Lintang: Suara di Kristal. **"
-          },
-          {
-            "quest": "nama_bapak",
-            "state": "hampa_pertama"
-          },
-          {
-            "give": {
-              "serpihan_ingatan": 1
-            }
-          }
-        ]
-      }
-    ],
-    "boss_penambang": [
-      {
-        "once": "boss_penambang_adegan",
-        "do": [
-          {
-            "text": "Bukan satu penambang. Lima, enam, mungkin lebih, yang meleleh jadi satu tubuh raksasa oleh kabut dan kelelahan. Punggungnya berkerak kristal yang berganti warna pelan-pelan: merah, biru, kuning, hitam. Ia mengayunkan beliung ke dinding kosong, dan setiap ayunan menggetarkan Kaca Inti di atas lori."
-          },
-          {
-            "say": "Bagas",
-            "text": "Itu Pak Tirta. Dan Jaka. Dan... aku kenal semuanya. Dua belas tahun aku menonton mereka menambang udara."
-          },
-          {
-            "say": "Sela",
-            "text": "Kau mau kami yang..."
-          },
-          {
-            "say": "Bagas",
-            "text": "Aku mau mereka berhenti. Dan aku mau Kaca Inti utuh. Kristal di punggungnya menyerap satu elemen dan berganti tiap beberapa ayunan. Pukul dengan *lawan* elemen yang sedang diserapnya. Aku akan bilang kalau berganti. Percaya alatku."
-          },
-          {
-            "text": "(Tip: Kristal berganti tiap 3 giliran musuh dan diumumkan. Merah menyerap Api dan lemah Es; Biru sebaliknya; Kuning menyerap Petir dan lemah Fisik; Hitam menyerap Kelam dan lemah Cahaya.)"
-          },
-          {
-            "battle": [
-              "boss_penambang_raksasa"
-            ],
-            "boss": true,
-            "lose": "gameover",
-            "win": [
-              {
-                "text": "Kristal di punggungnya pecah satu-satu, dan bersama tiap pecahan, satu sosok terlepas dari tubuh raksasa itu: seorang penambang, lalu seorang lagi, jatuh berlutut, lalu luruh jadi kabut tipis yang naik ke langit-langit dan hilang. Yang terakhir menoleh ke Bagas sebelum pergi."
-              },
-              {
-                "say": "Bagas",
-                "text": "...Pulanglah, Pak Tirta. Anakmu sudah besar."
-              },
-              {
-                "text": "Kaca Inti berhenti bergetar. Bagas mengangkatnya dengan kedua tangan seperti mengangkat bayi, memeriksanya di bawah lentera, lalu mengangguk."
-              },
-              {
-                "say": "Bagas",
-                "text": "Utuh. Sekarang, Penyala, tunjukkan Bara itu. Kalau ia sungguhan, Kaca ini akan mengenalinya."
-              },
-              {
-                "text": "Rimba menyentuh Kaca Inti. Percikan di dadanya menghangat, dan di dalam kaca, sebentuk cahaya kecil menyala, seperti dapur di pagi hari."
-              },
-              {
-                "say": "Bagas",
-                "text": "...Baik. Aku percaya sekarang. Mercusuar lewat punggung gunung. Ada tangga darurat ke mulut tambang; aku yang memasangnya."
-              },
-              {
-                "give": {
-                  "kaca_inti": 1,
-                  "serpihan_ingatan": 1
-                }
-              },
-              {
-                "set": "boss_penambang_kalah"
-              },
-              {
-                "quest": "mencari_guntur",
-                "state": "mercusuar"
-              },
-              {
-                "heal": "all"
-              }
-            ]
-          }
-        ]
-      }
-    ],
-    "sergap_tengah": [
-      {
-        "once": "sergap_tengah_done",
-        "do": [
-          {
-            "text": "Kelelawar-kelelawar berjatuhan dari langit-langit seperti pecahan kaca."
-          },
-          {
-            "battle": [
-              "kelelawar_kristal",
-              "kelelawar_kristal",
-              "penambang_terlupa"
-            ],
-            "boss": false,
-            "can_flee": false,
-            "lose": "gameover"
-          }
-        ]
-      }
-    ],
-    "sergap_bawah": [
-      {
-        "once": "sergap_bawah_done",
-        "do": [
-          {
-            "text": "Dua Hampa penambang menghadang, beliung terangkat."
-          },
-          {
-            "battle": [
-              "penambang_terlupa",
-              "penambang_terlupa",
-              "kelelawar_kristal"
-            ],
-            "boss": false,
-            "can_flee": false,
-            "lose": "gameover"
-          }
-        ]
-      }
-    ]
+  {
+   "enemies": [
+    "penambang_terlupa"
+   ],
+   "weight": 3
+  },
+  {
+   "enemies": [
+    "penambang_terlupa",
+    "kelelawar_kristal"
+   ],
+   "weight": 2
+  },
+  {
+   "enemies": [
+    "hampa_pengembara",
+    "hampa_pengembara",
+    "kelelawar_kristal"
+   ],
+   "weight": 1
+  },
+  {
+   "enemies": [
+    "pengawal_karat",
+    "kelelawar_kristal"
+   ],
+   "weight": 1
   }
+ ],
+ "rooms": {
+  "mulut_tambang": {
+   "name": "Mulut Tambang",
+   "safe": true,
+   "text": "Lubang besar di lereng gunung, disangga balok-balok jati yang sudah retak. Rel lori berkarat masuk ke kegelapan. Di sisi luar, seorang pedagang kafilah membuka lapaknya di bawah tenda, satu-satunya yang berani sedekat ini.",
+   "on_enter": "masuk_tambang",
+   "exits": [
+    {
+     "label": "Turun kembali ke Gerbang Utara Tengara",
+     "to": "gerbang_utara",
+     "area": "tengara"
+    },
+    {
+     "label": "Masuk ke lorong atas",
+     "to": "lorong_atas"
+    },
+    {
+     "label": "Jalan gunung ke Mercusuar Langit",
+     "to": "kaki_menara",
+     "area": "mercusuar",
+     "if": [
+      "has:kaca_inti"
+     ],
+     "locked": "Jalan ke Mercusuar mendaki lewat punggung gunung. Tanpa Kaca Inti untuk membawa Bara, tidak ada gunanya ke sana."
+    }
+   ],
+   "npcs": [
+    {
+     "id": "pedagang_tambang",
+     "name": "Pedagang kafilah",
+     "script": "bicara_pedagang"
+    }
+   ],
+   "objects": [
+    {
+     "id": "lentera_mulut",
+     "name": "Lentera penjaga (simpan & istirahat)",
+     "script": "lentera_save"
+    }
+   ]
+  },
+  "lorong_atas": {
+   "name": "Lorong Atas",
+   "text": "Lorong lebar dengan rel lori. Dinding-dindingnya bersinar samar: urat-urat Kaca Ingatan yang belum ditambang, memutar potongan-potongan kenangan kalau disentuh. Kelelawar bergelantungan di langit-langit, sayapnya berkilat.",
+   "exits": [
+    {
+     "label": "Kembali ke mulut tambang",
+     "to": "mulut_tambang"
+    },
+    {
+     "label": "Ke ruang lift",
+     "to": "ruang_lift"
+    }
+   ],
+   "objects": [
+    {
+     "id": "urat_kaca",
+     "name": "Urat kaca di dinding",
+     "script": "urat_kaca_1"
+    }
+   ]
+  },
+  "ruang_lift": {
+   "name": "Ruang Lift",
+   "text": "Sumur vertikal dengan lift kayu tergantung pada rantai. Liftnya miring; separuh papannya hilang. Di sebelahnya, sebuah pintu dengan tulisan kapur: BENGKEL. JANGAN GANGGU. SUNGGUH.",
+   "exits": [
+    {
+     "label": "Kembali ke lorong atas",
+     "to": "lorong_atas"
+    },
+    {
+     "label": "Ke bengkel",
+     "to": "bengkel"
+    },
+    {
+     "label": "Turun dengan lift ke lorong tengah",
+     "to": "lorong_tengah",
+     "if": [
+      "lift_diperbaiki"
+     ],
+     "locked": "Lift ini tidak akan menahan berat seekor kucing. Mungkin ada yang bisa memperbaikinya."
+    }
+   ],
+   "objects": [
+    {
+     "id": "lentera_lift",
+     "name": "Lentera penjaga (simpan & istirahat)",
+     "script": "lentera_save"
+    }
+   ]
+  },
+  "bengkel": {
+   "name": "Bengkel",
+   "safe": true,
+   "text": "Ruang yang penuh sesak dengan alat: peluncur kaca, jerat pegas, lentera-lentera modifikasi, dan sebuah kompor dari kaleng lori. Semuanya rapi dengan cara yang hanya dimengerti pemiliknya.",
+   "on_enter": "temu_bagas",
+   "exits": [
+    {
+     "label": "Kembali ke ruang lift",
+     "to": "ruang_lift"
+    }
+   ],
+   "objects": [
+    {
+     "id": "rak_suku_cadang",
+     "name": "Rak suku cadang",
+     "script": "rak_suku_cadang",
+     "if": [
+      "party:bagas",
+      "!rak_diambil"
+     ]
+    }
+   ]
+  },
+  "lorong_tengah": {
+   "name": "Lorong Tengah",
+   "text": "Lorong yang lebih sempit dan lebih dingin. Kaca di dinding lebih banyak, dan potongan-potongan kenangannya lebih jelas: seseorang tertawa, seseorang memanggil nama anaknya, seseorang menghitung upah.",
+   "exits": [
+    {
+     "label": "Naik lift ke ruang lift",
+     "to": "ruang_lift"
+    },
+    {
+     "label": "Ke gua kristal",
+     "to": "gua_kristal"
+    }
+   ],
+   "objects": [
+    {
+     "id": "peti_tambang",
+     "name": "Peti lori terbalik",
+     "script": "peti_tambang",
+     "if": [
+      "!peti_tambang_diambil"
+     ]
+    }
+   ],
+   "on_enter": "sergap_tengah"
+  },
+  "gua_kristal": {
+   "name": "Gua Kristal",
+   "text": "Gua alami yang seluruh dindingnya kristal. Cahaya lentera kalian dipantulkan ribuan kali, dan di setiap pantulan ada suara. Bisikan, tawa, nyanyian. Satu suara lebih jelas dari yang lain, dan Lintang berhenti melangkah.",
+   "on_enter": "suara_bapak",
+   "exits": [
+    {
+     "label": "Kembali ke lorong tengah",
+     "to": "lorong_tengah"
+    },
+    {
+     "label": "Turun ke lorong bawah",
+     "to": "lorong_bawah_tambang"
+    }
+   ],
+   "objects": [
+    {
+     "id": "lentera_gua",
+     "name": "Lentera penjaga (simpan & istirahat)",
+     "script": "lentera_save"
+    }
+   ]
+  },
+  "lorong_bawah_tambang": {
+   "name": "Lorong Bawah Tambang",
+   "text": "Lorong terdalam. Udara berat dan hangat. Suara beliung memukul batu terdengar dari depan, teratur, tanpa lelah, sudah dua belas tahun.",
+   "exits": [
+    {
+     "label": "Kembali ke gua kristal",
+     "to": "gua_kristal"
+    },
+    {
+     "label": "Ke ruang inti",
+     "to": "ruang_inti"
+    }
+   ],
+   "on_enter": "sergap_bawah"
+  },
+  "ruang_inti": {
+   "name": "Ruang Inti",
+   "safe": true,
+   "text": "Ruang raksasa tempat urat Kaca Ingatan terbesar dulu ditambang. Di tengahnya, di atas kereta lori, Kaca Inti: bola kaca sebesar kepala, bening, dan berdengung. Di depannya, sesuatu yang besar sedang mengayunkan beliung ke dinding yang sudah tidak ada.",
+   "on_enter": "boss_penambang",
+   "exits": [
+    {
+     "label": "Kembali ke lorong bawah",
+     "to": "lorong_bawah_tambang"
+    },
+    {
+     "label": "Naik tangga darurat ke mulut tambang",
+     "to": "mulut_tambang",
+     "if": [
+      "boss_penambang_kalah"
+     ]
+    }
+   ]
+  }
+ },
+ "scripts": {
+  "lentera_save": [
+   {
+    "text": "Kau merapikan sumbu dan menuang sedikit minyak. Nyalanya menegak."
+   },
+   {
+    "heal": "all"
+   },
+   {
+    "save": true
+   },
+   {
+    "if": [
+     "has:bekal_kemah"
+    ],
+    "then": [
+     {
+      "kemah": true
+     }
+    ]
+   }
+  ],
+  "masuk_tambang": [
+   {
+    "once": "tambang_masuk_adegan",
+    "do": [
+     {
+      "say": "Sela",
+      "text": "Tambang Kaca Ingatan. Semua lentera di lembah memakai kaca dari sini. Ditutup tepat waktu menara padam. Orang bilang para penambangnya tidak pernah keluar."
+     },
+     {
+      "say": "Lintang",
+      "text": "Mereka masih di dalam. Aku bisa dengar."
+     },
+     {
+      "text": "(Tip: Kelelawar Kristal sangat cepat dan menguras MP; skill area membantu. Penambang Terlupa memukul keras tapi lambat: Jaga saat ia mengayun.)"
+     }
+    ]
+   }
+  ],
+  "bicara_pedagang": [
+   {
+    "say": "Pedagang",
+    "text": "Kafilah kami tidak masuk tambang. Tapi kami menjual pada orang gila yang masuk. Ramuan, suku cadang bekas, dan minyak yang lebih baik dari punyamu."
+   },
+   {
+    "shop": "kafilah_tambang"
+   }
+  ],
+  "urat_kaca_1": [
+   {
+    "text": "Kau menyentuh urat kaca. Suara seorang lelaki: \"...tiga lori lagi, lalu pulang. Anakku ulang tahun.\" Lalu tawa. Lalu hening."
+   },
+   {
+    "once": "urat_kaca_1_serpihan",
+    "do": [
+     {
+      "text": "Sepotong kecil kaca terlepas ke tanganmu, hangat."
+     },
+     {
+      "give": {
+       "serpihan_ingatan": 1
+      }
+     }
+    ]
+   }
+  ],
+  "temu_bagas": [
+   {
+    "once": "temu_bagas_adegan",
+    "do": [
+     {
+      "text": "Pintu bengkel terbuka sebelum kalian mengetuk. Seorang lelaki berkacamata las, jenggot tidak rapi, dengan sarung tangan kulit dan peluncur kaca di bahu, mengarahkan peluncur itu ke dada Sela."
+     },
+     {
+      "say": "???",
+      "text": "Tiga hal. Satu: kalian bukan Hampa, karena Hampa tidak membaca tulisan di pintu, dan kalian jelas membaca lalu mengabaikannya. Dua: kalian bukan pengawal Adipati, karena pengawal tidak membawa anak kecil berlentera retak. Tiga: siapa kalian dan kenapa lentera anak itu berdengung ke arah Kaca Inti?"
+     },
+     {
+      "say": "Rimba",
+      "text": "Kami butuh Kaca Inti. Untuk membawa Nyala ke puncak Mercusuar."
+     },
+     {
+      "say": "???",
+      "text": "(Ia menurunkan peluncurnya.) ...Dua belas tahun tidak ada yang bilang kalimat itu. Bagas. Juru kaca. Aku yang memotong Kaca Inti itu, dua belas tahun lalu, dan aku yang menjaganya sejak Adipati bilang \"biarkan\"."
+     },
+     {
+      "say": "Sela",
+      "text": "Kau di sini dua belas tahun? Sendirian?"
+     },
+     {
+      "say": "Bagas",
+      "text": "Tidak sendirian. Ada dua ratus penambang. Mereka cuma... tidak ingat aku. (Ia mengetuk kacamatanya.) Kaca Inti ada di ruang paling bawah. Ada Hampa besar yang menjaganya. Bukan menjaga: ia cuma terus menambang, dan Kaca Inti kebetulan ada di jalurnya."
+     },
+     {
+      "say": "Bagas",
+      "text": "Aku ikut. Bukan karena percaya kalian. Karena kalau kalian pecahkan Kaca Inti dengan tangan-tangan amatir itu, aku yang harus memotong lagi, dan uratnya sudah habis."
+     },
+     {
+      "say": "Lintang",
+      "text": "Kau lucu."
+     },
+     {
+      "say": "Bagas",
+      "text": "Aku tidak lucu. Aku *tepat*. Orang sering salah membedakan."
+     },
+     {
+      "join": "bagas",
+      "equip": {
+       "senjata": "peluncur_tua",
+       "zirah": "zirah_kulit"
+      }
+     },
+     {
+      "give": {
+       "suku_cadang": 8
+      }
+     },
+     {
+      "text": "(Tip: Alat kaca Bagas memakai Suku Cadang, bukan MP. Curi mengambil barang musuh. Baterai menyalurkan MP ke kawan. Party aktif maksimal 4.)"
+     },
+     {
+      "say": "Bagas",
+      "text": "Lift-nya kuperbaiki dulu. Dua menit. Jangan sentuh apa-apa."
+     },
+     {
+      "set": "lift_diperbaiki"
+     },
+     {
+      "heal": "all"
+     }
+    ]
+   }
+  ],
+  "rak_suku_cadang": [
+   {
+    "set": "rak_diambil"
+   },
+   {
+    "say": "Bagas",
+    "text": "Ambil secukupnya. Secukupnya artinya yang kuizinkan."
+   },
+   {
+    "give": {
+     "suku_cadang": 6,
+     "peluncur_kaca": 1
+    }
+   }
+  ],
+  "peti_tambang": [
+   {
+    "set": "peti_tambang_diambil"
+   },
+   {
+    "text": "Peti lori terbalik. Di bawahnya, barang-barang penambang yang tidak sempat dibawa pulang."
+   },
+   {
+    "give": {
+     "pedang_besi_tambang": 1,
+     "lentera_kaca": 1,
+     "ramuan_akar": 3,
+     "suku_cadang": 4
+    }
+   }
+  ],
+  "suara_bapak": [
+   {
+    "once": "suara_bapak_adegan",
+    "do": [
+     {
+      "text": "Suara dari kristal: \"Lintang. Tunggu di sini. Bapak harus ke menara. Bapak akan... Bapak akan jadi lentera, Nak. Supaya kau bisa lihat jalan pulang.\"\n\nLalu suara lain, lebih jauh, tegas dan pelan: \"Hentikan. Hentikan ritualnya. Aku tidak bisa. Aku tidak bisa membakar orang setiap tahun.\" Dan suara pertama, patah: \"Tapi sudah setengah... jangan... jangan berhenti di tengah, aku tidak akan utuh, aku tidak akan..."
+     },
+     {
+      "text": "Kristal itu berhenti. Lintang berdiri sangat diam."
+     },
+     {
+      "say": "Lintang",
+      "text": "Dibatalkan. Itu artinya. Bapak sudah setengah jadi lentera waktu Adipati berhenti. Setengahnya dibakar. Setengahnya... jalan pulang ke aku. Dan lupa di tengah jalan."
+     },
+     {
+      "say": "Sela",
+      "text": "Lintang, kau tidak harus..."
+     },
+     {
+      "say": "Lintang",
+      "text": "Aku harus. Aku satu-satunya yang ingat dia. Kalau aku tidak ingat, dia benar-benar habis."
+     },
+     {
+      "say": "Bagas",
+      "text": "(pelan, untuk pertama kalinya tanpa sarkasme) Kristal menyimpan apa yang disentuhkan padanya. Dia menyentuh kristal ini waktu turun. Artinya dia lewat sini, Nak. Setelah dibatalkan. Dia mencoba pulang."
+     },
+     {
+      "say": "Rimba",
+      "text": "Hampa pertama."
+     },
+     {
+      "say": "Lintang",
+      "text": "Bapak."
+     },
+     {
+      "text": "** Kenangan Lintang: Suara di Kristal. **"
+     },
+     {
+      "quest": "nama_bapak",
+      "state": "hampa_pertama"
+     },
+     {
+      "give": {
+       "serpihan_ingatan": 1
+      }
+     }
+    ]
+   }
+  ],
+  "boss_penambang": [
+   {
+    "once": "boss_penambang_adegan",
+    "do": [
+     {
+      "text": "Bukan satu penambang. Lima, enam, mungkin lebih, yang meleleh jadi satu tubuh raksasa oleh kabut dan kelelahan. Punggungnya berkerak kristal yang berganti warna pelan-pelan: merah, biru, kuning, hitam. Ia mengayunkan beliung ke dinding kosong, dan setiap ayunan menggetarkan Kaca Inti di atas lori."
+     },
+     {
+      "say": "Bagas",
+      "text": "Itu Pak Tirta. Dan Jaka. Dan... aku kenal semuanya. Dua belas tahun aku menonton mereka menambang udara."
+     },
+     {
+      "say": "Sela",
+      "text": "Kau mau kami yang..."
+     },
+     {
+      "say": "Bagas",
+      "text": "Aku mau mereka berhenti. Dan aku mau Kaca Inti utuh. Kristal di punggungnya menyerap satu elemen dan berganti tiap beberapa ayunan. Pukul dengan *lawan* elemen yang sedang diserapnya. Aku akan bilang kalau berganti. Percaya alatku."
+     },
+     {
+      "text": "(Tip: Kristal berganti tiap 3 giliran musuh dan diumumkan. Merah menyerap Api dan lemah Es; Biru sebaliknya; Kuning menyerap Petir dan lemah Fisik; Hitam menyerap Kelam dan lemah Cahaya.)"
+     },
+     {
+      "battle": [
+       "boss_penambang_raksasa"
+      ],
+      "boss": true,
+      "lose": "gameover",
+      "win": [
+       {
+        "text": "Kristal di punggungnya pecah satu-satu, dan bersama tiap pecahan, satu sosok terlepas dari tubuh raksasa itu: seorang penambang, lalu seorang lagi, jatuh berlutut, lalu luruh jadi kabut tipis yang naik ke langit-langit dan hilang. Yang terakhir menoleh ke Bagas sebelum pergi."
+       },
+       {
+        "say": "Bagas",
+        "text": "...Pulanglah, Pak Tirta. Anakmu sudah besar."
+       },
+       {
+        "text": "Kaca Inti berhenti bergetar. Bagas mengangkatnya dengan kedua tangan seperti mengangkat bayi, memeriksanya di bawah lentera, lalu mengangguk."
+       },
+       {
+        "say": "Bagas",
+        "text": "Utuh. Sekarang, Penyala, tunjukkan Bara itu. Kalau ia sungguhan, Kaca ini akan mengenalinya."
+       },
+       {
+        "text": "Rimba menyentuh Kaca Inti. Percikan di dadanya menghangat, dan di dalam kaca, sebentuk cahaya kecil menyala, seperti dapur di pagi hari."
+       },
+       {
+        "say": "Bagas",
+        "text": "...Baik. Aku percaya sekarang. Mercusuar lewat punggung gunung. Ada tangga darurat ke mulut tambang; aku yang memasangnya."
+       },
+       {
+        "give": {
+         "kaca_inti": 1,
+         "serpihan_ingatan": 1
+        }
+       },
+       {
+        "set": "boss_penambang_kalah"
+       },
+       {
+        "quest": "mencari_guntur",
+        "state": "mercusuar"
+       },
+       {
+        "heal": "all"
+       }
+      ]
+     }
+    ]
+   }
+  ],
+  "sergap_tengah": [
+   {
+    "once": "sergap_tengah_done",
+    "do": [
+     {
+      "text": "Kelelawar-kelelawar berjatuhan dari langit-langit seperti pecahan kaca."
+     },
+     {
+      "battle": [
+       "kelelawar_kristal",
+       "kelelawar_kristal",
+       "penambang_terlupa"
+      ],
+      "boss": false,
+      "can_flee": false,
+      "lose": "gameover"
+     }
+    ]
+   }
+  ],
+  "sergap_bawah": [
+   {
+    "once": "sergap_bawah_done",
+    "do": [
+     {
+      "text": "Dua Hampa penambang menghadang, beliung terangkat."
+     },
+     {
+      "battle": [
+       "penambang_terlupa",
+       "penambang_terlupa",
+       "kelelawar_kristal"
+      ],
+      "boss": false,
+      "can_flee": false,
+      "lose": "gameover"
+     }
+    ]
+   }
+  ]
+ }
 }

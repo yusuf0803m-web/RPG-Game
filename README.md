@@ -106,7 +106,7 @@ python -m pelita -s rawa --auto --seed 3 --no-pause
 
 ```bash
 pip install pytest
-python -m pytest -q                     # 73 tes: unit, walkthrough Babak 1, dan API web
+python -m pytest -q                     # 101 tes: unit, walkthrough Babak 1, sistem Tahap 3, API web
 python tools/calibrate.py --n 200       # simulasi rasio "2–3 pukulan" per skenario
 python tools/walkthrough.py --seed 11   # pemain otomatis dari prolog sampai Akhir Babak 1;
                                         # mencetak level party & lama tiap boss
@@ -118,7 +118,7 @@ python tools/walkthrough.py --seed 11   # pemain otomatis dari prolog sampai Akh
 pelita/
   models.py        tipe data (Stats, Skill, EnemyDef, CharacterDef, ItemDef)
   loader.py        memuat & memvalidasi pelita/data/*.json
-  party.py         Hero: level, XP (20·n²), pertumbuhan stat deterministik, serialisasi
+  party.py         Hero: level, XP (20·n²), pertumbuhan stat, Jalur, soket Kaca, serialisasi
   scenarios.py     skenario prototipe combat
   combat/
     formulas.py    formula damage/heal/peluang (murni)
@@ -128,18 +128,37 @@ pelita/
     ai.py          AI musuh (tabel bobot, skrip fase) & kebijakan otomatis party
   world/
     model.py       Area/Room/Exit/NPC dari data/world/*.json (+ validasi rujukan)
-    state.py       GameState: party, inventori, flag, quest, kabut, save/load
+    state.py       GameState: party aktif/cadangan, inventori, Kaca, flag, quest, kabut, save/load
     script.py      interpreter skrip cerita (narasi, dialog, if/once/choice, battle, join, ...)
-    explore.py     loop eksplorasi, encounter, menu, toko, penginapan
+    explore.py     loop eksplorasi, encounter, menu, toko, Tukang Kaca, kemah, Buruan, Arena
   ui/terminal.py   layar pertarungan & menu teks; IO.emit() = kanal terstruktur untuk web
   web/
     session.py     satu sesi = satu thread Game.run() dengan IO antrian (event ⇄ input)
     app.py         server Flask: /api/session, /state (long-poll), /input
     static/        index.html, style.css, app.js (klien), art.js (SVG prosedural)
-  data/            characters, skills, enemies, items; world/area_*.json, shops, quests
+  data/            characters, skills, enemies, items, kaca, jalur;
+                   world/area_*.json, shops, quests, kenangan, buruan, arena
 tools/             calibrate.py, walkthrough.py
 tests/             pytest (walker.py = pemain otomatis untuk tes alur)
 ```
+
+## Sistem lanjutan (Tahap 3)
+
+Semuanya data-driven; rinciannya di `GAME_DESIGN.md` §9.2.
+
+- **Kaca Ingatan** — 21 keping kaca yang dipasang ke soket senjata. Kaca Elemen mengubah elemen
+  serangan dasar, Kaca Pasif memberi bonus (regen MP, kritikal, XP, potongan harga, ...), Kaca Skill
+  meminjam skill karakter lain. Naik tingkat I→III setelah 12 dan 36 pertarungan.
+- **Jalur** — di Lv 20 tiap karakter Babak 1 memilih satu dari dua spesialisasi: 3 skill eksklusif
+  plus satu pasif. Bisa direset di Tukang Kaca.
+- **Cadangan & Ganti** — empat nama teratas ikut bertarung, sisanya dapat 70% XP. Aksi **Ganti**
+  menukar penyerang dengan cadangan di tengah pertarungan. Rimba selalu aktif (pemegang Bara).
+- **Tukang Kaca** (Tengara) — pasang/lepas Kaca, beli Kaca, dan tukar tiap 3 Serpihan Ingatan jadi
+  HP maks, Bara maks, soket tambahan, reset Jalur, atau Kaca Skill langka.
+- **Berkemah** — satu Bekal Kemah di lentera penjaga memulihkan party dan membuka adegan **Kenangan**.
+  Jurus Ganda hanya terbuka lewat Kenangan pasangannya.
+- **Papan Buruan & Arena Kafilah** (Dermaga Kota) — 3 target elit dengan mekanik khas, dan 3 tingkat
+  arena berisi tiga gelombang beruntun tanpa item.
 
 ## Cara antarmuka web bekerja
 

@@ -1009,7 +1009,7 @@ dengan `--lan` agar bisa dibuka dari HP di Wi-Fi yang sama, atau langsung di HP 
 | 0 | Arsitektur & data: modul `combat`, `party`, `world`, `ui`, `data/` (JSON untuk skill, musuh, item, Kaca) | Kerangka yang bisa dites — **selesai** |
 | 1 | Prototipe combat: 3 karakter, 5 musuh, formula §4.7, Bara, Pecah | Rasio "2–3 pukulan" terverifikasi — **selesai** (`tools/calibrate.py`) |
 | 2 | **Babak 1 lengkap** (area 1–6, 4 karakter, 7 boss, 6 side quest) | Game 6,5 jam yang bisa tamat — **selesai** (lihat §9.1) |
-| 3 | Sistem lanjutan: Ganti/cadangan, Jalur, Kaca, Berkemah/Kenangan, Buruan, Arena | Fondasi Babak 2 |
+| 3 | Sistem lanjutan: Ganti/cadangan, Jalur, Kaca, Berkemah/Kenangan, Buruan, Arena | Fondasi Babak 2 — **selesai** (lihat §9.2) |
 | 4 | Babak 2 (area 7–12, 3 karakter baru, 7 boss) | Game 15 jam |
 | 5 | Babak 3 + 3 ending + dungeon opsional + superboss | Game 20 jam |
 | 6 | Kalibrasi, penulisan ulang naskah, playtest | Rilis |
@@ -1043,3 +1043,54 @@ Penyimpangan dari desain awal, dan alasannya:
   Ingatan ditunda ke Tahap 3 (soket Kaca). Gua Bawah Danau (dungeon opsional) belum dibuat.
 - **Lentera penjaga memulihkan HP/MP penuh** selain menyimpan, supaya boss selalu bisa didekati
   dalam kondisi segar tanpa grinding item.
+
+### 9.2 Catatan implementasi Tahap 3 (sistem lanjutan)
+
+Enam sistem §4.9, §5.3, §5.5, §5.6, §5.7 dibangun di atas Babak 1 yang sudah ada, semuanya
+data-driven dan bisa dipakai pemain sekarang juga.
+
+**Kaca Ingatan** (`pelita/data/kaca.json`, 21 jenis: 7 elemen, 10 pasif, 4 skill). Soket datang dari
+senjata (`slots` di `items.json`) plus bonus Serpihan. Kaca Elemen menimpa elemen serangan dasar,
+Kaca Pasif memberi `Passive` (pengali stat, regen MP, kritikal, XP, potongan harga, potongan biaya MP,
+Bara awal, peluang Curi, imun status), Kaca Skill meminjam skill karakter lain dengan biaya MP ×1.5.
+Tingkat I→III naik dari **jumlah pertarungan** (12 dan 36) dan menguatkan efek numerik ×1.5/×2,
+sekaligus membuat pinjaman skill lebih murah (×1.25 lalu ×1.0). Ganti senjata tidak menghilangkan
+Kaca: yang tidak muat dikembalikan ke simpanan.
+
+**Jalur** (`pelita/data/jalur.json`, 14 jalur). Empat karakter Babak 1 memilih di Lv 20 dan mendapat
+3 skill + 1 pasif; Rangga/Ratih (Lv 30) dan Kelana (Lv 40) sudah punya data dengan 2 skill per jalur,
+menunggu babaknya. Pilihan kedua Lv 45 belum dibuat (Babak 3). Reset lewat Tukang Kaca.
+
+**Cadangan & Ganti.** Empat nama teratas `state.party` adalah barisan aktif; sisanya cadangan yang
+dapat **70% XP**. Aksi **Ganti** menukar penyerang dengan cadangan (satu giliran, status yang keluar
+dibuang). Rimba terkunci di barisan aktif karena ia pemegang Bara. Pertukaran di dalam pertarungan
+tidak mengubah urutan party di luar pertarungan — hanya HP/MP yang ikut tersimpan.
+
+**Tukang Kaca** (Mpu Sarwa, Tengara). Pasang/lepas Kaca, beli Kaca, dan tukar 3 Serpihan Ingatan jadi
+HP maks +10% (maks 3× per karakter), Bara maks +1 (sampai 8), soket +1 per senjata, reset Jalur, atau
+satu Kaca Skill langka. Bongkar-pasang Kaca di luar bengkel hanya bisa **saat berkemah**.
+
+**Berkemah & Kenangan** (`pelita/data/world/kenangan.json`, 9 adegan Babak 1). Satu Bekal Kemah di
+lentera penjaga mana pun memulihkan party dan membuka obrolan berpasangan. **Jurus Ganda sekarang
+terkunci sampai Kenangan-nya dilihat** — pemain otomatis menamatkan Babak 1 tanpa satu pun Jurus
+Ganda, jadi sistemnya benar-benar bonus, bukan syarat.
+
+**Papan Buruan** (`buruan.json`, 3 kontrak) dan **Arena Kafilah** (`arena.json`, 3 tingkat) ditempel di
+Dermaga Kota Tengara setelah Ular Cermin kalah. Tiga target elit baru di `enemies.json`
+(Kunang Raja, Nelayan yang Tidak Pulang, Zirah Tanpa Nama), masing-masing dengan mekanik khas:
+kawanan lalu aksi ganda; jerat + isian yang bisa dibatalkan Goyah/Pecah; kebal Provokasi + Tandai dan
+eksekusi. Arena melarang item (`Battle(allow_items=False)`) dan upahnya hanya diberikan sekali per tingkat.
+
+Penyimpangan dari desain awal, dan alasannya:
+
+- **Arena ditaruh di Tengara, bukan Sanggar.** Sanggar baru ada di Babak 2; kafilah yang singgah di
+  dermaga memberi sistemnya tempat sekarang. Dua tingkat sisanya (4–5) menyusul bersama Sanggar.
+- **Tingkat Kaca dihitung per jenis, bukan per keping.** Satu tabel `kaca_uses` di state jauh lebih
+  sederhana untuk disimpan daripada instance per keping, dan efeknya sama untuk pemain.
+- **Pasif Jalur dan Kaca memakai satu tipe `Passive` yang sama.** Satu jalur kode untuk dua sistem;
+  menambah efek baru cukup sekali.
+- **Kaca Kikir bekerja dari seluruh party**, bukan hanya anggota aktif: potongan harga terbaik yang
+  dipakai. Menyiasati ini dengan bongkar-pasang di kemah tidak menyenangkan siapa pun.
+- **Pemain tidak dipaksa memilih Jalur saat naik level.** Naik level hanya mengumumkan "bisa memilih
+  Jalur"; pilihannya di menu Party, supaya pertarungan tidak terpotong dialog build.
+

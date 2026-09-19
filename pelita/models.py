@@ -80,6 +80,9 @@ class CostType(str, Enum):
 
 STAT_NAMES = ("hp", "mp", "atk", "def", "mag", "res", "agi", "lck")
 
+# Kaca naik tingkat I -> III dengan dipakai; efek numeriknya ikut menguat (§5.3).
+TINGKAT_SKALA: dict[int, float] = {1: 1.0, 2: 1.5, 3: 2.0}
+
 
 @dataclass
 class Stats:
@@ -198,6 +201,86 @@ class Skill:
         return self.kind in (SkillKind.SIHIR, SkillKind.HEAL, SkillKind.BANGKIT) or (
             self.kind in (SkillKind.BUFF, SkillKind.DEBUFF) and self.element != Element.FISIK
         )
+
+
+@dataclass
+class Passive:
+    """Efek pasif dari Kaca Ingatan (§5.3) atau Jalur (§4.9).
+
+    Nilai numerik diskalakan tingkat Kaca (I/II/III) lewat ``skala``; ``imun``
+    dan efek boolean tidak diskalakan.
+    """
+    stat_mult: dict[str, float] = field(default_factory=dict)   # {"atk": 0.10} = ATK +10%
+    stat_flat: dict[str, int] = field(default_factory=dict)
+    mp_regen: int = 0              # MP pulih tiap akhir giliran di pertarungan
+    kritikal: float = 0.0          # tambahan peluang kritikal
+    xp_pct: float = 0.0            # tambahan XP
+    harga_pct: float = 0.0         # potongan harga toko (0.20 = -20%)
+    biaya_mp_pct: float = 0.0      # potongan biaya MP skill
+    bara_awal: int = 0             # Bara di awal pertarungan
+    curi_pct: float = 0.0          # tambahan peluang Curi
+    imun: list[str] = field(default_factory=list)
+
+    def skala(self, tingkat: int) -> "Passive":
+        f = TINGKAT_SKALA.get(tingkat, 1.0)
+        return Passive(
+            stat_mult={k: v * f for k, v in self.stat_mult.items()},
+            stat_flat={k: int(v * f) for k, v in self.stat_flat.items()},
+            mp_regen=int(self.mp_regen * f),
+            kritikal=self.kritikal * f,
+            xp_pct=self.xp_pct * f,
+            harga_pct=self.harga_pct * f,
+            biaya_mp_pct=self.biaya_mp_pct * f,
+            bara_awal=self.bara_awal,
+            curi_pct=self.curi_pct * f,
+            imun=list(self.imun),
+        )
+
+    def gabung(self, other: "Passive") -> "Passive":
+        """Jumlahkan dua pasif (efek menumpuk secara aditif)."""
+        out = Passive(
+            stat_mult=dict(self.stat_mult), stat_flat=dict(self.stat_flat),
+            mp_regen=self.mp_regen + other.mp_regen,
+            kritikal=self.kritikal + other.kritikal,
+            xp_pct=self.xp_pct + other.xp_pct,
+            harga_pct=self.harga_pct + other.harga_pct,
+            biaya_mp_pct=self.biaya_mp_pct + other.biaya_mp_pct,
+            bara_awal=self.bara_awal + other.bara_awal,
+            curi_pct=self.curi_pct + other.curi_pct,
+            imun=sorted(set(self.imun) | set(other.imun)),
+        )
+        for k, v in other.stat_mult.items():
+            out.stat_mult[k] = out.stat_mult.get(k, 0.0) + v
+        for k, v in other.stat_flat.items():
+            out.stat_flat[k] = out.stat_flat.get(k, 0) + v
+        return out
+
+
+@dataclass
+class KacaDef:
+    """Satu jenis Kaca Ingatan (GAME_DESIGN §5.3)."""
+    id: str
+    name: str
+    kind: str                                    # "elemen" | "pasif" | "skill"
+    element: Element = Element.NETRAL            # kind == "elemen"
+    skill: Optional[str] = None                  # kind == "skill"
+    passive: Passive = field(default_factory=Passive)
+    price: int = 0                               # 0 = tidak dijual di toko
+    langka: bool = False
+    description: str = ""
+
+
+@dataclass
+class JalurDef:
+    """Satu Jalur spesialisasi (GAME_DESIGN §4.9)."""
+    id: str
+    name: str
+    character: str
+    level: int
+    skills: list[str] = field(default_factory=list)
+    passive: Passive = field(default_factory=Passive)
+    passive_note: str = ""
+    description: str = ""
 
 
 @dataclass

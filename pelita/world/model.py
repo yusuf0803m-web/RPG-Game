@@ -137,6 +137,9 @@ class World:
     areas: dict[str, Area]
     shops: dict[str, dict]
     quests: dict[str, dict]
+    kenangan: dict[str, dict] = field(default_factory=dict)   # adegan Berkemah (§5.6)
+    buruan: dict[str, dict] = field(default_factory=dict)     # papan Buruan (§5.7)
+    arena: list[dict] = field(default_factory=list)           # tingkat Arena Kafilah (§5.7)
 
     def area(self, aid: str) -> Area:
         try:
@@ -172,6 +175,34 @@ class World:
             for iid in sh["items"]:
                 if iid not in data.items:
                     raise DataError(f"toko '{sh['name']}' menjual item '{iid}' yang tidak ada")
+            for kid in sh.get("kaca", []):
+                if kid not in data.kaca:
+                    raise DataError(f"toko '{sh['name']}' menjual kaca '{kid}' yang tidak ada")
+        for kid, k in self.kenangan.items():
+            for cid in k["pasangan"]:
+                data.character(cid)
+            if k.get("jurus") and k["jurus"] not in data.skills:
+                raise DataError(f"kenangan '{kid}' membuka jurus '{k['jurus']}' yang tidak ada")
+        for bid, b in self.buruan.items():
+            for eid in b["musuh"]:
+                data.enemy(eid)
+            if b["area"] not in self.areas or b["room"] not in self.areas[b["area"]].rooms:
+                raise DataError(f"buruan '{bid}' menunjuk ruang '{b['area']}/{b['room']}' yang tidak ada")
+            _validate_hadiah(data, f"buruan '{bid}'", b.get("hadiah", {}))
+        for i, t in enumerate(self.arena, 1):
+            for gelombang in t["gelombang"]:
+                for eid in gelombang:
+                    data.enemy(eid)
+            _validate_hadiah(data, f"arena tingkat {i}", t.get("hadiah", {}))
+
+
+def _validate_hadiah(data, label: str, hadiah: dict) -> None:
+    for iid in hadiah.get("item", {}):
+        if iid not in data.items:
+            raise DataError(f"{label}: hadiah item '{iid}' tidak ada")
+    for kid in hadiah.get("kaca", []):
+        if kid not in data.kaca:
+            raise DataError(f"{label}: hadiah kaca '{kid}' tidak ada")
 
 
 def _validate_script(world: World, data, area: Area, sid: str, cmds: list, depth: int = 0) -> None:
@@ -206,6 +237,20 @@ def _validate_script(world: World, data, area: Area, sid: str, cmds: list, depth
             raise DataError(f"{area.id}/{sid}: toko '{c['shop']}' tidak ada")
         if "quest" in c and c["quest"] not in world.quests:
             raise DataError(f"{area.id}/{sid}: quest '{c['quest']}' tidak ada")
+        if "kaca" in c:
+            for kid in c["kaca"]:
+                if kid not in data.kaca:
+                    raise DataError(f"{area.id}/{sid}: kaca '{kid}' tidak ada")
+        if "tukang_kaca" in c and c["tukang_kaca"] and c["tukang_kaca"] not in world.shops:
+            raise DataError(f"{area.id}/{sid}: toko kaca '{c['tukang_kaca']}' tidak ada")
+
+
+def _opsional(path: Path) -> dict:
+    """Muat file data dunia yang boleh tidak ada (Kenangan, Buruan, Arena)."""
+    if not path.exists():
+        return {}
+    with open(path, encoding="utf-8") as fh:
+        return {k: v for k, v in json.load(fh).items() if not k.startswith("_")}
 
 
 _CACHE: dict[Path, World] = {}
@@ -232,7 +277,11 @@ def load_world(data, world_dir: Optional[Path] = None, use_cache: bool = True) -
     if qp.exists():
         with open(qp, encoding="utf-8") as fh:
             quests = {k: v for k, v in json.load(fh).items() if not k.startswith("_")}
-    w = World(areas, shops, quests)
+    kenangan = _opsional(world_dir / "kenangan.json")
+    buruan = _opsional(world_dir / "buruan.json")
+    arena_raw = _opsional(world_dir / "arena.json")
+    arena = list(arena_raw.get("tingkat", [])) if arena_raw else []
+    w = World(areas, shops, quests, kenangan, buruan, arena)
     w.validate(data)
     if use_cache:
         _CACHE[world_dir] = w

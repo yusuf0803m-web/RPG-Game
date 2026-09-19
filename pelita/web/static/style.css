@@ -362,3 +362,8 @@ button, input { font: inherit; color: inherit; }
   .scene-room { font-size: 16px; }
   .choices { max-height: 52vh; }
 }
+
+/* Tahap 3: anggota cadangan & Kaca Ingatan */
+.hero.reserve { opacity: .62; }
+.hero.reserve .hero-portrait { filter: grayscale(.5); }
+.tag-kaca { background: rgba(120, 190, 255, .14); color: #9ec9ff; border-color: rgba(120, 190, 255, .35); }

@@ -23,6 +23,9 @@ from .models import (
     EnemyDef,
     Growth,
     ItemDef,
+    JalurDef,
+    KacaDef,
+    Passive,
     Skill,
     SkillKind,
     StatMod,
@@ -173,12 +176,66 @@ def parse_item(iid: str, d: dict) -> ItemDef:
         raise DataError(f"item '{iid}': {e}") from e
 
 
+def parse_passive(d: dict) -> Passive:
+    return Passive(
+        stat_mult={k: float(v) for k, v in d.get("stat_mult", {}).items()},
+        stat_flat={k: int(v) for k, v in d.get("stat_flat", {}).items()},
+        mp_regen=int(d.get("mp_regen", 0)),
+        kritikal=float(d.get("kritikal", 0.0)),
+        xp_pct=float(d.get("xp_pct", 0.0)),
+        harga_pct=float(d.get("harga_pct", 0.0)),
+        biaya_mp_pct=float(d.get("biaya_mp_pct", 0.0)),
+        bara_awal=int(d.get("bara_awal", 0)),
+        curi_pct=float(d.get("curi_pct", 0.0)),
+        imun=list(d.get("imun", [])),
+    )
+
+
+def parse_kaca(kid: str, d: dict) -> KacaDef:
+    try:
+        return KacaDef(
+            id=kid,
+            name=d["name"],
+            kind=d["kind"],
+            element=Element(d.get("element", "netral")),
+            skill=d.get("skill"),
+            passive=parse_passive(d.get("passive", {})),
+            price=int(d.get("price", 0)),
+            langka=bool(d.get("langka", False)),
+            description=d.get("description", ""),
+        )
+    except (KeyError, ValueError) as e:
+        raise DataError(f"kaca '{kid}': {e}") from e
+
+
+def parse_jalur(jid: str, d: dict) -> JalurDef:
+    try:
+        return JalurDef(
+            id=jid,
+            name=d["name"],
+            character=d["character"],
+            level=int(d["level"]),
+            skills=list(d.get("skills", [])),
+            passive=parse_passive(d.get("passive", {})),
+            passive_note=d.get("passive_note", ""),
+            description=d.get("description", ""),
+        )
+    except (KeyError, ValueError) as e:
+        raise DataError(f"jalur '{jid}': {e}") from e
+
+
 @dataclass
 class GameData:
     skills: dict[str, Skill] = field(default_factory=dict)
     characters: dict[str, CharacterDef] = field(default_factory=dict)
     enemies: dict[str, EnemyDef] = field(default_factory=dict)
     items: dict[str, ItemDef] = field(default_factory=dict)
+    kaca: dict[str, KacaDef] = field(default_factory=dict)
+    jalur: dict[str, JalurDef] = field(default_factory=dict)
+
+    def jalur_for(self, cid: str) -> list[JalurDef]:
+        """Dua Jalur yang bisa dipilih karakter ``cid`` (kosong kalau belum ada)."""
+        return sorted((j for j in self.jalur.values() if j.character == cid), key=lambda j: j.id)
 
     def skill(self, sid: str) -> Skill:
         try:
@@ -222,6 +279,28 @@ class GameData:
                     raise DataError(f"skill '{s.id}' merujuk karakter '{uid}' yang tidak ada")
             if s.cost_type == CostType.BARA and not s.users:
                 raise DataError(f"skill Bara '{s.id}' harus punya 'users'")
+        for k in self.kaca.values():
+            if k.kind not in ("elemen", "pasif", "skill"):
+                raise DataError(f"kaca '{k.id}': jenis '{k.kind}' tidak dikenal")
+            if k.kind == "elemen" and k.element == Element.NETRAL:
+                raise DataError(f"kaca elemen '{k.id}' harus punya 'element'")
+            if k.kind == "skill":
+                if not k.skill:
+                    raise DataError(f"kaca skill '{k.id}' harus punya 'skill'")
+                if k.skill not in self.skills:
+                    raise DataError(f"kaca '{k.id}' memberi skill '{k.skill}' yang tidak ada")
+        for j in self.jalur.values():
+            if j.character not in self.characters:
+                raise DataError(f"jalur '{j.id}' merujuk karakter '{j.character}' yang tidak ada")
+            for sid in j.skills:
+                if sid not in self.skills:
+                    raise DataError(f"jalur '{j.id}' merujuk skill '{sid}' yang tidak ada")
+        for cid in {j.character for j in self.jalur.values()}:
+            opsi = self.jalur_for(cid)
+            if len(opsi) != 2:
+                raise DataError(f"karakter '{cid}' punya {len(opsi)} jalur; harus tepat 2")
+            if len({j.level for j in opsi}) != 1:
+                raise DataError(f"kedua jalur '{cid}' harus terbuka di level yang sama")
 
 
 _CACHE: dict[Path, GameData] = {}
@@ -236,6 +315,8 @@ def load_data(data_dir: Optional[Path] = None, use_cache: bool = True) -> GameDa
         characters={k: parse_character(k, v) for k, v in _read("characters.json", data_dir).items()},
         enemies={k: parse_enemy(k, v) for k, v in _read("enemies.json", data_dir).items()},
         items={k: parse_item(k, v) for k, v in _read("items.json", data_dir).items()},
+        kaca={k: parse_kaca(k, v) for k, v in _read("kaca.json", data_dir).items()},
+        jalur={k: parse_jalur(k, v) for k, v in _read("jalur.json", data_dir).items()},
     )
     gd.validate()
     if use_cache:

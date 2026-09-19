@@ -16,7 +16,7 @@ def test_data_bawaan_valid():
 
 def test_rujukan_skill_rusak_terdeteksi(tmp_path):
     src = load_data.__globals__["DATA_DIR"]
-    for f in ("skills.json", "characters.json", "enemies.json", "items.json"):
+    for f in ("skills.json", "characters.json", "enemies.json", "items.json", "kaca.json", "jalur.json"):
         (tmp_path / f).write_text((src / f).read_text(encoding="utf-8"), encoding="utf-8")
     chars = json.loads((tmp_path / "characters.json").read_text())
     chars["rimba"]["skills"].append("skill_tidak_ada")

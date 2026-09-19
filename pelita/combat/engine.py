@@ -74,6 +74,9 @@ class Combatant:
     actions_done: int = 0
     stolen: bool = False
     rotation_index: int = -1
+    kritikal_bonus: float = 0.0   # dari Kaca Tajam / pasif Jalur
+    mp_regen: int = 0             # dari Kaca Napas / Jalur Penuntun
+    curi_bonus: float = 0.0       # dari Kaca Licin / Jalur Peretas
 
     # -- properti dasar -----------------------------------------------------
     @property
@@ -202,33 +205,48 @@ class Battle:
         bara_max: int = BARA_MAX_DASAR,
         bara_start: int = 0,
         inventory: Optional[dict[str, int]] = None,
+        reserves: Optional[list[Hero]] = None,
+        allow_items: bool = True,
+        jurus_terbuka: Optional[set[str]] = None,
     ) -> None:
         self.data = data
         self.rng = rng or random.Random()
         self.bestiary = bestiary or Bestiary()
         self.inventory: dict[str, int] = inventory if inventory is not None else {}
         self.heroes: list[Combatant] = [self._make_hero(h) for h in heroes]
+        # Cadangan: tidak ikut bertarung sampai ditukar lewat aksi Ganti (GAME_DESIGN §4.3).
+        self.bench: list[Combatant] = [self._make_hero(h) for h in (reserves or [])]
         self.enemies: list[Combatant] = self._make_enemies(list(enemy_ids))
         self.can_flee = can_flee and not any(e.is_boss for e in self.enemies)
+        self.allow_items = allow_items
         self.bara_max = bara_max
-        self.bara = min(bara_start, bara_max)
+        bara_pasif = sum(h.passive().bara_awal for h in heroes)
+        self.bara = min(bara_start + bara_pasif, bara_max)
         self.round = 0
         self.queue: list[Combatant] = []
         self.log: list[str] = []
         self.pending_events: list[str] = []
         self.result: Optional[BattleResult] = None
         self.bara_skills: list[Skill] = [s for s in data.skills.values() if s.cost_type == CostType.BARA]
+        # Jurus Ganda dibuka lewat adegan Kenangan (§4.5). None = semua terbuka (prototipe & tes).
+        self.jurus_terbuka = jurus_terbuka
 
     # -- pembuatan peserta --------------------------------------------------
     def _make_hero(self, h: Hero) -> Combatant:
         st = h.stats
+        p = h.passive()
         c = Combatant(
             key=h.id, name=h.name, is_player=True, level=h.level, base=st,
             hp=min(h.hp, st.hp), mp=min(h.mp, st.mp), skills=h.skills(), hero=h,
+            immune=set(p.imun), kritikal_bonus=p.kritikal, mp_regen=p.mp_regen, curi_bonus=p.curi_pct,
         )
         w = h.equipment.get("senjata")
         if w and w in self.data.items and self.data.items[w].element != Element.NETRAL:
             c.weapon_element = self.data.items[w].element
+        # Kaca Elemen menimpa elemen bawaan senjata (GAME_DESIGN §5.3).
+        kel = h.kaca_element
+        if kel is not None:
+            c.weapon_element = kel
         return c
 
     def _make_enemies(self, ids: list[str]) -> list[Combatant]:
@@ -351,6 +369,10 @@ class Battle:
     def _end_turn(self, actor: Combatant, ev: list[str]) -> None:
         """Tick status pemilik giliran: DoT, kurangi durasi, hapus yang habis."""
         actor.actions_done = 0
+        if actor.mp_regen and actor.alive and actor.mp < actor.max_mp:
+            n = min(actor.mp_regen, actor.max_mp - actor.mp)
+            actor.mp += n
+            self._emit(ev, f"{actor.display_name} memulihkan {n} MP.")
         for sid in list(actor.statuses.keys()):
             st = actor.statuses.get(sid)
             if st is None:
@@ -407,6 +429,8 @@ class Battle:
         for s in self.bara_skills:
             if actor.key not in s.users:
                 continue
+            if len(s.users) >= 2 and self.jurus_terbuka is not None and s.id not in self.jurus_terbuka:
+                continue
             if not all((h := self.hero_by_key(u)) is not None and h.alive for u in s.users):
                 continue
             if self.bara >= s.cost:
@@ -414,6 +438,8 @@ class Battle:
         return out
 
     def usable_items(self) -> list[ItemDef]:
+        if not self.allow_items:
+            return []
         return [self.data.items[i] for i, n in self.inventory.items() if n > 0 and self.data.items[i].kind == "konsumsi"
                 and (self.data.items[i].heal_hp or self.data.items[i].heal_mp or self.data.items[i].cure
                      or self.data.items[i].revive_pct or self.data.items[i].power)]
@@ -454,6 +480,11 @@ class Battle:
             self._do_guard(actor, ev)
         elif action.kind == "kabur":
             self._do_flee(actor, ev)
+        elif action.kind == "ganti":
+            if not self._do_ganti(actor, action.targets[0] if action.targets else None, ev):
+                return ev
+            self._end_turn(actor, ev)
+            return ev
         else:
             raise ValueError(f"aksi tidak dikenal: {action.kind}")
         if self.over:
@@ -465,6 +496,26 @@ class Battle:
             return ev
         self._end_turn(actor, ev)
         return ev
+
+    def bisa_ganti(self, actor: Combatant) -> list[Combatant]:
+        """Cadangan yang bisa masuk menggantikan ``actor`` (GAME_DESIGN §4.3 aksi Ganti)."""
+        if not actor.is_player or actor.key == BARA_HOLDER or not actor.alive:
+            return []
+        return [c for c in self.bench if c.alive]
+
+    def _do_ganti(self, actor: Combatant, masuk: Optional[Combatant], ev: list[str]) -> bool:
+        if masuk is None or masuk not in self.bench:
+            self._emit(ev, "Tidak ada cadangan yang bisa masuk.")
+            return False
+        i = self.heroes.index(actor)
+        self.heroes[i] = masuk
+        self.bench[self.bench.index(masuk)] = actor
+        # Yang keluar melepas status sementaranya; yang masuk mulai bersih.
+        actor.statuses.clear()
+        actor.actions_done = 0
+        self.queue = [c for c in self.queue if c is not actor]
+        self._emit(ev, f"{actor.display_name} mundur; {masuk.display_name} maju ke barisan!")
+        return True
 
     def _do_guard(self, actor: Combatant, ev: list[str]) -> None:
         actor.statuses["jaga"] = make_status("jaga")
@@ -665,7 +716,7 @@ class Battle:
             power *= 3.0
             del target.statuses["tandai"]
             self._emit(ev, f"{actor.display_name} mengeksekusi tanda pada {target.display_name}!")
-        krit = self.rng.random() < F.peluang_kritikal(actor.effective("lck"))
+        krit = self.rng.random() < F.peluang_kritikal(actor.effective("lck")) + actor.kritikal_bonus
         dmg = F.hitung_damage(off, deff, power, mult, kritikal=krit,
                               pecah=target.has("pecah"), goyah=target.has("goyah"),
                               acak=F.acak_damage(self.rng))
@@ -755,7 +806,7 @@ class Battle:
                 self._emit(ev, f"{t.display_name} tidak punya apa-apa lagi.")
             else:
                 loot = t.edef.steal or (t.edef.drops[0].item if t.edef.drops else None)
-                p = 0.40 + actor.effective("lck") * 0.01
+                p = 0.40 + actor.effective("lck") * 0.01 + actor.curi_bonus
                 if loot and self.rng.random() < p:
                     t.stolen = True
                     self.inventory[loot] = self.inventory.get(loot, 0) + 1
@@ -916,7 +967,7 @@ class Battle:
     # -- sinkronisasi ke Hero -----------------------------------------------
     def sync_heroes(self) -> None:
         """Salin HP/MP kembali ke objek Hero (dipanggil setelah pertarungan)."""
-        for c in self.heroes:
+        for c in self.heroes + self.bench:
             if c.hero is not None:
                 c.hero.hp = max(0, c.hp)
                 c.hero.mp = max(0, c.mp)
