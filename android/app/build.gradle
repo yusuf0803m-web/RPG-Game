@@ -65,8 +65,13 @@ chaquopy {
     }
 }
 
-// Jaring pengaman untuk build lokal: salinan berjalan sebelum kompilasi apa pun.
-// Di CI, tugas ini juga dipanggil eksplisit lebih dulu agar urutannya pasti.
-tasks.matching { it.name == 'preBuild' }.configureEach {
+// Folder staging adalah keluaran dari sinkronSumberPython sekaligus masukan bagi
+// seluruh tugas Python milik Chaquopy (mergeDebugPythonSources dan kawan-kawan).
+// Gradle menolak build kalau hubungan itu tidak dinyatakan, dan tugas-tugas itu
+// tidak lewat preBuild, jadi ketergantungan dipasang ke semuanya sekaligus.
+tasks.matching {
+    it.name != 'sinkronSumberPython' &&
+        (it.name == 'preBuild' || it.name.toLowerCase().contains('python'))
+}.configureEach {
     dependsOn 'sinkronSumberPython'
 }
