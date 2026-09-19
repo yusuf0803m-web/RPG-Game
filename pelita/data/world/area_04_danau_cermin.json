@@ -112,6 +112,14 @@
      "name": "Nelayan tua di dermaga",
      "script": "bicara_nelayan"
     }
+   ],
+   "latar_varian": [
+    {
+     "if": [
+      "boss_ular_kalah"
+     ],
+     "latar": "danau_cermin/dermaga_telaga_lega"
+    }
    ]
   },
   "rumah_tetua": {
@@ -173,7 +181,8 @@
      "name": "Tatap permukaan air",
      "script": "pantulan_sela"
     }
-   ]
+   ],
+   "latar": "danau_cermin/dermaga_telaga"
   },
   "rakit_1": {
    "name": "Tengah Danau",

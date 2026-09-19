@@ -166,6 +166,25 @@ Semuanya data-driven; rinciannya di `GAME_DESIGN.md` §9.2.
 - **Papan Buruan & Arena Kafilah** (Dermaga Kota) — 3 target elit dengan mekanik khas, dan 3 tingkat
   arena berisi tiga gelombang beruntun tanpa item.
 
+## Latar bergambar
+
+Di atas panorama SVG prosedural ada lapisan gambar per ruang yang **berubah mengikuti cerita**
+(GAME_DESIGN §7.2). Warung Bu Ratna ramai di awal, sepi setelah Pak Guntur hilang, dan hidup lagi
+setelah desa bangkit — tanpa satu baris kode tambahan, cukup data.
+
+```bash
+python tools/daftar_latar.py                 # daftar gambar yang dibutuhkan + status
+python tools/daftar_latar.py --prioritas 1   # 12 gambar paling penting dulu
+python tools/daftar_latar.py --tulis         # perbarui README di folder aset
+```
+
+Taruh berkasnya di `pelita/web/static/assets/backgrounds/<path>.webp` (1600×900). Panduan gaya dan
+daftar lengkapnya ada di `pelita/web/static/assets/backgrounds/README.md`.
+
+**Tanpa satu pun gambar, permainan tetap utuh:** server hanya mengirim URL untuk berkas yang benar-benar
+ada, jadi ruang yang belum digambar memakai panorama prosedural dan peristiwa besar tampil sebagai
+layar gelap berteks. Gambar bisa diisi kapan saja, satu per satu.
+
 ## Cara antarmuka web bekerja
 
 Mesin permainan tidak tahu-menahu soal web. Ia hanya menulis ke sebuah objek `IO`.

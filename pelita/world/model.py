@@ -63,11 +63,21 @@ class Interactable:
 
 
 @dataclass
+class LatarVarian:
+    """Latar alternatif yang dipakai kalau kondisinya terpenuhi (GAME_DESIGN §7.2)."""
+    cond: list
+    latar: str
+
+
+@dataclass
 class Room:
     id: str
     name: str
     text: str = ""
     safe: bool = False
+    latar: str = ""                              # path gambar tanpa ekstensi, mis. "larung/warung"
+    latar_varian: list["LatarVarian"] = field(default_factory=list)
+    latar_catatan: str = ""                      # deskripsi adegan untuk yang menggambar
     exits: list[Exit] = field(default_factory=list)
     npcs: list[Interactable] = field(default_factory=list)
     objects: list[Interactable] = field(default_factory=list)
@@ -83,6 +93,7 @@ class Area:
     start: str
     rooms: dict[str, Room]
     scripts: dict[str, list]
+    latar: str = ""                              # latar cadangan untuk ruang tanpa latar sendiri
     fog: bool = False
     encounter_rate: float = 0.35
     encounters: list[Encounter] = field(default_factory=list)
@@ -111,6 +122,9 @@ def parse_area(d: dict) -> Area:
             name=r["name"],
             text=r.get("text", ""),
             safe=bool(r.get("safe", False)),
+            latar=r.get("latar", ""),
+            latar_varian=[LatarVarian(list(v.get("if", [])), v["latar"]) for v in r.get("latar_varian", [])],
+            latar_catatan=r.get("latar_catatan", ""),
             exits=[Exit(e["label"], e["to"], e.get("area"), list(e.get("if", [])), e.get("locked", ""), list(e.get("hidden_if", [])))
                    for e in r.get("exits", [])],
             npcs=_inter(r.get("npcs", []), "Bicara"),
@@ -126,6 +140,7 @@ def parse_area(d: dict) -> Area:
         rooms=rooms,
         scripts={k: list(v) for k, v in d.get("scripts", {}).items()},
         fog=bool(d.get("fog", False)),
+        latar=d.get("latar", ""),
         encounter_rate=float(d.get("encounter_rate", 0.35)),
         encounters=_encounters(d.get("encounters", [])),
         level_range=d.get("level_range", ""),
@@ -137,6 +152,7 @@ class World:
     areas: dict[str, Area]
     shops: dict[str, dict]
     quests: dict[str, dict]
+    latar: dict[str, dict] = field(default_factory=dict)      # daftar gambar latar (§7.2)
     kenangan: dict[str, dict] = field(default_factory=dict)   # adegan Berkemah (§5.6)
     buruan: dict[str, dict] = field(default_factory=dict)     # papan Buruan (§5.7)
     arena: list[dict] = field(default_factory=list)           # tingkat Arena Kafilah (§5.7)
@@ -147,11 +163,29 @@ class World:
         except KeyError:
             raise DataError(f"area '{aid}' tidak ada") from None
 
+    def latar_ruang(self, area: Area, room: Room, check) -> str:
+        """Path gambar latar untuk ``room`` sekarang: varian yang cocok, lalu latar ruang, lalu area.
+
+        ``check`` adalah ``GameState.check`` sehingga latar bisa mengikuti kondisi dunia (§7.2).
+        """
+        for v in room.latar_varian:
+            if check(v.cond):
+                return v.latar
+        if room.latar:
+            return room.latar
+        bawaan = f"{area.id}/{room.id}"
+        if not self.latar or bawaan in self.latar:
+            return bawaan
+        return area.latar
+
     def validate(self, data) -> None:
         for a in self.areas.values():
             if a.start not in a.rooms:
                 raise DataError(f"area '{a.id}': ruang awal '{a.start}' tidak ada")
             for r in a.rooms.values():
+                for path in [r.latar or f"{a.id}/{r.id}"] + [v.latar for v in r.latar_varian]:
+                    if self.latar and path not in self.latar:
+                        raise DataError(f"{a.id}/{r.id}: latar '{path}' tidak terdaftar di latar.json")
                 for e in r.exits:
                     target_area = self.areas.get(e.area) if e.area else a
                     if target_area is None:
@@ -237,6 +271,12 @@ def _validate_script(world: World, data, area: Area, sid: str, cmds: list, depth
             raise DataError(f"{area.id}/{sid}: toko '{c['shop']}' tidak ada")
         if "quest" in c and c["quest"] not in world.quests:
             raise DataError(f"{area.id}/{sid}: quest '{c['quest']}' tidak ada")
+        if "ilustrasi" in c and world.latar and c["ilustrasi"] not in world.latar:
+            raise DataError(f"{area.id}/{sid}: ilustrasi '{c['ilustrasi']}' tidak terdaftar di latar.json")
+        if "adegan" in c:
+            lat = c["adegan"].get("latar")
+            if lat and world.latar and lat not in world.latar:
+                raise DataError(f"{area.id}/{sid}: latar adegan '{lat}' tidak terdaftar di latar.json")
         if "kaca" in c:
             for kid in c["kaca"]:
                 if kid not in data.kaca:
@@ -277,11 +317,13 @@ def load_world(data, world_dir: Optional[Path] = None, use_cache: bool = True) -
     if qp.exists():
         with open(qp, encoding="utf-8") as fh:
             quests = {k: v for k, v in json.load(fh).items() if not k.startswith("_")}
+    latar_raw = _opsional(world_dir / "latar.json")
+    latar = dict(latar_raw.get("gambar", {})) if latar_raw else {}
     kenangan = _opsional(world_dir / "kenangan.json")
     buruan = _opsional(world_dir / "buruan.json")
     arena_raw = _opsional(world_dir / "arena.json")
     arena = list(arena_raw.get("tingkat", [])) if arena_raw else []
-    w = World(areas, shops, quests, kenangan, buruan, arena)
+    w = World(areas, shops, quests, latar, kenangan, buruan, arena)
     w.validate(data)
     if use_cache:
         _CACHE[world_dir] = w

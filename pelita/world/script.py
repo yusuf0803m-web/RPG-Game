@@ -16,6 +16,8 @@ Perintah yang didukung (satu objek per perintah):
     {"goto": "ruang"}   {"travel": {"area": "...", "room": "..."}}
     {"save": true}   {"shop": "id"}   {"inn": harga}
     {"tukang_kaca": "toko_kaca"}   {"kemah": true}   {"papan_buruan": true}   {"arena": true}
+    {"adegan": {"latar": "...", "efek": "zoom"|"flash"|"shake"|"gelap", "teks": "..."}}
+    {"ilustrasi": "events/...", "teks": "keterangan"}      ilustrasi layar penuh (peristiwa besar)
     {"kaca": {"kaca_api": 1}}                   beri Kaca Ingatan
     {"quest": "id", "state": "..."}
     {"bara": true}                              aktifkan sumber daya Bara
@@ -207,6 +209,22 @@ class ScriptRunner:
                 self.hooks.papan_buruan()
             elif "arena" in c:
                 self.hooks.arena()
+            elif "adegan" in c:
+                a = c["adegan"]
+                self.io.emit("adegan", {"latar": a.get("latar", ""), "efek": a.get("efek", "fade")})
+                if a.get("teks"):
+                    self.narrate(a["teks"])
+            elif "ilustrasi" in c:
+                self.io.emit("ilustrasi", {"latar": c["ilustrasi"], "teks": c.get("teks", "")})
+                if not self.io.structured:
+                    judul = c.get("teks") or c["ilustrasi"]
+                    self.io.line("")
+                    self.io.line(" " + "─" * 60)
+                    for l in wrap(judul, width=58, indent="  "):
+                        self.io.line(l)
+                    self.io.line(" " + "─" * 60)
+                    self.io.line("")
+                self.pause()
             elif "kaca" in c:
                 for kid, n in c["kaca"].items():
                     st.add_kaca(kid, int(n))

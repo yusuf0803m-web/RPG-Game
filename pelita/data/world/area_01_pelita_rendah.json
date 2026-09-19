@@ -65,6 +65,20 @@
      "name": "Pak Darma (duduk di teras)",
      "script": "bicara_darma"
     }
+   ],
+   "latar_varian": [
+    {
+     "if": [
+      "desa_epilog"
+     ],
+     "latar": "pelita_rendah/jalan_desa_pulih"
+    },
+    {
+     "if": [
+      "guntur_hilang"
+     ],
+     "latar": "pelita_rendah/jalan_desa_sepi"
+    }
    ]
   },
   "rumah_guntur": {
@@ -106,6 +120,20 @@
      "name": "Bu Ratna",
      "script": "bicara_ratna"
     }
+   ],
+   "latar_varian": [
+    {
+     "if": [
+      "desa_epilog"
+     ],
+     "latar": "pelita_rendah/warung_pulih"
+    },
+    {
+     "if": [
+      "guntur_hilang"
+     ],
+     "latar": "pelita_rendah/warung_sepi"
+    }
    ]
   },
   "balai_desa": {
@@ -133,6 +161,14 @@
       "kirana_hilang"
      ]
     }
+   ],
+   "latar_varian": [
+    {
+     "if": [
+      "guntur_hilang"
+     ],
+     "latar": "pelita_rendah/balai_desa_rapat"
+    }
    ]
   },
   "gerbang_barat": {
@@ -156,7 +192,8 @@
      "name": "Lentera penjaga (simpan & istirahat)",
      "script": "lentera_save"
     }
-   ]
+   ],
+   "latar": "pelita_rendah/gerbang_timur"
   }
  },
  "scripts": {

@@ -157,7 +157,8 @@
       "boss_hutan_kalah"
      ]
     }
-   ]
+   ],
+   "latar": "hutan_kelabu/jalan_setapak"
   }
  },
  "scripts": {
@@ -263,10 +264,18 @@
         "bara": true
        },
        {
+        "ilustrasi": "events/bara_pertama",
+        "teks": "Untuk pertama kalinya, nyala itu menurut pada tangan Rimba."
+       },
+       {
         "text": "** Kau memperoleh BARA. **\n(Bara bertambah saat memukul kelemahan musuh, saat Rimba Jaga, atau saat kawan tumbang. Bara bisa dipakai untuk Nyala Pulih (2) dan Nyala Pamungkas (3). Lihat menu Bara di pertarungan.)"
        },
        {
         "set": "guntur_hilang"
+       },
+       {
+        "ilustrasi": "events/guntur_hilang",
+        "teks": "Lenteranya masih menyala di tanah. Jejaknya berhenti di tengah kabut."
        },
        {
         "quest": "mencari_guntur",

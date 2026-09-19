@@ -251,7 +251,7 @@ button, input { font: inherit; color: inherit; }
 
 /* ── Pilihan ────────────────────────────────────────────────────────── */
 .choices {
-  flex: none; border-top: 1px solid var(--line);
+  flex: none; border-top: 1px solid var(--line); position: relative; z-index: 70;
   background: linear-gradient(180deg, var(--bg-2), var(--bg));
   padding: 12px 18px 16px; max-height: 42vh; overflow-y: auto;
 }
@@ -374,3 +374,49 @@ button, input { font: inherit; color: inherit; }
 .hero.reserve { opacity: .62; }
 .hero.reserve .hero-portrait { filter: grayscale(.5); }
 .tag-kaca { background: rgba(120, 190, 255, .14); color: #9ec9ff; border-color: rgba(120, 190, 255, .35); }
+
+/* ── Latar bergambar (GAME_DESIGN §7.2) ─────────────────────────────────
+   Gambar .webp ditumpuk di atas panorama SVG. Kalau berkasnya belum ada,
+   lapisan ini tetap kosong dan panorama prosedural yang terlihat. */
+.scene-photo {
+  position: absolute; inset: 0; opacity: 0;
+  background-position: center; background-size: cover; background-repeat: no-repeat;
+  transition: opacity .55s ease;
+}
+.scene-photo.on { opacity: 1; }
+.scene-photo.zoom { animation: latar-zoom 14s ease-out forwards; }
+@keyframes latar-zoom { from { transform: scale(1); } to { transform: scale(1.09); } }
+.scene.flash::before {
+  content: ""; position: absolute; inset: 0; z-index: 3; background: #fff;
+  animation: latar-flash .5s ease-out forwards; pointer-events: none;
+}
+@keyframes latar-flash { from { opacity: .85; } to { opacity: 0; } }
+.scene.shake { animation: latar-shake .5s ease-in-out; }
+@keyframes latar-shake {
+  0%, 100% { transform: translateX(0); }
+  20% { transform: translateX(-6px); } 40% { transform: translateX(5px); }
+  60% { transform: translateX(-4px); } 80% { transform: translateX(3px); }
+}
+.scene.gelap .scene-photo, .scene.gelap .scene-art { filter: brightness(.45) saturate(.7); }
+
+/* Ilustrasi layar penuh untuk peristiwa besar */
+.plate {
+  position: fixed; inset: 0; z-index: 60; background: var(--bg); cursor: pointer;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  animation: plate-masuk .7s ease;
+}
+.plate-img {
+  position: absolute; inset: 0; background-position: center; background-size: cover;
+  animation: latar-zoom 18s ease-out forwards;
+}
+.plate::after {
+  content: ""; position: absolute; inset: 0;
+  background: linear-gradient(180deg, rgba(12,15,20,.35) 0%, rgba(12,15,20,.2) 45%, rgba(12,15,20,.92) 100%);
+}
+.plate-teks {
+  position: relative; z-index: 2; margin: 0 24px; max-width: 640px; text-align: center;
+  align-self: center; margin-top: auto; margin-bottom: 22vh;
+  font-family: var(--serif); font-size: 22px; line-height: 1.5;
+  text-shadow: 0 2px 16px rgba(0,0,0,.9);
+}
+@keyframes plate-masuk { from { opacity: 0; } to { opacity: 1; } }

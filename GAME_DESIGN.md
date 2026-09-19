@@ -989,6 +989,41 @@ orientasi, target sentuh minimal 48 px, panorama menyusut saat bertarung agar ar
 muat, dan halaman bisa dipasang ke layar utama Android (PWA, mode layar penuh). Server dijalankan
 dengan `--lan` agar bisa dibuka dari HP di Wi-Fi yang sama, atau langsung di HP lewat Termux.
 
+### 7.2 Latar bergambar & visual storytelling
+
+Di atas panorama SVG prosedural ada **lapisan latar bergambar**: satu gambar per ruang, yang
+berubah mengikuti kondisi dunia. Tujuannya bukan mengubah permainan jadi visual novel, melainkan
+membuat pemain **melihat** perubahan yang selama ini hanya dibacanya.
+
+Tiga tingkat visual (biar produksi gambarnya tetap masuk akal):
+
+| Tingkat | Kapan | Bentuk |
+|---|---|---|
+| 1 — Latar ruang | Dialog dan menu biasa | Gambar ruang yang sedang ditempati; tidak berganti per kalimat |
+| 2 — Adegan | Peristiwa penting di tengah skrip | `{"adegan": {"latar": "...", "efek": "zoom"\|"flash"\|"shake"\|"gelap"}}` |
+| 3 — Ilustrasi | Peristiwa besar cerita | `{"ilustrasi": "events/...", "teks": "..."}` — layar penuh, lalu kembali ke permainan |
+
+**Latar mengikuti kondisi dunia.** Tiap ruang boleh punya `latar_varian`: daftar
+`{"if": <kondisi>, "latar": "..."}` yang dievaluasi dengan bahasa kondisi yang sama dengan skrip
+(`GameState.check`). Varian pertama yang cocok dipakai. Contoh Warung Bu Ratna: ramai di awal,
+`warung_sepi` setelah Pak Guntur hilang, `warung_pulih` setelah desa bangkit lagi.
+
+**Urutan pemilihan:** varian yang cocok → `latar` ruang (dipakai kalau beberapa ruang berbagi
+gambar) → bawaan `<area>/<ruang>` → `latar` area.
+
+**Berkas.** `pelita/web/static/assets/backgrounds/<path>.webp`, 1600×900. Daftar lengkap beserta
+deskripsi adegan untuk yang menggambar ada di `pelita/data/world/latar.json`; `tools/daftar_latar.py`
+mengubahnya jadi daftar belanja beserta status "sudah ada / belum".
+
+**Kalau gambarnya belum ada, tidak ada yang rusak.** Server hanya mengirim URL untuk berkas yang
+benar-benar ada; ruang tanpa gambar tetap memakai panorama prosedural, dan peristiwa besar tetap
+tampil sebagai layar gelap berteks. Karena itu gambar bisa diisi bertahap tanpa menyentuh kode,
+dan permainan tetap bisa dimainkan tanpa satu pun berkas gambar.
+
+**Yang sengaja tidak dibuat:** siklus waktu nyata (pagi/siang/malam) dan musik. Dunia ini gelap
+karena Nyala melemah, bukan karena jam — jadi perubahan langit diikat ke progres cerita, bukan ke
+waktu. Audio ditunda sebagai pekerjaan tersendiri agar tidak menggemukkan APK setengah jadi.
+
 ---
 
 ## 8. Yang Sengaja TIDAK Dimasukkan

@@ -82,6 +82,14 @@
      "name": "Lentera penjaga (simpan & istirahat)",
      "script": "lentera_save"
     }
+   ],
+   "latar_varian": [
+    {
+     "if": [
+      "babak_1_selesai"
+     ],
+     "latar": "mercusuar/kaki_menara_nyala"
+    }
    ]
   },
   "lantai_panen": {
@@ -630,6 +638,10 @@
          },
          {
           "save": true
+         },
+         {
+          "ilustrasi": "events/mercusuar_menyala",
+          "teks": "Tujuh ratus tahun cahaya, satu malam gelap, dan pagi yang dinyalakan tangan manusia."
          },
          {
           "end_chapter": "AKHIR BABAK 1 — LEMBAH LARUNG\n\nMercusuar Langit menyala kembali. Dewan sementara Tengara dibentuk. Kapten Rangga ditunjuk mengawal Rimba, Sela, Lintang, dan Bagas menyeberangi Pegunungan Sunyi.\n\nBabak 2 — Tanah Luar: sedang ditulis (Tahap 4). Terima kasih sudah bermain sampai sini."

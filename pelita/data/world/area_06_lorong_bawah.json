@@ -117,7 +117,8 @@
      ]
     }
    ],
-   "on_enter": "sergap_lorong"
+   "on_enter": "sergap_lorong",
+   "latar": "lorong_bawah/saluran_masuk"
   },
   "ruang_pompa": {
    "name": "Ruang Pompa",
@@ -159,7 +160,8 @@
       "boss_rangga_kalah"
      ]
     }
-   ]
+   ],
+   "latar": "lorong_bawah/ruang_tuas"
   }
  },
  "scripts": {

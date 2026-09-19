@@ -125,6 +125,7 @@ class Game:
         return {
             "area_id": self.area.id, "area": self.area.name, "room_id": room.id, "room": room.name,
             "text": room.text, "safe": room.safe, "fog": self.area.fog, "lentera": st.lentera_steps,
+            "latar": self.world.latar_ruang(self.area, room, st.check),
             "keping": st.keping, "bara_max": st.bara_max,
             "party": [{"key": h.id, "name": h.name, "level": h.level, "hp": h.hp, "max_hp": h.max_hp,
                        "mp": h.mp, "max_mp": h.max_mp, "guest": h.guest,

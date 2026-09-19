@@ -179,7 +179,8 @@
      ]
     }
    ],
-   "on_enter": "sergap_tengah"
+   "on_enter": "sergap_tengah",
+   "latar": "tambang/lorong_atas"
   },
   "gua_kristal": {
    "name": "Gua Kristal",
@@ -216,7 +217,8 @@
      "to": "ruang_inti"
     }
    ],
-   "on_enter": "sergap_bawah"
+   "on_enter": "sergap_bawah",
+   "latar": "tambang/lorong_atas"
   },
   "ruang_inti": {
    "name": "Ruang Inti",

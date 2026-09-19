@@ -40,6 +40,25 @@ from ..world.explore import Game
 from ..world.model import World, load_world
 from ..world.state import SAVE_SLOTS, GameState, new_game
 
+# Gambar latar yang benar-benar ada di folder aset. Server yang memberi tahu klien,
+# supaya klien tidak perlu menebak lewat permintaan yang berakhir 404 (GAME_DESIGN §7.2).
+ASET_LATAR = Path(__file__).parent / "static" / "assets" / "backgrounds"
+URL_LATAR = "/static/assets/backgrounds"
+
+
+def url_latar(path: str) -> str:
+    """URL gambar kalau berkasnya ada; string kosong kalau belum digambar."""
+    if not path:
+        return ""
+    berkas = (ASET_LATAR / f"{path}.webp")
+    try:
+        if berkas.is_file() and ASET_LATAR.resolve() in berkas.resolve().parents:
+            return f"{URL_LATAR}/{path}.webp"
+    except OSError:
+        pass
+    return ""
+
+
 YA_TIDAK = (("y", "Ya"), ("n", "Tidak"))
 TIMEOUT_INPUT = 3600.0          # sesi menganggur >1 jam dianggap ditinggalkan
 POLL_TIMEOUT = 25.0             # long-poll: tunggu event baru maksimal sekian detik
@@ -80,6 +99,10 @@ class WebIO(IO):
         self.session.push("log", {"text": s})
 
     def emit(self, kind: str, payload: dict) -> None:
+        # Terjemahkan path latar jadi URL yang pasti ada, supaya klien tidak
+        # menembak berkas yang belum digambar dan meninggalkan 404 di konsol.
+        if kind in ("room", "adegan", "ilustrasi") and "latar" in payload:
+            payload = dict(payload, latar_url=url_latar(payload["latar"]))
         self.session.push(kind, payload)
 
     def render_options(self, options, header: Optional[Header] = None) -> None:

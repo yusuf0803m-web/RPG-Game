@@ -103,6 +103,14 @@
      "name": "Pak Pos Harun",
      "script": "bicara_harun"
     }
+   ],
+   "latar_varian": [
+    {
+     "if": [
+      "boss_rangga_kalah"
+     ],
+     "latar": "tengara/pasar_bawah_siaga"
+    }
    ]
   },
   "penginapan": {
@@ -239,7 +247,8 @@
      "name": "Lentera penjaga (simpan & istirahat)",
      "script": "lentera_save"
     }
-   ]
+   ],
+   "latar": "tengara/distrik_sunyi"
   }
  },
  "scripts": {

@@ -1,0 +1,389 @@
+{
+ "_catatan": "Daftar gambar latar (GAME_DESIGN §7.2). Kunci = path tanpa ekstensi; berkasnya dicari di pelita/web/static/assets/backgrounds/<path>.webp. Kalau berkasnya belum ada, permainan otomatis memakai panorama SVG prosedural, jadi tidak ada yang rusak. 'prioritas' 1 = paling sering dilihat pemain, 3 = varian kondisi dunia. Jalankan tools/daftar_latar.py untuk daftar belanja terbaru.",
+ "gambar": {
+  "danau_cermin/dermaga_telaga": {
+   "nama": "Danau Cermin — Dermaga Desa Apung Telaga",
+   "kategori": "lokasi",
+   "prioritas": 1,
+   "deskripsi": "Desa yang seluruhnya mengapung: rumah-rumah di atas rakit bambu, dihubungkan jembatan-jembatan goyang. Lentera di setiap sudut, tapi kecil-kecil; air danau sendiri yang menahan kabut."
+  },
+  "danau_cermin/dermaga_telaga_lega": {
+   "nama": "Danau Cermin — Dermaga Desa Apung Telaga (varian)",
+   "kategori": "varian",
+   "prioritas": 3,
+   "syarat": [
+    "boss_ular_kalah"
+   ],
+   "deskripsi": "Dermaga desa apung setelah Ular Cermin kalah: jala kembali dijemur, anak-anak duduk di tepi rakit, permukaan danau tenang dan memantulkan lentera."
+  },
+  "danau_cermin/pasar_apung": {
+   "nama": "Danau Cermin — Pasar Apung",
+   "kategori": "lokasi",
+   "prioritas": 2,
+   "deskripsi": "Perahu-perahu kecil merapat membentuk pasar. Ikan asap, lentera rawa, ramuan dari akar teratai."
+  },
+  "danau_cermin/pulau_batu": {
+   "nama": "Danau Cermin — Pulau Batu",
+   "kategori": "lokasi",
+   "prioritas": 2,
+   "deskripsi": "Pulau kecil dari batu hitam licin, tepat di tengah danau. Di puncaknya, lentera penjaga tua yang masih menyala, dijaga entah oleh siapa."
+  },
+  "danau_cermin/rakit_1": {
+   "nama": "Danau Cermin — Tengah Danau",
+   "kategori": "lokasi",
+   "prioritas": 2,
+   "deskripsi": "Rakit meluncur pelan. Di bawahnya, di kedalaman, kalian melihat cahaya-cahaya kecil bergerak: bukan ikan."
+  },
+  "danau_cermin/rumah_tetua": {
+   "nama": "Danau Cermin — Rumah Tetua Baruna",
+   "kategori": "lokasi",
+   "prioritas": 2,
+   "deskripsi": "Rumah apung terbesar, atapnya dari sirap kayu ulin. Di dalamnya, jaring-jaring digantung sebagai tirai dan sebuah lentera tua berbentuk ikan menyala tenang."
+  },
+  "danau_cermin/sarang_ular": {
+   "nama": "Danau Cermin — Gua Sarang",
+   "kategori": "lokasi",
+   "prioritas": 2,
+   "deskripsi": "Gua yang dindingnya seluruhnya cermin: bukan kaca, tapi air yang berdiri tegak dan tidak jatuh. Di setiap pantulan, kalian melihat diri sendiri sedikit berbeda."
+  },
+  "danau_cermin/tepi_danau": {
+   "nama": "Danau Cermin — Tepi Danau",
+   "kategori": "lokasi",
+   "prioritas": 2,
+   "deskripsi": "Kabut berhenti di sini, tepat di garis air, seperti anjing yang tidak mau masuk sungai. Danau Cermin terhampar tenang sampai ke kaki bukit."
+  },
+  "events/bara_pertama": {
+   "nama": "Bara Pertama",
+   "kategori": "peristiwa",
+   "prioritas": 2,
+   "deskripsi": "Rimba memegang lentera yang menyala jauh lebih terang dari seharusnya; bara oranye melayang di sekitar tangannya. Wajahnya setengah takut, setengah mengerti. Latar gelap supaya nyalanya jadi satu-satunya cahaya."
+  },
+  "events/guntur_hilang": {
+   "nama": "Yang Tertinggal di Hutan",
+   "kategori": "peristiwa",
+   "prioritas": 2,
+   "deskripsi": "Lentera Pak Guntur tergeletak di tanah hutan berkabut, sumbunya masih menyala kecil, tidak ada orang di sekitarnya. Jejak kaki berhenti di tengah kabut."
+  },
+  "events/kelam_berwajah": {
+   "nama": "Yang Berwajah Kelam",
+   "kategori": "peristiwa",
+   "prioritas": 2,
+   "deskripsi": "Sosok tinggi berjubah kabut dengan wajah yang tidak selesai — kadang wajah orang yang kau kenal, kadang kosong. Berdiri di ruang bundar Mercusuar, dikelilingi nama-nama terukir di dinding."
+  },
+  "events/malam_pertama": {
+   "nama": "Malam Pertama",
+   "kategori": "peristiwa",
+   "prioritas": 1,
+   "deskripsi": "Lembah Larung dilihat dari punggung bukit saat Mercusuar padam untuk pertama kalinya dalam tujuh ratus tahun: desa-desa jadi titik-titik lentera kecil yang rapuh, menara putih berdiri gelap di kejauhan, langit penuh bintang yang belum pernah dilihat siapa pun di lembah itu."
+  },
+  "events/mercusuar_menyala": {
+   "nama": "Nyala Kembali",
+   "kategori": "peristiwa",
+   "prioritas": 2,
+   "deskripsi": "Puncak Mercusuar menyala kembali dilihat dari dalam ruang inti: pilar cahaya naik menembus atap, siluet party berdiri di tepi lingkaran cahaya."
+  },
+  "events/mercusuar_padam": {
+   "nama": "Nyala Mercusuar Langit Padam",
+   "kategori": "peristiwa",
+   "prioritas": 1,
+   "deskripsi": "Puncak Mercusuar Langit dari dekat pada detik nyalanya padam: cahaya besar menyusut jadi titik lalu hilang, asap putih tipis naik, dan batu putih menara tiba-tiba tampak seperti tulang."
+  },
+  "hutan_kelabu/jalan_setapak": {
+   "nama": "Hutan Kelabu — Jalan Setapak",
+   "kategori": "lokasi",
+   "prioritas": 1,
+   "deskripsi": "Kabut setinggi lutut. Suara langkahmu pulang lebih lambat dari seharusnya, seperti hutan berpikir dulu sebelum mengembalikannya."
+  },
+  "hutan_kelabu/lembah_kabut": {
+   "nama": "Hutan Kelabu — Lembah Kabut",
+   "kategori": "lokasi",
+   "prioritas": 2,
+   "deskripsi": "Cekungan kecil di antara dua bukit. Kabut menggenang di sini seperti air, dan tidak bergerak."
+  },
+  "hutan_kelabu/pohon_tumbang": {
+   "nama": "Hutan Kelabu — Pohon Tumbang",
+   "kategori": "lokasi",
+   "prioritas": 2,
+   "deskripsi": "Pohon beringin raksasa yang roboh melintang, akarnya mencuat seperti tangan-tangan. Kabut di sini setinggi dada."
+  },
+  "hutan_kelabu/tepi_hutan": {
+   "nama": "Hutan Kelabu — Tepi Hutan",
+   "kategori": "lokasi",
+   "prioritas": 2,
+   "deskripsi": "Pohon-pohon di sini masih punya warna, tapi hanya di bagian bawah. Makin ke atas, daun-daunnya memucat seperti kain yang dijemur terlalu lama."
+  },
+  "lorong_bawah/ruang_pompa": {
+   "nama": "Lorong Bawah — Ruang Pompa",
+   "kategori": "lokasi",
+   "prioritas": 2,
+   "deskripsi": "Pompa air raksasa yang sudah mati, pipa-pipanya menjulur ke atas seperti akar terbalik. Tangga besi menuju pintu di langit-langit: pintu ke Balai Arsip."
+  },
+  "lorong_bawah/ruang_tuas": {
+   "nama": "Lorong Bawah — Ruang Tuas",
+   "kategori": "lokasi",
+   "prioritas": 2,
+   "deskripsi": "Ruang bundar dengan roda-roda gigi sebesar meja di dindingnya. Tiga tuas besi."
+  },
+  "lorong_bawah/saluran_masuk": {
+   "nama": "Lorong Bawah — Saluran Masuk",
+   "kategori": "lokasi",
+   "prioritas": 1,
+   "deskripsi": "Lorong batu lengkung dengan air setinggi mata kaki. Bau lumut dan besi."
+  },
+  "mercusuar/kaki_menara": {
+   "nama": "Mercusuar Langit — Kaki Menara",
+   "kategori": "lokasi",
+   "prioritas": 1,
+   "deskripsi": "Mercusuar Langit dari dekat: batu putih sehalus tulang, tanpa sambungan, menjulang sampai mata tidak sanggup mengikuti. Pintu perunggunya terbuka sedikit."
+  },
+  "mercusuar/kaki_menara_nyala": {
+   "nama": "Mercusuar Langit — Kaki Menara (varian)",
+   "kategori": "varian",
+   "prioritas": 3,
+   "syarat": [
+    "babak_1_selesai"
+   ],
+   "deskripsi": "Kaki Mercusuar Langit dengan puncaknya menyala kembali: pilar cahaya putih-keemasan naik ke langit malam, batu putih menara memantulkan nyala, kabut di lereng mundur."
+  },
+  "mercusuar/lantai_panen": {
+   "nama": "Mercusuar Langit — Lantai 2 — Panen",
+   "kategori": "lokasi",
+   "prioritas": 2,
+   "deskripsi": "Dinding lantai ini diukir sawah dan orang-orang memanen. Ukirannya bergerak kalau tidak ditatap langsung."
+  },
+  "mercusuar/lantai_pemakaman": {
+   "nama": "Mercusuar Langit — Lantai 4 — Pemakaman",
+   "kategori": "lokasi",
+   "prioritas": 2,
+   "deskripsi": "Dinding penuh nama. Ribuan nama, diukir kecil-kecil, dan di bawah tiap nama satu kata: \"diingat\"."
+  },
+  "mercusuar/lantai_penjaga": {
+   "nama": "Mercusuar Langit — Lantai 6 — Ruang Penjaga",
+   "kategori": "lokasi",
+   "prioritas": 2,
+   "deskripsi": "Ruang bundar kosong, kecuali sebuah patung batu putih setinggi tiga orang di tengahnya, memegang lentera batu. Matanya, dua rongga kosong, menyala samar."
+  },
+  "mercusuar/lantai_perang": {
+   "nama": "Mercusuar Langit — Lantai 5 — Perang Lama",
+   "kategori": "lokasi",
+   "prioritas": 2,
+   "deskripsi": "Ukiran barisan-barisan prajurit dari perang yang tidak ada di buku mana pun. Semua menghadap ke atas, ke lantai berikutnya, seolah menunggu perintah."
+  },
+  "mercusuar/lantai_pernikahan": {
+   "nama": "Mercusuar Langit — Lantai 3 — Pernikahan",
+   "kategori": "lokasi",
+   "prioritas": 2,
+   "deskripsi": "Ukiran pengantin, gamelan, dan tamu-tamu yang wajahnya sudah aus. Ada suara musik yang terlalu pelan untuk didengar tapi terlalu jelas untuk diabaikan."
+  },
+  "mercusuar/puncak": {
+   "nama": "Mercusuar Langit — Lantai 7 — Puncak",
+   "kategori": "lokasi",
+   "prioritas": 1,
+   "deskripsi": "Ruang inti Mercusuar. Di tengahnya, rongga kaca raksasa yang kosong: tempat Nyala seharusnya berada."
+  },
+  "pelita_rendah/balai_desa": {
+   "nama": "Pelita Rendah — Balai Desa",
+   "kategori": "lokasi",
+   "prioritas": 2,
+   "deskripsi": "Balai terbuka beratap ijuk. Di tengahnya tergantung lentera desa, yang terbesar di Pelita Rendah."
+  },
+  "pelita_rendah/balai_desa_rapat": {
+   "nama": "Pelita Rendah — Balai Desa (varian)",
+   "kategori": "varian",
+   "prioritas": 3,
+   "syarat": [
+    "guntur_hilang"
+   ],
+   "deskripsi": "Balai desa saat warga berkumpul membahas hilangnya Penyala: orang duduk melingkar di lantai bambu, satu lentera besar di tengah, wajah-wajah yang tidak ada yang tersenyum."
+  },
+  "pelita_rendah/gerbang_timur": {
+   "nama": "Pelita Rendah — Gerbang Timur",
+   "kategori": "lokasi",
+   "prioritas": 2,
+   "deskripsi": "Gerbang kayu jati dengan dua lentera perunggu besar di tiang-tiangnya. Di luar gerbang, jalan setapak menurun ke ladang yang sudah lama tidak ditanami."
+  },
+  "pelita_rendah/jalan_desa": {
+   "nama": "Pelita Rendah — Jalan Desa",
+   "kategori": "lokasi",
+   "prioritas": 1,
+   "deskripsi": "Jalan tanah yang dipadatkan kaki-kaki selama tiga generasi. Rumah panggung berjajar di kedua sisi, sebagian sudah kosong."
+  },
+  "pelita_rendah/jalan_desa_pulih": {
+   "nama": "Pelita Rendah — Jalan Desa (varian)",
+   "kategori": "varian",
+   "prioritas": 3,
+   "syarat": [
+    "desa_epilog"
+   ],
+   "deskripsi": "Jalan desa setelah Mercusuar menyala lagi: lentera rumah hidup semua, orang berkumpul di depan pintu, cahaya hangat dari atas lembah. Tetap ada rumah kosong — pulih, bukan kembali seperti semula."
+  },
+  "pelita_rendah/jalan_desa_sepi": {
+   "nama": "Pelita Rendah — Jalan Desa (varian)",
+   "kategori": "varian",
+   "prioritas": 3,
+   "syarat": [
+    "guntur_hilang"
+   ],
+   "deskripsi": "Jalan desa yang sama setelah Pak Guntur hilang: separuh lentera rumah padam, pintu-pintu tertutup, tidak ada anak yang main di luar. Langit lebih kelabu, bayangan lebih panjang."
+  },
+  "pelita_rendah/rumah_guntur": {
+   "nama": "Pelita Rendah — Rumah Pak Guntur",
+   "kategori": "lokasi",
+   "prioritas": 1,
+   "deskripsi": "Rumah panggung kecil yang bau minyak lentera dan kayu manis. Dinding penuh kaleng perunggu, sumbu, dan peta lembah yang sudah kuning."
+  },
+  "pelita_rendah/warung": {
+   "nama": "Pelita Rendah — Warung Bu Ratna",
+   "kategori": "lokasi",
+   "prioritas": 1,
+   "deskripsi": "Warung kecil dengan rak bambu dan aroma tempe goreng. Bu Ratna menjual apa saja yang masih bisa dibawa kafilah dari kota: ramuan, minyak, sesekali zirah bekas."
+  },
+  "pelita_rendah/warung_pulih": {
+   "nama": "Pelita Rendah — Warung Bu Ratna (varian)",
+   "kategori": "varian",
+   "prioritas": 3,
+   "syarat": [
+    "desa_epilog"
+   ],
+   "deskripsi": "Warung Bu Ratna kembali penuh: wajan tempe mengepul, rak terisi, dua-tiga orang mengobrol di depan. Lentera warung dinyalakan lebih terang dari sebelumnya."
+  },
+  "pelita_rendah/warung_sepi": {
+   "nama": "Pelita Rendah — Warung Bu Ratna (varian)",
+   "kategori": "varian",
+   "prioritas": 3,
+   "syarat": [
+    "guntur_hilang"
+   ],
+   "deskripsi": "Warung Bu Ratna dengan rak bambu yang tinggal separuh isi, tikar digulung, satu kursi terbalik. Bu Ratna masih di sana, tapi menghitung keping dua kali."
+  },
+  "rawa_suar/gubuk_nelayan": {
+   "nama": "Rawa Suar — Gubuk Nelayan",
+   "kategori": "lokasi",
+   "prioritas": 2,
+   "deskripsi": "Gubuk panggung yang lantainya sudah miring. Jala menggantung, kaku oleh lumut."
+  },
+  "rawa_suar/inti_suar": {
+   "nama": "Rawa Suar — Inti Suar Lama",
+   "kategori": "lokasi",
+   "prioritas": 2,
+   "deskripsi": "Ruang bundar di dalam menara. Di tengahnya, kristal Kaca Ingatan sebesar orang dewasa, retak, gelap."
+  },
+  "rawa_suar/jembatan_bambu": {
+   "nama": "Rawa Suar — Gerbang Rawa",
+   "kategori": "lokasi",
+   "prioritas": 2,
+   "deskripsi": "Dua tiang batu miring menandai tempat jalan tanah berubah jadi jembatan bambu. Di kejauhan, di tengah rawa, siluet menara tua menembus kabut: Suar Lama."
+  },
+  "rawa_suar/kolam_raja": {
+   "nama": "Rawa Suar — Kolam Kaki Menara",
+   "kategori": "lokasi",
+   "prioritas": 2,
+   "deskripsi": "Kolam bundar di balik Suar Lama, tempat jalan setapak ke utara mulai. Airnya berpendar lemah dari dalam, seperti ada lentera-lentera yang tenggelam di dasarnya."
+  },
+  "rawa_suar/lorong_suar": {
+   "nama": "Rawa Suar — Lorong Batu Suar",
+   "kategori": "lokasi",
+   "prioritas": 2,
+   "deskripsi": "Lorong batu setengah tenggelam yang menghubungkan tanah tinggi dengan kaki menara. Ukiran di dindingnya menggambarkan garis-garis cahaya dari satu titik ke banyak titik: Mercusuar ke Suar, Suar ke desa-desa."
+  },
+  "rawa_suar/rawa_dangkal": {
+   "nama": "Rawa Suar — Rawa Dangkal",
+   "kategori": "lokasi",
+   "prioritas": 1,
+   "deskripsi": "Air setinggi betis, hangat dan bau belerang. Pohon bakau tumbuh miring semua ke arah yang sama, seolah menjauh dari menara."
+  },
+  "rawa_suar/tiga_lentera": {
+   "nama": "Rawa Suar — Tanah Tinggi Tiga Lentera",
+   "kategori": "lokasi",
+   "prioritas": 2,
+   "deskripsi": "Gundukan tanah kering dengan tiga tiang lentera tua membentuk segitiga: utara, tengah, selatan. Ketiganya padam."
+  },
+  "tambang/bengkel": {
+   "nama": "Tambang Kaca Ingatan — Bengkel",
+   "kategori": "lokasi",
+   "prioritas": 2,
+   "deskripsi": "Ruang yang penuh sesak dengan alat: peluncur kaca, jerat pegas, lentera-lentera modifikasi, dan sebuah kompor dari kaleng lori. Semuanya rapi dengan cara yang hanya dimengerti pemiliknya."
+  },
+  "tambang/gua_kristal": {
+   "nama": "Tambang Kaca Ingatan — Gua Kristal",
+   "kategori": "lokasi",
+   "prioritas": 2,
+   "deskripsi": "Gua alami yang seluruh dindingnya kristal. Cahaya lentera kalian dipantulkan ribuan kali, dan di setiap pantulan ada suara."
+  },
+  "tambang/lorong_atas": {
+   "nama": "Tambang Kaca Ingatan — Lorong Atas",
+   "kategori": "lokasi",
+   "prioritas": 1,
+   "deskripsi": "Lorong lebar dengan rel lori. Dinding-dindingnya bersinar samar: urat-urat Kaca Ingatan yang belum ditambang, memutar potongan-potongan kenangan kalau disentuh."
+  },
+  "tambang/mulut_tambang": {
+   "nama": "Tambang Kaca Ingatan — Mulut Tambang",
+   "kategori": "lokasi",
+   "prioritas": 2,
+   "deskripsi": "Lubang besar di lereng gunung, disangga balok-balok jati yang sudah retak. Rel lori berkarat masuk ke kegelapan."
+  },
+  "tambang/ruang_inti": {
+   "nama": "Tambang Kaca Ingatan — Ruang Inti",
+   "kategori": "lokasi",
+   "prioritas": 2,
+   "deskripsi": "Ruang raksasa tempat urat Kaca Ingatan terbesar dulu ditambang. Di tengahnya, di atas kereta lori, Kaca Inti: bola kaca sebesar kepala, bening, dan berdengung."
+  },
+  "tambang/ruang_lift": {
+   "nama": "Tambang Kaca Ingatan — Ruang Lift",
+   "kategori": "lokasi",
+   "prioritas": 2,
+   "deskripsi": "Sumur vertikal dengan lift kayu tergantung pada rantai. Liftnya miring; separuh papannya hilang."
+  },
+  "tengara/balai_arsip": {
+   "nama": "Ibukota Tengara — Balai Arsip",
+   "kategori": "lokasi",
+   "prioritas": 2,
+   "deskripsi": "Ruang tinggi penuh rak gulungan. Debu tebal di semua tempat kecuali satu meja, tempat seseorang baru-baru ini membuka gulungan dan tidak menggulungnya kembali."
+  },
+  "tengara/dermaga_kota": {
+   "nama": "Ibukota Tengara — Dermaga Kota",
+   "kategori": "lokasi",
+   "prioritas": 1,
+   "deskripsi": "Dermaga batu andesit dengan tiang-tiang lentera setinggi tiga orang. Di belakangnya, tembok Tengara menjulang, dan di belakang tembok, di kejauhan, Mercusuar Langit: putih, sunyi, gelap di puncaknya."
+  },
+  "tengara/distrik_sunyi": {
+   "nama": "Ibukota Tengara — Distrik Sunyi",
+   "kategori": "lokasi",
+   "prioritas": 2,
+   "deskripsi": "Distrik luar yang sudah ditinggalkan. Lenteranya padam semua kecuali satu, di jendela sebuah rumah kecil."
+  },
+  "tengara/gerbang_istana": {
+   "nama": "Ibukota Tengara — Gerbang Istana",
+   "kategori": "lokasi",
+   "prioritas": 2,
+   "deskripsi": "Gerbang besi setinggi pohon, dijaga enam Pengawal Mahkota. Di baliknya, halaman istana dan tangga ke kaki Mercusuar."
+  },
+  "tengara/pasar_bawah": {
+   "nama": "Ibukota Tengara — Pasar Bawah",
+   "kategori": "lokasi",
+   "prioritas": 1,
+   "deskripsi": "Pasar bertingkat di lereng dalam tembok. Ramai, tapi ramainya pelan: orang-orang bicara setengah suara dan menghitung keping dua kali."
+  },
+  "tengara/pasar_bawah_siaga": {
+   "nama": "Ibukota Tengara — Pasar Bawah (varian)",
+   "kategori": "varian",
+   "prioritas": 3,
+   "syarat": [
+    "boss_rangga_kalah"
+   ],
+   "deskripsi": "Pasar Bawah setelah Kapten Rangga kalah: setengah lapak tutup, patroli Pengawal Mahkota lewat, pedagang bicara setengah suara. Tembok kota terasa lebih dekat."
+  },
+  "tengara/penginapan": {
+   "nama": "Ibukota Tengara — Penginapan Lentera Merah",
+   "kategori": "lokasi",
+   "prioritas": 2,
+   "deskripsi": "Penginapan dua lantai dengan lentera merah besar di depannya. Dalamnya hangat dan bau kayu manis."
+  },
+  "tengara/tukang_kaca": {
+   "nama": "Ibukota Tengara — Kios Tukang Kaca",
+   "kategori": "lokasi",
+   "prioritas": 2,
+   "deskripsi": "Kios sempit penuh kaca: lentera, lensa, botol, dan kaca-kaca kecil yang berdengung kalau didekati. Mpu Sarwa, tukang kacanya, memakai kacamata setebal jari."
+  }
+ }
+}

@@ -70,7 +70,8 @@
      "name": "Lentera penjaga (simpan & istirahat)",
      "script": "lentera_save"
     }
-   ]
+   ],
+   "latar": "rawa_suar/jembatan_bambu"
   },
   "jembatan_bambu": {
    "name": "Jembatan Bambu",

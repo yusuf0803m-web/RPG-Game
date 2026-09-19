@@ -7,7 +7,9 @@
   const el = {
     title: $("title-screen"), game: $("game-screen"), titleArt: $("title-art"),
     slotList: $("slot-list"), btnNew: $("btn-new"), btnLoad: $("btn-load"), btnQuit: $("btn-quit"),
-    scene: $("scene"), sceneArt: $("scene-art"), sceneArea: $("scene-area"), sceneRoom: $("scene-room"),
+    scene: $("scene"), sceneArt: $("scene-art"), scenePhoto: $("scene-photo"),
+    sceneArea: $("scene-area"), sceneRoom: $("scene-room"),
+    plate: $("plate"), plateImg: $("plate-img"), plateTeks: $("plate-teks"),
     chipKeping: $("chip-keping"), chipLentera: $("chip-lentera"),
     battle: $("battle"), battleRound: $("battle-round"), bara: $("bara"), baraPips: $("bara-pips"),
     enemies: $("enemies"), party: $("party"), log: $("log"),
@@ -18,7 +20,8 @@
 
   const state = {
     id: null, since: 0, polling: false, waiting: false,
-    areaId: null, roomKey: null, lastHp: new Map(), battleOn: false, dead: false
+    areaId: null, roomKey: null, lastHp: new Map(), battleOn: false, dead: false,
+    latar: null
   };
 
   /* ── Util ─────────────────────────────────────────────────────────── */
@@ -99,6 +102,8 @@
   function handle(ev) {
     switch (ev.kind) {
       case "room":       onRoom(ev.payload); break;
+      case "adegan":     onAdegan(ev.payload); break;
+      case "ilustrasi":  onIlustrasi(ev.payload); break;
       case "battle":     onBattle(ev.payload); break;
       case "battle_end": onBattleEnd(ev.payload); break;
       case "say":        addDialog(ev.payload.who, ev.payload.text); break;
@@ -111,6 +116,55 @@
     }
   }
 
+  /* ── Latar bergambar ──────────────────────────────────────────────────
+     Panorama SVG prosedural selalu digambar sebagai dasar. Kalau berkas
+     .webp untuk ruang ini ada, ia ditumpuk di atasnya dengan crossfade;
+     kalau belum ada, panorama itulah yang terlihat — permainan tetap utuh. */
+  function pasangLatar(url, kunci, efek) {
+    if (kunci === state.latar && !efek) return;
+    state.latar = kunci;
+    if (url) {
+      el.scenePhoto.style.backgroundImage = `url("${url}")`;
+      el.scenePhoto.classList.add("on");
+    } else {
+      el.scenePhoto.classList.remove("on");
+      el.scenePhoto.style.backgroundImage = "";
+    }
+    efekAdegan(efek);
+  }
+
+  function efekAdegan(efek) {
+    el.scene.classList.remove("flash", "shake", "gelap");
+    el.scenePhoto.classList.remove("zoom");
+    if (!efek || efek === "fade") return;
+    if (efek === "zoom") el.scenePhoto.classList.add("zoom");
+    else el.scene.classList.add(efek);
+    if (efek === "flash" || efek === "shake") {
+      setTimeout(() => el.scene.classList.remove("flash", "shake"), 700);
+    }
+  }
+
+  el.plate.onclick = () => tutupIlustrasi();
+
+  function onAdegan(p) {
+    if (p.latar) pasangLatar(p.latar_url || "", p.latar, p.efek);
+    else efekAdegan(p.efek);
+  }
+
+  function onIlustrasi(p) {
+    // Kalau ilustrasinya belum digambar, peristiwa tetap tampil sebagai layar
+    // gelap berteks — momennya tidak hilang, hanya belum bergambar.
+    el.plateImg.style.backgroundImage = p.latar_url ? `url("${p.latar_url}")` : "none";
+    el.plateImg.style.backgroundColor = p.latar_url ? "" : "#11161f";
+    el.plateTeks.textContent = p.teks || "";
+    el.plate.hidden = false;
+  }
+
+  function tutupIlustrasi() {
+    if (!el.plate.hidden) { el.plate.hidden = true; return true; }
+    return false;
+  }
+
   /* ── Adegan & party ───────────────────────────────────────────────── */
   function setScene(r) {
     if (r.area_id && r.area_id !== state.areaId) {
@@ -120,6 +174,7 @@
     el.sceneArea.textContent = r.area || "";
     el.sceneRoom.textContent = r.room || "";
     el.scene.classList.toggle("fog", !!r.fog);
+    pasangLatar(r.latar_url || "", r.latar || "");
   }
 
   function onRoom(r) {
@@ -296,6 +351,7 @@
 
   function showPrompt(p) {
     state.waiting = true;
+    if (promptKind(p, (p.prompt || "").trim()) !== "enter") tutupIlustrasi();
     const prompt = (p.prompt || "").trim();
     const kind = promptKind(p, prompt);
 
