@@ -14,9 +14,16 @@ dan menaruhnya di folder "incoming", lalu:
   7. melaporkan berkas mana saja yang tidak bisa diproses, dan kenapa
 
 Alur pakai: lihat ``prompts/README.md``. Singkatnya -- generate gambar di ChatGPT, unduh,
-lalu simpan/ganti nama berkasnya sebagai ``<asset_id>.<ext>`` (mis.
-``pelita_rendah_warung.png``) ke dalam ``prompts/generated_incoming/`` (folder ini dibuat
-otomatis kalau belum ada), lalu jalankan skrip ini.
+lalu simpan/ganti nama berkasnya ke dalam ``prompts/generated_incoming/`` (folder ini
+dibuat otomatis kalau belum ada), lalu jalankan skrip ini. Tiga cara penamaan yang
+dikenali (dicoba berurutan): id lengkap (``pelita_rendah_warung.png``), struktur folder
+yang meniru asset_path (``pelita_rendah/warung.png``), atau nama ruang/peristiwa polos
+tanpa region (``warung.png``) -- yang terakhir ini cuma dipakai kalau namanya unik di
+seluruh ``latar.json`` (saat ini semua nama ruang memang unik).
+
+Berkas yang sudah persis sesuai spek (WebP, 1600x900, di bawah batas ukuran -- mis. hasil
+dari tool ini sebelumnya) disalin apa adanya, tidak di-encode ulang, supaya kualitasnya
+tidak turun tanpa perlu.
 
 Membutuhkan Pillow (bukan dependensi wajib permainan, murni untuk alat ini):
 
@@ -109,10 +116,25 @@ def find_incoming_files(incoming_dir: Path) -> list[Path]:
     )
 
 
+def build_bare_slug_index(assets: list[dict]) -> dict[str, dict]:
+    """Indeks nama ruang/peristiwa tanpa prefiks region (mis. "warung" untuk
+    pelita_rendah/warung.webp) -- cara paling wajar orang menamai unduhan ChatGPT.
+    Sengaja tidak memasukkan slug yang dipakai lebih dari satu aset supaya cocoknya
+    tetap tidak ambigu (saat ini tidak ada tabrakan di antara 139 entri)."""
+    counts: dict[str, int] = {}
+    index: dict[str, dict] = {}
+    for a in assets:
+        slug = a["asset_path"].rsplit("/", 1)[-1][: -len(".webp")]
+        counts[slug] = counts.get(slug, 0) + 1
+        index[slug] = a
+    return {slug: asset for slug, asset in index.items() if counts[slug] == 1}
+
+
 def match_asset(file_path: Path, incoming_dir: Path, by_id: dict[str, dict],
-                 by_path_stem: dict[str, dict]) -> Optional[dict]:
-    """Cocokkan berkas incoming ke aset lewat dua cara: nama rata (id) atau struktur folder
-    yang meniru asset_path (mis. incoming/pelita_rendah/warung.png)."""
+                 by_path_stem: dict[str, dict], by_bare_slug: dict[str, dict]) -> Optional[dict]:
+    """Cocokkan berkas incoming ke aset lewat tiga cara: nama rata (id lengkap), struktur
+    folder yang meniru asset_path (mis. incoming/pelita_rendah/warung.png), atau nama ruang
+    polos tanpa region (mis. incoming/warung.png -- hanya kalau nama itu unik)."""
     rel = file_path.relative_to(incoming_dir).with_suffix("")
     rel_posix = rel.as_posix()
     if rel_posix in by_path_stem:
@@ -125,6 +147,8 @@ def match_asset(file_path: Path, incoming_dir: Path, by_id: dict[str, dict],
         return by_id[stem]
     if stem in by_path_stem:
         return by_path_stem[stem]
+    if stem in by_bare_slug:
+        return by_bare_slug[stem]
     return None
 
 
@@ -189,6 +213,27 @@ def process_one(Image, src: Path, asset: dict, dry_run: bool, force: bool,
         result["status"] = "skipped_exists"
         result["reason"] = "berkas final sudah ada (pakai --force untuk menimpa)"
         return result
+
+    # Sudah persis sesuai spek (mis. sudah diproses tool ini sebelumnya, atau diunggah
+    # sudah dalam bentuk final) -- salin apa adanya, jangan encode ulang WebP dan
+    # kehilangan kualitas tanpa perlu.
+    src_size_kb = src.stat().st_size / 1024
+    if src.suffix.lower() == ".webp" and src_size_kb <= max_kb:
+        try:
+            probe = Image.open(src)
+            probe_size = probe.size
+        except Exception:  # noqa: BLE001 -- lanjut ke jalur normal, akan gagal lagi di bawah
+            probe_size = None
+        if probe_size == (TARGET_WIDTH, TARGET_HEIGHT):
+            if dry_run:
+                result["status"] = "would_process"
+                result["reason"] = f"sudah sesuai spek ({src_size_kb:.1f}KB) -- akan disalin apa adanya"
+                return result
+            out_path.parent.mkdir(parents=True, exist_ok=True)
+            out_path.write_bytes(src.read_bytes())
+            result["status"] = "copied_as_is"
+            result["reason"] = f"sudah {TARGET_WIDTH}x{TARGET_HEIGHT} WebP {src_size_kb:.1f}KB -- disalin tanpa encode ulang"
+            return result
 
     try:
         image = Image.open(src)
@@ -282,6 +327,7 @@ def main() -> int:
         return 1
     by_id = {a["id"]: a for a in scoped}
     by_path_stem = {a["asset_path"][: -len(".webp")]: a for a in scoped}
+    by_bare_slug = build_bare_slug_index(scoped)
 
     args.incoming.mkdir(parents=True, exist_ok=True)
     files = find_incoming_files(args.incoming)
@@ -289,7 +335,7 @@ def main() -> int:
     results = []
     unmatched: list[str] = []
     for f in files:
-        asset = match_asset(f, args.incoming, by_id, by_path_stem)
+        asset = match_asset(f, args.incoming, by_id, by_path_stem, by_bare_slug)
         if asset is None:
             unmatched.append(str(f.relative_to(ROOT)) if f.is_relative_to(ROOT) else str(f))
             continue
@@ -309,7 +355,7 @@ def main() -> int:
     print(f"Cocok dengan aset: {len(results)}")
     print(f"Tidak cocok (nama tidak dikenali): {len(unmatched)}")
     print()
-    for status in ("processed", "processed_over_limit", "would_process", "skipped_exists", "failed"):
+    for status in ("copied_as_is", "processed", "processed_over_limit", "would_process", "skipped_exists", "failed"):
         if status in counts:
             print(f"{status}: {counts[status]}")
     print()
