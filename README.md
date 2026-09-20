@@ -4,12 +4,12 @@ RPG teks turn-based bergaya JRPG klasik, dibangun dengan Python. Mesin permainan
 pustaka standar; antarmuka web menambah satu dependensi, Flask.
 
 - **Dokumen desain**: [`GAME_DESIGN.md`](GAME_DESIGN.md) (edisi 20 jam, tiga babak).
-- **Status**: Tahap 5 dari rencana di §9 dokumen desain selesai — **permainannya bisa ditamatkan
-  dari prolog sampai salah satu dari tiga ending.** 16 area / 124 ruang, 67 musuh (16 boss cerita,
-  satu mid-boss tujuh gelombang, satu superboss, dan target Buruan), 225 skill, 81 item, 22 Kaca,
-  14 Jalur, 23 adegan Kenangan, 8 kontrak Buruan, 5 tingkat Arena, 139 entri latar. Party lengkap
-  7 orang (4 aktif + 3 cadangan). Sisanya Tahap 6: kalibrasi harga, dungeon opsional, dan side
-  quest yang belum dibuat.
+- **Status**: Tahap 6 dari rencana di §9 dokumen desain selesai — **permainannya bisa ditamatkan
+  dari prolog sampai salah satu dari tiga ending, dan keseimbangannya sekarang diukur, bukan
+  ditebak.** 16 area / 124 ruang, 67 musuh (16 boss cerita, satu mid-boss tujuh gelombang, satu
+  superboss, dan target Buruan), 225 skill, 81 item, 22 Kaca, 14 Jalur, 23 adegan Kenangan,
+  8 kontrak Buruan, 5 tingkat Arena, 139 entri latar. Party lengkap 7 orang (4 aktif + 3 cadangan).
+  Sisanya Tahap 7: Buruan, side quest, dan dungeon opsional yang belum dibuat, plus poles naskah.
 - **Dua antarmuka**: web (grafis) dan terminal. Keduanya memakai mesin permainan yang sama.
 
 ## Bermain di browser
@@ -112,11 +112,13 @@ python -m pelita -s rawa --auto --seed 3 --no-pause
 
 ```bash
 pip install pytest
-python -m pytest -q                     # 189 tes: unit, walkthrough Babak 1-3, sistem Tahap 3,
-                                        # mekanik Babak 2 & 3, latar, API web, dan regresi menu
-                                        # (tiap prompt harus ada jalan keluar)
+python -m pytest -q                     # 205 tes: unit, walkthrough Babak 1-3, sistem Tahap 3,
+                                        # mekanik Babak 2 & 3, latar, API web, regresi menu
+                                        # (tiap prompt harus ada jalan keluar), dan kalibrasi
+python tools/playtest.py                # laporan ekonomi & pacing seluruh permainan (§9.5)
+python tools/playtest.py --ekonomi      # hanya buku kas Keping per babak
 python tools/calibrate.py --n 200       # simulasi rasio "2–3 pukulan" per skenario
-python tools/calibrate.py --musuh 52:boss 45:tank    # stat musuh dari rumus §4.7 (bukan tebakan)
+python tools/calibrate.py --musuh 52:boss 45:tank    # stat musuh dari rumus §4.7 (titik awal)
 
 python tools/walkthrough.py --seed 11                  # Babak 1: prolog sampai Akhir Babak 1
 python tools/walkthrough.py --babak 2 --seed 5         # Babak 2: Celah Angin sampai Nirmala
@@ -125,6 +127,15 @@ python tools/walkthrough.py --babak 3 --ending kembali # ending kedua
 python tools/walkthrough.py --babak 3 --ending dendang # ending rahasia
 python tools/walkthrough.py --babak 3 --ending kembali --bunuh-kelana   # jalur Kelana dibunuh
 ```
+
+**Keseimbangan diukur, bukan ditebak.** `tools/playtest.py` memainkan seluruh permainan dengan
+pemain otomatis yang benar-benar berbelanja, memasang Kaca, dan menukar Serpihan, lalu melaporkan
+dari mana Keping datang dan ke mana perginya, berapa ronde tiap boss bertahan, dan seberapa rendah
+HP party sempat turun. Tiap angka yang keluar dari pita sasarannya dicetak di bagian PERINGATAN;
+`tests/test_kalibrasi.py` menjalankan pengukur yang sama dan menggagalkan build kalau ada yang
+melenceng. Serah-terima antarbabak tidak ditulis tangan: walkthrough Babak 2 memainkan Babak 1
+lebih dulu, dan Babak 3 memainkan keduanya — seluruh rantainya 0,7 detik. Rinciannya di
+[`GAME_DESIGN.md`](GAME_DESIGN.md) §9.5.
 
 Semuanya mencetak jumlah pertarungan, level party, dan lama tiap boss dalam ronde.
 
@@ -156,9 +167,11 @@ pelita/
     static/        index.html, style.css, app.js (klien), art.js (SVG prosedural)
   data/            characters, skills, enemies, items, kaca, jalur;
                    world/area_*.json (16 area), shops, quests, kenangan, buruan, arena, latar
-tools/             calibrate.py, walkthrough.py
-tests/             pytest (walker.py = pemain otomatis untuk tes alur;
-                   test_menu_web.py = crawler yang memastikan tiap menu bisa ditinggalkan)
+tools/             calibrate.py, walkthrough.py, playtest.py (laporan ekonomi & pacing)
+tests/             pytest (walker.py = pemain otomatis untuk tes alur — ia berbelanja,
+                   memasang Kaca, dan menukar Serpihan seperti pemain sungguhan;
+                   test_menu_web.py = crawler yang memastikan tiap menu bisa ditinggalkan;
+                   test_kalibrasi.py = pita ekonomi & pacing §9.5 dikunci sebagai tes)
 ```
 
 ## Sistem lanjutan (Tahap 3)

@@ -64,14 +64,34 @@ def test_rotasi_afinitas_penambang(data):
     assert boss.affinity(Element.FISIK) == Affinity.LEMAH
 
 
+def maju_ke_fase(battle, boss, indeks: int):
+    """Dorong ``boss`` sampai fase ke-``indeks`` aktif.
+
+    Fase naik satu tingkat per giliran (lihat ``ai.choose_enemy_action``): boss yang
+    HP-nya anjlok dalam satu pukulan tetap melewati fase-fase di antaranya, supaya
+    tidak ada fase yang hilang tanpa pernah dipakai. Tes mekanik fase karena itu
+    memanggil AI-nya beberapa kali, bukan menyetel HP lalu berharap langsung sampai.
+
+    Mengembalikan aksi yang dipilih pada giliran fase itu menyala — yaitu langkah
+    pertama polanya, karena pergantian fase menyetel ulang posisi pola.
+    """
+    aksi = None
+    for _ in range(indeks + 2):
+        if boss.phase_index >= indeks:
+            return aksi
+        aksi = ai.choose_enemy_action(battle, boss)
+    assert boss.phase_index == indeks, f"boss berhenti di fase {boss.phase_index}"
+    return aksi
+
+
 def test_fase_mengubah_afinitas_dan_mengumumkan(data):
     b = make(data, [("rimba", 12), ("lintang", 11)], ["boss_ular_cermin"])
     boss = b.enemies[0]
     assert boss.affinity(Element.PETIR) == Affinity.LEMAH
     boss.hp = int(boss.max_hp * 0.3)
-    a = ai.choose_enemy_action(b, boss)
+    maju_ke_fase(b, boss, 1)
     assert boss.affinity(Element.PETIR) == Affinity.TAHAN and boss.affinity(Element.API) == Affinity.LEMAH
-    ev = b.act(boss, a)
+    ev = b.act(boss, ai.choose_enemy_action(b, boss))
     assert any("retak" in e.lower() for e in ev)
 
 
@@ -119,6 +139,7 @@ def test_fase_dua_rangga_dua_aksi_dan_kebal_provokasi(data):
     b = make(data, [("sela", 15), ("rimba", 15)], ["boss_kapten_rangga"])
     rangga, sela = b.enemies[0], hero(b, "sela")
     rangga.hp = int(rangga.max_hp * 0.3)
+    maju_ke_fase(b, rangga, 1)
     b.act(sela, Action("skill", skill=data.skill("pasang_badan"), targets=[]))
     b.queue = [rangga]
     t = b.next_turn()
@@ -140,7 +161,8 @@ def test_padamkan_sekali_per_pertarungan(data):
     assert all(h.hp == 1 for h in b.heroes)
     boss.hp = int(boss.max_hp * 0.1)
     boss.phase_index = -1
-    a = ai.choose_enemy_action(b, boss)      # fase Padam: m_padamkan sudah dipakai → jatuh ke Serang
+    # Fase Padam membuka dengan m_padamkan; ia sudah dipakai, jadi jatuh ke Serang.
+    a = maju_ke_fase(b, boss, len(boss.edef.phases) - 1)
     assert a.label == "Serang"
 
 

@@ -1,7 +1,7 @@
 """Walkthrough otomatis Babak 3: dari dek Kapal Lentera sampai salah satu dari tiga ending.
 
-Melanjutkan pola ``tests/test_babak2.py``. Party dimulai dari keadaan akhir Babak 2
-(tujuh anggota Lv 43, berdiri di dek Kapal Lentera) supaya tesnya fokus ke Babak 3.
+Melanjutkan ``tests/test_babak2.py``: keadaan awalnya benar-benar diambil dari
+walkthrough Babak 2, yang memang berhenti di dek Kapal Lentera (lihat ``mulai_babak3``).
 
 Yang dibuktikan di sini (syarat penerimaan Tahap 5, GAME_DESIGN §9):
 
@@ -12,7 +12,8 @@ Yang dibuktikan di sini (syarat penerimaan Tahap 5, GAME_DESIGN §9):
 """
 from __future__ import annotations
 
-import random
+import tempfile
+from pathlib import Path
 
 import pytest
 
@@ -20,8 +21,9 @@ from pelita.loader import load_data
 from pelita.party import xp_to_reach
 from pelita.world.explore import Game
 from pelita.world.model import load_world
-from pelita.world.state import new_game
 from tests.test_babak1 import BerhentiUji, make_equipper
+from tests.test_babak2 import SEMUA_BABAK2
+from tests.test_babak2 import jalankan as jalankan_babak2
 from tests.walker import Walker
 
 
@@ -46,6 +48,12 @@ def make_pemain(state, kotak):
 
 # -- jalur utama ------------------------------------------------------------
 KAPAL = [
+    # Palka Kapal Lentera: perlengkapan Babak 3 dibeli bertahap, sesuai isi kantong.
+    # Yang belum terjangkau dilewati dan diulang di daftar berikutnya.
+    "#beli:rimba:senjata:tongkat_lentera", "#beli:sela:senjata:pedang_laut",
+    "#beli:lintang:senjata:lentera_laut", "#beli:bagas:senjata:peluncur_laut",
+    "#stok:ramuan_laut:10", "#stok:kendi_nyala:8", "#stok:abu_pagi:4",
+    "#stok:bekal_kemah:8", "#stok:suku_cadang:40",
     "Ke haluan",
     "Berlayar ke laut kabut",
 ]
@@ -61,6 +69,11 @@ PULAU_WAJIB = [
     "Kembali ke pintu pasar", "Kembali ke kapal",
 ]
 PULAU_KECIL = [
+    # Singgah kembali ke kapal = kembali ke palka. Putaran kedua daftar belanja.
+    "#beli:rimba:zirah:jubah_ingatan", "#beli:sela:zirah:jubah_ingatan",
+    "#beli:lintang:zirah:jubah_ingatan", "#beli:bagas:zirah:zirah_lentera",
+    "#beli:rangga:senjata:tombak_laut", "#beli:ratih:senjata:kecapi_laut",
+    "#beli:kelana:senjata:pedang_sunyi",
     "Singgah: Pulau Nyanyi", "Kendi di tengah tikar",
     "#kenangan:puncak_ratih",
     "Kembali ke kapal",
@@ -69,6 +82,16 @@ PULAU_KECIL = [
     "Kembali ke kapal",
 ]
 PULAU_LENTERA = [
+    # Putaran ketiga: aksesori, zirah cadangan, dan soket senjata baru.
+    "#beli:rimba:aksesori:kalung_bara_besar", "#beli:sela:aksesori:jimat_pulang",
+    "#beli:lintang:aksesori:jimat_pulang", "#beli:bagas:aksesori:jimat_pulang",
+    "#beli:rangga:zirah:zirah_lentera", "#beli:ratih:zirah:jubah_ingatan",
+    "#beli:kelana:zirah:zirah_lentera",
+    "#pasang:rimba:0:kaca_fajar", "#pasang:rimba:1:kaca_tajam", "#pasang:rimba:2:kaca_napas",
+    "#pasang:sela:0:kaca_petir", "#pasang:sela:1:kaca_teguh", "#pasang:sela:2:kaca_tabah",
+    "#pasang:lintang:0:kaca_es", "#pasang:lintang:1:kaca_napas", "#pasang:lintang:2:kaca_tajam",
+    "#pasang:bagas:0:kaca_kilat", "#pasang:bagas:1:kaca_licin", "#pasang:bagas:2:kaca_tabah",
+    "#stok:ramuan_laut:14", "#stok:abu_pagi:6", "#stok:kendi_nyala:10",
     "Singgah: Pulau Lentera",
     "Naik ke puncak",
     "Turun ke jalan lentera",
@@ -79,6 +102,13 @@ PULAU_LENTERA = [
     "Nyai Rukmini",                # Bara maks 8
 ]
 PUSAR = [
+    # Belanja terakhir sebelum titik tanpa kembali.
+    "#beli:rangga:aksesori:jimat_pulang", "#beli:ratih:aksesori:jimat_pulang",
+    "#beli:kelana:aksesori:jimat_pulang",
+    "#pasang:rangga:0:kaca_bumi", "#pasang:rangga:1:kaca_teguh",
+    "#pasang:ratih:0:kaca_angin", "#pasang:ratih:1:kaca_napas",
+    "#pasang:kelana:0:kaca_kelam", "#pasang:kelana:1:kaca_tajam",
+    "#stok:ramuan_laut:18", "#stok:abu_pagi:8",
     "Ke haluan",
     "Berlayar ke laut kabut",
     "Berlayar ke barat, ke Pusar Kabut",
@@ -105,53 +135,32 @@ ENDING_DENDANG = ["Mendendangkan"]
 
 
 def mulai_babak3(data, seed, kelana_dibunuh: bool = False, lengkap: bool = False):
-    """State seperti tepat setelah Babak 2: tujuh anggota Lv 43 di dek Kapal Lentera.
+    """State persis seperti yang ditinggalkan walkthrough Babak 2 di dek Kapal Lentera.
 
-    ``lengkap`` menyiapkan syarat ending rahasia (Kenangan Ratih + 7 Buruan +
-    Padasuara selamat) supaya jalur "Mendendangkan" bisa diuji tanpa memainkan
-    ulang seluruh konten sampingan Babak 1-2.
+    Sama seperti ``mulai_babak2``, serah-terimanya dijalankan, bukan ditulis tangan:
+    party, perlengkapan, Kaca terpasang, dan terutama **saldo Keping** datang dari
+    Babak 2 yang benar-benar dimainkan dan dibelanjakan (GAME_DESIGN §9.5).
+
+    ``kelana_dibunuh`` memainkan ulang Babak 2 dengan pilihan "Habisi dia" di
+    Wirasaba, jadi konsekuensinya lahir dari keputusan, bukan dari flag yang
+    ditempelkan. ``lengkap`` menambahkan syarat ending rahasia (Kenangan Ratih +
+    7 Buruan) yang berasal dari konten sampingan di luar jalur walkthrough.
     """
-    st = new_game(data)
-    st.rng = random.Random(seed)
-    st.bara_max = 5
-    st.flags.update({
-        "bara", "babak_1_selesai", "babak_2_selesai", "guntur_hilang", "desa_epilog",
-        "boss_hutan_kalah", "boss_katak_kalah", "boss_ular_kalah", "boss_rangga_kalah",
-        "boss_penambang_kalah", "boss_penjaga_kalah", "boss_garuda_kalah",
-        "boss_cacing_kalah", "boss_wirya_kalah", "boss_penjaga_suar_kalah",
-        "boss_pandansari_kalah", "boss_nirmala_kalah", "kelana_berhenti",
-        "padasuara_selamat", "ratih_gabung", "sanggar_masuk",
-    })
+    langkah = list(SEMUA_BABAK2)
     if kelana_dibunuh:
-        st.flags.update({"kelana_dibunuh", "lintang_dingin"})
-    st.party[0].level = 43
-    st.party[0].xp = xp_to_reach(43)          # tanpa ini Rimba tertinggal jauh dari yang lain
-    st.party[0].equipment.update({"senjata": "tongkat_nyanyi", "zirah": "jubah_penyala",
-                                  "aksesori": "kalung_bara"})
-    anggota = [("sela", "pedang_wirasaba", "zirah_kaca_wirasaba"),
-               ("lintang", "lentera_garam", "jubah_pendendang"),
-               ("bagas", "peluncur_wirasaba", "zirah_kafilah"),
-               ("rangga", "tombak_panji", "zirah_kafilah"),
-               ("ratih", "kecapi_tujuh", "jubah_pendendang")]
-    if not kelana_dibunuh:
-        anggota.append(("kelana", "pedang_ingatan", "zirah_kaca_wirasaba"))
-    for cid, senjata, zirah in anggota:
-        h = st.join(cid, 43)
-        h.equipment.update({"senjata": senjata, "zirah": zirah})
-        h.restore()
-    st.party[0].restore()
-    st.keping = 110000
-    for iid, n in (("ramuan_sari", 20), ("ramuan_laut", 10), ("cawan_nyala", 10),
-                   ("kendi_nyala", 6), ("abu_fajar", 8), ("penawar", 8),
-                   ("bekal_kemah", 12), ("suku_cadang", 40), ("minyak_lentera", 10)):
-        st.add_item(iid, n)
+        i = langkah.index("Turunkan pedangmu")
+        langkah[i:i + 1] = ["Habisi dia", "Ya. Habisi dia."]
+    res, st, _ = jalankan_babak2(langkah, seed, Path(tempfile.mkdtemp()))
+    assert res == "berhenti", f"Babak 2 seed {seed} tidak sampai ke batas babak: {res}"
+    assert (st.area_id, st.room_id) == ("laut_lupa", "kapal_dek")
+    assert st.in_party("kelana") is not kelana_dibunuh
     if lengkap:
+        # Kenangan Ratih dan papan Buruan adalah konten sampingan yang sengaja tidak
+        # dilewati walkthrough jalur utama; syarat ending rahasia dipasang langsung.
         st.kenangan.update({"ratih_rimba_1", "ratih_lintang_1", "ratih_kelana_1"})
         for bid in ("buruan_1_kunang", "buruan_2_nelayan", "buruan_3_zirah", "buruan_4_kambing",
                     "buruan_5_hantu", "buruan_6_pohon", "buruan_7_konstruk"):
             st.buruan[bid] = "selesai"
-    st.area_id, st.room_id = "laut_lupa", "kapal_dek"
-    st.wire()
     return st
 
 

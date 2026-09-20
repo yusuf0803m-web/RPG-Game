@@ -57,11 +57,13 @@ class Walker:
         if step.startswith("@"):            # perintah huruf langsung
             self.steps.popleft()
             self.answers.append(step[1:])
+            self.stuck = 0
             return step[1:]
         for num, label in opts.items():
             if step.lower() in label.lower():
                 self.steps.popleft()
                 self.answers.append(num)
+                self.stuck = 0
                 return num
         # opsi belum muncul (mis. prompt Enter/slot): jawab kosong dan coba lagi nanti
         self.stuck += 1

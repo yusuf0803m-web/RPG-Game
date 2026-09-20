@@ -567,6 +567,15 @@ ATK     ≈ 7.3 + 1.26·(L−1)          ≈ 18% HP hero per pukulan biasa
 XP      = 6·L² (boss 30·L²)          Keping = L² (boss 5·L²)
 ```
 
+**Batas rumus ini, dan apa yang menggantikannya (Tahap 6, §9.5).** `HP boss = 30 × off(L)`
+mengandaikan tiga puluh *pukulan biasa*. Party Lv 40+ tidak memukul begitu: ia memakai skill
+berkekuatan 2,4–4,0, berbuff Lagu dan Komando, empat orang per ronde. Stat mentahnya memang
+masih 0,93–0,95× dari `off(L)` — bagian itu tetap benar — tapi damage per ronde jauh di atas
+yang diandaikan. Rumus di atas karena itu dipakai sebagai **titik awal** untuk musuh baru;
+angka akhirnya diturunkan dari ronde yang terukur lewat `tools/playtest.py`
+(`HP baru = HP lama × ronde sasaran / ronde terukur`), dan pita sasarannya dijaga
+`tests/test_kalibrasi.py`.
+
 Hasil simulasi Tahap 1 (150 pertarungan per skenario, kebijakan satu-target berbasis kelemahan):
 Hutan 2,1 aksi/musuh · Rawa 4,7 (party campuran Lv 6–7 melawan 3 musuh) · Tambang 3,1 ·
 Mercusuar 4,5 (Pelita Padam sengaja hanya lemah terhadap Kelam) · boss 4–8 ronde (12–15 aksi party).
@@ -1047,7 +1056,8 @@ waktu. Audio ditunda sebagai pekerjaan tersendiri agar tidak menggemukkan APK se
 | 3 | Sistem lanjutan: Ganti/cadangan, Jalur, Kaca, Berkemah/Kenangan, Buruan, Arena | Fondasi Babak 2 — **selesai** (lihat §9.2) |
 | 4 | Babak 2 (area 7–12, 3 karakter baru, 7 boss) | Game 15 jam — **selesai** (lihat §9.3) |
 | 5 | Babak 3 + 3 ending + superboss | Game 20 jam — **selesai** (lihat §9.4) |
-| 6 | Kalibrasi harga, dungeon opsional, side quest sisa, penulisan ulang naskah, playtest | Rilis |
+| 6 | Kalibrasi ekonomi & pacing, alat playtest | Keseimbangan terukur — **selesai** (lihat §9.5) |
+| 7 | Konten sampingan sisa (Buruan, side quest, dungeon opsional) + poles naskah | Rilis |
 
 Tahap 2 adalah tonggak terpenting: kalau Babak 1 terasa enak dimainkan, sistemnya terbukti dan
 Babak 2–3 tinggal soal isi. Kalau tidak, lebih murah membetulkannya di sana.
@@ -1228,7 +1238,7 @@ Penyimpangan dari desain awal, dan alasannya:
   dibunuh, tapi jalur yang disiapkan adalah membuatnya berhenti; konsekuensi ending-nya baru
   dipasang di Babak 3.
 - **Keping menumpuk** (±110.000 di akhir Babak 2). Harga toko Babak 2 belum mengejar; ini dicatat
-  sebagai pekerjaan kalibrasi Tahap 6, bukan bug.
+  sebagai pekerjaan kalibrasi Tahap 6, bukan bug. **Ditutup di §9.5.**
 
 ### 9.4 Catatan implementasi Tahap 5 (Babak 3)
 
@@ -1351,8 +1361,160 @@ Penyimpangan dari desain awal, dan alasannya:
   memukul di depan Kabut Terakhir, dan bertahan (Jaga/heal) di pertarungan bertahan.
 - **Harga toko Babak 3 sengaja besar** (senjata 9.000, zirah 7.000–8.000, aksesori 6.000–6.500)
   untuk menyerap Keping yang menumpuk di akhir Babak 2. Itu belum menutup catatan §9.3: pemain
-  otomatis tetap tamat dengan ~250.000 Keping. Kalibrasi harga menyeluruh tetap pekerjaan Tahap 6.
+  otomatis tetap tamat dengan ~250.000 Keping. Kalibrasi harga menyeluruh tetap pekerjaan
+  Tahap 6. **Ditutup di §9.5: saldo saat tamat kini ±65.000.**
 - **Masih terbuka setelah Tahap 5**: Buruan 8 dari 11, side quest 7 dari 18, dan tiga dungeon
   opsional (Gua Bawah Danau di Babak 1, Reruntuhan Suar Ketiga di Babak 2, dan satu lagi di
   Laut Lupa) belum dibuat. Pulau Hilang dan Cacing Abu Ibu adalah konten opsional Babak 3 yang
   sudah ada.
+
+### 9.5 Catatan implementasi Tahap 6 (kalibrasi & playtest)
+
+Tahap 6 tidak menambah isi. Ia membangun **alat ukur**, lalu memakai angkanya untuk
+membetulkan ekonomi dan pacing yang selama lima tahap hanya ditebak — dan, tanpa
+direncanakan, menemukan tiga bug yang tidak mungkin terlihat dari tes yang ada.
+
+```bash
+python tools/playtest.py                      seluruh permainan, seed bawaan
+python tools/playtest.py --babak 2            satu babak
+python tools/playtest.py --seeds 3 7 11 19 23 lebih banyak seed
+python tools/playtest.py --ekonomi            hanya tabel ekonomi
+python -m pytest tests/test_kalibrasi.py      pita sasarannya dikunci sebagai tes
+```
+
+#### Yang salah dengan cara mengukur sebelumnya
+
+**Pemain otomatisnya seorang penimbun.** Walkthrough Tahap 2–5 tidak pernah membeli
+apa pun. Di akhir Babak 1 ia masih memakaikan **Zirah Kain** — pakaian awal Rimba —
+pada dua anggota, membiarkan enam soket Kaca kosong, tidak menukarkan satu pun dari
+11 Serpihan Ingatan, dan menyimpan 18.197 Keping. Seluruh kalibrasi boss Tahap 2–5
+karena itu ditera terhadap party yang jauh lebih lemah daripada party pemain
+sungguhan. Begitu pemain otomatisnya dibuat berbelanja, Sang Pelita Pertama mati
+sebelum fase tiganya sempat menyala.
+
+**Serah-terima antarbabak ditulis tangan.** `mulai_babak2` dan `mulai_babak3` dulu
+mengarang keadaan awal (Lv 24, perlengkapan pilihan, 18.000 lalu 110.000 Keping).
+Angka karangan itu menyimpang begitu babak sebelumnya berubah, dan yang diuji lalu
+jadi party yang tidak pernah benar-benar ada. Sekarang serah-terimanya **dijalankan**:
+Babak 1 memang berhenti di Kaki Celah dan Babak 2 di dek Kapal Lentera, dan seluruh
+rantainya hanya butuh 0,7 detik. Saldo bawaan Babak 3 yang sebenarnya ternyata
+49.000, bukan 110.000.
+
+#### Alat
+
+- **Buku kas** `GameState.kas`. Semua perubahan Keping lewat `ubah_keping(delta, sumber)`,
+  jadi laporan bisa menyebut dari mana uang datang (pertarungan, upah, cerita, jual) dan
+  ke mana perginya (toko, Kaca, penginapan).
+- **Pemain otomatis yang berbelanja.** Perintah Walker baru: `#beli` (beli lalu pakai,
+  melewati yang belum terjangkau dan menolak menurunkan pangkat), `#stok` (isi ulang
+  bekal), `#pasang` (beli Kaca lalu soketkan), `#tukar` (penukaran Serpihan), dan
+  `#pakai` (memakai temuan peti). Daftar belanjanya diulang di tiap hub — persis
+  seperti pemain yang menunda membeli sampai kantongnya cukup.
+- **Sinyal bahaya yang benar.** "HP party sesudah boss" menyesatkan: naik level di
+  tengah laga memulihkan HP *dan* menaikkan HP maks, jadi party sering tampak pulang
+  tanpa lecet dari pertarungan yang nyaris menghabisinya. Yang diukur sekarang titik
+  **terendah selama** laga, lewat event `battle` yang memang diemit tiap kali musuh
+  selesai bertindak.
+- **Pita sasaran yang jujur.** Tidak semua yang ditandai `boss` di skrip adalah boss:
+  sergapan terskrip berisi musuh biasa dinilai dengan "aksi per musuh" (§4.7), bukan
+  dengan pita ronde — kalau tidak, alatnya akan menyuruh kita menggemukkan musuh biasa
+  sampai keluar dari sasarannya sendiri.
+
+#### Sasaran ekonomi
+
+> Uang yang tersedia sepanjang satu babak harus cukup untuk melengkapi **barisan
+> aktif** — empat orang, semua tingkat senjata babak itu, zirah terbaik, dua aksesori
+> terbaik — tapi **tidak cukup untuk melengkapi ketujuhnya**.
+
+Pemain yang memakai empat nama yang sama bisa membeli semuanya; pemain yang merotasi
+tujuh nama harus memilih. Hasilnya, diukur pada lima seed:
+
+| | tersedia | dibelanjakan | sasaran |
+|---|---|---|---|
+| Babak 1 | 18.997 | 7.155 | 11.869–19.435 |
+| Babak 2 | 104.612 | 57.033 | 63.440–114.816 |
+| Babak 3 | 187.909 | 122.790 | 153.400–276.016 |
+
+Saldo saat tamat turun dari **±250.000 menjadi ±65.000 Keping**. Yang diubah:
+
+- **Harga perlengkapan Babak 2 naik ~1,45×** (senjata 2.400 → 3.500, zirah 1.800 →
+  2.600, aksesori 1.600–2.000 → 2.300–2.900). Menaikkan harga, bukan menurunkan upah,
+  karena upah yang mengecil membuat tiap pertarungan terasa kurang berarti — dan karena
+  lompatan ke harga Babak 3 (2.400 → 9.000) terlalu curam untuk dirasakan sebagai
+  kemajuan.
+- Babak 1 dan Babak 3 **tidak diubah harganya**: keduanya sudah masuk pita begitu
+  pemainnya benar-benar berbelanja. Catatan §9.3 dan §9.4 soal Keping menumpuk dengan
+  ini ditutup.
+
+#### Pacing
+
+Pengukuran pertama menemukan sesuatu yang lebih buruk daripada "boss terlalu cepat":
+**seluruh Babak 2 adalah walkover.** Nirmala, penutup babaknya, tidak pernah menurunkan
+HP party sama sekali (titik terendah 100%). Cacing Abu Purba 97%, Sunan Wirya 98%,
+Pandansari 99%. Bosnya jatuh dalam 3–4 ronde tanpa pernah menyentuh siapa pun.
+
+Akarnya bukan stat mentah party — ATK/MAG-nya justru 0,93–0,95× dari `off(L)`, jadi
+rumus §4.7 masih benar di situ. Akarnya adalah bahwa `HP boss = 30 × off(L)`
+mengandaikan tiga puluh **pukulan biasa**, sementara party Lv 40+ memukul dengan skill
+berkekuatan 2,4–4,0, berbuff Lagu dan Komando, empat orang per ronde. Rumus §4.7
+dipertahankan sebagai titik awal, tapi angka akhirnya sekarang **diturunkan dari ronde
+yang terukur**: `HP baru = HP lama × (ronde sasaran / ronde terukur)`.
+
+Yang diubah:
+
+- **HP boss** naik dari ronde terukur, sasaran 6,5 ronde: Penjaga Mercusuar ×1,86,
+  Baskara ×2,17, Cacing Abu Purba ×2,17, Sunan Wirya ×2,17, Penjaga Suar Wirasaba
+  ×2,17, Hampa Berzirah ×1,44, Nirmala 3.877 → 9.000, Sang Pelita Pertama 12.000 →
+  15.000.
+- **Serangan musuh** naik 1,25–1,5× di mana titik terendah party masih di atas 85%.
+- **Pola fase dua boss diperbaiki, bukan angkanya.** Nirmala fase satu dan Pandansari
+  fase satu masing-masing hanya punya **satu aksi melukai dari empat**; sisanya menyedot
+  Bara, mengutuk, dan memanggil. Laganya panjang tanpa pernah menakutkan, dan menaikkan
+  ATK tidak menolong karena ia jarang memakainya. Ketukan bernama di §6.2 dipertahankan,
+  tapi separuh gilirannya sekarang melukai. Sunan Wirya sengaja dibiarkan 1/4: ancamannya
+  memang datang dari Bayang Arsip yang terus ia bangkitkan.
+- **Musuh biasa** Babak 2 ×1,35 HP dan Babak 3 ×1,8 HP; keduanya jatuh dalam 1,2–1,5
+  ronde tanpa menurunkan HP party. Gema Prajurit dikecualikan (×1,25 saja): ia dipakai
+  bertiga di sergapan terskrip dan sifat `formasi` sudah menggandakan DEF/RES-nya, jadi
+  ×1,8 di atasnya membuat satu seed berubah jadi 29 ronde.
+- **XP musuh biasa Babak 3 turun 20%.** Party tamat di Lv 53–54, di atas rentang §2.4
+  (Lv 47–52). Sekarang Lv 52–53.
+
+Hasil akhir pada lima seed: boss cerita 6,2–11,5 ronde dengan titik terendah 35–89%,
+musuh biasa 2,18–2,72 aksi per musuh, tamat di Lv 52–53.
+
+#### Tiga bug yang ditemukan serah-terima yang dijalankan
+
+- **Dua peti berbagi nama flag.** Peti Lantai Pernikahan di Mercusuar (Babak 1) dan
+  Kotak Seserahan di Pulau Pernikahan (Babak 3) sama-sama memakai `peti_pernikahan_diambil`
+  (begitu juga sepasang peti "perang"). Membuka yang pertama **menghilangkan yang kedua
+  selamanya**. Fixture Babak 3 yang ditulis tangan tidak pernah menyalakan flag itu, jadi
+  tidak ada tes yang bisa melihatnya. Flag Babak 3 sekarang diberi cakupan areanya sendiri,
+  dan seluruh berkas area diaudit — hanya dua itu yang bertabrakan.
+- **Teka-teki rakit Danau Garam bisa mengunci pemain.** Ia menuntut **Ramuan Daun**
+  secara khusus, padahal ramuan itu tidak dijual di satu pun toko Babak 2 — pemain yang
+  sudah naik ke Ramuan Akar atau Sari tidak punya jalan maju. Sekarang dua botol ramuan
+  penyembuh jenis apa pun diterima, dari yang termurah. Seluruh teka-teki diaudit untuk
+  ketergantungan serupa; hanya ini satu-satunya.
+- **Boss bisa melompati fase.** `choose_enemy_action` memilih fase dari HP saat itu, jadi
+  satu ledakan besar bisa melewati sebuah fase utuh — Sang Pelita Pertama memegang fase
+  "Yang Ingin Dilupakan" hanya di 15–28% HP, dan satu Jurus Empat melewatinya tanpa
+  mekaniknya pernah menyala sekali pun. Fase sekarang naik satu tingkat per giliran:
+  boss yang HP-nya anjlok tetap melewati fase-fase di antaranya. Ini keluarga yang sama
+  dengan bug "fase tidak pernah maju" di §9.4 — keduanya membuat mekanik yang sudah
+  ditulis tidak pernah dimainkan.
+
+#### Penyimpangan dari desain, dan alasannya
+
+- **§4.7 tidak ditulis ulang.** Godaannya besar: ganti `HP boss = 30 × off(L)` dengan
+  rumus yang memperhitungkan kekuatan skill dan buff. Tapi rumus itu akan punya enam
+  variabel dan tetap meleset, karena yang menentukan bukan stat melainkan *komposisi
+  barisan dan Kaca yang dipilih pemain*. Rumusnya dipertahankan sebagai titik awal untuk
+  musuh baru, dan angka akhirnya diturunkan dari pengukuran. `tools/playtest.py` adalah
+  pengganti rumus itu.
+- **Pita sasaran dikunci sebagai tes, nilainya tidak.** `tests/test_kalibrasi.py`
+  menjalankan pengukur yang sama pada dua seed per babak dan menggagalkan build kalau ada
+  angka yang keluar pita. Yang dijaga pitanya, bukan angka persisnya, supaya menambah area
+  atau musuh baru tetap bebas selama keseimbangannya ikut dijaga.
+- **Masih terbuka setelah Tahap 6**: Buruan 8 dari 11, side quest 7 dari 18, tiga dungeon
+  opsional, dan poles naskah menyeluruh. Semuanya isi, bukan keseimbangan.

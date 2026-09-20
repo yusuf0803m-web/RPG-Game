@@ -60,7 +60,13 @@ def choose_enemy_action(battle: Battle, actor: Combatant) -> Action:
     # sampai ke fase dua — afinitas, sifat, dan pola fase berikutnya tidak pernah menyala.
     phases = sorted(edef.phases, key=lambda p: -p.hp_above) if edef.phases else []
     if phases:
-        idx = next((i for i, p in enumerate(phases) if actor.hp_ratio > p.hp_above), len(phases) - 1)
+        tujuan = next((i for i, p in enumerate(phases) if actor.hp_ratio > p.hp_above), len(phases) - 1)
+        # Fase dilewati satu per satu, tidak melompat. Pita HP fase tengah bisa jauh
+        # lebih sempit daripada satu ledakan party — Sang Pelita Pertama memegang fase
+        # "Yang Ingin Dilupakan" hanya di 15-28% HP, dan satu Jurus Empat melewatinya
+        # utuh. Boss yang melompati fase kehilangan mekanik tanda tangannya tanpa
+        # pernah memakainya sekali pun, dan pemain tidak pernah tahu itu ada.
+        idx = min(tujuan, actor.phase_index + 1) if tujuan > actor.phase_index else tujuan
         if idx != actor.phase_index:
             actor.phase_index = idx
             actor.pattern_pos = 0

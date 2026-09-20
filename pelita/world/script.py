@@ -181,8 +181,8 @@ class ScriptRunner:
                     self.io.line(f" ** {st.data.items[iid].name} ×{n} diserahkan. **")
                 self.io.line("")
             elif "keping" in c:
-                st.keping = max(0, st.keping + int(c["keping"]))
-                self.io.line(f" ** Keping {'+' if c['keping'] >= 0 else ''}{c['keping']} (sekarang {st.keping}). **")
+                delta = st.ubah_keping(int(c["keping"]), "cerita")
+                self.io.line(f" ** Keping {'+' if delta >= 0 else ''}{delta} (sekarang {st.keping}). **")
                 self.io.line("")
             elif "xp" in c:
                 self.grant_xp(int(c["xp"]))

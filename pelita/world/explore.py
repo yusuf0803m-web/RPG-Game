@@ -259,7 +259,7 @@ class Game:
         assert r is not None
         if r.outcome == "menang":
             self.runner.grant_xp(r.xp)
-            st.keping += r.keping
+            st.ubah_keping(r.keping, "pertarungan")
             for d in r.drops:
                 st.add_item(d, 1)
             for kid in st.kaca_dipakai_selesai_bertarung():
@@ -549,7 +549,7 @@ class Game:
             if st.keping < harga:
                 self.io.line("  Keping tidak cukup.")
                 continue
-            st.keping -= harga
+            st.ubah_keping(-harga, "kaca")
             st.add_kaca(kid, 1)
             self.io.line(f"  Membeli {self.data.kaca[kid].name}. Keping: {st.keping}")
 
@@ -757,7 +757,7 @@ class Game:
     def beri_hadiah(self, hadiah: dict) -> None:
         st = self.state
         if hadiah.get("keping"):
-            st.keping += int(hadiah["keping"])
+            st.ubah_keping(int(hadiah["keping"]), "upah")
             self.io.line(f" ** +{hadiah['keping']} Keping (total {st.keping}). **")
         for iid, n in hadiah.get("item", {}).items():
             st.add_item(iid, int(n))
@@ -942,7 +942,7 @@ class Game:
             if st.keping < harga:
                 self.io.line("  Keping tidak cukup.")
                 continue
-            st.keping -= harga
+            st.ubah_keping(-harga, "toko")
             st.add_item(it.id, 1)
             self.io.line(f"  Membeli {it.name}. Keping: {st.keping}")
 
@@ -960,7 +960,7 @@ class Game:
                 return
             it = items[i]
             st.add_item(it.id, -1)
-            st.keping += int(it.price * HARGA_JUAL)
+            st.ubah_keping(int(it.price * HARGA_JUAL), "jual")
             self.io.line(f"  Menjual {it.name}. Keping: {st.keping}")
 
     def inn(self, price: int) -> None:
@@ -972,6 +972,6 @@ class Game:
         if price > 0 and not self.io.confirm(f"Menginap {price} Keping?",
                                             auto=True if self.auto_menus else None):
             return
-        st.keping -= price
+        st.ubah_keping(-price, "penginapan")
         st.heal_all()
         self.io.line("  Kalian beristirahat. HP dan MP pulih.")

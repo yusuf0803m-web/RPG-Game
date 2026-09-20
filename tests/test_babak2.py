@@ -1,23 +1,46 @@
 """Walkthrough otomatis Babak 2: dari Celah Angin sampai Nirmala jatuh.
 
-Melanjutkan ``tests/test_babak1.py``. Party dimulai dari keadaan akhir Babak 1
-(Lv 24, empat anggota + Rangga) supaya tesnya fokus ke Babak 2 dan tidak
-mengulang enam jam pertama tiap kali dijalankan.
+Melanjutkan ``tests/test_babak1.py``: keadaan awalnya benar-benar diambil dari
+walkthrough Babak 1, yang memang berhenti di Kaki Celah (lihat ``mulai_babak2``).
 """
 from __future__ import annotations
 
-import random
+import tempfile
 from pathlib import Path
 
 import pytest
 
 from pelita.loader import load_data
-from pelita.party import xp_to_reach
 from pelita.world.explore import Game
 from pelita.world.model import load_world
-from pelita.world.state import new_game
-from tests.test_babak1 import BerhentiUji, make_equipper
+from tests.test_babak1 import SEMUA, BerhentiUji, make_equipper, run_walkthrough
 from tests.walker import Walker
+
+#: Daftar belanja Babak 2, diulang di tiap hub. "#beli" melewati yang belum
+#: terjangkau dan tidak melakukan apa-apa untuk yang sudah dipakai, jadi mengulang
+#: daftarnya aman dan justru meniru pemain: yang tidak kebeli sekarang, dibeli nanti.
+BELANJA = [
+    "#beli:rimba:senjata:tongkat_kafilah", "#beli:sela:senjata:pedang_kafilah",
+    "#beli:lintang:senjata:lentera_kafilah", "#beli:bagas:senjata:peluncur_kafilah",
+    "#beli:rangga:senjata:tombak_kafilah", "#beli:ratih:senjata:kecapi_nyanyi",
+    "#beli:rimba:zirah:zirah_kafilah", "#beli:sela:zirah:zirah_kafilah",
+    "#beli:bagas:zirah:zirah_kafilah", "#beli:rangga:zirah:zirah_kafilah",
+    "#beli:kelana:zirah:zirah_kafilah",
+    "#beli:lintang:zirah:jubah_pendendang", "#beli:ratih:zirah:jubah_pendendang",
+    "#beli:rimba:aksesori:jimat_kafilah", "#beli:sela:aksesori:jimat_kafilah",
+    "#beli:rangga:aksesori:jimat_kafilah", "#beli:bagas:aksesori:lensa_juru_kaca",
+    "#beli:ratih:aksesori:anting_pendendang", "#beli:kelana:aksesori:sabuk_karat",
+]
+#: Soket senjata Babak 2, diisi setelah senjatanya benar-benar terpasang.
+SOKET = [
+    "#pasang:rimba:0:kaca_fajar", "#pasang:rimba:1:kaca_tajam",
+    "#pasang:sela:0:kaca_petir", "#pasang:sela:1:kaca_teguh",
+    "#pasang:lintang:0:kaca_es", "#pasang:lintang:1:kaca_napas",
+    "#pasang:bagas:0:kaca_kilat", "#pasang:bagas:1:kaca_licin",
+    "#pasang:rangga:0:kaca_bumi", "#pasang:rangga:1:kaca_teguh",
+    "#pasang:ratih:0:kaca_angin", "#pasang:ratih:1:kaca_napas",
+    "#pasang:kelana:0:kaca_kelam", "#pasang:kelana:1:kaca_tajam",
+]
 
 CELAH = [
     "Masuk ke celah",
@@ -36,7 +59,12 @@ DATARAN = [
     "Menyimpang ke reruntuhan", "Tungku yang masih utuh", "Kembali ke jalan abu",
     "Ikuti bekas roda",
     "Ke gerobak Nyai Rukmini", "Nyai Rukmini", "Kembali ke pos",
+    # Pasar Kafilah Sanggar — hub Babak 2.
+    *BELANJA, *SOKET,
+    "#stok:ramuan_sari:12", "#stok:cawan_nyala:8", "#stok:abu_fajar:5",
+    "#stok:penawar:5", "#stok:bekal_kemah:4", "#stok:suku_cadang:30",
     "Lentera raksasa",
+    "#tukar:bara", "#tukar:hp:rimba", "#tukar:soket:rimba",
     "Ke jalan utara",
     "Periksa bekas roda yang terputus",
     "Kembali ke jalan utara",
@@ -47,6 +75,8 @@ HUTAN = [
     "Lubang di pangkal pohon",
     "Lanjut ke desa",
     "Ke Balai Nyanyi", "Tetua Lelana", "Kembali ke desa",
+    # Penjaja Padasuara: Ratih baru bergabung di sini, jadi daftarnya diulang.
+    *BELANJA, *SOKET,
     "Ke tepi desa",
     "Ikuti jejak sepatu",
     "Lanjut ke jalan Wirasaba",
@@ -59,9 +89,15 @@ WIRASABA = [
     "Keluar ke jalan rumah", "Kembali ke pasar",
     "Ke jalan kaca",
     "Lentera penjaga",
+    *BELANJA, *SOKET,
+    "#stok:ramuan_sari:16", "#stok:kendi_nyala:5", "#stok:abu_fajar:6",
+    "#tukar:bara", "#tukar:hp:sela",
     "Ke alun-alun Suar",
     "Kembali ke jalan kaca",
     "Ke gudang di sisi utara",
+    # Senjata & zirah cerita dari peti Wirasaba: temuan dipakai, bukan disimpan.
+    "#pakai:bagas:senjata:peluncur_wirasaba", "#pakai:sela:senjata:pedang_wirasaba",
+    "#pakai:sela:zirah:zirah_kaca_wirasaba",
     # Setelah Hampa Berzirah jatuh, pemain memilih secara eksplisit (GAME_DESIGN §6.2 no. 12).
     # Jalur "Habisi dia" diuji terpisah di tests/test_babak3.py.
     "Turunkan pedangmu",
@@ -73,6 +109,12 @@ GARAM = [
     "Menyeberang ke ladang garam",
     "Ke bangkai kapal", "Palka yang masih tertutup", "Kembali ke ladang",
     "Ke dermaga rakit",
+    # Kelana bergabung di Danau Garam; daftar belanja diulang untuknya.
+    *BELANJA, *SOKET,
+    "#pakai:lintang:senjata:lentera_garam", "#pakai:kelana:senjata:pedang_ingatan",
+    "#pakai:kelana:zirah:zirah_kaca_wirasaba",
+    "#stok:ramuan_sari:20", "#stok:abu_fajar:8", "#stok:bekal_kemah:6",
+    "#tukar:bara", "#tukar:hp:lintang", "#tukar:soket:sela",
     "Alur garam di depan rakit",
     "Lentera penjaga",
     "Dorong rakit ke menara",
@@ -99,30 +141,17 @@ SEMUA_BABAK2 = CELAH + DATARAN + HUTAN + WIRASABA + GARAM + BENTENG
 
 
 def mulai_babak2(data, seed):
-    """State seperti tepat setelah Babak 1: party Lv 24 berdiri di Kaki Celah."""
-    st = new_game(data)
-    st.rng = random.Random(seed)
-    st.bara_max = 5
-    st.flags.update({"bara", "boss_hutan_kalah", "boss_katak_kalah", "boss_ular_kalah",
-                     "boss_rangga_kalah", "boss_penambang_kalah", "boss_penjaga_kalah",
-                     "babak_1_selesai", "guntur_hilang", "desa_epilog"})
-    st.party[0].level = 24
-    st.party[0].xp = xp_to_reach(24)          # tanpa ini Rimba tertinggal dari yang lain
-    st.party[0].equipment.update({"senjata": "tongkat_guntur", "zirah": "jubah_penyala"})
-    for cid, senjata, zirah in (("sela", "pedang_sumpah", "zirah_kaca_lapis"),
-                                ("lintang", "lentera_kaca", "zirah_rantai"),
-                                ("bagas", "peluncur_kaca", "zirah_rantai")):
-        h = st.join(cid, 24)
-        h.equipment.update({"senjata": senjata, "zirah": zirah})
-        h.restore()
-    st.party[0].restore()
-    st.keping = 18000
-    for iid, n in (("ramuan_sari", 10), ("cawan_nyala", 8), ("abu_fajar", 5),
-                   ("penawar", 5), ("bekal_kemah", 3), ("suku_cadang", 20),
-                   ("ramuan_daun", 5), ("minyak_lentera", 10)):
-        st.add_item(iid, n)
-    st.area_id, st.room_id = "celah_angin", "kaki_celah"
-    st.wire()
+    """State persis seperti yang ditinggalkan walkthrough Babak 1 di Kaki Celah.
+
+    Dulu keadaan ini ditulis tangan (Lv 24, perlengkapan pilihan, 18.000 Keping).
+    Angka tulis-tangan itu menyimpang begitu Babak 1 dikalibrasi ulang, dan yang
+    diuji Babak 2 lalu jadi party yang tidak pernah benar-benar ada. Sekarang
+    serah-terimanya dijalankan: Babak 1 memang berhenti tepat di Kaki Celah, dan
+    seluruhnya hanya butuh sepersepuluh detik (GAME_DESIGN §9.5).
+    """
+    res, st, _ = run_walkthrough(SEMUA, seed, Path(tempfile.mkdtemp()))
+    assert res == "berhenti", f"Babak 1 seed {seed} tidak sampai ke batas babak: {res}"
+    assert (st.area_id, st.room_id) == ("celah_angin", "kaki_celah")
     return st
 
 

@@ -40,6 +40,7 @@ class GameState:
     kenangan: set[str] = field(default_factory=set)           # adegan Kenangan yang sudah dilihat
     buruan: dict[str, str] = field(default_factory=dict)      # id buruan -> "aktif" | "selesai"
     arena: int = 0                                            # tingkat Arena tertinggi yang ditamatkan
+    kas: dict[str, int] = field(default_factory=dict)         # buku kas Keping per sumber (kalibrasi §9.5)
     steps: int = 0
     steps_since_encounter: int = 99
     lentera_steps: int = 0
@@ -125,6 +126,20 @@ class GameState:
         for h in self.party:
             if h.hp <= 0:
                 h.hp = 1
+
+    # -- Keping -------------------------------------------------------------
+    def ubah_keping(self, delta: int, sumber: str) -> int:
+        """Tambah/kurangi Keping dan catat sumbernya di buku kas.
+
+        Semua perubahan Keping lewat sini, supaya ``tools/playtest.py`` bisa melaporkan
+        dari mana uang datang dan ke mana perginya (GAME_DESIGN §9.5). Saldo tidak
+        pernah negatif; yang dicatat adalah perubahan yang benar-benar terjadi.
+        """
+        delta = max(delta, -self.keping)
+        self.keping += delta
+        if delta:
+            self.kas[sumber] = self.kas.get(sumber, 0) + delta
+        return delta
 
     # -- inventori ----------------------------------------------------------
     def add_item(self, iid: str, n: int = 1) -> None:
@@ -245,6 +260,7 @@ class GameState:
             "party": [h.to_dict() for h in self.party],
             "inventory": dict(self.inventory),
             "keping": self.keping,
+            "kas": dict(self.kas),
             "flags": sorted(self.flags),
             "quests": dict(self.quests),
             "area": self.area_id,
@@ -269,6 +285,7 @@ class GameState:
         st.party = [Hero.from_dict(data, h) for h in d.get("party", [])]
         st.inventory = {k: int(v) for k, v in d.get("inventory", {}).items()}
         st.keping = int(d.get("keping", 0))
+        st.kas = {k: int(v) for k, v in d.get("kas", {}).items()}
         st.flags = set(d.get("flags", []))
         st.quests = dict(d.get("quests", {}))
         st.area_id = d.get("area", "")
@@ -334,7 +351,7 @@ def new_game(data: GameData) -> GameState:
     st.party = [rimba]
     st.wire()
     st.inventory = {"ramuan_daun": 3, "minyak_lentera": 2}
-    st.keping = 30
+    st.ubah_keping(30, "awal")
     st.bara_max = 0
     return st
 

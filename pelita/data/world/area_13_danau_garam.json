@@ -321,7 +321,7 @@
   "siapkan_rakit": [
    {
     "if": [
-     "has:ramuan_daun"
+     "has:ramuan_daun*2"
     ],
     "then": [
      {
@@ -345,7 +345,82 @@
     ]
    },
    {
-    "text": "Alur di bawah lambung rakit sudah mengkristal rapat. Kalian butuh cairan untuk melarutkannya — air ramuan pun cukup, kalau rela."
+    "if": [
+     "has:ramuan_akar*2"
+    ],
+    "then": [
+     {
+      "text": "Kalian menuang air ramuan ke sepanjang alur. Kristal garam di bawah lambung larut, berdesis pelan, dan rakit itu bergeser satu jengkal dengan mudahnya."
+     },
+     {
+      "take": {
+       "ramuan_akar": 2
+      }
+     },
+     {
+      "set": "rakit_siap"
+     },
+     {
+      "say": "Bagas",
+      "text": "Dua ramuan untuk satu menara. Kafilah bilang ini namanya harga bagus."
+     },
+     {
+      "end": true
+     }
+    ]
+   },
+   {
+    "if": [
+     "has:ramuan_sari*2"
+    ],
+    "then": [
+     {
+      "text": "Kalian menuang air ramuan ke sepanjang alur. Kristal garam di bawah lambung larut, berdesis pelan, dan rakit itu bergeser satu jengkal dengan mudahnya."
+     },
+     {
+      "take": {
+       "ramuan_sari": 2
+      }
+     },
+     {
+      "set": "rakit_siap"
+     },
+     {
+      "say": "Bagas",
+      "text": "Dua ramuan untuk satu menara. Kafilah bilang ini namanya harga bagus."
+     },
+     {
+      "end": true
+     }
+    ]
+   },
+   {
+    "if": [
+     "has:ramuan_laut*2"
+    ],
+    "then": [
+     {
+      "text": "Kalian menuang air ramuan ke sepanjang alur. Kristal garam di bawah lambung larut, berdesis pelan, dan rakit itu bergeser satu jengkal dengan mudahnya."
+     },
+     {
+      "take": {
+       "ramuan_laut": 2
+      }
+     },
+     {
+      "set": "rakit_siap"
+     },
+     {
+      "say": "Bagas",
+      "text": "Dua ramuan untuk satu menara. Kafilah bilang ini namanya harga bagus."
+     },
+     {
+      "end": true
+     }
+    ]
+   },
+   {
+    "text": "Alur di bawah lambung rakit sudah mengkristal rapat. Kalian butuh cairan untuk melarutkannya — air ramuan pun cukup, kalau rela. (Perlu dua botol ramuan penyembuh jenis apa pun.)"
    }
   ],
   "masuk_menara_terapung": [

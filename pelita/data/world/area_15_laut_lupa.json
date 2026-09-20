@@ -233,7 +233,7 @@
      "name": "Kotak seserahan",
      "script": "peti_pernikahan",
      "if": [
-      "!peti_pernikahan_diambil"
+      "!peti_pulau_pernikahan_diambil"
      ]
     }
    ]
@@ -269,7 +269,7 @@
      "name": "Ransel yang tersandar di dinding parit",
      "script": "peti_perang",
      "if": [
-      "!peti_perang_diambil"
+      "!peti_pulau_perang_diambil"
      ]
     }
    ]
@@ -810,7 +810,7 @@
     }
    },
    {
-    "set": "peti_pernikahan_diambil"
+    "set": "peti_pulau_pernikahan_diambil"
    }
   ],
   "masuk_perang": [
@@ -920,7 +920,7 @@
     }
    },
    {
-    "set": "peti_perang_diambil"
+    "set": "peti_pulau_perang_diambil"
    }
   ],
   "masuk_pasar": [
