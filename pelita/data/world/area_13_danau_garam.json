@@ -200,6 +200,15 @@
      "if": [
       "!buku_dibaca"
      ]
+    },
+    {
+     "id": "rak_kosong",
+     "name": "Rak yang satu bukunya hilang",
+     "script": "sq_buku",
+     "if": [
+      "buku_dibaca",
+      "!sq_buku_selesai"
+     ]
     }
    ]
   },
@@ -730,6 +739,73 @@
       "give": {
        "serpihan_ingatan": 1
       }
+     }
+    ]
+   }
+  ],
+  "sq_buku": [
+   {
+    "if": [
+     "!sq_buku_aktif"
+    ],
+    "then": [
+     {
+      "text": "Di rak tahun keempat ratus, satu tempat kosong. Bukan diambil buru-buru: debu di sekelilingnya dirapikan, dan buku di kiri-kanannya digeser supaya kekosongannya tidak terlalu kelihatan."
+     },
+     {
+      "say": "Rangga",
+      "text": "Yang menyembunyikan ini punya waktu, dan takut ketahuan."
+     },
+     {
+      "say": "Kelana",
+      "text": "Dan tidak membakarnya. (Ia menyentuh celah itu.) Orang yang mau menghilangkan sesuatu di gedung yang penuh tungku akan membakarnya. Ini disembunyikan supaya tetap ada."
+     },
+     {
+      "say": "Bagas",
+      "text": "Berarti masih di dalam menara ini."
+     },
+     {
+      "set": "sq_buku_aktif"
+     },
+     {
+      "quest": "buku_tak_dibakar",
+      "state": "aktif"
+     }
+    ],
+    "else": [
+     {
+      "text": "Bagas menemukannya di tempat yang paling membosankan: di bawah papan lantai di belakang tangga, dibungkus kain minyak, di tempat yang harus dilewati siapa pun yang naik-turun tiap hari.\n\nIsinya bukan pembukuan panen. Isinya surat — salinan surat yang tidak pernah dikirim, ditulis tangan yang sama selama sebelas tahun, semuanya ditujukan ke Juru Nyala kepala, dan semuanya menanyakan hal yang sama dengan kata yang makin sedikit.\n\nSurat pertama tiga halaman. Surat terakhir satu baris: \"Kabutnya naik lagi tahun ini. Tolong dijawab.\""
+     },
+     {
+      "say": "Rangga",
+      "text": "Sebelas tahun bertanya, dan tidak sekali pun berhenti bekerja."
+     },
+     {
+      "say": "Sela",
+      "text": "Itu yang paling sering, Kapten. Bukan yang menolak, bukan yang setuju. Yang bertanya terus sambil tetap mengangkat gerobak."
+     },
+     {
+      "say": "Kelana",
+      "text": "Nirmala akan bilang ini bukti mereka jujur."
+     },
+     {
+      "say": "Rangga",
+      "text": "Nirmala akan bilang begitu, dan ia tidak akan sepenuhnya salah, dan itu sebabnya simpan bukunya. Bawa ke Sumur. Kalau yang di sana menanyakan kenapa kita tidak mau melanjutkan, ini jawabannya: karena ada yang bertanya sebelas tahun dan tidak ada yang menjawab."
+     },
+     {
+      "set": "sq_buku_selesai"
+     },
+     {
+      "quest": "buku_tak_dibakar",
+      "state": "selesai"
+     },
+     {
+      "give": {
+       "serpihan_ingatan": 2
+      }
+     },
+     {
+      "keping": 3200
      }
     ]
    }

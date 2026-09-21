@@ -115,7 +115,17 @@
      "to": "rumah_bagas"
     }
    ],
-   "latar": "wirasaba/distrik_pasar"
+   "latar": "wirasaba/distrik_pasar",
+   "objects": [
+    {
+     "id": "rumah_sumirat",
+     "name": "Rumah dengan meja makan yang tertata",
+     "script": "sq_sumirat",
+     "if": [
+      "!sq_sumirat_selesai"
+     ]
+    }
+   ]
   },
   "rumah_bagas": {
    "name": "Rumah Ketiga dari Ujung",
@@ -165,6 +175,15 @@
      "id": "lentera_kaca",
      "name": "Lentera penjaga (simpan & istirahat)",
      "script": "lentera_save"
+    },
+    {
+     "id": "dinding_runtuh",
+     "name": "Dinding kaca yang sudah runtuh",
+     "script": "sq_kaca_tua",
+     "if": [
+      "sq_darma_aktif",
+      "!has:kaca_wirasaba_tua"
+     ]
     }
    ],
    "on_enter": "sergap_jalan_kaca"
@@ -774,6 +793,125 @@
       "give": {
        "serpihan_ingatan": 1
       }
+     }
+    ]
+   }
+  ],
+  "sq_kaca_tua": [
+   {
+    "text": "Dinding yang runtuh ini bukan rumah — ia dinding pembatas jalan, dan pecahannya sudah lama tidak dipijak siapa pun. Bagas memilih satu keping seukuran telapak dan mengetuknya dulu sebelum mengambilnya."
+   },
+   {
+    "give": {
+     "kaca_wirasaba_tua": 1
+    }
+   },
+   {
+    "quest": "pesanan_darma",
+    "state": "ketemu"
+   }
+  ],
+  "sq_sumirat": [
+   {
+    "if": [
+     "!sq_sumirat_aktif"
+    ],
+    "then": [
+     {
+      "text": "Rumah ini berbeda dari tetangganya: mejanya tertata. Enam piring, enam gelas, satu panci di tengah yang masih mengepul meski isinya kaca.\n\nEnam Hampa duduk mengelilinginya. Mereka mengangkat sendok, menurunkannya, mengangkatnya lagi. Kursi ketujuh kosong dan piringnya bersih — belum dipakai."
+     },
+     {
+      "say": "Bagas",
+      "text": "Sumirat. (Ia membaca papan di pintu.) Aku kenal namanya. Tukang atap, kerja sama bapakku."
+     },
+     {
+      "say": "Lintang",
+      "text": "Mereka menunggu yang ketujuh."
+     },
+     {
+      "say": "Sela",
+      "text": "Bagaimana kau tahu?"
+     },
+     {
+      "say": "Lintang",
+      "text": "Karena tidak ada satu pun dari mereka yang mulai makan. Delapan ratus tahun, dan tidak ada yang mulai duluan."
+     },
+     {
+      "say": "Ratih",
+      "text": "Yang ketujuh tidak pulang hari itu."
+     },
+     {
+      "say": "Rangga",
+      "text": "Atau pulang, dan dipanen duluan."
+     },
+     {
+      "say": "Bagas",
+      "text": "(Ia sudah berjalan ke dapur.) Sudah, cukup ditonton. Ada yang bisa kita lakukan atau tidak?"
+     },
+     {
+      "set": "sq_sumirat_aktif"
+     },
+     {
+      "quest": "hari_terakhir_sumirat",
+      "state": "aktif"
+     }
+    ],
+    "else": [
+     {
+      "if": [
+       "quest:keluarga_bagas=selesai"
+      ],
+      "then": [
+       {
+        "text": "Kalian kembali ke rumah itu sesudah gudang panen dibuka. Kursi ketujuh masih kosong — tapi di gudang tadi ada satu Hampa yang berdiri lebih lama dari yang lain di pintu, menghadap arah jalan rumah-rumah."
+       },
+       {
+        "say": "Bagas",
+        "text": "Aku tidak bisa menyuruhnya jalan. Mereka tidak bisa disuruh."
+       },
+       {
+        "say": "Ratih",
+        "text": "Jangan disuruh. Dipanggil."
+       },
+       {
+        "text": "Ratih berdiri di ambang pintu rumah Sumirat dan menyanyikan sesuatu yang sangat biasa: lagu memanggil makan. Empat kata, diulang, dengan nada yang sama di seluruh dunia.\n\nHampa dari gudang itu sampai di pintu setelah waktu yang cukup lama untuk membuat semua orang berhenti bicara. Ia duduk di kursi ketujuh."
+       },
+       {
+        "text": "Enam sendok terangkat. Kali ini turun ke piring."
+       },
+       {
+        "say": "Bagas",
+        "text": "(Suaranya tidak stabil.) Itu tidak mengembalikan mereka."
+       },
+       {
+        "say": "Ratih",
+        "text": "Tidak. Itu cuma menyelesaikan makan malamnya."
+       },
+       {
+        "set": "sq_sumirat_selesai"
+       },
+       {
+        "quest": "hari_terakhir_sumirat",
+        "state": "selesai"
+       },
+       {
+        "give": {
+         "serpihan_ingatan": 2
+        }
+       },
+       {
+        "keping": 3000
+       },
+       {
+        "ilustrasi": "events/kursi_ketujuh",
+        "teks": "Enam sendok terangkat, dan kali ini turun ke piring."
+       }
+      ],
+      "else": [
+       {
+        "text": "Enam sendok terangkat dan turun, terangkat dan turun. Kursi ketujuh masih kosong. Yang ketujuh tidak ada di rumah ini — dan gerobak panen Ordo ada di gudang sisi utara."
+       }
+      ]
      }
     ]
    }

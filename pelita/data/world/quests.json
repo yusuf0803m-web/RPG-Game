@@ -117,5 +117,60 @@
    "ketemu": "Kotak hijau Pak Tirta ada di Lorong Tengah Tambang, terjepit di bawah balok tumbang. Ia mendorongnya keluar sebelum baloknya jatuh.",
    "selesai": "Enting membawa kotak bapaknya pulang, supaya ibunya tidak bisa bilang ia bohong."
   }
+ },
+ "panji_ditinggal": {
+  "name": "Panji yang Ditinggal",
+  "states": {
+   "selesai": "Panji Regu Celah, dua puluh dua orang, tahun ketiga. Delapan pulang, dan Adipati memutuskan angka itu lebih baik tidak ada."
+  }
+ },
+ "roda_keempat": {
+  "name": "Roda Keempat",
+  "states": {
+   "aktif": "Naf roda keempat gerobak lentera Nyai Rukmini retak. Yang seukuran itu cuma ada di reruntuhan tanpa nama di selatan.",
+   "ketemu": "Naf besi ditemukan di bekas bengkel kota yang tidak sempat diberi nama. Bawa kembali ke gerobak.",
+   "selesai": "Rodanya berputar lagi, longgar seperempat supaya abunya tidak macet di tengah jalan."
+  }
+ },
+ "sumur_asin": {
+  "name": "Sumur yang Asin",
+  "states": {
+   "aktif": "Sumur di Lingkaran Garam berubah asin empat bulan lalu, dan kafilah berhenti singgah. Bagas mau turun melihat.",
+   "selesai": "Pecahan Kaca Suar yang jatuh dari gerobak Ordo mengeringkan jalur airnya dari dalam. Diangkat; tiga hari kemudian airnya tawar."
+  }
+ },
+ "murid_klawu": {
+  "name": "Murid yang Tidak Bisa Diam",
+  "states": {
+   "aktif": "Klawu dilarang ikut latihan karena suaranya terlalu keras — persis alasan Ratih dulu pergi. Ia masuk lewat pintu depan.",
+   "selesai": "Lelana menyuruhnya duduk di barisan depan: kalau sudah terlanjur keras, mending kedengarannya jelas sekalian."
+  }
+ },
+ "pesanan_darma": {
+  "name": "Pesanan Mpu Darma",
+  "states": {
+   "aktif": "Kaca kafilah terlalu muda: dua belas percobaan Mpu Darma retak di sumbu yang sama. Ia butuh satu keping kaca Wirasaba tua — dari dinding yang sudah runtuh, bukan yang masih berdiri.",
+   "selesai": "Delapan abad, dan bunyinya pendek: tidak ada lagi yang bergerak di dalamnya. Potongannya tidak retak."
+  }
+ },
+ "hari_terakhir_sumirat": {
+  "name": "Hari Terakhir Keluarga Sumirat",
+  "states": {
+   "aktif": "Enam Hampa keluarga Sumirat mengangkat sendok dan menurunkannya, delapan ratus tahun, tanpa ada yang mulai duluan. Kursi ketujuh kosong.",
+   "selesai": "Yang ketujuh dipanggil dari gudang panen dengan lagu memanggil makan, dan duduk. Itu tidak mengembalikan mereka; itu cuma menyelesaikan makan malamnya."
+  }
+ },
+ "buku_tak_dibakar": {
+  "name": "Buku yang Tidak Dibakar",
+  "states": {
+   "aktif": "Satu buku hilang dari rak tahun keempat ratus, dan kekosongannya dirapikan. Yang menyembunyikannya tidak membakarnya — berarti ia ingin bukunya tetap ada.",
+   "selesai": "Sebelas tahun surat yang tidak pernah dikirim, dari orang yang terus bertanya sambil terus bekerja. Yang terakhir satu baris: \"Kabutnya naik lagi tahun ini. Tolong dijawab.\""
+  }
+ },
+ "kotak_pribadi": {
+  "name": "Kotak Pribadi",
+  "states": {
+   "selesai": "Satu kotak kecil per bilik asrama Benteng, tidak dikunci, kebanyakan milik orang yang lebih muda dari Rimba. Batu sungai, gigi susu, sisir patah, tali bersimpul tujuh. Tidak ada yang diambil, dan semua tutupnya ditutup lagi."
+  }
  }
 }

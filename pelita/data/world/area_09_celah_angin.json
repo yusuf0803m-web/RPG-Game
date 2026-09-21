@@ -151,6 +151,15 @@
      "if": [
       "!peti_ceruk_diambil"
      ]
+    },
+    {
+     "id": "panji_lama",
+     "name": "Kain lapuk yang tersangkut di celah batu",
+     "script": "sq_panji",
+     "if": [
+      "party:rangga",
+      "!sq_panji_selesai"
+     ]
     }
    ]
   },
@@ -628,6 +637,81 @@
       "win": []
      }
     ]
+   }
+  ],
+  "sq_panji": [
+   {
+    "text": "Kain, dulu biru, sekarang warna batu. Tersangkut di celah dan sudah lama sekali di situ. Waktu ditarik keluar, kainnya utuh — orang yang menyangkutkannya memilih celah yang terlindung angin."
+   },
+   {
+    "say": "Rangga",
+    "text": "(Ia tidak mengambilnya.) Panji Pengawal Mahkota. Regu Celah, dua puluh dua orang, tahun ketiga."
+   },
+   {
+    "say": "Sela",
+    "text": "Regu Celah tidak pernah pulang."
+   },
+   {
+    "say": "Rangga",
+    "text": "Regu Celah pulang delapan orang, Sela, dan Adipati memutuskan angka itu lebih baik tidak ada. (Ia akhirnya mengambil kainnya.) Jadi kami dibubarkan, dan panjinya disangkutkan di sini oleh salah satu dari delapan itu, supaya tetap ada di tempat yang benar meski tidak ada yang boleh membawanya turun."
+   },
+   {
+    "say": "Rimba",
+    "text": "Bapak salah satu dari delapan?"
+   },
+   {
+    "say": "Rangga",
+    "text": "Aku salah satu dari delapan."
+   },
+   {
+    "choice": [
+     {
+      "text": "\"Bawa turun, Kapten.\"",
+      "then": [
+       {
+        "say": "Rangga",
+        "text": "(Lama.) ...Baik."
+       },
+       {
+        "text": "Ia melipat kain itu sekali, tidak rapi, dan memasukkannya ke dalam bajunya — bukan ke tiang panjinya. Di situ letaknya lebih dekat ke tulang rusuk daripada ke bendera."
+       },
+       {
+        "say": "Rangga",
+        "text": "Dua puluh dua nama. Kalau nanti ada kesempatan menuliskannya di tempat yang tidak dibongkar orang, aku mau menulisnya."
+       },
+       {
+        "set": "sq_panji_bawa"
+       }
+      ]
+     },
+     {
+      "text": "\"Itu keputusan Kapten.\"",
+      "then": [
+       {
+        "say": "Rangga",
+        "text": "Ya. (Ia memegangnya lama, lalu menyangkutkannya kembali — di celah yang sama, dengan lipatan yang sama.) Bukan karena aku tidak mau. Karena empat belas orang tetap di sini, dan kalau panjinya ikut turun, tidak ada apa-apa lagi yang menandai bahwa ini bukan cuma batu."
+       },
+       {
+        "set": "sq_panji_tinggal"
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "set": "sq_panji_selesai"
+   },
+   {
+    "quest": "panji_ditinggal",
+    "state": "selesai"
+   },
+   {
+    "give": {
+     "serpihan_ingatan": 1
+    }
+   },
+   {
+    "keping": 1200
    }
   ]
  }

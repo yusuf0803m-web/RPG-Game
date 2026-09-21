@@ -153,5 +153,11 @@
                          "description": "Lensa yang dipasang di rongga Suar yang tidak pernah dibangun. Upah Buruan; tidak dijual."},
 
   "kotak_juru_ukur":    {"name": "Kotak Juru Ukur", "kind": "kunci", "price": 0,
-                         "description": "Kotak kayu hijau bertuliskan TIRTA — JURU UKUR. Isinya meteran lipat, pensil tukang, dan kaca pembesar murah."}
+                         "description": "Kotak kayu hijau bertuliskan TIRTA — JURU UKUR. Isinya meteran lipat, pensil tukang, dan kaca pembesar murah."},
+
+  "naf_besi":           {"name": "Naf Besi", "kind": "kunci", "price": 0,
+                         "description": "Bantalan besi pusat roda, seukuran kepalan, masih bulat. Diambil dari bekas bengkel kota yang tidak sempat diberi nama."},
+
+  "kaca_wirasaba_tua":  {"name": "Keping Kaca Wirasaba", "kind": "kunci", "price": 0,
+                         "description": "Sekeping kaca ingatan berumur delapan abad, diambil dari dinding pembatas jalan yang sudah runtuh. Bunyinya pendek: tidak ada lagi yang bergerak di dalamnya."}
 }

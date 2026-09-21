@@ -108,6 +108,15 @@
      "if": [
       "!tungku_diperiksa"
      ]
+    },
+    {
+     "id": "naf_besi",
+     "name": "Naf besi di antara reruntuhan",
+     "script": "sq_naf",
+     "if": [
+      "!has:naf_besi",
+      "!sq_roda_selesai"
+     ]
     }
    ]
   },
@@ -166,6 +175,14 @@
      "name": "Papan Buruan Kafilah",
      "verb": "Baca",
      "script": "papan_sanggar"
+    },
+    {
+     "id": "pesanan_darma",
+     "name": "Meja kerja Mpu Darma yang berantakan",
+     "script": "sq_darma",
+     "if": [
+      "!sq_darma_selesai"
+     ]
     }
    ],
    "latar_varian": [
@@ -194,6 +211,16 @@
      "name": "Nyai Rukmini",
      "script": "bicara_rukmini"
     }
+   ],
+   "objects": [
+    {
+     "id": "naf_roda",
+     "name": "Roda keempat gerobak lentera yang dibongkar",
+     "script": "sq_roda",
+     "if": [
+      "!sq_roda_selesai"
+     ]
+    }
    ]
   },
   "lingkaran_garam": {
@@ -213,7 +240,17 @@
      "script": "arena_sanggar"
     }
    ],
-   "latar": "dataran_abu/pos_sanggar"
+   "latar": "dataran_abu/pos_sanggar",
+   "objects": [
+    {
+     "id": "sumur_asin",
+     "name": "Sumur di tengah lingkaran garam",
+     "script": "sq_sumur",
+     "if": [
+      "!sq_sumur_selesai"
+     ]
+    }
+   ]
   },
   "jalan_utara": {
    "name": "Jalan Utara",
@@ -631,6 +668,235 @@
        "kalajengking_abu"
       ],
       "win": []
+     }
+    ]
+   }
+  ],
+  "sq_roda": [
+   {
+    "if": [
+     "!sq_roda_aktif"
+    ],
+    "then": [
+     {
+      "text": "Roda keempat gerobak lentera itu dicopot dan disandarkan. Jari-jarinya utuh; nafnya — bantalan besi di pusat roda — retak melingkar."
+     },
+     {
+      "say": "Rukmini",
+      "text": "Tiga roda masih bisa jalan kalau bebannya dikurangi. Yang dikurangi air. (Ia bicara sambil terus menganyam.) Kafilah ini tiga puluh satu orang, Nak, dan sebelas di antaranya belum sepuluh tahun."
+     },
+     {
+      "say": "Bagas",
+      "text": "Nafnya saja yang rusak. Rodanya tidak perlu diganti."
+     },
+     {
+      "say": "Rukmini",
+      "text": "Nah, ini yang kucari. Naf besi seukuran itu cuma ada di kota-kota yang sudah tidak ada. Reruntuhan tanpa nama di selatan, kalau kau tidak takut."
+     },
+     {
+      "set": "sq_roda_aktif"
+     },
+     {
+      "quest": "roda_keempat",
+      "state": "aktif"
+     }
+    ],
+    "else": [
+     {
+      "if": [
+       "has:naf_besi"
+      ],
+      "then": [
+       {
+        "take": {
+         "naf_besi": 1
+        }
+       },
+       {
+        "text": "Bagas memasangnya sendiri dan tidak mengizinkan siapa pun membantu, lalu memutar rodanya dua kali sambil mendengarkan."
+       },
+       {
+        "say": "Bagas",
+        "text": "Longgar seperempat. Sengaja. Kalau terlalu rapat, abunya masuk dan macet di tengah jalan."
+       },
+       {
+        "say": "Rukmini",
+        "text": "Kau belajar di mana?"
+       },
+       {
+        "say": "Bagas",
+        "text": "Sendirian, dua belas tahun, di dalam tambang. (Ia mengelap tangannya.) Tidak ada yang mengajari. Cuma ada banyak sekali barang rusak dan tidak ada tempat untuk pergi."
+       },
+       {
+        "say": "Rukmini",
+        "text": "(Ia berhenti menganyam.) Duduk sini sebentar, Nak."
+       },
+       {
+        "set": "sq_roda_selesai"
+       },
+       {
+        "quest": "roda_keempat",
+        "state": "selesai"
+       },
+       {
+        "give": {
+         "serpihan_ingatan": 1,
+         "bekal_kemah": 3
+        }
+       },
+       {
+        "keping": 2400
+       }
+      ],
+      "else": [
+       {
+        "text": "Roda keempat masih disandarkan. Nafnya perlu diganti; yang seukuran itu cuma ada di reruntuhan."
+       }
+      ]
+     }
+    ]
+   }
+  ],
+  "sq_naf": [
+   {
+    "text": "Di bawah dinding setinggi lutut, di tempat yang dulu bengkel: tumpukan besi yang sudah kehilangan bentuk aslinya. Di antaranya, satu naf roda seukuran kepalan, masih bulat."
+   },
+   {
+    "say": "Sela",
+    "text": "Kota ini tidak dibakar Ordo."
+   },
+   {
+    "say": "Rangga",
+    "text": "Tidak. Ini terbakar waktu Kabut datang, sebelum ada yang mengerti apa itu. (Ia menyentuh dinding.) Tidak ada namanya karena tidak ada yang sempat keluar untuk menyebutkannya."
+   },
+   {
+    "give": {
+     "naf_besi": 1
+    }
+   },
+   {
+    "if": [
+     "sq_roda_aktif"
+    ],
+    "then": [
+     {
+      "quest": "roda_keempat",
+      "state": "ketemu"
+     }
+    ]
+   }
+  ],
+  "sq_sumur": [
+   {
+    "if": [
+     "!sq_sumur_aktif"
+    ],
+    "then": [
+     {
+      "text": "Sumur batu di tengah lingkaran. Timbanya masih ada dan talinya masih baru — seseorang masih memakainya. Airnya naik jernih, dan begitu menyentuh lidah, asin sekali."
+     },
+     {
+      "say": "Penimba",
+      "text": "(Perempuan muda, dengan dua jeriken kosong.) Sudah empat bulan begini. Dulu tawar. Kafilah berhenti singgah, dan kalau kafilah tidak singgah, kami tidak punya apa-apa untuk ditukar."
+     },
+     {
+      "say": "Bagas",
+      "text": "Boleh kulihat ke bawah?"
+     },
+     {
+      "set": "sq_sumur_aktif"
+     },
+     {
+      "quest": "sumur_asin",
+      "state": "aktif"
+     }
+    ],
+    "else": [
+     {
+      "text": "Bagas turun dengan tali dan lampu, lama sekali, lalu naik lagi sambil membawa sesuatu yang dibungkus kainnya."
+     },
+     {
+      "say": "Bagas",
+      "text": "Ini bukan garam alam. (Ia membuka kainnya: pecahan kaca sebesar telapak, putih dan berbutir.) Kaca Suar. Pecahan, sudah lama, tersangkut di celah air. Kaca Suar menarik air keluar dari apa pun di dekatnya — makanya gudang Ordo selalu kering. Empat bulan ia duduk di jalur air sumur ini dan mengeringkan tanahnya dari dalam."
+     },
+     {
+      "say": "Ratih",
+      "text": "Dari mana pecahannya?"
+     },
+     {
+      "say": "Rangga",
+      "text": "Dari gerobak yang lewat. (Ia melihat ke jalan utara.) Mereka mengangkutnya lewat sini tiap musim, dan sesekali ada yang jatuh, dan tidak ada yang berhenti untuk memungutnya."
+     },
+     {
+      "text": "Perempuan itu menimba lagi tiga hari kemudian, kata kafilah, dan airnya tawar."
+     },
+     {
+      "set": "sq_sumur_selesai"
+     },
+     {
+      "quest": "sumur_asin",
+      "state": "selesai"
+     },
+     {
+      "give": {
+       "serpihan_ingatan": 1
+      }
+     },
+     {
+      "kaca": {
+       "kaca_kikir": 1
+      }
+     },
+     {
+      "keping": 2000
+     }
+    ]
+   }
+  ],
+  "sq_darma": [
+   {
+    "if": [
+     "!sq_darma_aktif"
+    ],
+    "then": [
+     {
+      "text": "Meja Mpu Darma penuh percobaan yang gagal: dua belas keping kaca yang semuanya retak di tempat yang sama, disusun berjajar seperti bukti."
+     },
+     {
+      "say": "Darma",
+      "text": "Retak di sumbu yang sama, dua belas kali. Berarti bukan salah tanganku, berarti salah kacanya. Kaca kafilah ini terlalu muda."
+     },
+     {
+      "say": "Bagas",
+      "text": "Butuh kaca tambang tua."
+     },
+     {
+      "say": "Darma",
+      "text": "Butuh kaca Wirasaba. Gedung-gedung di sana kaca ingatan semua, dan yang sudah delapan abad berdiri itu sudah selesai bergerak. (Ia mengangkat bahu.) Aku tidak akan ke sana. Kalau kalian ke sana dan sempat, ambilkan satu keping dari dinding yang sudah runtuh. Jangan dari yang masih berdiri."
+     },
+     {
+      "say": "Rimba",
+      "text": "Kenapa jangan yang masih berdiri?"
+     },
+     {
+      "say": "Darma",
+      "text": "Karena yang masih berdiri itu rumah orang, Nak. Meski orangnya Hampa."
+     },
+     {
+      "set": "sq_darma_aktif"
+     },
+     {
+      "quest": "pesanan_darma",
+      "state": "aktif"
+     }
+    ],
+    "else": [
+     {
+      "text": "Dua belas keping retak masih berjajar di meja Darma."
+     },
+     {
+      "say": "Darma",
+      "text": "Kalau nanti kalian dapat kacanya dan aku sudah tidak di sini, cari aku di kapal. Kafilah ini menyumbang kapal buat kalian, dan aku ikut — tidak ada tukang kaca yang mau ketinggalan kesempatan melihat laut yang isinya ingatan."
      }
     ]
    }

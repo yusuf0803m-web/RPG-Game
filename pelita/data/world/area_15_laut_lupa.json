@@ -108,6 +108,15 @@
      "id": "papan_kapal",
      "name": "Papan Buruan",
      "script": "papan_kapal"
+    },
+    {
+     "id": "meja_darma_kapal",
+     "name": "Meja kerja Mpu Darma di palka",
+     "script": "sq_darma_kapal",
+     "if": [
+      "sq_darma_aktif",
+      "!sq_darma_selesai"
+     ]
     }
    ]
   },
@@ -1794,6 +1803,60 @@
      {
       "ilustrasi": "events/tikar_padasari",
       "teks": "Tujuh orang duduk di tikar yang dibuat untuk dua belas, dan kabut menyahut dari tiga arah."
+     }
+    ]
+   }
+  ],
+  "sq_darma_kapal": [
+   {
+    "if": [
+     "has:kaca_wirasaba_tua"
+    ],
+    "then": [
+     {
+      "take": {
+       "kaca_wirasaba_tua": 1
+      }
+     },
+     {
+      "text": "Meja Darma di palka lebih kecil daripada yang di Sanggar, dan dua belas keping retak itu ikut dibawa, masih berjajar. Ia menaikkan keping Wirasaba ke arah lentera kapal, memutarnya pelan, lalu mengetuknya sekali dengan kuku."
+     },
+     {
+      "say": "Darma",
+      "text": "Delapan abad. Dengar bunyinya — pendek, tidak bergema. Kaca muda itu berdenting lama karena di dalamnya masih ada yang bergerak."
+     },
+     {
+      "text": "Ia memotongnya di depan kalian, satu kali, tepat di sumbu yang membuat dua belas percobaannya retak. Kali ini tidak retak."
+     },
+     {
+      "say": "Darma",
+      "text": "Ambil. Aku cuma perlu tahu bisa. Yang perlu punya, kalian."
+     },
+     {
+      "set": "sq_darma_selesai"
+     },
+     {
+      "quest": "pesanan_darma",
+      "state": "selesai"
+     },
+     {
+      "kaca": {
+       "kaca_teguh": 1
+      }
+     },
+     {
+      "give": {
+       "serpihan_ingatan": 1
+      }
+     },
+     {
+      "keping": 2600
+     }
+    ],
+    "else": [
+     {
+      "say": "Darma",
+      "text": "Belum ketemu kacanya? Tidak apa-apa. Aku ikut kapal ini sampai ujung dunia, jadi aku tidak ke mana-mana."
      }
     ]
    }

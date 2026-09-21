@@ -978,6 +978,12 @@
    "kategori": "peristiwa",
    "prioritas": 1,
    "deskripsi": "Balai bambu tanpa dinding di pulau kecil di tengah kabut. Tikar melingkar untuk dua belas orang, tujuh tempat terisi, lima cekungan kendi kosong. Kabut di sekeliling balai bercahaya samar dari tiga arah."
+  },
+  "events/kursi_ketujuh": {
+   "nama": "Peristiwa — Kursi Ketujuh",
+   "kategori": "peristiwa",
+   "prioritas": 2,
+   "deskripsi": "Meja makan di rumah kaca Wirasaba: tujuh piring, tujuh Hampa duduk mengelilinginya, dan tujuh sendok turun ke piring bersamaan untuk pertama kalinya dalam delapan abad."
   }
  }
 }

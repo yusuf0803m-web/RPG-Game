@@ -13,6 +13,7 @@ sampai titik tempat dungeonnya terbuka, lalu party berbelok ke sana.
 """
 from __future__ import annotations
 
+import copy
 import json
 import random
 import re
@@ -452,6 +453,13 @@ def _sisip(langkah, setelah, tambahan):
     return out
 
 
+def _sisip_sebelum(langkah, sebelum, tambahan):
+    out = list(langkah)
+    i = out.index(sebelum)
+    out[i:i] = tambahan
+    return out
+
+
 def langkah_rantai_babak2():
     """SEMUA_BABAK2 dengan tiga bagian pertama rantai disisipkan di tempatnya.
 
@@ -589,3 +597,107 @@ def test_side_quest_babak1_boleh_dilewati():
     assert res == "berhenti"
     for qid in ("duabelas_lentera", "pesanan_sarwa", "penunggu_gerbang"):
         assert qid not in st.quests, f"jalur utama menyentuh {qid}"
+
+
+# -- Side quest Babak 2 (8 baru + rantai Pendendang = 9, §5.7) -------------
+#: Delapan side quest Babak 2. "pesanan_darma" diserahkan di palka Kapal Lentera,
+#: karena Mpu Darma ikut kapal dan Pos Sanggar memang tidak dilewati lagi — jadi
+#: ia satu-satunya yang ditutup di awal Babak 3, bukan di Babak 2.
+SQ_BABAK2 = ("panji_ditinggal", "roda_keempat", "sumur_asin", "murid_klawu",
+             "hari_terakhir_sumirat", "buku_tak_dibakar", "kotak_pribadi")
+
+
+def langkah_sq_babak2():
+    """SEMUA_BABAK2 dengan delapan side quest disisipkan di tempatnya."""
+    l = list(SEMUA_BABAK2)
+    # Panji yang Ditinggal: "Seberangi jembatan" sudah mendarat di Ceruk Batu.
+    l = _sisip(l, "Seberangi jembatan", ["Kain lapuk", "Bawa turun, Kapten"])
+    # Roda Keempat: naf dipungut di reruntuhan (boleh kapan saja), lalu dua kunjungan
+    # ke gerobak — yang pertama membuka questnya, yang kedua memasangnya.
+    l = _sisip(l, "Menyimpang ke reruntuhan", ["Naf besi di antara reruntuhan"])
+    l = _sisip(l, "Nyai Rukmini", [
+        "Roda keempat gerobak lentera", "Roda keempat gerobak lentera",
+    ])
+    # Sumur yang Asin & Pesanan Mpu Darma: keduanya di Pos Sanggar / Lingkaran Garam.
+    l = _sisip(l, "Lentera raksasa", [
+        "Meja kerja Mpu Darma",
+        "Ke lingkaran garam",
+        "Sumur di tengah lingkaran garam", "Sumur di tengah lingkaran garam",
+        "Kembali ke pos",
+    ])
+    # Murid yang Tidak Bisa Diam: Padasuara, sesudah Ratih bergabung — party balik
+    # dulu ke desa dari mimbar, lalu kembali ke mimbar untuk lanjut.
+    l = _sisip_sebelum(l, "Lanjut ke jalan Wirasaba", [
+        "Kembali ke tepi desa", "Kembali ke desa", "Anak laki-laki yang dilarang",
+        "Anak laki-laki yang dilarang",
+        "Ke tepi desa", "Ikuti jejak sepatu",
+    ])
+    # Hari Terakhir Keluarga Sumirat + kaca untuk Darma.
+    l = _sisip(l, "Ke jalan rumah-rumah", ["Rumah dengan meja makan"])
+    l = _sisip(l, "Ke jalan kaca", ["Dinding kaca yang sudah runtuh"])
+    # Sesudah gudang panen dibuka, kembali ke rumah Sumirat.
+    l = _sisip(l, "Turunkan pedangmu", [
+        "Kembali ke jalan kaca", "Kembali ke pasar",
+        "Ke jalan rumah-rumah", "Rumah dengan meja makan",
+        "Kembali ke pasar", "Ke jalan kaca", "Ke gudang di sisi utara",
+    ])
+    # Buku yang Tidak Dibakar: Ruang Buku Besar, dua kunjungan.
+    l = _sisip(l, "Buku besar di meja tengah", [
+        "Rak yang satu bukunya hilang", "Rak yang satu bukunya hilang",
+    ])
+    # Kotak Pribadi: asrama Benteng Ordo.
+    l = _sisip(l, "Naik ke tingkat tengah", ["Kotak pribadi di bilik"])
+    return l
+
+
+@pytest.fixture(scope="module")
+def sq_babak2():
+    res, st, wk = jalankan_babak2(langkah_sq_babak2(), 5, Path(tempfile.mkdtemp()))
+    return res, st, wk
+
+
+def test_delapan_side_quest_babak2_bisa_diselesaikan(sq_babak2):
+    res, st, wk = sq_babak2
+    assert res == "berhenti", wk.text[-3000:]
+    kurang = [q for q in SQ_BABAK2 if st.quests.get(q) != "selesai"]
+    assert not kurang, f"belum selesai: {[(q, st.quests.get(q)) for q in kurang]}"
+    assert st.quests.get("pesanan_darma") == "ketemu"
+    assert st.count("kaca_wirasaba_tua") == 1, "keping Wirasaba harus terbawa ke kapal"
+    assert not wk.steps, f"langkah tersisa: {list(wk.steps)}"
+
+
+def test_pesanan_darma_diserahkan_di_kapal_lentera(sq_babak2):
+    """Pos Sanggar tidak dilewati lagi setelah Wirasaba, dan Mpu Darma memang ikut
+    Kapal Lentera — jadi serahannya di palka, bukan lewat jalan balik sepuluh ruang."""
+    _, st_b2, _ = sq_babak2
+    data = load_data()
+    world = load_world(data)
+    st = copy.deepcopy(st_b2)
+    st.data = data
+    for h in st.party:
+        h._data = data
+    wk = Walker(["Turun ke palka", "Meja kerja Mpu Darma di palka", "@k"])
+    g = Game(data, world, st, wk.io, auto_battle=True, auto_script=True,
+             auto_choice=False, save_dir=Path(tempfile.mkdtemp()))
+    g.run()
+    assert st.quests.get("pesanan_darma") == "selesai", wk.text[-2000:]
+    assert "Aku cuma perlu tahu bisa" in datar(wk.text)
+
+
+def test_side_quest_babak2_menyentuh_tiap_areanya(sq_babak2):
+    """Sembilan quest Babak 2 (delapan ini + rantai Pendendang) tersebar di
+    seluruh babaknya, bukan menumpuk di satu hub."""
+    _, _, wk = sq_babak2
+    t = datar(wk.text)
+    for frasa in ("Panji Pengawal Mahkota", "Longgar seperempat",
+                  "Kaca Suar menarik air keluar", "kalau sudah terlanjur keras",
+                  "yang masih berdiri itu rumah orang", "menyelesaikan makan malamnya",
+                  "Tolong dijawab", "tempatnya masih seperti waktu ditinggal"):
+        assert frasa in t, f"tidak dimainkan: {frasa}"
+
+
+def test_side_quest_babak2_boleh_dilewati():
+    res, st, wk = jalankan_babak2(list(SEMUA_BABAK2), 5, Path(tempfile.mkdtemp()))
+    assert res == "berhenti"
+    for q in SQ_BABAK2:
+        assert q not in st.quests, f"jalur utama menyentuh {q}"

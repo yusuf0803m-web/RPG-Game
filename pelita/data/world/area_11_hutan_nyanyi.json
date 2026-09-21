@@ -144,6 +144,15 @@
      "id": "lentera_padasuara",
      "name": "Api kecil di balai (simpan & istirahat)",
      "script": "lentera_save"
+    },
+    {
+     "id": "murid_keras",
+     "name": "Anak laki-laki yang dilarang ikut latihan",
+     "script": "sq_murid",
+     "if": [
+      "ratih_gabung",
+      "!sq_murid_selesai"
+     ]
     }
    ],
    "latar_varian": [
@@ -752,6 +761,86 @@
      },
      {
       "set": "pd_daftar_dibawa"
+     }
+    ]
+   }
+  ],
+  "sq_murid": [
+   {
+    "if": [
+     "!sq_murid_aktif"
+    ],
+    "then": [
+     {
+      "text": "Di belakang balai, seorang anak laki-laki duduk menghadap dinding dan bernyanyi ke arah dinding itu. Pelan, tapi tidak bisa berhenti: begitu satu lagu habis, ia mulai lagi."
+     },
+     {
+      "say": "Ratih",
+      "text": "Kenapa kau di sini, bukan di dalam?"
+     },
+     {
+      "say": "Klawu",
+      "text": "Tidak boleh. Kata Tetua suaraku terlalu keras, nanti kedengaran sampai jauh."
+     },
+     {
+      "say": "Ratih",
+      "text": "(Ia diam beberapa saat lebih lama dari yang wajar.) Iya. Aku juga dulu begitu."
+     },
+     {
+      "say": "Klawu",
+      "text": "Terus Mbak jadi berhenti?"
+     },
+     {
+      "say": "Ratih",
+      "text": "Tidak. Aku jadi pergi. (Ia berjongkok.) Dengar. Aku tidak akan bilang teruskan, dan aku tidak akan bilang berhenti. Dua-duanya bukan urusanku. Tapi ada satu hal yang aku sendiri baru tahu kemarin: yang bikin Ordo datang bukan suaramu. Yang bikin mereka datang, mereka butuh orang yang bisa membakar. Kau diam atau tidak, mereka tetap butuh."
+     },
+     {
+      "say": "Klawu",
+      "text": "Jadi percuma aku diam?"
+     },
+     {
+      "say": "Ratih",
+      "text": "Jadi kalau kau diam, pastikan itu karena kau yang memilih. Bukan karena kau kira itu menyelamatkan siapa-siapa."
+     },
+     {
+      "text": "Anak itu berpikir dengan wajah anak yang benar-benar berpikir, lalu berdiri dan masuk ke balai lewat pintu depan, bukan pintu belakang."
+     },
+     {
+      "set": "sq_murid_aktif"
+     },
+     {
+      "quest": "murid_klawu",
+      "state": "aktif"
+     }
+    ],
+    "else": [
+     {
+      "say": "Klawu",
+      "text": "Tetua marah. Tapi cuma sebentar, terus dia nyuruh aku duduk di barisan depan, soalnya katanya kalau sudah terlanjur keras, mending kedengarannya jelas sekalian."
+     },
+     {
+      "say": "Ratih",
+      "text": "Itu Tetua Lelana sekali."
+     },
+     {
+      "say": "Klawu",
+      "text": "Ini buat Mbak. Dari Tetua. Katanya Mbak lupa bawa waktu pergi."
+     },
+     {
+      "set": "sq_murid_selesai"
+     },
+     {
+      "quest": "murid_klawu",
+      "state": "selesai"
+     },
+     {
+      "give": {
+       "serpihan_ingatan": 1,
+       "anting_pendendang": 1
+      }
+     },
+     {
+      "keping": 1800
      }
     ]
    }

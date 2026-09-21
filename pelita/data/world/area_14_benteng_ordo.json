@@ -113,6 +113,14 @@
      "id": "lentera_asrama",
      "name": "Lentera penjaga (simpan & istirahat)",
      "script": "lentera_save"
+    },
+    {
+     "id": "kotak_asrama",
+     "name": "Kotak pribadi di bilik-bilik asrama",
+     "script": "sq_kotak_asrama",
+     "if": [
+      "!sq_kotak_selesai"
+     ]
     }
    ],
    "on_enter": "sergap_asrama"
@@ -515,6 +523,57 @@
       "win": []
      }
     ]
+   }
+  ],
+  "sq_kotak_asrama": [
+   {
+    "text": "Satu kotak kecil per bilik, semuanya seukuran dua telapak, semuanya tidak dikunci. Kalian membuka yang paling dekat, lalu yang berikutnya, lalu berhenti membuka dan cuma melihat.\n\nBatu sungai. Gigi susu yang dibungkus kertas. Sisir kayu patah dengan nama diukir kasar. Sepotong tali yang disimpul tujuh kali. Satu kotak isinya pasir, banyak sekali pasir, dan tidak ada yang lain."
+   },
+   {
+    "say": "Rimba",
+    "text": "Mereka seumuranku."
+   },
+   {
+    "say": "Sela",
+    "text": "Kebanyakan lebih muda."
+   },
+   {
+    "say": "Rimba",
+    "text": "(Ia menutup kotak yang sedang dipegangnya, hati-hati sekali, seperti menutup sesuatu yang bisa bangun.) Sela. Besok kita naik dan kalau mereka menghalangi, kita akan..."
+   },
+   {
+    "say": "Sela",
+    "text": "Iya."
+   },
+   {
+    "say": "Rimba",
+    "text": "Aku belum selesai bicara."
+   },
+   {
+    "say": "Sela",
+    "text": "Kau tidak perlu menyelesaikannya. (Ia berdiri di pintu dan tidak menoleh.) Aku Pengawal Mahkota sebelas tahun, Rimba. Yang kau rasakan sekarang itu bukan tanda kau lemah. Itu tandanya kau masih menghitung mereka satu-satu. Hari kau berhenti menghitung, itu hari kau jadi seperti yang di atas."
+   },
+   {
+    "text": "Tidak ada yang mengambil apa pun dari kotak-kotak itu. Bagas menutup semua tutup yang tadi dibuka, satu per satu, sampai barisnya rapi lagi."
+   },
+   {
+    "say": "Bagas",
+    "text": "Biar kalau ada yang pulang, tempatnya masih seperti waktu ditinggal."
+   },
+   {
+    "set": "sq_kotak_selesai"
+   },
+   {
+    "quest": "kotak_pribadi",
+    "state": "selesai"
+   },
+   {
+    "give": {
+     "serpihan_ingatan": 2
+    }
+   },
+   {
+    "keping": 3500
    }
   ]
  }
