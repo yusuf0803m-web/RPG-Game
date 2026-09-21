@@ -758,10 +758,10 @@
    "deskripsi": "Puncak pulau: satu lentera, lebih besar dari semuanya, dan seseorang berdiri di depannya sambil merapikan sumbu — tiga tarikan, berhenti, periksa nyala, tiga tarikan lagi."
   },
   "laut_lupa/pulau_hilang": {
-   "nama": "Laut Lupa — Pulau Hilang",
+   "nama": "Pulau Hilang — Pantai Benang",
    "kategori": "lokasi",
    "prioritas": 2,
-   "deskripsi": "Pulau kecil yang seluruhnya tertutup benang: benang di atas batu, benang di antara batu, benang yang membentang ke laut dan hilang di kabut. Di tengahnya ada sesuatu yang duduk dan bekerja tanpa berhenti."
+   "deskripsi": "Pantai yang pasirnya benang berlapis-lapis, sebagian mengeras jadi kerak dan sebagian masih bergerak pelan mengikuti arus di bawahnya. Dari kerak itu helai-helai benang naik dan menempel ke dada orang yang menginjaknya."
   },
   "pusar_kabut/tepi_pusar": {
    "nama": "Pusar Kabut & Kota Adiluhung — Tepi Pusar",
@@ -942,6 +942,36 @@
    "kategori": "peristiwa",
    "prioritas": 2,
    "deskripsi": "Rongga Suar yang akhirnya gelap untuk pertama kalinya dalam delapan abad. Di lantainya, sehelai sumbu kain sepanjang lengan, utuh, tidak hangus sedikit pun."
+  },
+  "laut_lupa/rumah_tenun": {
+   "nama": "Pulau Hilang — Rumah Tenun",
+   "kategori": "lokasi",
+   "prioritas": 2,
+   "deskripsi": "Balai beratap ijuk tanpa dinding di atas empat tiang. Di bawahnya satu alat tenun sebesar gerobak bekerja sendiri, dan yang sedang ditenun adalah sebuah pulau: separuh sudah jadi dermaga dan rumah, separuh lagi masih benang menggantung."
+  },
+  "laut_lupa/gudang_pola": {
+   "nama": "Pulau Hilang — Gudang Pola",
+   "kategori": "lokasi",
+   "prioritas": 1,
+   "deskripsi": "Gudang panjang berisi rak-rak gulungan berlabel kain kecil bertulisan tangan rapi. Ratusan gulungan, semuanya rancangan pulau yang belum ditenun. Satu tempat di rak kosong."
+  },
+  "laut_lupa/lorong_benang": {
+   "nama": "Pulau Hilang — Lorong Benang",
+   "kategori": "lokasi",
+   "prioritas": 2,
+   "deskripsi": "Seluruh benang pulau berkumpul jadi satu berkas setebal pohon yang naik ke puncak. Di dinding lorong tergantung sebuah lentera penjaga, dan di bawahnya ransel kafilah lapuk yang disandarkan rapi."
+  },
+  "laut_lupa/puncak_tenun": {
+   "nama": "Pulau Hilang — Puncak Tenun",
+   "kategori": "lokasi",
+   "prioritas": 1,
+   "deskripsi": "Puncak pulau tempat seluruh benang dunia bertemu jadi satu simpul. Di tengahnya duduk sesuatu yang bekerja tanpa berhenti, dan bentuknya tidak bisa dijelaskan dari sudut mana pun."
+  },
+  "events/pola_larung": {
+   "nama": "Peristiwa — Pola Lembah Larung",
+   "kategori": "peristiwa",
+   "prioritas": 1,
+   "deskripsi": "Sebuah gulungan pola terbuka: Pelita Rendah digambar seluruhnya dari benang, lengkap sampai warung, balai desa, dan rumah berpintu tidak rapat. Di sudut gambar, Mercusuar Langit menyala."
   }
  }
 }

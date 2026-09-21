@@ -267,3 +267,91 @@ def test_suar_ketiga_boleh_dilewati_jalur_utama_tidak_menyentuhnya():
     for flag in ("suar3_masuk_adegan", "suar3_boss_kalah"):
         assert flag not in st.flags, f"jalur utama menyentuh Suar Ketiga: {flag}"
     assert "kaca_sumbu" not in st.kaca
+
+
+# -- Pulau Hilang (Babak 3 opsional) ----------------------------------------
+#: §5.7 menyebut Pulau Hilang sebagai dungeon opsional Babak 3, tapi sampai Tahap 6
+#: ia cuma SATU ruang berisi superboss. Sekarang lima ruang, dan Sang Penenun jadi
+#: puncaknya, bukan pintu masuknya.
+PULAU_HILANG = BELANJA_KAPAL + [
+    "Ke haluan", "Berlayar ke laut kabut",
+    # Pulau Hilang baru muncul di peta setelah tiga pulau besar disinggahi.
+    "Singgah: Pulau Pernikahan", "Kembali ke kapal",
+    "Singgah: Pulau Perang", "Kembali ke kapal",
+    "Singgah: Pulau Pasar", "Kembali ke kapal",
+    "Singgah: pulau yang tidak ada di peta",
+    "Ikuti benang ke dalam pulau",
+    "Alat tenun yang sedang bekerja",
+    "Ke gudang di belakang rumah tenun",
+    "Rak gulungan pola", "Gulungan berlabel",
+    "Ke lorong benang di ujung gudang",
+    "Barang-barang di bawah lentera", "Lentera penjaga di dinding lorong",
+    "Naik mengikuti berkas benang",
+]
+
+
+@pytest.fixture(scope="module")
+def pulau():
+    """Masuk sampai puncak, lalu MUNDUR: Sang Penenun Lv 58 memang di atas party."""
+    return jalankan_babak3(PULAU_HILANG + ["Naik kembali ke kapal", "@k"], 3)
+
+
+def test_pulau_hilang_punya_lima_ruang_dengan_penenun_di_puncaknya():
+    """§5.7 menjanjikan dungeon, bukan satu ruang berisi boss."""
+    world = load_world(load_data())
+    laut = world.area("laut_lupa")
+    ruang = ["pulau_hilang", "rumah_tenun", "gudang_pola", "lorong_benang", "puncak_tenun"]
+    for rid in ruang:
+        assert rid in laut.rooms, rid
+    assert laut.room("pulau_hilang").on_enter != "superboss_penenun", \
+        "Penenun seharusnya di puncak, bukan di pantai"
+    assert laut.room("puncak_tenun").on_enter == "superboss_penenun"
+
+
+def test_gudang_pola_menunjukkan_lembah_larung_belum_ditenun(pulau):
+    """Beat inti dungeon ini: Sang Penenun menyimpan rancangan pulau yang BELUM ada,
+    dan salah satunya desa Rimba."""
+    _, st, wk = pulau
+    assert "pola_larung_dilihat" in st.flags
+    assert st.quests.get("pola_pulau_hilang") == "aktif"
+    assert "Mercusuarnya baru menyala tahun ini" in datar(wk.text)
+
+
+def test_pulau_hilang_bisa_dijelajahi_tanpa_melawan_penenun(pulau):
+    """Superboss Lv 58 tidak wajib: pemain boleh masuk, membaca polanya, dan pulang."""
+    res, st, wk = pulau
+    assert "penenun_kalah" not in st.flags
+    assert st.count("serpihan_ingatan") >= 3, "isi dungeonnya tetap memberi hasil"
+    assert "Hadapi Sang Penenun" in wk.text, "pilihan melawan seharusnya ditawarkan"
+
+
+def test_penenun_masih_bisa_dikalahkan_dari_puncak():
+    """Jalur lima ruangnya tidak merusak superbossnya sendiri.
+
+    Dilawan di titik pemain yang wajar: sesudah seluruh pulau Laut Lupa dan meteran
+    Bara melebar ke 8, sebelum turun ke Pusar Kabut. Lv 58 memang di atas party yang
+    baru tiba di Babak 3 — party seperti itu kalah, dan itu maksudnya.
+    """
+    from tests.test_babak3 import KAPAL, PULAU_KECIL, PULAU_LENTERA, PULAU_WAJIB
+    sebelum_pusar = KAPAL + PULAU_WAJIB + PULAU_KECIL + PULAU_LENTERA
+    res, st, wk = jalankan_babak3(sebelum_pusar + [
+        "Ke haluan", "Berlayar ke laut kabut",
+        "Singgah: pulau yang tidak ada di peta",
+        "Ikuti benang ke dalam pulau",
+        "Ke gudang di belakang rumah tenun",
+        "Rak gulungan pola", "Gulungan berlabel",
+        "Ke lorong benang di ujung gudang", "Lentera penjaga di dinding lorong",
+        "Naik mengikuti berkas benang",
+        "Hadapi Sang Penenun", "#stop:penenun_kalah",
+    ], 3)
+    assert "penenun_kalah" in st.flags, wk.text[-2500:]
+    assert st.kaca.get("kaca_penenun") == 1
+    assert st.quests.get("pola_pulau_hilang") == "selesai"
+
+
+def test_pulau_hilang_boleh_dilewati_jalur_utama_tidak_menyentuhnya():
+    from tests.test_babak3 import ENDING_NYALA, SEMUA_BABAK3
+    res, st, wk = jalankan_babak3(SEMUA_BABAK3 + ENDING_NYALA, 19)
+    assert res == "chapter_end"
+    for flag in ("pulau_pantai_adegan", "pola_larung_dilihat", "penenun_kalah"):
+        assert flag not in st.flags, f"jalur utama menyentuh Pulau Hilang: {flag}"

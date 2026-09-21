@@ -78,5 +78,12 @@
    "nomor": "Daftar itu berhenti menulis nama di akhir abad pertama dan menggantinya dengan nomor. Seseorang memutuskan itu. Cari yang masih menyala di ujung serambi.",
    "selesai": "Sekar binti Warsa keluar dari rongga Suar setelah delapan ratus sebelas tahun menunggu penggantinya, dan namanya dibawa naik."
   }
+ },
+ "pola_pulau_hilang": {
+  "name": "Daftar Pekerjaan",
+  "states": {
+   "aktif": "Gudang Pola di Pulau Hilang menyimpan rancangan pulau-pulau yang belum ditenun: Sanggar, Padasuara, Tengara, dan Lembah Larung. Rak Wirasaba sudah kosong. Pola bukan janji — tapi Sang Penenun mengira kalian gagal.",
+   "selesai": "Sang Penenun terurai jadi apa yang ia tenun, dan tidak ada lagi yang memegang ujung benang di dada kalian."
+  }
  }
 }

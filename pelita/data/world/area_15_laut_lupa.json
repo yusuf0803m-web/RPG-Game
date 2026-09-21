@@ -398,13 +398,113 @@
    ]
   },
   "pulau_hilang": {
-   "name": "Pulau Hilang",
-   "text": "Pulau kecil yang seluruhnya tertutup benang: benang di atas batu, benang di antara batu, benang yang membentang ke laut dan hilang di kabut. Di tengahnya ada sesuatu yang duduk dan bekerja tanpa berhenti.",
-   "on_enter": "superboss_penenun",
+   "name": "Pulau Hilang — Pantai Benang",
+   "text": "Pasirnya bukan pasir. Dari jauh ia berkilau seperti pasir basah; dari dekat ia benang — berlapis-lapis, sepanjang pantai, sebagian sudah menyatu jadi kerak dan sebagian masih bergerak pelan mengikuti arus di bawahnya.\n\nBegitu kalian menginjaknya, tujuh helai benang naik dari kerak itu dan menempel: satu ke tiap orang, di atas tulang dada, tanpa sakit.",
+   "on_enter": "pulau_pantai",
    "exits": [
     {
      "label": "Kembali ke kapal",
      "to": "laut_kabut"
+    },
+    {
+     "label": "Ikuti benang ke dalam pulau",
+     "to": "rumah_tenun"
+    }
+   ]
+  },
+  "rumah_tenun": {
+   "name": "Pulau Hilang — Rumah Tenun",
+   "text": "Bangunan tanpa dinding: cuma atap ijuk di atas empat tiang, seperti balai desa. Di bawahnya satu alat tenun, ukuran gerobak, dan di alat itu ada pekerjaan yang sedang berjalan.\n\nYang sedang ditenun adalah sebuah pulau. Setengahnya sudah jadi — dermaga, tiga rumah, seekor anjing yang duduk. Setengahnya lagi masih benang yang menggantung.",
+   "on_enter": "pulau_rumah",
+   "exits": [
+    {
+     "label": "Kembali ke pantai",
+     "to": "pulau_hilang"
+    },
+    {
+     "label": "Ke gudang di belakang rumah tenun",
+     "to": "gudang_pola"
+    }
+   ],
+   "objects": [
+    {
+     "id": "alat_tenun",
+     "name": "Alat tenun yang sedang bekerja",
+     "script": "pulau_alat",
+     "if": [
+      "!pulau_alat_diambil"
+     ]
+    }
+   ]
+  },
+  "gudang_pola": {
+   "name": "Pulau Hilang — Gudang Pola",
+   "text": "Gudang panjang berisi rak, dan rak berisi gulungan. Ratusan. Tiap gulungan diikat tali dan diberi label kain kecil di ujungnya, ditulis tangan, rapi seperti tulisan juru arsip.\n\nIni bukan hasil tenun. Ini polanya — rancangan pulau-pulau yang belum ditenun.",
+   "on_enter": "pulau_gudang",
+   "exits": [
+    {
+     "label": "Kembali ke rumah tenun",
+     "to": "rumah_tenun"
+    },
+    {
+     "label": "Ke lorong benang di ujung gudang",
+     "to": "lorong_benang"
+    }
+   ],
+   "objects": [
+    {
+     "id": "rak_pola",
+     "name": "Rak gulungan pola",
+     "script": "pulau_rak"
+    },
+    {
+     "id": "pola_larung",
+     "name": "Gulungan berlabel \"LEMBAH LARUNG\"",
+     "script": "pulau_larung",
+     "if": [
+      "pulau_rak_dilihat"
+     ]
+    }
+   ]
+  },
+  "lorong_benang": {
+   "name": "Pulau Hilang — Lorong Benang",
+   "text": "Di ujung gudang, seluruh benang pulau ini berkumpul jadi satu berkas setebal pohon dan naik ke tengah pulau. Berjalan di sampingnya seperti berjalan di samping sungai yang mengalir ke atas.\n\nDi dinding lorong ada lentera penjaga. Seseorang menaruhnya di sini, dan itu berarti seseorang pernah sampai sejauh ini.",
+   "exits": [
+    {
+     "label": "Kembali ke gudang pola",
+     "to": "gudang_pola"
+    },
+    {
+     "label": "Naik mengikuti berkas benang",
+     "to": "puncak_tenun"
+    }
+   ],
+   "objects": [
+    {
+     "id": "lentera_benang",
+     "name": "Lentera penjaga di dinding lorong (simpan & istirahat)",
+     "script": "lentera_save"
+    },
+    {
+     "id": "sisa_penjaga",
+     "name": "Barang-barang di bawah lentera",
+     "script": "pulau_sisa",
+     "if": [
+      "!pulau_sisa_diambil"
+     ]
+    }
+   ]
+  },
+  "puncak_tenun": {
+   "name": "Pulau Hilang — Puncak Tenun",
+   "safe": true,
+   "text": "Puncak pulau, dan seluruh benang dunia bertemu di sini. Di tengahnya ada sesuatu yang duduk dan bekerja tanpa berhenti.",
+   "on_enter": "superboss_penenun",
+   "exits": [
+    {
+     "label": "Turun kembali ke lorong benang",
+     "to": "lorong_benang"
     }
    ]
   }
@@ -1383,6 +1483,17 @@
           "set": "penenun_kalah"
          },
          {
+          "if": [
+           "quest:pola_pulau_hilang"
+          ],
+          "then": [
+           {
+            "quest": "pola_pulau_hilang",
+            "state": "selesai"
+           }
+          ]
+         },
+         {
           "text": "Benangnya putus semua sekaligus. Yang duduk di tengah pulau itu terurai jadi apa yang selama ini ia tenun: potongan-potongan orang, ribuan, yang langsung tenggelam ke laut dan pulang."
          },
          {
@@ -1408,6 +1519,185 @@
       ]
      }
     ]
+   }
+  ],
+  "pulau_pantai": [
+   {
+    "once": "pulau_pantai_adegan",
+    "do": [
+     {
+      "text": "Benang itu tidak bisa ditarik lepas. Ia juga tidak menahan: kalian bisa berjalan ke mana saja, dan ia mengulur."
+     },
+     {
+      "say": "Bagas",
+      "text": "Punyaku menempel di sini. (Ia menunjuk dadanya.) Tidak sakit. Tapi aku bisa merasakan ada yang memegang ujungnya."
+     },
+     {
+      "say": "Sela",
+      "text": "Jangan ditarik."
+     },
+     {
+      "say": "Bagas",
+      "text": "Aku tidak menarik. Aku cuma ingin tahu panjangnya."
+     },
+     {
+      "say": "Rukmini",
+      "text": "(Dari kapal, tidak turun.) Anak muda. Semua yang di laut ini sudah pernah ditenun sekali. Yang di pulau itu tidak membuat kalian — ia cuma mencatat kalian. (Jeda.) Yang bikin aku tidak tidur bukan itu. Yang bikin aku tidak tidur, ia mencatat sesuatu yang belum terjadi."
+     },
+     {
+      "text": "(Tip: pulau ini tidak ada di peta dan tidak ada hubungannya dengan Pusar Kabut. Di ujungnya ada Sang Penenun, Lv 58 — jauh di atas kalian. Kalian boleh masuk, melihat-lihat, dan pulang.)"
+     }
+    ]
+   }
+  ],
+  "pulau_rumah": [
+   {
+    "once": "pulau_rumah_adegan",
+    "do": [
+     {
+      "text": "Alat tenunnya bergerak sendiri, pelan, satu lemparan tiap beberapa detak. Tidak ada yang duduk di depannya."
+     },
+     {
+      "say": "Lintang",
+      "text": "Pulau yang di alat itu belum ada di laut."
+     },
+     {
+      "say": "Rimba",
+      "text": "Belum ada, atau belum jadi?"
+     },
+     {
+      "say": "Lintang",
+      "text": "(Ia menatap anjing setengah-benang yang duduk di dermaga setengah-jadi.) Belum jadi. Anjingnya sudah punya mata."
+     }
+    ]
+   }
+  ],
+  "pulau_alat": [
+   {
+    "set": "pulau_alat_diambil"
+   },
+   {
+    "text": "Di kotak perkakas di bawah alat tenun: gulungan benang cadangan, jarum sebesar lengan, dan sebuah kaca kecil yang dipakai untuk memeriksa rapatnya tenunan."
+   },
+   {
+    "give": {
+     "serpihan_ingatan": 1,
+     "ramuan_laut": 6,
+     "abu_pagi": 3
+    }
+   },
+   {
+    "say": "Bagas",
+    "text": "Perkakas. Perkakas berarti tangan. Tangan berarti seseorang belajar melakukan ini dari seseorang."
+   }
+  ],
+  "pulau_gudang": [
+   {
+    "once": "pulau_gudang_adegan",
+    "do": [
+     {
+      "say": "Sela",
+      "text": "Ini bukan gudang hasil. Lihat labelnya — semuanya nama tempat, dan tidak satu pun ada di laut ini."
+     },
+     {
+      "say": "Rangga",
+      "text": "Karena tempat-tempat itu masih berdiri."
+     }
+    ]
+   }
+  ],
+  "pulau_rak": [
+   {
+    "text": "Label-label di ujung gulungan, dibaca dari kiri:\n\n\"KOTA KACA WIRASABA\" — dan gulungan itu kosong ikatannya; polanya sudah diambil dan sudah ditenun.\n\n\"BENTENG TEBING GARAM\". \"POS KAFILAH SANGGAR\". \"DESA PADASUARA\". \"IBUKOTA TENGARA\".\n\nDan di rak paling bawah, sendirian, satu gulungan kecil: \"LEMBAH LARUNG\"."
+   },
+   {
+    "once": "pulau_rak_dilihat",
+    "do": [
+     {
+      "say": "Ratih",
+      "text": "Padasuara."
+     },
+     {
+      "say": "Bagas",
+      "text": "Wirasaba sudah diambil dari raknya. Wirasaba sudah jadi kota Hampa yang mengulang hari terakhirnya. (Ia bicara lebih pelan dari biasanya.) Ini bukan ramalan. Ini daftar pekerjaan."
+     },
+     {
+      "say": "Sela",
+      "text": "Urut dari mana?"
+     },
+     {
+      "say": "Rangga",
+      "text": "Dari yang paling dekat kabut, Sela. Selalu dari yang paling dekat."
+     }
+    ]
+   }
+  ],
+  "pulau_larung": [
+   {
+    "text": "Gulungannya kecil karena lembahnya kecil. Talinya dibuka tanpa perlawanan.\n\nDi dalamnya: Pelita Rendah, digambar benang, lengkap sampai ke jalan desa dan gerbang barat. Warung Bu Ratna ada. Balai desa ada. Rumah Pak Guntur ada, dengan pintunya yang tidak pernah rapat.\n\nDi halaman belakang rumah itu, dua orang berdiri: satu tua, satu kecil, dan yang kecil memegang lentera yang terlalu besar untuknya."
+   },
+   {
+    "once": "pulau_larung_dilihat",
+    "do": [
+     {
+      "text": "Rimba tidak bicara cukup lama sampai Sela memanggil namanya dua kali."
+     },
+     {
+      "say": "Rimba",
+      "text": "Ini bukan kenangan. Kenangan sudah terjadi. (Ia menunjuk sudut gambar.) Mercusuar di gambar ini menyala. Mercusuarnya baru menyala tahun ini."
+     },
+     {
+      "say": "Sela",
+      "text": "Jadi ini sesudah kita."
+     },
+     {
+      "say": "Rimba",
+      "text": "Ini sesudah kita. Dan desanya sudah dijadikan pulau."
+     },
+     {
+      "say": "Rangga",
+      "text": "Rimba. Dengar dulu. Pola bukan janji. Orang ini menggambar apa yang menurutnya akan sampai ke tangannya. (Jeda.) Itu artinya ia mengira kita gagal. Itu bukan hal yang sama dengan kita gagal."
+     },
+     {
+      "say": "Ratih",
+      "text": "Dan itu artinya ada gunanya menyanyi lebih keras."
+     },
+     {
+      "set": "pola_larung_dilihat"
+     },
+     {
+      "quest": "pola_pulau_hilang",
+      "state": "aktif"
+     },
+     {
+      "give": {
+       "serpihan_ingatan": 1
+      }
+     },
+     {
+      "ilustrasi": "events/pola_larung",
+      "teks": "Pelita Rendah, digambar dengan benang, untuk sebuah laut yang belum menelannya."
+     }
+    ]
+   }
+  ],
+  "pulau_sisa": [
+   {
+    "set": "pulau_sisa_diambil"
+   },
+   {
+    "text": "Di bawah lentera: satu ransel kafilah yang sudah lapuk, disandarkan rapi, dan di atasnya sebuah kendi kecil dengan tutup kain — masih diikat.\n\nTidak ada tulang. Siapa pun yang menaruh lentera ini berjalan naik dan tidak menaruh apa-apa lagi."
+   },
+   {
+    "say": "Rukmini",
+    "text": "(Dari kapal, setelah lama diam.) Ransel itu punya kakakku. Empat puluh tahun lalu. Dia bilang mau lihat saja. (Jeda.) Ambil isinya, Nak. Dia paling benci barang yang tidak dipakai."
+   },
+   {
+    "give": {
+     "serpihan_ingatan": 1,
+     "kendi_nyala": 4,
+     "abu_pagi": 4
+    }
    }
   ]
  }

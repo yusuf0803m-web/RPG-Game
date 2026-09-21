@@ -292,11 +292,18 @@ def test_kelana_dibunuh_mengubah_lintang(tmp_path):
 # -- konten opsional --------------------------------------------------------
 def test_pulau_hilang_muncul_setelah_tiga_pulau_dan_boleh_ditinggalkan(tmp_path):
     """Pulau Hilang tidak ada di peta Rukmini: ia baru terlihat setelah tiga pulau
-    besar disinggahi, dan party boleh mundur dari superboss-nya (GAME_DESIGN §6.3)."""
+    besar disinggahi, dan party boleh mundur dari superboss-nya (GAME_DESIGN §6.3).
+
+    Sejak Tahap 7 pulaunya dungeon lima ruang (§5.7), jadi Sang Penenun ada di
+    puncaknya, bukan di pantainya; isinya sendiri diuji di ``tests/test_opsional.py``.
+    """
     steps = KAPAL + PULAU_WAJIB + [
         "Singgah: pulau yang tidak ada di peta",
+        "Ikuti benang ke dalam pulau",
+        "Ke gudang di belakang rumah tenun",
+        "Ke lorong benang di ujung gudang",
+        "Naik mengikuti berkas benang",
         "Naik kembali ke kapal",
-        "Kembali ke kapal",
         "@k",
     ]
     res, st, wk = jalankan(steps, 3, tmp_path)
