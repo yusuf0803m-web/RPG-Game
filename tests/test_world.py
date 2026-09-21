@@ -6,7 +6,7 @@ import pytest
 
 from pelita.loader import load_data
 from pelita.world.explore import Game
-from pelita.world.model import load_world
+from pelita.world.model import WORLD_DIR, load_world
 from pelita.world.state import GameState, new_game
 from tests.walker import Walker
 
@@ -136,3 +136,40 @@ def test_toko_beli_jual(data, world, tmp_path):
     assert res == "quit"
     assert "Membeli Ramuan Daun" in wk.text and "Menjual Ramuan Daun" in wk.text
     assert st.count("ramuan_daun") == 3                 # 3 awal + 1 beli − 1 jual
+
+
+def test_tidak_ada_nama_flag_yang_dipakai_dua_area():
+    """Regresi §9.5: Peti Lantai Pernikahan di Mercusuar (Babak 1) dan Kotak
+    Seserahan di Pulau Pernikahan (Babak 3) dulu sama-sama memakai
+    ``peti_pernikahan_diambil``, jadi membuka yang pertama menghilangkan yang kedua
+    selamanya — dan tidak ada tes yang bisa melihatnya.
+
+    Flag dunia hidup di satu ruang nama global, jadi dua area yang menyalakan nama
+    yang sama hampir selalu bug, bukan kebetulan. Audit ini otomatis sekarang;
+    kalau memang disengaja (mis. satu peristiwa ditulis di dua tempat), daftarkan
+    di ``SENGAJA_BERSAMA`` beserta alasannya.
+    """
+    import collections
+    import glob
+    import json as _json
+    import re
+
+    #: flag yang memang sengaja dinyalakan dari lebih dari satu area
+    SENGAJA_BERSAMA: dict[str, str] = {}
+
+    setter: dict[str, set[str]] = collections.defaultdict(set)
+    for f in sorted(glob.glob(str(WORLD_DIR / "area_*.json"))):
+        d = _json.loads(Path(f).read_text(encoding="utf-8"))
+        teks = _json.dumps(d, ensure_ascii=False)
+        for m in re.finditer(r'"(?:set|once)": "([a-z0-9_]+)"', teks):
+            setter[m.group(1)].add(d["id"])
+        for m in re.finditer(r'"(?:set|unset)": \[([^\]]*)\]', teks):
+            for nama in re.findall(r'"([a-z0-9_]+)"', m.group(1)):
+                setter[nama].add(d["id"])
+
+    tabrakan = {k: sorted(v) for k, v in setter.items()
+                if len(v) > 1 and k not in SENGAJA_BERSAMA}
+    assert not tabrakan, (
+        "nama flag dipakai lebih dari satu area (beri cakupan areanya sendiri): "
+        + ", ".join(f"{k} {v}" for k, v in sorted(tabrakan.items())))
+    assert len(setter) > 200, f"audit cuma menemukan {len(setter)} flag; polanya berubah?"

@@ -18,7 +18,7 @@ Prioritas 1 = ruang yang paling sering dilihat pemain (kerjakan lebih dulu).
 Prioritas 3 = varian kondisi dunia; gambarnya boleh menyusul.
 
 
-## Latar lokasi (111)
+## Latar lokasi (127)
 
 - [ ] `benteng_ordo/suar_benteng.webp` — **Benteng Ordo Pelita — Suar Benteng** (prioritas 1)
       Ruang inti Suar: rongga kaca setinggi dua orang, menyala penuh. Di depannya berdiri seorang perempuan tua berjubah putih, membelakangi kalian, menghadap nyala.
@@ -30,16 +30,24 @@ Prioritas 3 = varian kondisi dunia; gambarnya boleh menyusul.
       Hamparan putih tanpa bayangan, karena tidak ada apa pun yang cukup tinggi untuk membuat bayangan. Kristal garam tumbuh dari permukaan seperti rumput kaca, setinggi lutut, dan pecah berdenting kalau terinjak.
 - [ ] `dataran_abu/pos_sanggar.webp` — **Dataran Abu — Pos Kafilah Sanggar** (prioritas 1)
       Kafilah Sanggar: tiga puluh gerobak diparkir melingkar, dan di tengah lingkaran itu sebuah lentera setinggi dua orang yang tidak pernah dipadamkan. Di luar lingkaran cahayanya, abu.
+- [ ] `gua_danau/dasar_menelan.webp` — **Gua Bawah Danau — Dasar yang Menelan** (prioritas 1)
+      Ruang bundar di ujung palka. Seorang juru kaca berzirah kerja berdiri membelakangi, mengangkat sekeping kaca ke arah cahaya yang tidak ada. Di kirinya tumpukan kaca setinggi orang; di kanannya lantai kosong.
+- [ ] `gua_danau/ladang_kendi.webp` — **Gua Bawah Danau — Ladang Kendi** (prioritas 1)
+      Ruang selebar pasar yang lantainya ribuan kendi tanah setinggi lutut, berdiri rapat sampai ke gelap, masing-masing tersumbat kain bertinta pudar. Di tengahnya cekungan batu bundar bertiga lekuk.
 - [ ] `hutan_kelabu/jalan_setapak.webp` — **Hutan Kelabu — Jalan Setapak** (prioritas 1)
       Kabut setinggi lutut. Suara langkahmu pulang lebih lambat dari seharusnya, seperti hutan berpikir dulu sebelum mengembalikannya.
 - [ ] `hutan_nyanyi/padasuara.webp` — **Hutan Nyanyi — Desa Padasuara** (prioritas 1)
       Desa di antara akar-akar: rumah dibangun menempel batang, dihubungkan tangga tali. Tidak ada satu pun lentera.
+- [ ] `laut_lupa/gudang_pola.webp` — **Pulau Hilang — Gudang Pola** (prioritas 1)
+      Gudang panjang berisi rak-rak gulungan berlabel kain kecil bertulisan tangan rapi. Ratusan gulungan, semuanya rancangan pulau yang belum ditenun. Satu tempat di rak kosong.
 - [ ] `laut_lupa/kapal_dek.webp` — **Laut Lupa — Kapal Lentera — Dek** (prioritas 1)
       Dek kapal selebar balai desa, dan di tengahnya bukan tiang layar melainkan lentera: setinggi dua orang, berkaca delapan sisi, menyala tanpa sumbu. Kabut yang menyentuh cahayanya menyingkir seperti air dari minyak.
 - [ ] `laut_lupa/laut_kabut.webp` — **Laut Lupa — Laut Kabut** (prioritas 1)
       Kapal berjalan di atas sesuatu yang berlapis dan pelan. Kadang di bawah lunas terlihat bentuk: atap rumah, punggung jembatan, sebuah jalan dengan pagarnya masih lengkap. Lalu lapisan berikutnya menutupnya lagi.
 - [ ] `laut_lupa/puncak_lentera.webp` — **Laut Lupa — Puncak Pulau Lentera** (prioritas 1)
       Puncak pulau: satu lentera, lebih besar dari semuanya, dan seseorang berdiri di depannya sambil merapikan sumbu — tiga tarikan, berhenti, periksa nyala, tiga tarikan lagi.
+- [ ] `laut_lupa/puncak_tenun.webp` — **Pulau Hilang — Puncak Tenun** (prioritas 1)
+      Puncak pulau tempat seluruh benang dunia bertemu jadi satu simpul. Di tengahnya duduk sesuatu yang bekerja tanpa berhenti, dan bentuknya tidak bisa dijelaskan dari sudut mana pun.
 - [ ] `lorong_bawah/saluran_masuk.webp` — **Lorong Bawah — Saluran Masuk** (prioritas 1)
       Lorong batu lengkung dengan air setinggi mata kaki. Bau lumut dan besi.
 - [ ] `mercusuar/kaki_menara.webp` — **Mercusuar Langit — Kaki Menara** (prioritas 1)
@@ -60,6 +68,10 @@ Prioritas 3 = varian kondisi dunia; gambarnya boleh menyusul.
       Laut berhenti di sini — betul-betul berhenti, seperti meja. Di depan lunas kapal, kabut turun ke dalam lubang selebar kota, berputar pelan searah jarum jam. Di dinding lubang itu ada kota: gedung, jalan, jembatan, seluruhnya menempel miring ke dalam pusaran.
 - [ ] `rawa_suar/rawa_dangkal.webp` — **Rawa Suar — Rawa Dangkal** (prioritas 1)
       Air setinggi betis, hangat dan bau belerang. Pohon bakau tumbuh miring semua ke arah yang sama, seolah menjauh dari menara.
+- [ ] `suar_ketiga/rongga_ketiga.webp` — **Reruntuhan Suar Ketiga — Rongga Suar** (prioritas 1)
+      Rongga kaca setinggi tiga orang. Di dalamnya seorang perempuan berdiri tegak dengan tangan di sisi badan, menyala merata dari dalam — bukan terbakar. Cahayanya putih dan tidak berkedip.
+- [ ] `suar_ketiga/ruang_daftar.webp` — **Reruntuhan Suar Ketiga — Ruang Daftar** (prioritas 1)
+      Ruang bundar yang seluruh dindingnya daftar nama dari huruf logam dilebur ke batu, empat kolom dari lantai sampai langit-langit. Separuh dinding bernama; separuh lagi hanya nomor.
 - [ ] `tambang/lorong_atas.webp` — **Tambang Kaca Ingatan — Lorong Atas** (prioritas 1)
       Lorong lebar dengan rel lori. Dinding-dindingnya bersinar samar: urat-urat Kaca Ingatan yang belum ditambang, memutar potongan-potongan kenangan kalau disentuh.
 - [ ] `tengara/dermaga_kota.webp` — **Ibukota Tengara — Dermaga Kota** (prioritas 1)
@@ -124,6 +136,12 @@ Prioritas 3 = varian kondisi dunia; gambarnya boleh menyusul.
       Cekungan selebar alun-alun, dan di dasarnya abu bergerak melingkar pelan — seperti air yang sedang dihisap lubang.
 - [ ] `dataran_abu/tepi_dataran.webp` — **Dataran Abu — Tepi Dataran** (prioritas 2)
       Kaki pegunungan berakhir dan abu dimulai, segaris seperti ditarik penggaris. Di belakang: batu.
+- [ ] `gua_danau/mulut_dasar.webp` — **Gua Bawah Danau — Mulut Dasar** (prioritas 2)
+      Celah selebar pintu di lantai gua sarang, turun lurus ke gelap. Di atas kepala, permukaan danau terlihat dari bawah: satu lembar perak yang menahan dirinya sendiri, dan tidak setetes pun jatuh.
+- [ ] `gua_danau/palka_peti.webp` — **Gua Bawah Danau — Palka Peti Tenggelam** (prioritas 2)
+      Lorong berlangit rendah dengan peti kayu bersegel timah ditumpuk dua-dua di kedua dinding, semuanya bertanda Ordo Pelita yang dicoret. Di lantai, garis-garis bekas seret yang semuanya menuju satu arah.
+- [ ] `gua_danau/tangga_air.webp` — **Gua Bawah Danau — Tangga Air Berdiri** (prioritas 2)
+      Tangga batu yang menggantung di dalam dinding air yang berdiri tegak setebal lengan. Di dalam dinding itu, pantulan orang yang sedang menuruni tangga — sedikit terlambat dari yang asli.
 - [ ] `hutan_kelabu/lembah_kabut.webp` — **Hutan Kelabu — Lembah Kabut** (prioritas 2)
       Cekungan kecil di antara dua bukit. Kabut menggenang di sini seperti air, dan tidak bergerak.
 - [ ] `hutan_kelabu/pohon_tumbang.webp` — **Hutan Kelabu — Pohon Tumbang** (prioritas 2)
@@ -150,10 +168,12 @@ Prioritas 3 = varian kondisi dunia; gambarnya boleh menyusul.
       Ruang bawah dek yang diisi kafilah Sanggar dengan segala yang mereka kira perlu: peti bekal, gulungan kain, tungku kecil yang dibaut ke lantai, dan satu papan kayu penuh kertas yang ditempel berlapis-lapis.
 - [ ] `laut_lupa/lapak_pasar.webp` — **Laut Lupa — Lorong Lapak** (prioritas 2)
       Lorong lapak yang makin ke dalam makin ramai suaranya, meski tidak ada satu pun yang bergerak. Di ujung lorong ada lapak alat: kunci, ragum, gerinda tangan, semuanya digantung menurut ukuran dari besar ke kecil.
+- [ ] `laut_lupa/lorong_benang.webp` — **Pulau Hilang — Lorong Benang** (prioritas 2)
+      Seluruh benang pulau berkumpul jadi satu berkas setebal pohon yang naik ke puncak. Di dinding lorong tergantung sebuah lentera penjaga, dan di bawahnya ransel kafilah lapuk yang disandarkan rapi.
 - [ ] `laut_lupa/parit_perang.webp` — **Laut Lupa — Dasar Parit** (prioritas 2)
       Di dasar parit, air setinggi mata kaki yang tidak pernah surut, dan barisan yang masih berdiri menghadap satu arah — arah yang sudah delapan abad tidak didatangi siapa pun.
-- [ ] `laut_lupa/pulau_hilang.webp` — **Laut Lupa — Pulau Hilang** (prioritas 2)
-      Pulau kecil yang seluruhnya tertutup benang: benang di atas batu, benang di antara batu, benang yang membentang ke laut dan hilang di kabut. Di tengahnya ada sesuatu yang duduk dan bekerja tanpa berhenti.
+- [ ] `laut_lupa/pulau_hilang.webp` — **Pulau Hilang — Pantai Benang** (prioritas 2)
+      Pantai yang pasirnya benang berlapis-lapis, sebagian mengeras jadi kerak dan sebagian masih bergerak pelan mengikuti arus di bawahnya. Dari kerak itu helai-helai benang naik dan menempel ke dada orang yang menginjaknya.
 - [ ] `laut_lupa/pulau_lentera.webp` — **Laut Lupa — Pulau Lentera** (prioritas 2)
       Pulau yang seluruhnya jalan mendaki, dan di sepanjang jalan itu lentera penjaga — ratusan, berjajar seperti di Lembah Larung, semuanya menyala, semuanya persis model yang diajarkan Pak Guntur cara merapikannya.
 - [ ] `laut_lupa/pulau_nyanyi.webp` — **Laut Lupa — Pulau Nyanyi** (prioritas 2)
@@ -166,6 +186,8 @@ Prioritas 3 = varian kondisi dunia; gambarnya boleh menyusul.
       Bukan pulau: satu hari, dipadatkan. Lorong bunga sepanjang dua ratus langkah berdiri di atas air, lengkap dengan kursi-kursinya, dan di ujungnya ada pelaminan yang masih menunggu. Semuanya berwarna, dan semuanya diam.
 - [ ] `laut_lupa/pulau_sunyi.webp` — **Laut Lupa — Pulau Sunyi** (prioritas 2)
       Sebuah rumah. Satu rumah saja, berdiri di atas air, dengan halaman sempit dan tali jemuran yang masih terbentang. Di jemuran ada kain-kain kecil, ukuran anak, yang kering sejak lama.
+- [ ] `laut_lupa/rumah_tenun.webp` — **Pulau Hilang — Rumah Tenun** (prioritas 2)
+      Balai beratap ijuk tanpa dinding di atas empat tiang. Di bawahnya satu alat tenun sebesar gerobak bekerja sendiri, dan yang sedang ditenun adalah sebuah pulau: separuh sudah jadi dermaga dan rumah, separuh lagi masih benang menggantung.
 - [ ] `lorong_bawah/ruang_pompa.webp` — **Lorong Bawah — Ruang Pompa** (prioritas 2)
       Pompa air raksasa yang sudah mati, pipa-pipanya menjulur ke atas seperti akar terbalik. Tangga besi menuju pintu di langit-langit: pintu ke Balai Arsip.
 - [ ] `lorong_bawah/ruang_tuas.webp` — **Lorong Bawah — Ruang Tuas** (prioritas 2)
@@ -210,6 +232,12 @@ Prioritas 3 = varian kondisi dunia; gambarnya boleh menyusul.
       Lorong batu setengah tenggelam yang menghubungkan tanah tinggi dengan kaki menara. Ukiran di dindingnya menggambarkan garis-garis cahaya dari satu titik ke banyak titik: Mercusuar ke Suar, Suar ke desa-desa.
 - [ ] `rawa_suar/tiga_lentera.webp` — **Rawa Suar — Tanah Tinggi Tiga Lentera** (prioritas 2)
       Gundukan tanah kering dengan tiga tiang lentera tua membentuk segitiga: utara, tengah, selatan. Ketiganya padam.
+- [ ] `suar_ketiga/retak_kaki.webp` — **Reruntuhan Suar Ketiga — Retakan Kaki Menara** (prioritas 2)
+      Menara Terapung duduk miring di atas ladang garam, tidak mengapung lagi. Di tempat ia mendarat, kerak garam pecah seperti es danau, dan di bawah pecahannya tangga batu lurus turun ke gelap.
+- [ ] `suar_ketiga/serambi_suar.webp` — **Reruntuhan Suar Ketiga — Serambi Suar** (prioritas 2)
+      Serambi setengah lingkaran menghadap pintu perunggu yang bercelah cahaya putih rata tanpa kedip. Di lantai di depan pintu ada cekungan halus bekas orang duduk bertahun-tahun.
+- [ ] `suar_ketiga/tangga_abad.webp` — **Reruntuhan Suar Ketiga — Tangga Abad Pertama** (prioritas 2)
+      Tangga batu lurus tanpa bordes, turun jauh. Tiap sepuluh anak tangga ada satu angka tahun dipahat ke dinding, mengecil sambil turun. Di paling bawah, satu kata: MULA.
 - [ ] `tambang/bengkel.webp` — **Tambang Kaca Ingatan — Bengkel** (prioritas 2)
       Ruang yang penuh sesak dengan alat: peluncur kaca, jerat pegas, lentera-lentera modifikasi, dan sebuah kompor dari kaleng lori. Semuanya rapi dengan cara yang hanya dimengerti pemiliknya.
 - [ ] `tambang/gua_kristal.webp` — **Tambang Kaca Ingatan — Gua Kristal** (prioritas 2)
@@ -242,6 +270,10 @@ Prioritas 3 = varian kondisi dunia; gambarnya boleh menyusul.
       Gudang besar berisi gerobak-gerobak dengan kurungan kaca di atasnya. Di dalam kurungan: Hampa, berdiri diam, masing-masing masih mengulang satu gerakan kecil.
 - [ ] `wirasaba/rumah_bagas.webp` — **Kota Kaca Wirasaba — Rumah Ketiga dari Ujung** (prioritas 2)
       Rumah kecil dengan bengkel di belakangnya. Alat-alatnya digantung menurut ukuran, dari yang terbesar di kiri ke yang terkecil di kanan — kebiasaan yang juga dipakai Bagas sejak kalian mengenalnya.
+- [ ] `gua_danau/ceruk_jala.webp` — **Gua Bawah Danau — Ceruk Jala** (prioritas 3)
+      Ceruk sempit penuh jala nelayan berlapis-lapis, dilempar dari atas selama puluhan tahun dan tidak pernah ditarik. Di dalamnya tersangkut sendok, pisau, satu sepatu anak.
+- [ ] `suar_ketiga/bilik_juru.webp` — **Reruntuhan Suar Ketiga — Bilik Juru Nyala Pertama** (prioritas 3)
+      Bilik sempit: satu dipan batu, satu rak, satu meja dengan mangkuk, sendok, dan buku jadwal yang terbuka pada halaman yang sama selama delapan ratus tahun.
 
 
 ## Varian kondisi dunia (11)
@@ -270,8 +302,10 @@ Prioritas 3 = varian kondisi dunia; gambarnya boleh menyusul.
       Gudang panen dengan semua kurungan kaca terbuka dan kosong. Gerobak-gerobak ditinggalkan miring, dan pintu besar dibiarkan terbuka lebar ke arah kota.
 
 
-## Ilustrasi peristiwa besar (17)
+## Ilustrasi peristiwa besar (23)
 
+- [ ] `events/dua_belas_keping.webp` — **Peristiwa — Dua Belas Keping** (prioritas 1)
+      Rak batu paling bawah di arsip bawah tanah, tanpa label. Dua belas keping kaca ingatan berjajar rapi, tidak ditumpuk, dan yang paling ujung menyala redup dari dalam.
 - [ ] `events/kelana_berhenti.webp` — **Satu Nama** (prioritas 1)
       Hampa berzirah menurunkan pedangnya pelan di tengah gudang penuh kurungan kaca, menghadap seorang gadis berlentera. Debu kaca melayang di antara mereka.
 - [ ] `events/malam_pertama.webp` — **Malam Pertama** (prioritas 1)
@@ -280,10 +314,16 @@ Prioritas 3 = varian kondisi dunia; gambarnya boleh menyusul.
       Puncak Mercusuar Langit dari dekat pada detik nyalanya padam: cahaya besar menyusut jadi titik lalu hilang, asap putih tipis naik, dan batu putih menara tiba-tiba tampak seperti tulang.
 - [ ] `events/nirmala_padam.webp` — **Yang Memilih Nanti** (prioritas 1)
       Perempuan tua berjubah putih duduk bersandar di kaki rongga Suar yang masih menyala, cahaya di tubuhnya surut kembali ke dalam wadahnya.
+- [ ] `events/pola_larung.webp` — **Peristiwa — Pola Lembah Larung** (prioritas 1)
+      Sebuah gulungan pola terbuka: Pelita Rendah digambar seluruhnya dari benang, lengkap sampai warung, balai desa, dan rumah berpintu tidak rapat. Di sudut gambar, Mercusuar Langit menyala.
+- [ ] `events/tikar_padasari.webp` — **Peristiwa — Tikar Padasari** (prioritas 1)
+      Balai bambu tanpa dinding di pulau kecil di tengah kabut. Tikar melingkar untuk dua belas orang, tujuh tempat terisi, lima cekungan kendi kosong. Kabut di sekeliling balai bercahaya samar dari tiga arah.
 - [ ] `events/bara_pertama.webp` — **Bara Pertama** (prioritas 2)
       Rimba memegang lentera yang menyala jauh lebih terang dari seharusnya; bara oranye melayang di sekitar tangannya. Wajahnya setengah takut, setengah mengerti. Latar gelap supaya nyalanya jadi satu-satunya cahaya.
 - [ ] `events/buku_besar.webp` — **Buku Besar Ordo** (prioritas 2)
       Halaman pembukuan tua di atas meja menara: kolom tahun, nama, dan lama bertahan, dengan satu catatan tangan yang berbeda dari yang lain — 'Kabut naik karena kita menyalakan.'
+- [ ] `events/dasar_menelan.webp` — **Peristiwa — Seratus keping yang ditolak** (prioritas 2)
+      Tumpukan kaca ingatan setinggi orang runtuh pelan ke lantai gua, dan di puncak reruntuhannya satu keping tergeletak tanpa retak. Tidak ada orang di dalam gambar.
 - [ ] `events/ending_mendendangkan.webp` — **Peristiwa — Ending Mendendangkan** (prioritas 2)
       Kabut di dasar sumur terurai jadi ribuan helai halus yang pergi ke segala arah ke atas, dan di lantai kaca seorang perempuan duduk bersila menyanyi dengan sandal dilepas di sebelahnya.
 - [ ] `events/ending_mengembalikan.webp` — **Peristiwa — Ending Mengembalikan** (prioritas 2)
@@ -300,9 +340,13 @@ Prioritas 3 = varian kondisi dunia; gambarnya boleh menyusul.
       Zirah berat jatuh ke depan di lantai gudang panen, dan seorang anak berjongkok di sebelah tambalan kain di bahu kirinya. Tidak ada wajah yang terlihat; hanya punggung anak itu dan gerobak-gerobak kosong.
 - [ ] `events/khotbah_padam.webp` — **Khotbah yang Tidak Selesai** (prioritas 2)
       Mimbar kayu roboh di tepi kabut, dengan tumpukan kayu bakar di belakangnya yang tidak pernah dinyalakan. Tali tergeletak di tanah. Di kejauhan, desa yang masih menyanyi.
+- [ ] `events/kursi_ketujuh.webp` — **Peristiwa — Kursi Ketujuh** (prioritas 2)
+      Meja makan di rumah kaca Wirasaba: tujuh piring, tujuh Hampa duduk mengelilinginya, dan tujuh sendok turun ke piring bersamaan untuk pertama kalinya dalam delapan abad.
 - [ ] `events/mercusuar_menyala.webp` — **Nyala Kembali** (prioritas 2)
       Puncak Mercusuar menyala kembali dilihat dari dalam ruang inti: pilar cahaya naik menembus atap, siluet party berdiri di tepi lingkaran cahaya.
 - [ ] `events/penenun.webp` — **Peristiwa — Penenun** (prioritas 2)
       Pulau kecil yang seluruhnya tertutup benang berkilau, dan di tengahnya sesuatu yang duduk dan bekerja tanpa berhenti. Benang-benangnya membentang keluar sampai hilang di kabut laut.
+- [ ] `events/suar_ketiga.webp` — **Peristiwa — Sumbu yang tidak terbakar** (prioritas 2)
+      Rongga Suar yang akhirnya gelap untuk pertama kalinya dalam delapan abad. Di lantainya, sehelai sumbu kain sepanjang lengan, utuh, tidak hangus sedikit pun.
 - [ ] `events/tujuh_penjaga.webp` — **Peristiwa — Tujuh Penjaga** (prioritas 2)
       Aula bundar dengan tujuh pintu kaca berwarna berbeda di sekelilingnya, dan di depan tiap pintu satu konstruk setinggi tiga orang. Enam mundur selangkah; satu maju.
