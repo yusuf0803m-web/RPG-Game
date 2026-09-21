@@ -152,6 +152,15 @@
     {
      "label": "Naik ke ruang buku besar",
      "to": "ruang_buku"
+    },
+    {
+     "label": "Turun ke retakan di bawah kaki menara",
+     "to": "retak_kaki",
+     "area": "suar_ketiga",
+     "if": [
+      "boss_nirmala_kalah"
+     ],
+     "locked": "Menara ini masih mengapung setinggi lutut di atas garam, dan di bawahnya tidak ada apa-apa selain kerak putih yang utuh."
     }
    ]
   },

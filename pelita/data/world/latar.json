@@ -900,6 +900,48 @@
    "kategori": "peristiwa",
    "prioritas": 2,
    "deskripsi": "Tumpukan kaca ingatan setinggi orang runtuh pelan ke lantai gua, dan di puncak reruntuhannya satu keping tergeletak tanpa retak. Tidak ada orang di dalam gambar."
+  },
+  "suar_ketiga/retak_kaki": {
+   "nama": "Reruntuhan Suar Ketiga — Retakan Kaki Menara",
+   "kategori": "lokasi",
+   "prioritas": 2,
+   "deskripsi": "Menara Terapung duduk miring di atas ladang garam, tidak mengapung lagi. Di tempat ia mendarat, kerak garam pecah seperti es danau, dan di bawah pecahannya tangga batu lurus turun ke gelap."
+  },
+  "suar_ketiga/tangga_abad": {
+   "nama": "Reruntuhan Suar Ketiga — Tangga Abad Pertama",
+   "kategori": "lokasi",
+   "prioritas": 2,
+   "deskripsi": "Tangga batu lurus tanpa bordes, turun jauh. Tiap sepuluh anak tangga ada satu angka tahun dipahat ke dinding, mengecil sambil turun. Di paling bawah, satu kata: MULA."
+  },
+  "suar_ketiga/ruang_daftar": {
+   "nama": "Reruntuhan Suar Ketiga — Ruang Daftar",
+   "kategori": "lokasi",
+   "prioritas": 1,
+   "deskripsi": "Ruang bundar yang seluruh dindingnya daftar nama dari huruf logam dilebur ke batu, empat kolom dari lantai sampai langit-langit. Separuh dinding bernama; separuh lagi hanya nomor."
+  },
+  "suar_ketiga/bilik_juru": {
+   "nama": "Reruntuhan Suar Ketiga — Bilik Juru Nyala Pertama",
+   "kategori": "lokasi",
+   "prioritas": 3,
+   "deskripsi": "Bilik sempit: satu dipan batu, satu rak, satu meja dengan mangkuk, sendok, dan buku jadwal yang terbuka pada halaman yang sama selama delapan ratus tahun."
+  },
+  "suar_ketiga/serambi_suar": {
+   "nama": "Reruntuhan Suar Ketiga — Serambi Suar",
+   "kategori": "lokasi",
+   "prioritas": 2,
+   "deskripsi": "Serambi setengah lingkaran menghadap pintu perunggu yang bercelah cahaya putih rata tanpa kedip. Di lantai di depan pintu ada cekungan halus bekas orang duduk bertahun-tahun."
+  },
+  "suar_ketiga/rongga_ketiga": {
+   "nama": "Reruntuhan Suar Ketiga — Rongga Suar",
+   "kategori": "lokasi",
+   "prioritas": 1,
+   "deskripsi": "Rongga kaca setinggi tiga orang. Di dalamnya seorang perempuan berdiri tegak dengan tangan di sisi badan, menyala merata dari dalam — bukan terbakar. Cahayanya putih dan tidak berkedip."
+  },
+  "events/suar_ketiga": {
+   "nama": "Peristiwa — Sumbu yang tidak terbakar",
+   "kategori": "peristiwa",
+   "prioritas": 2,
+   "deskripsi": "Rongga Suar yang akhirnya gelap untuk pertama kalinya dalam delapan abad. Di lantainya, sehelai sumbu kain sepanjang lengan, utuh, tidak hangus sedikit pun."
   }
  }
 }

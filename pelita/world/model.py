@@ -245,6 +245,13 @@ def _validate_script(world: World, data, area: Area, sid: str, cmds: list, depth
     for c in cmds:
         if not isinstance(c, dict):
             raise DataError(f"{area.id}/{sid}: perintah bukan objek: {c!r}")
+        if "if" in c and ("say" in c or "battle" in c):
+            # ``run_commands`` mencocokkan "say" dan "battle" SEBELUM "if", jadi
+            # syaratnya akan diabaikan diam-diam dan barisnya selalu jalan. Dialog
+            # bersyarat harus dibungkus {"if": ..., "then": [{"say": ...}]}.
+            raise DataError(
+                f"{area.id}/{sid}: perintah ber-'if' bersama 'say'/'battle' tidak didukung; "
+                f"bungkus dengan {{\"if\": ..., \"then\": [...]}}")
         for key in ("then", "else", "do", "win"):
             if key in c:
                 _validate_script(world, data, area, sid, c[key], depth + 1)

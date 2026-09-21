@@ -25,6 +25,7 @@ from pelita.world.explore import Game
 from pelita.world.model import load_world
 from pelita.world.state import new_game
 from tests.test_babak1 import AREA1, DANAU, LORONG, RAWA, TENGARA_1, BerhentiUji, make_equipper
+from tests.test_babak3 import KAPAL, make_pemain, mulai_babak3
 from tests.walker import Walker
 
 # -- Gua Bawah Danau (Babak 1, Lv 14–17) ------------------------------------
@@ -176,3 +177,93 @@ def test_gua_boleh_dilewati_jalur_utama_tidak_menyentuhnya():
     for flag in ("gua_masuk_adegan", "gua_cekungan_terbuka", "gua_boss_kalah"):
         assert flag not in st.flags, f"jalur utama menyentuh gua opsional: {flag}"
     assert "kaca_endap" not in st.kaca
+
+
+# -- Reruntuhan Suar Ketiga (Babak 2 opsional, Lv 45–48) --------------------
+#: Dibuka setelah Nirmala jatuh (§2.3), jadi praktis dimainkan saat party berlayar
+#: kembali ke Danau Garam di Babak 3. Pemainnya berbelanja dulu di palka Kapal
+#: Lentera — pemain penimbun membuat pengukuran bohong (§9.5).
+BELANJA_KAPAL = [x for x in KAPAL if x.startswith("#")]
+SUAR_KETIGA = BELANJA_KAPAL + [
+    "Ke haluan", "Berlayar kembali ke Danau Garam",
+    "Dorong rakit ke menara",
+    "Turun ke retakan di bawah kaki menara",
+    "Lentera penjaga", "Turun ke tangga abad", "Ke ruang daftar",
+    "Dinding timur", "Dinding barat",
+    "Ke bilik di sisi ruang", "Buku yang terbuka", "Kembali ke ruang daftar",
+    "Ke serambi Suar", "Cekungan bekas duduk", "Lentera penjaga di serambi",
+    "Buka pintu perunggu",
+]
+
+#: Aksi bernama Pelita Ketiga. Ia memutar ketujuh elemen Suar satu per satu;
+#: kalau cuma satu-dua yang muncul, rodanya tidak berputar.
+RODA_SUAR = ("Lidah Suar", "Embun Suar", "Kejut Suar", "Embus Suar",
+             "Getar Suar", "Bayang Suar", "Nyala Penuh", "Serap Nyala")
+
+
+def jalankan_babak3(steps, seed, **kw):
+    """Keadaan awal diambil dari Babak 2 yang benar-benar dimainkan (§9.5)."""
+    data = load_data()
+    world = load_world(data)
+    st = mulai_babak3(data, seed, **kw)
+    kotak: list = []
+    wk = Walker(steps, on_command=make_pemain(st, kotak))
+    g = Game(data, world, st, wk.io, auto_battle=True, auto_script=True,
+             auto_choice=False, save_dir=Path(tempfile.mkdtemp()))
+    kotak.append(g)
+    try:
+        res = g.run()
+    except BerhentiUji:
+        res = "berhenti"
+    return res, st, wk
+
+
+@pytest.fixture(scope="module")
+def suar3():
+    return jalankan_babak3(SUAR_KETIGA + ["#stop:suar3_boss_kalah"], 3)
+
+
+@pytest.mark.parametrize("seed", [3, 19])
+def test_suar_ketiga_bisa_ditamatkan(seed):
+    res, st, wk = jalankan_babak3(SUAR_KETIGA + ["#stop:suar3_boss_kalah"], seed)
+    assert res == "berhenti", wk.text[-3000:]
+    assert "suar3_boss_kalah" in st.flags
+    assert st.kaca.get("kaca_sumbu") == 1
+    assert st.quests.get("daftar_suar_ketiga") == "selesai"
+    assert not wk.steps, f"langkah tersisa: {list(wk.steps)}"
+
+
+def test_pelita_ketiga_memutar_roda_tujuh_elemennya(suar3):
+    """Regresi: bossnya pernah hanya sempat memainkan DUA aksi bernama dalam tujuh
+    ronde, karena party Babak 3 memukul kelemahannya tiap ronde dan musuh yang Goyah
+    selalu jatuh ke serangan biasa (ai.py). Roda tujuh elemen adalah seluruh isi boss
+    ini, jadi ia dibuat kebal Goyah — kelemahannya tetap berguna lewat Ketahanan,
+    Pecah, dan pengali damage (§9.6)."""
+    _, _, wk = suar3
+    laga = laga_boss(wk, "Pelita Ketiga")
+    diputar = [n for n in RODA_SUAR if f"memakai {n}" in laga]
+    assert len(diputar) >= 4, f"roda Suar cuma berputar ke {diputar}"
+    assert "Ia berhenti menghitung giliran" in datar(laga), "fase 2 tidak pernah tercapai"
+
+
+def test_suar_ketiga_tertutup_sebelum_nirmala_jatuh():
+    """Sebelum Suar Benteng padam, menaranya masih mengapung dan tidak ada retakan."""
+    res, st, wk = jalankan_babak1(
+        AREA1 + RAWA + DANAU + TENGARA_1 + LORONG + ["#stop:arsip_dibaca"], 11)
+    assert "boss_nirmala_kalah" not in st.flags
+    # Ruangnya memang belum terjangkau di Babak 1; yang dikunci di sini syaratnya.
+    world = load_world(load_data())
+    pintu = [e for e in world.area("danau_garam").room("menara_terapung").exits
+             if e.to == "retak_kaki"]
+    assert pintu and pintu[0].cond == ["boss_nirmala_kalah"]
+    assert not st.check(pintu[0].cond)
+
+
+def test_suar_ketiga_boleh_dilewati_jalur_utama_tidak_menyentuhnya():
+    """Babak 3 tamat tanpa sekali pun turun ke reruntuhan."""
+    from tests.test_babak3 import ENDING_NYALA, SEMUA_BABAK3
+    res, st, wk = jalankan_babak3(SEMUA_BABAK3 + ENDING_NYALA, 3)
+    assert res == "chapter_end", wk.text[-2500:]
+    for flag in ("suar3_masuk_adegan", "suar3_boss_kalah"):
+        assert flag not in st.flags, f"jalur utama menyentuh Suar Ketiga: {flag}"
+    assert "kaca_sumbu" not in st.kaca

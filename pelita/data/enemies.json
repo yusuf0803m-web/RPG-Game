@@ -3740,5 +3740,200 @@
   ],
   "lesson": "Fase dua ia melupakan pekerjaannya dan kelemahannya ikut berubah; pindai ulang.",
   "description": "Juru kaca tambang yang turun membawa peti dan tidak pernah diperintahkan naik."
+ },
+ "nama_terbakar": {
+  "name": "Nama Terbakar",
+  "level": 45,
+  "xp": 12150,
+  "keping": 2025,
+  "stats": {
+   "hp": 1075,
+   "mp": 0,
+   "atk": 80,
+   "def": 49,
+   "mag": 85,
+   "res": 49,
+   "agi": 22,
+   "lck": 11
+  },
+  "affinities": {
+   "kelam": "lemah",
+   "api": "serap",
+   "cahaya": "tahan"
+  },
+  "ai": [
+   {
+    "action": "m_sentuhan_lupa",
+    "weight": 3
+   },
+   {
+    "action": "m_bacakan_nama",
+    "weight": 1
+   },
+   {
+    "action": "serang",
+    "weight": 2
+   }
+  ],
+  "immune": [
+   "bakar",
+   "lupa",
+   "tidur"
+  ],
+  "lesson": "Api menyembuhkannya — ia sudah dibakar sekali. Kelam yang menguraikannya.",
+  "description": "Satu nama yang dibacakan waktu ritual, dan tidak pernah selesai dibacakan."
+ },
+ "penjaga_abad": {
+  "name": "Penjaga Abad Pertama",
+  "level": 46,
+  "xp": 12696,
+  "keping": 2116,
+  "stats": {
+   "hp": 1560,
+   "mp": 0,
+   "atk": 82,
+   "def": 66,
+   "mag": 69,
+   "res": 66,
+   "agi": 23,
+   "lck": 11
+  },
+  "affinities": {
+   "petir": "lemah",
+   "fisik": "tahan",
+   "cahaya": "tahan"
+  },
+  "ai": [
+   {
+    "action": "m_derit_besar",
+    "weight": 3
+   },
+   {
+    "action": "m_cangkang",
+    "weight": 1
+   },
+   {
+    "action": "serang",
+    "weight": 2
+   }
+  ],
+  "immune": [
+   "racun",
+   "lupa",
+   "tidur",
+   "bakar",
+   "berat"
+  ],
+  "ketahanan": 90,
+  "lesson": "Zirah abad pertama: kikis Ketahanan sampai PECAH sebelum memukul serius.",
+  "description": "Konstruk penjaga yang dibuat sebelum Ordo punya nama, dan masih menjalankan perintah pertamanya.",
+  "steal": "suku_cadang"
+ },
+ "juru_nyala_padam": {
+  "name": "Juru Nyala Padam",
+  "level": 47,
+  "xp": 13254,
+  "keping": 2209,
+  "stats": {
+   "hp": 1120,
+   "mp": 0,
+   "atk": 78,
+   "def": 51,
+   "mag": 92,
+   "res": 51,
+   "agi": 24,
+   "lck": 11
+  },
+  "affinities": {
+   "kelam": "lemah",
+   "cahaya": "tahan",
+   "api": "tahan"
+  },
+  "ai": [
+   {
+    "action": "m_kutuk_ordo",
+    "weight": 2
+   },
+   {
+    "action": "m_serap_cahaya",
+    "weight": 3
+   },
+   {
+    "action": "m_pulihkan",
+    "weight": 1
+   },
+   {
+    "action": "serang",
+    "weight": 1
+   }
+  ],
+  "immune": [
+   "bakar",
+   "buta"
+  ],
+  "lesson": "Ia menyembuhkan kawannya. Bunuh yang berjubah lebih dulu — selalu.",
+  "description": "Petugas yang bertugas menjaga api ritual tetap menyala, dan tidak pernah diberi tahu ritualnya sudah berhenti."
+ },
+ "boss_pelita_ketiga": {
+  "name": "Pelita Ketiga",
+  "level": 48,
+  "xp": 69120,
+  "keping": 11520,
+  "is_boss": true,
+  "ketahanan": 200,
+  "stats": {
+   "hp": 4800,
+   "mp": 0,
+   "atk": 64,
+   "def": 52,
+   "mag": 70,
+   "res": 52,
+   "agi": 24,
+   "lck": 11
+  },
+  "affinities": {
+   "kelam": "lemah",
+   "cahaya": "serap",
+   "api": "tahan"
+  },
+  "ai": [],
+  "phases": [
+   {
+    "name": "Menunggu Pergantian",
+    "hp_above": 0.5,
+    "pattern": [
+     "m_suar_api",
+     "m_suar_es",
+     "m_serap_cahaya",
+     "m_suar_petir"
+    ]
+   },
+   {
+    "name": "Tahu Tidak Ada yang Datang",
+    "hp_above": 0.0,
+    "pattern": [
+     "m_suar_angin",
+     "m_nyala_penuh",
+     "m_suar_kelam",
+     "m_serap_cahaya"
+    ],
+    "affinities": {
+     "cahaya": "lemah",
+     "kelam": "tahan",
+     "api": "tahan"
+    },
+    "announce": "Ia berhenti menghitung giliran. Nyalanya turun dari putih ke jingga — warna api biasa, warna sesuatu yang habis."
+   }
+  ],
+  "immune": [
+   "bakar",
+   "beku",
+   "goyah",
+   "lupa",
+   "racun",
+   "tidur"
+  ],
+  "lesson": "Ia memutar ketujuh elemen Suar satu per satu. Fase dua ia berhenti jadi cahaya, dan kelemahannya ikut berbalik.",
+  "description": "Perempuan yang masuk ke rongga Suar ketiga di abad pertama dan masih menunggu penggantinya datang."
  }
 }

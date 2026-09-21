@@ -1,0 +1,570 @@
+{
+ "id": "suar_ketiga",
+ "name": "Reruntuhan Suar Ketiga",
+ "level_range": "45–48",
+ "start": "retak_kaki",
+ "fog": false,
+ "encounter_rate": 0.34,
+ "encounters": [
+  {
+   "enemies": [
+    "nama_terbakar",
+    "nama_terbakar"
+   ],
+   "weight": 3
+  },
+  {
+   "enemies": [
+    "penjaga_abad"
+   ],
+   "weight": 3
+  },
+  {
+   "enemies": [
+    "juru_nyala_padam",
+    "nama_terbakar"
+   ],
+   "weight": 2
+  },
+  {
+   "enemies": [
+    "penjaga_abad",
+    "nama_terbakar"
+   ],
+   "weight": 2
+  },
+  {
+   "enemies": [
+    "juru_nyala_padam",
+    "penjaga_abad"
+   ],
+   "weight": 1
+  }
+ ],
+ "rooms": {
+  "retak_kaki": {
+   "name": "Retakan Kaki Menara",
+   "text": "Menara Terapung tidak terapung lagi. Ia duduk di garam sekarang, miring ke satu sisi, dan di tempat ia mendarat kerak garam itu pecah seperti es danau — dan di bawah pecahannya ada tangga.\n\nTangganya batu, lurus, dan jauh lebih tua daripada menara di atasnya.",
+   "on_enter": "suar3_masuk",
+   "exits": [
+    {
+     "label": "Naik kembali ke kaki menara",
+     "to": "menara_terapung",
+     "area": "danau_garam"
+    },
+    {
+     "label": "Turun ke tangga abad",
+     "to": "tangga_abad"
+    }
+   ],
+   "objects": [
+    {
+     "id": "lentera_retak",
+     "name": "Lentera penjaga di bibir retakan (simpan & istirahat)",
+     "script": "lentera_save"
+    }
+   ]
+  },
+  "tangga_abad": {
+   "name": "Tangga Abad Pertama",
+   "text": "Tangga turun lurus tanpa bordes, dan tiap sepuluh anak tangga ada satu angka dipahat ke dinding. Angkanya mengecil sambil kalian turun: tahun ke-400. Tahun ke-300. Tahun ke-120.\n\nDi angka yang paling bawah tidak ada angka. Hanya satu kata: MULA.",
+   "exits": [
+    {
+     "label": "Naik ke retakan",
+     "to": "retak_kaki"
+    },
+    {
+     "label": "Ke ruang daftar",
+     "to": "ruang_daftar"
+    }
+   ],
+   "on_enter": "suar3_sergap"
+  },
+  "ruang_daftar": {
+   "name": "Ruang Daftar",
+   "text": "Ruang bundar, dan dindingnya dari atas sampai bawah adalah daftar. Bukan diukir — dituang: huruf-huruf logam yang dilebur langsung ke batu, supaya tidak bisa dikikis.\n\nDi dinding sebelah timur, huruf-hurufnya rapat dan bernama. Di dinding sebelah barat, sudah tidak ada nama lagi. Hanya nomor.",
+   "exits": [
+    {
+     "label": "Kembali ke tangga",
+     "to": "tangga_abad"
+    },
+    {
+     "label": "Ke bilik di sisi ruang",
+     "to": "bilik_juru"
+    },
+    {
+     "label": "Ke serambi Suar",
+     "to": "serambi_suar"
+    }
+   ],
+   "objects": [
+    {
+     "id": "daftar_timur",
+     "name": "Dinding timur: daftar yang masih bernama",
+     "script": "suar3_daftar"
+    },
+    {
+     "id": "daftar_barat",
+     "name": "Dinding barat: daftar yang sudah bernomor",
+     "script": "suar3_nomor",
+     "if": [
+      "suar3_daftar_dibaca"
+     ]
+    }
+   ]
+  },
+  "bilik_juru": {
+   "name": "Bilik Juru Nyala Pertama",
+   "text": "Bilik sempit dengan satu dipan batu, satu rak, dan satu meja. Di meja ada mangkuk, sendok, dan sebuah buku yang terbuka pada halaman yang sama selama delapan ratus tahun. Orang yang tinggal di sini tidak pernah pindah dan tidak pernah membereskan mejanya.",
+   "exits": [
+    {
+     "label": "Kembali ke ruang daftar",
+     "to": "ruang_daftar"
+    }
+   ],
+   "objects": [
+    {
+     "id": "buku_bilik",
+     "name": "Buku yang terbuka di meja",
+     "script": "suar3_buku",
+     "if": [
+      "!suar3_buku_diambil"
+     ]
+    }
+   ]
+  },
+  "serambi_suar": {
+   "name": "Serambi Suar Ketiga",
+   "text": "Serambi setengah lingkaran menghadap satu pintu perunggu yang masih hangat. Dari sela-selanya keluar cahaya — bukan kuning, bukan jingga. Putih, dan rata, dan tidak berkedip sama sekali.\n\nDi lantai serambi ada bekas duduk: cekungan halus di batu, di depan pintu, sedalam orang yang duduk di tempat yang sama setiap hari selama bertahun-tahun.",
+   "exits": [
+    {
+     "label": "Kembali ke ruang daftar",
+     "to": "ruang_daftar"
+    },
+    {
+     "label": "Buka pintu perunggu",
+     "to": "rongga_ketiga"
+    }
+   ],
+   "objects": [
+    {
+     "id": "lentera_serambi",
+     "name": "Lentera penjaga di serambi (simpan & istirahat)",
+     "script": "lentera_save"
+    },
+    {
+     "id": "cekungan_duduk",
+     "name": "Cekungan bekas duduk di lantai",
+     "script": "suar3_cekungan"
+    }
+   ]
+  },
+  "rongga_ketiga": {
+   "name": "Rongga Suar Ketiga",
+   "safe": true,
+   "text": "Rongga kaca setinggi tiga orang, dan di dalamnya seorang perempuan berdiri tegak dengan tangan di sisi badan, menghadap pintu. Ia tidak terbakar. Ia menyala — merata, dari dalam, seperti sumbu yang tidak pernah pendek.\n\nBegitu pintu terbuka, ia mengangkat wajah dengan cara orang yang sudah lama menunggu ketukan.",
+   "on_enter": "suar3_boss",
+   "exits": [
+    {
+     "label": "Kembali ke serambi",
+     "to": "serambi_suar"
+    }
+   ]
+  }
+ },
+ "scripts": {
+  "lentera_save": [
+   {
+    "text": "Kau merapikan sumbu dan menuang sedikit minyak. Nyalanya menegak."
+   },
+   {
+    "heal": "all"
+   },
+   {
+    "save": true
+   },
+   {
+    "if": [
+     "has:bekal_kemah"
+    ],
+    "then": [
+     {
+      "kemah": true
+     }
+    ]
+   }
+  ],
+  "suar3_masuk": [
+   {
+    "once": "suar3_masuk_adegan",
+    "do": [
+     {
+      "text": "Menara Terapung berhenti terapung pada hari Nirmala menyerahkan diri ke Suar Benteng. Tidak ada yang melihatnya turun. Ia hanya sudah di bawah waktu kapal kalian lewat lagi, duduk miring di garam seperti orang tua yang akhirnya duduk."
+     },
+     {
+      "say": "Bagas",
+      "text": "Menara ini mengapung karena Suar-nya menyala. Suar-nya mati, menaranya duduk. Itu bukan keajaiban, itu cuma benda yang kehabisan alasan."
+     },
+     {
+      "say": "Sela",
+      "text": "Dan waktu ia duduk, ia memecahkan garamnya. Lihat tangga itu."
+     },
+     {
+      "say": "Rangga",
+      "text": "Batunya beda. Menara di atas dari kaca dan besi; tangga ini batu potong. Ini lebih tua. Jauh lebih tua."
+     },
+     {
+      "say": "Lintang",
+      "text": "Suar ketiga ada dua. Yang di atas itu yang kedua. (Ia menatap ke bawah.) Yang pertama masih menyala."
+     },
+     {
+      "text": "(Tip: tempat ini tidak ada di jalan ke Pusar Kabut, dan kalian boleh naik lagi kapan saja. Musuh di bawah sekitar Lv 45–48.)"
+     }
+    ]
+   }
+  ],
+  "suar3_sergap": [
+   {
+    "once": "suar3_sergap_done",
+    "do": [
+     {
+      "text": "Di angka \"tahun ke-120\", dinding di kedua sisi tangga terbuka bersamaan — bukan pintu, cuma rongga jaga — dan yang keluar dari dalamnya berjalan dengan langkah yang sama persis, kiri dulu, seperti diajari satu orang."
+     },
+     {
+      "battle": [
+       "penjaga_abad",
+       "nama_terbakar",
+       "nama_terbakar"
+      ],
+      "boss": false,
+      "can_flee": false,
+      "lose": "gameover"
+     },
+     {
+      "say": "Ratih",
+      "text": "Yang kecil-kecil itu bukan hantu. Itu nama. Aku dengar suku katanya waktu mereka pecah."
+     }
+    ]
+   }
+  ],
+  "suar3_daftar": [
+   {
+    "text": "Dinding timur. Huruf logam dilebur ke batu, rapat, empat kolom dari lantai sampai langit-langit.\n\nNama. Umur. Desa. Dan kolom terakhir, satu kata, sama di tiap baris: \"cukup\"."
+   },
+   {
+    "once": "suar3_daftar_dibaca",
+    "do": [
+     {
+      "say": "Rimba",
+      "text": "Cukup untuk apa?"
+     },
+     {
+      "say": "Rangga",
+      "text": "Cukup untuk menyalakan. (Ia membaca satu baris dengan jari.) \"Wastri. Empat belas. Padasuara. Cukup.\""
+     },
+     {
+      "say": "Ratih",
+      "text": "...Padasuara."
+     },
+     {
+      "text": "Ratih berdiri di depan kolom itu lama sekali. Ia menghitung ke bawah dengan telunjuknya, lalu berhenti, lalu menghitung lagi dari atas seperti orang yang berharap salah."
+     },
+     {
+      "say": "Ratih",
+      "text": "Ada dua puluh satu orang desaku di dinding ini. Dua puluh satu, dalam empat puluh tahun pertama. Dan kami masih menyanyi tiap malam supaya tidak ada yang perlu dibakar. (Suaranya tidak naik.) Kami menyanyi di atas mereka selama delapan ratus tahun dan tidak ada yang bilang."
+     },
+     {
+      "say": "Sela",
+      "text": "Ratih."
+     },
+     {
+      "say": "Ratih",
+      "text": "Jangan. Aku tidak mau dipegang sekarang. Aku mau membacanya sampai habis."
+     },
+     {
+      "quest": "daftar_suar_ketiga",
+      "state": "aktif"
+     }
+    ]
+   }
+  ],
+  "suar3_nomor": [
+   {
+    "text": "Dinding barat mulai persis di tempat dinding timur berhenti — dan di baris pertamanya, nama berhenti.\n\nKolom pertama sekarang angka. Kolom kedua umur. Kolom ketiga kosong, seluruhnya, sampai ke bawah. Kolom terakhir tetap: \"cukup\"."
+   },
+   {
+    "once": "suar3_nomor_dibaca",
+    "do": [
+     {
+      "say": "Bagas",
+      "text": "Mereka berhenti menulis desanya."
+     },
+     {
+      "say": "Rangga",
+      "text": "Mereka berhenti menulis namanya, Bagas. Nomor 1. Nomor 2. Nomor 900 sekian di bawah sana."
+     },
+     {
+      "say": "Lintang",
+      "text": "Kenapa?"
+     },
+     {
+      "say": "Sela",
+      "text": "Karena orang yang menulis nama akan ingat nama. (Jeda.) Aku pernah diajari itu. Di Pengawal, kalau kau harus menahan orang sekampung, kau tulis jumlahnya, bukan siapa-siapanya. Supaya kau bisa tidur."
+     },
+     {
+      "say": "Rimba",
+      "text": "Nirmala bilang mereka tahu sejak abad ketiga."
+     },
+     {
+      "say": "Rangga",
+      "text": "Dinding ini bilang mereka tahu sejak abad pertama. Abad ketiga cuma waktu mereka menulis pengakuannya di buku besar. (Ia menunjuk batas kedua dinding.) Di sini, di baris ini, ada satu orang yang memutuskan berhenti mengeja. Itu bukan tidak tahu. Itu memilih."
+     },
+     {
+      "give": {
+       "serpihan_ingatan": 1
+      }
+     },
+     {
+      "quest": "daftar_suar_ketiga",
+      "state": "nomor"
+     }
+    ]
+   }
+  ],
+  "suar3_buku": [
+   {
+    "set": "suar3_buku_diambil"
+   },
+   {
+    "text": "Buku itu bukan catatan ritual. Ia jadwal: kolom hari, kolom nama, kolom tanda tangan. Judulnya \"PERGANTIAN JAGA\".\n\nBarisnya penuh sampai halaman ke-empat puluh. Lalu berhenti. Baris terakhir yang ditandatangani tertulis: \"Hari ke-1.140. Pengganti: belum ditunjuk. Sekar diberi tahu: belum.\""
+   },
+   {
+    "if": [
+     "party:kelana"
+    ],
+    "then": [
+     {
+      "say": "Kelana",
+      "text": "Mereka menjanjikan pergantian."
+     }
+    ]
+   },
+   {
+    "if": [
+     "!party:kelana"
+    ],
+    "then": [
+     {
+      "say": "Lintang",
+      "text": "Mereka menjanjikan pergantian."
+     }
+    ]
+   },
+   {
+    "say": "Bagas",
+    "text": "Dan tidak pernah menunjuk penggantinya. Delapan ratus tahun. (Ia menutup bukunya, lalu membukanya lagi seperti berharap berubah.) Ini bukan lupa. Empat puluh hari pertama ditulis rapi tiap hari. Yang berhenti bukan pencatatnya — yang berhenti niatnya."
+   },
+   {
+    "give": {
+     "serpihan_ingatan": 1,
+     "abu_pagi": 3,
+     "ramuan_laut": 5
+    }
+   }
+  ],
+  "suar3_cekungan": [
+   {
+    "text": "Cekungan di lantai itu halus seperti batu sungai, dan bentuknya jelas: seseorang duduk di sini, menghadap pintu, dengan lutut ditekuk ke kiri. Setiap hari. Bertahun-tahun."
+   },
+   {
+    "once": "suar3_cekungan_dilihat",
+    "do": [
+     {
+      "say": "Rimba",
+      "text": "Ada yang menungguinya."
+     },
+     {
+      "say": "Rangga",
+      "text": "Juru Nyala pertama. Yang punya buku jadwal di bilik itu. (Ia berjongkok, menempelkan telapak ke cekungan.) Ia tidak bisa mengeluarkan Sekar, dan ia tidak mau pergi. Jadi ia duduk."
+     },
+     {
+      "say": "Ratih",
+      "text": "Itu bukan penebusan."
+     },
+     {
+      "say": "Rangga",
+      "text": "Bukan. (Ia berdiri.) Aku tahu persis apa itu, Ratih. Itu berjaga di depan pintu yang kau sendiri kunci, dan menyebutnya tugas. Aku melakukan itu selama dua puluh tahun di Tengara."
+     }
+    ]
+   }
+  ],
+  "suar3_boss": [
+   {
+    "once": "suar3_boss_adegan",
+    "do": [
+     {
+      "say": "Sekar",
+      "text": "Akhirnya. (Suaranya biasa saja — bukan gema, bukan bisik. Suara orang yang sudah lama tidak dipakai bicara.) Kalian dari Ordo? Saya sudah siap. Jadwalnya hari ke seribu seratus empat puluh, dan saya tidak mengeluh, tapi saya memang sudah agak lelah."
+     },
+     {
+      "text": "Tidak ada yang menjawab."
+     },
+     {
+      "say": "Sekar",
+      "text": "Kalian bukan dari Ordo."
+     },
+     {
+      "say": "Rimba",
+      "text": "Bukan, Bu."
+     },
+     {
+      "say": "Sekar",
+      "text": "(Jeda.) Tahun berapa sekarang?"
+     },
+     {
+      "text": "Rangga membuka mulut, lalu menutupnya lagi. Ratih yang menjawab, dan ia menjawab dengan angka penuh, tanpa memperhalusnya."
+     },
+     {
+      "say": "Ratih",
+      "text": "Delapan ratus dua belas tahun sejak tahun ke-nol, Bu. Bu sudah di dalam situ delapan ratus sebelas tahun."
+     },
+     {
+      "text": "Nyala di dalam rongga itu tidak berubah sama sekali. Itu bagian yang paling sulit dilihat: ia tidak berkedip, tidak meredup, tidak apa-apa. Yang berubah cuma tangannya, yang tadi di sisi badan, sekarang menggenggam."
+     },
+     {
+      "say": "Sekar",
+      "text": "Saya bilang ke Bapak saya, tiga tahun. Tiga tahun lalu pulang. Saya sudah hitung panennya."
+     },
+     {
+      "if": [
+       "party:kelana"
+      ],
+      "then": [
+       {
+        "say": "Kelana",
+        "text": "Mereka tidak pernah berniat menggantimu."
+       }
+      ]
+     },
+     {
+      "if": [
+       "party:kelana"
+      ],
+      "then": [
+       {
+        "say": "Kelana",
+        "text": "Aku juga dijanjikan sesuatu di dalam sana. Punyaku dibatalkan di tengah jalan, dan aku keluar jadi Hampa pertama. (Pelan.) Punyamu tidak dibatalkan. Itu lebih buruk."
+       }
+      ]
+     },
+     {
+      "if": [
+       "!party:kelana"
+      ],
+      "then": [
+       {
+        "say": "Lintang",
+        "text": "Mereka tidak pernah berniat menggantimu, Bu. Buku jadwalnya berhenti di halaman empat puluh."
+       }
+      ]
+     },
+     {
+      "say": "Sekar",
+      "text": "(Sangat pelan.) Ah."
+     },
+     {
+      "text": "Lalu, untuk pertama kalinya dalam delapan ratus sebelas tahun, nyala itu berubah. Ia naik."
+     },
+     {
+      "say": "Sekar",
+      "text": "Saya tidak marah sama kalian. Saya mau kalian tahu itu dulu, karena sebentar lagi saya tidak akan bisa bilang apa-apa. Saya cuma tidak punya tempat lain untuk meletakkannya."
+     },
+     {
+      "say": "Sela",
+      "text": "Semua orang di tempat ini bilang kalimat yang sama."
+     },
+     {
+      "text": "(Tip: ia memutar ketujuh elemen Suar satu per satu — tidak ada perisai elemen yang menutup semuanya. Fase satu ia menyerap Cahaya dan lemah Kelam; fase dua ia berhenti jadi cahaya, dan keduanya berbalik.)"
+     },
+     {
+      "battle": [
+       "boss_pelita_ketiga"
+      ],
+      "boss": true,
+      "lose": "gameover",
+      "win": [
+       {
+        "text": "Nyala itu tidak padam. Ia turun — dari putih ke jingga ke merah ke bara ke satu titik di lantai rongga, dan di sekitar titik itu ada seorang perempuan duduk dengan lutut ditekuk ke kiri, persis seperti cekungan di serambi."
+       },
+       {
+        "say": "Sekar",
+        "text": "Oh. Lantainya dingin."
+       },
+       {
+        "say": "Ratih",
+        "text": "Bu, boleh saya nyanyi?"
+       },
+       {
+        "say": "Sekar",
+        "text": "(Ia menoleh, bingung.) Kenapa?"
+       },
+       {
+        "say": "Ratih",
+        "text": "Karena di desa saya, kalau ada yang pulang jauh malam, ada yang menyanyi di beranda supaya dia tahu arah rumahnya. Saya dari Padasuara, Bu. Ada dua puluh satu nama desa saya di dinding sebelah sana."
+       },
+       {
+        "text": "Sekar menutup matanya. Ratih menyanyi — bukan Kidung, bukan yang dipakai melawan Kabut. Sesuatu yang pendek dan agak sumbang, yang jelas dipelajari waktu kecil dari orang yang juga tidak bisa menyanyi."
+       },
+       {
+        "say": "Sekar",
+        "text": "(Nyaris tidak terdengar.) Sekar. Sekar binti Warsa. Tulis di dinding timur, Nak. Yang ada namanya."
+       },
+       {
+        "text": "Dan ia tidak ada lagi. Di tempat ia duduk tertinggal satu keping kaca yang masih hangat, dan sumbu — sumbu kain biasa, sepanjang lengan, tidak terbakar sedikit pun."
+       },
+       {
+        "set": "suar3_boss_kalah"
+       },
+       {
+        "kaca": {
+         "kaca_sumbu": 1
+        }
+       },
+       {
+        "give": {
+         "serpihan_ingatan": 2
+        }
+       },
+       {
+        "keping": 22000
+       },
+       {
+        "quest": "daftar_suar_ketiga",
+        "state": "selesai"
+       },
+       {
+        "heal": "all"
+       },
+       {
+        "ilustrasi": "events/suar_ketiga",
+        "teks": "Rongga Suar yang akhirnya gelap, dan sebuah sumbu yang tidak pernah terbakar."
+       },
+       {
+        "say": "Rangga",
+        "text": "Rimba. Waktu kita sampai ke Pusar Kabut dan ketemu yang pertama — yang paling pertama — aku mau kau ingat ruangan ini. Bukan Nirmala, bukan buku besar. Ruangan ini."
+       },
+       {
+        "say": "Rimba",
+        "text": "Kenapa ruangan ini?"
+       },
+       {
+        "say": "Rangga",
+        "text": "Karena Nirmala berdebat denganmu soal gelap sekarang atau gelap nanti, dan itu kedengaran masuk akal. Ruangan ini tidak berdebat. Ruangan ini cuma punya dinding penuh nama dan satu buku jadwal yang berhenti."
+       }
+      ]
+     }
+    ]
+   }
+  ]
+ }
+}

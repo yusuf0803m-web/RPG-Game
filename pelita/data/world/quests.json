@@ -70,5 +70,13 @@
    "aktif": "Keluarga Bagas termasuk di antara Hampa yang dipanen Ordo di Wirasaba.",
    "selesai": "Kurungan kaca di gudang panen dibuka. Mereka tidak kembali, tapi mereka tidak lagi disimpan."
   }
+ },
+ "daftar_suar_ketiga": {
+  "name": "Dinding yang Berhenti Mengeja",
+  "states": {
+   "aktif": "Di bawah Menara Terapung yang sudah duduk di garam, dinding Suar ketiga memuat daftar orang yang dibakar untuk menyalakannya. Dua puluh satu di antaranya dari Padasuara.",
+   "nomor": "Daftar itu berhenti menulis nama di akhir abad pertama dan menggantinya dengan nomor. Seseorang memutuskan itu. Cari yang masih menyala di ujung serambi.",
+   "selesai": "Sekar binti Warsa keluar dari rongga Suar setelah delapan ratus sebelas tahun menunggu penggantinya, dan namanya dibawa naik."
+  }
  }
 }

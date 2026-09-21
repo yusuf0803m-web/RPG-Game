@@ -62,5 +62,9 @@
 
   "kaca_endap": {"name": "Kaca Endap", "kind": "pasif", "price": 0, "langka": true,
                  "passive": {"stat_mult": {"hp": 0.08}, "imun": ["berat", "tertelan"]},
-                 "description": "HP maks +8%, dan kebal Berat serta Tertelan. Salah satu kaca \"cacat\" yang ditenggelamkan ke dasar Danau Cermin. Tidak dijual."}
+                 "description": "HP maks +8%, dan kebal Berat serta Tertelan. Salah satu kaca \"cacat\" yang ditenggelamkan ke dasar Danau Cermin. Tidak dijual."},
+
+  "kaca_sumbu": {"name": "Kaca Sumbu", "kind": "pasif", "price": 0, "langka": true,
+                 "passive": {"stat_mult": {"mag": 0.10, "res": 0.10}, "imun": ["bakar"]},
+                 "description": "MAG dan RES +10%, dan kebal Bakar. Diambil dari rongga Suar ketiga: yang sudah terbakar delapan abad tidak bisa dibakar lagi. Tidak dijual."}
 }
