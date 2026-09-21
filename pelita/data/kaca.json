@@ -58,5 +58,9 @@
 
   "kaca_penenun": {"name": "Kaca Penenun", "kind": "pasif", "price": 0, "langka": true,
                    "passive": {"serang_adaptif": true},
-                   "description": "Serang dasar menenun dirinya jadi elemen kelemahan sasaran. Hadiah Sang Penenun (§6.3)."}
+                   "description": "Serang dasar menenun dirinya jadi elemen kelemahan sasaran. Hadiah Sang Penenun (§6.3)."},
+
+  "kaca_endap": {"name": "Kaca Endap", "kind": "pasif", "price": 0, "langka": true,
+                 "passive": {"stat_mult": {"hp": 0.08}, "imun": ["berat", "tertelan"]},
+                 "description": "HP maks +8%, dan kebal Berat serta Tertelan. Salah satu kaca \"cacat\" yang ditenggelamkan ke dasar Danau Cermin. Tidak dijual."}
 }

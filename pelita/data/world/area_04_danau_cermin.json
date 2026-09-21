@@ -237,6 +237,15 @@
     {
      "label": "Kembali ke pulau batu",
      "to": "pulau_batu"
+    },
+    {
+     "label": "Turun ke celah di dasar sarang",
+     "to": "mulut_dasar",
+     "area": "gua_danau",
+     "if": [
+      "arsip_dibaca"
+     ],
+     "locked": "Di dasar sarang ada celah selebar pintu, dan dari dalamnya naik udara yang kering. Tidak ada satu pun alasan untuk turun ke sana — belum."
     }
    ]
   }

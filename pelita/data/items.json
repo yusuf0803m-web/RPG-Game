@@ -139,5 +139,9 @@
                          "stats": {"hp": 90, "res": 14, "agi": 6}},
   "kalung_bara_besar":  {"name": "Kalung Bara Besar", "kind": "aksesori", "price": 6500,
                          "stats": {"mag": 10, "hp": 40},
-                         "description": "Seperti Kalung Bara, hanya lebih berat: party mulai dengan Bara di meteran."}
+                         "description": "Seperti Kalung Bara, hanya lebih berat: party mulai dengan Bara di meteran."},
+
+  "tali_penyelam":      {"name": "Tali Penyelam", "kind": "aksesori", "price": 0,
+                         "stats": {"hp": 45, "res": 5},
+                         "description": "Tali yang diikatkan ke pinggang supaya ada yang bisa menarikmu naik. Temuan Gua Bawah Danau; tidak dijual."}
 }

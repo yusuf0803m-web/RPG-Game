@@ -764,6 +764,35 @@
       "text": "Aku ikut. Aku mau tahu apa artinya \"dibatalkan\"."
      },
      {
+      "pause": true
+     },
+     {
+      "text": "Di rak paling bawah, di antara gulungan pajak, ada buku tipis yang tidak berjudul besar — hanya satu baris di sampulnya: DAFTAR TITIPAN DASAR.\n\nIsinya kolom: nomor peti, tahun, dan satu kalimat yang diulang-ulang sampai bawah halaman. \"Dititipkan ke dasar Danau Cermin.\""
+     },
+     {
+      "say": "Sela",
+      "text": "Dititipkan. Bukan dibuang. Orang yang menulis ini memilih katanya."
+     },
+     {
+      "text": "Baris terakhir ditulis lebih rapat, seperti ditambahkan belakangan:\n\n\"Peti 40–58, kaca cacat. Juru kaca yang mengantar: Padmo, tambang lereng utara. Turun tahun ke-nol. Tidak naik.\""
+     },
+     {
+      "say": "Rimba",
+      "text": "Tidak naik."
+     },
+     {
+      "say": "Lintang",
+      "text": "Berarti dia masih di bawah sana."
+     },
+     {
+      "say": "Sela",
+      "text": "(Ia menutup buku itu pelan.) Danau Cermin ada di belakang kita, Lintang. Kalau kau mau turun ke sana, itu perjalanan sendiri — dan bukan yang sedang ditunggu Pak Guntur."
+     },
+     {
+      "say": "Lintang",
+      "text": "Aku tahu. Aku cuma mau kau tahu juga."
+     },
+     {
       "set": "arsip_dibaca"
      },
      {

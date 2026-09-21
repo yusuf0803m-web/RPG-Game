@@ -502,5 +502,21 @@
                          "inflict": [{"status": "lupa", "chance": 0.5}]},
   "m_kabut_hening":     {"name": "Hening", "kind": "debuff", "element": "netral", "target": "semua_musuh", "level": 1,
                          "inflict": [{"status": "bisu", "chance": 0.55}]},
-  "m_gelombang_akhir":  {"name": "Gelombang Terakhir", "kind": "sihir", "element": "kelam", "target": "semua_musuh", "power": 1.8, "level": 1}
+  "m_gelombang_akhir":  {"name": "Gelombang Terakhir", "kind": "sihir", "element": "kelam", "target": "semua_musuh", "power": 1.8, "level": 1},
+
+  "m_tarik_dasar":      {"name": "Tarik ke Dasar", "kind": "fisik", "element": "fisik", "target": "satu_musuh", "power": 1.5, "level": 1,
+                         "inflict": [{"status": "berat", "chance": 0.5}]},
+  "m_isi_kendi":        {"name": "Isi Kendi", "kind": "sihir", "element": "es", "target": "satu_musuh", "power": 1.1, "level": 1,
+                         "tags": ["mp_drain_10"],
+                         "description": "Nyala yang tersisa dituang ke dalam kendi, seperti dulu."},
+  "m_pecahkan_kendi":   {"name": "Pecahkan Kendi", "kind": "sihir", "element": "kelam", "target": "semua_musuh", "power": 1.2, "level": 1,
+                         "inflict": [{"status": "lupa", "chance": 0.35}]},
+  "m_dorong_peti":      {"name": "Dorong Peti", "kind": "fisik", "element": "fisik", "target": "semua_musuh", "power": 1.3, "level": 1},
+  "m_tenggelamkan":     {"name": "Tenggelamkan", "kind": "sihir", "element": "es", "target": "satu_musuh", "power": 1.9, "level": 1,
+                         "inflict": [{"status": "tertelan", "chance": 0.35}]},
+  "m_panggil_kendi":    {"name": "Panggil Kendi", "kind": "buff", "element": "netral", "target": "diri", "level": 1,
+                         "tags": ["summon:kendi_ingatan:2"]},
+  "m_ingat_air":        {"name": "Ingat Air", "kind": "sihir", "element": "kelam", "target": "semua_musuh", "power": 1.7, "level": 1,
+                         "inflict": [{"status": "lupa", "chance": 0.3}],
+                         "description": "Ia berhenti memilah dan ingat bagaimana rasanya tidak bisa naik."}
 }

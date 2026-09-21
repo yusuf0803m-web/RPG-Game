@@ -3548,5 +3548,197 @@
   ],
   "lesson": "Tidak ada satu pun serangan yang melukainya. Hanya Lagu dan Kidung yang menguraikannya, delapan kali.",
   "description": "Seluruh Kabut dunia, berdiri sekali saja dalam bentuk yang bisa dihadapi — dan minta dinyanyikan, bukan dibunuh."
+ },
+ "kendi_ingatan": {
+  "name": "Kendi Ingatan",
+  "level": 14,
+  "xp": 1176,
+  "keping": 196,
+  "stats": {
+   "hp": 137,
+   "mp": 0,
+   "atk": 23,
+   "def": 17,
+   "mag": 25,
+   "res": 17,
+   "agi": 8,
+   "lck": 4
+  },
+  "affinities": {
+   "bumi": "lemah",
+   "fisik": "lemah",
+   "kelam": "tahan",
+   "es": "tahan"
+  },
+  "ai": [
+   {
+    "action": "m_sentuhan_lupa",
+    "weight": 3
+   },
+   {
+    "action": "m_pecahkan_kendi",
+    "weight": 2
+   },
+   {
+    "action": "serang",
+    "weight": 1
+   }
+  ],
+  "immune": [
+   "lupa",
+   "tidur",
+   "racun"
+  ],
+  "lesson": "Rapuh tapi menular: ia membuat kalian lupa skill. Pecahkan lebih dulu.",
+  "description": "Kendi tanah setinggi lutut yang berjalan dengan isinya sendiri. Yang di dalam masih bicara."
+ },
+ "perenang_dasar": {
+  "name": "Perenang Dasar",
+  "level": 15,
+  "xp": 1350,
+  "keping": 225,
+  "stats": {
+   "hp": 232,
+   "mp": 0,
+   "atk": 25,
+   "def": 19,
+   "mag": 26,
+   "res": 19,
+   "agi": 12,
+   "lck": 4
+  },
+  "affinities": {
+   "petir": "lemah",
+   "cahaya": "lemah",
+   "es": "tahan",
+   "fisik": "tahan"
+  },
+  "ai": [
+   {
+    "action": "m_jerat",
+    "weight": 2
+   },
+   {
+    "action": "m_tarik_dasar",
+    "weight": 3
+   },
+   {
+    "action": "serang",
+    "weight": 2
+   }
+  ],
+  "immune": [
+   "beku",
+   "tidur"
+  ],
+  "lesson": "Ia menjerat satu orang ke dasar. Petir lewat air; Sela yang menarik kembali.",
+  "description": "Orang yang turun untuk mengambil sesuatu dan tidak pernah memutuskan untuk naik.",
+  "steal": "ramuan_akar"
+ },
+ "serpih_cacat": {
+  "name": "Serpih Kaca Cacat",
+  "level": 16,
+  "xp": 1536,
+  "keping": 256,
+  "stats": {
+   "hp": 347,
+   "mp": 0,
+   "atk": 26,
+   "def": 26,
+   "mag": 28,
+   "res": 26,
+   "agi": 9,
+   "lck": 4
+  },
+  "affinities": {
+   "petir": "lemah",
+   "fisik": "tahan",
+   "kelam": "tahan"
+  },
+  "ai": [
+   {
+    "action": "m_getar_kristal",
+    "weight": 3
+   },
+   {
+    "action": "m_cangkang",
+    "weight": 1
+   },
+   {
+    "action": "serang",
+    "weight": 2
+   }
+  ],
+  "immune": [
+   "racun",
+   "lupa",
+   "tidur",
+   "bakar"
+  ],
+  "ketahanan": 50,
+  "lesson": "Berzirah kaca: kelemahan mengikis Ketahanan sampai PECAH, lalu pukul.",
+  "description": "Pecahan Kaca Ingatan yang ditolak Ordo, mengeras jadi satu tubuh bersudut.",
+  "steal": "suku_cadang"
+ },
+ "boss_juru_kaca_tenggelam": {
+  "name": "Juru Kaca Tenggelam",
+  "level": 17,
+  "xp": 8670,
+  "keping": 1445,
+  "is_boss": true,
+  "ketahanan": 140,
+  "stats": {
+   "hp": 1700,
+   "mp": 0,
+   "atk": 30,
+   "def": 21,
+   "mag": 33,
+   "res": 21,
+   "agi": 10,
+   "lck": 5
+  },
+  "affinities": {
+   "petir": "lemah",
+   "es": "tahan",
+   "fisik": "tahan"
+  },
+  "ai": [],
+  "phases": [
+   {
+    "name": "Masih Memilah",
+    "hp_above": 0.55,
+    "pattern": [
+     "m_dorong_peti",
+     "m_tenggelamkan",
+     "m_panggil_kendi",
+     "m_isi_kendi"
+    ]
+   },
+   {
+    "name": "Ingat Air",
+    "hp_above": 0.0,
+    "pattern": [
+     "m_ingat_air",
+     "m_tenggelamkan",
+     "m_dorong_peti",
+     "m_tenggelamkan"
+    ],
+    "affinities": {
+     "cahaya": "lemah",
+     "petir": "tahan",
+     "es": "tahan",
+     "kelam": "tahan"
+    },
+    "announce": "Ia berhenti memilah. Air keluar dari zirahnya, dan yang tersisa bukan juru kaca lagi — hanya orang yang tidak bisa naik."
+   }
+  ],
+  "immune": [
+   "tidur",
+   "beku",
+   "berat",
+   "tertelan"
+  ],
+  "lesson": "Fase dua ia melupakan pekerjaannya dan kelemahannya ikut berubah; pindai ulang.",
+  "description": "Juru kaca tambang yang turun membawa peti dan tidak pernah diperintahkan naik."
  }
 }

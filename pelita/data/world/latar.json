@@ -858,6 +858,48 @@
    "kategori": "peristiwa",
    "prioritas": 2,
    "deskripsi": "Kabut di dasar sumur terurai jadi ribuan helai halus yang pergi ke segala arah ke atas, dan di lantai kaca seorang perempuan duduk bersila menyanyi dengan sandal dilepas di sebelahnya."
+  },
+  "gua_danau/mulut_dasar": {
+   "nama": "Gua Bawah Danau — Mulut Dasar",
+   "kategori": "lokasi",
+   "prioritas": 2,
+   "deskripsi": "Celah selebar pintu di lantai gua sarang, turun lurus ke gelap. Di atas kepala, permukaan danau terlihat dari bawah: satu lembar perak yang menahan dirinya sendiri, dan tidak setetes pun jatuh."
+  },
+  "gua_danau/tangga_air": {
+   "nama": "Gua Bawah Danau — Tangga Air Berdiri",
+   "kategori": "lokasi",
+   "prioritas": 2,
+   "deskripsi": "Tangga batu yang menggantung di dalam dinding air yang berdiri tegak setebal lengan. Di dalam dinding itu, pantulan orang yang sedang menuruni tangga — sedikit terlambat dari yang asli."
+  },
+  "gua_danau/ceruk_jala": {
+   "nama": "Gua Bawah Danau — Ceruk Jala",
+   "kategori": "lokasi",
+   "prioritas": 3,
+   "deskripsi": "Ceruk sempit penuh jala nelayan berlapis-lapis, dilempar dari atas selama puluhan tahun dan tidak pernah ditarik. Di dalamnya tersangkut sendok, pisau, satu sepatu anak."
+  },
+  "gua_danau/ladang_kendi": {
+   "nama": "Gua Bawah Danau — Ladang Kendi",
+   "kategori": "lokasi",
+   "prioritas": 1,
+   "deskripsi": "Ruang selebar pasar yang lantainya ribuan kendi tanah setinggi lutut, berdiri rapat sampai ke gelap, masing-masing tersumbat kain bertinta pudar. Di tengahnya cekungan batu bundar bertiga lekuk."
+  },
+  "gua_danau/palka_peti": {
+   "nama": "Gua Bawah Danau — Palka Peti Tenggelam",
+   "kategori": "lokasi",
+   "prioritas": 2,
+   "deskripsi": "Lorong berlangit rendah dengan peti kayu bersegel timah ditumpuk dua-dua di kedua dinding, semuanya bertanda Ordo Pelita yang dicoret. Di lantai, garis-garis bekas seret yang semuanya menuju satu arah."
+  },
+  "gua_danau/dasar_menelan": {
+   "nama": "Gua Bawah Danau — Dasar yang Menelan",
+   "kategori": "lokasi",
+   "prioritas": 1,
+   "deskripsi": "Ruang bundar di ujung palka. Seorang juru kaca berzirah kerja berdiri membelakangi, mengangkat sekeping kaca ke arah cahaya yang tidak ada. Di kirinya tumpukan kaca setinggi orang; di kanannya lantai kosong."
+  },
+  "events/dasar_menelan": {
+   "nama": "Peristiwa — Seratus keping yang ditolak",
+   "kategori": "peristiwa",
+   "prioritas": 2,
+   "deskripsi": "Tumpukan kaca ingatan setinggi orang runtuh pelan ke lantai gua, dan di puncak reruntuhannya satu keping tergeletak tanpa retak. Tidak ada orang di dalam gambar."
   }
  }
 }
