@@ -71,6 +71,14 @@
      "id": "lentera_kapal",
      "name": "Lentera penjaga (simpan & istirahat)",
      "script": "lentera_save"
+    },
+    {
+     "id": "peti_rukmini",
+     "name": "Peti kecil di sisi lentera kapal",
+     "script": "sq_kakak",
+     "if": [
+      "!sq_kakak_selesai"
+     ]
     }
    ],
    "npcs": [
@@ -315,6 +323,14 @@
      "script": "peti_pasar",
      "if": [
       "!peti_pasar_diambil"
+     ]
+    },
+    {
+     "id": "pesanan_gantung",
+     "name": "Bungkusan bertali yang digantung di tiang lapak",
+     "script": "sq_pesanan",
+     "if": [
+      "!sq_pesanan_selesai"
      ]
     }
    ]
@@ -1713,8 +1729,20 @@
     "give": {
      "serpihan_ingatan": 1,
      "kendi_nyala": 4,
-     "abu_pagi": 4
+     "abu_pagi": 4,
+     "ransel_kafilah": 1
     }
+   },
+   {
+    "if": [
+     "sq_kakak_aktif"
+    ],
+    "then": [
+     {
+      "quest": "kakak_rukmini",
+      "state": "ketemu"
+     }
+    ]
    }
   ],
   "pd_pulau": [
@@ -1859,6 +1887,173 @@
       "text": "Belum ketemu kacanya? Tidak apa-apa. Aku ikut kapal ini sampai ujung dunia, jadi aku tidak ke mana-mana."
      }
     ]
+   }
+  ],
+  "sq_kakak": [
+   {
+    "if": [
+     "has:ransel_kafilah"
+    ],
+    "then": [
+     {
+      "text": "Nyai Rukmini melihat ransel itu sebelum kalian sempat menjelaskan. Ia tidak berdiri dari tempatnya menganyam."
+     },
+     {
+      "say": "Rukmini",
+      "text": "Simpulnya. (Jeda panjang.) Cuma dia yang menyimpul begitu. Aku yang mengajari, dan aku mengajarinya salah, dan dia tidak pernah mau membetulkan."
+     },
+     {
+      "text": "Ia membuka ranselnya di pangkuannya. Isinya sudah kalian ambil, kecuali satu: gulungan kain kecil berisi jarum, benang, dan kain tambalan — perkakas jahit kafilah, masih lengkap."
+     },
+     {
+      "say": "Rukmini",
+      "text": "Empat puluh tahun aku bilang ke orang-orang dia pergi berdagang ke selatan. Aku tahu itu bohong waktu mengucapkannya. Aku cuma tidak punya kalimat lain yang muat di mulut."
+     },
+     {
+      "say": "Rimba",
+      "text": "Nyai, dia..."
+     },
+     {
+      "say": "Rukmini",
+      "text": "Dia naik sampai ujung, kan? (Ia tidak menunggu jawaban.) Ya. Dia memang begitu. Bilangnya cuma mau lihat, lalu jalan terus sampai lihatnya habis."
+     },
+     {
+      "text": "Ia melipat gulungan jahit itu dan menaruhnya di peti kecil di sisi lentera kapal, lalu menutup petinya."
+     },
+     {
+      "say": "Rukmini",
+      "text": "Sudah. Sekarang ada tempatnya. (Ia mengambil anyamannya lagi.) Kalian tahu kenapa aku menyumbang kapal ini? Bukan karena baik. Karena aku sudah empat puluh tahun mengantar orang ke tepi dan berhenti di tepi. Sekali ini aku mau ikut sampai yang diantar sampai."
+     },
+     {
+      "take": {
+       "ransel_kafilah": 1
+      }
+     },
+     {
+      "set": "sq_kakak_selesai"
+     },
+     {
+      "quest": "kakak_rukmini",
+      "state": "selesai"
+     },
+     {
+      "give": {
+       "serpihan_ingatan": 2,
+       "bekal_kemah": 4
+      }
+     },
+     {
+      "keping": 8000
+     }
+    ],
+    "else": [
+     {
+      "if": [
+       "!sq_kakak_aktif"
+      ],
+      "then": [
+       {
+        "text": "Peti kayu kecil di sisi lentera kapal, ukuran dua telapak, kosong. Talinya baru diganti."
+       },
+       {
+        "say": "Rukmini",
+        "text": "Itu punyaku. Kosong, ya. (Ia menganyam tanpa menoleh.) Kakakku bawa satu yang persis begitu waktu dia naik kapal terakhir kali. Empat puluh tahun lalu, ke arah yang sama dengan yang kita tuju sekarang."
+       },
+       {
+        "say": "Sela",
+        "text": "Dia berdagang?"
+       },
+       {
+        "say": "Rukmini",
+        "text": "Dia bilang cuma mau lihat. (Ia tertawa satu kali, pendek dan tidak lucu.) Kafilah tidak pergi ke laut ini untuk berdagang, Nak. Tidak ada yang beli apa-apa di sini."
+       },
+       {
+        "say": "Rukmini",
+        "text": "Kalau kalian ketemu ranselnya — kulit tua, tali pinggangnya disimpul tujuh kali — bawa pulang. Bukan buat dikubur. Buat ditaruh. Ada bedanya."
+       },
+       {
+        "set": "sq_kakak_aktif"
+       },
+       {
+        "quest": "kakak_rukmini",
+        "state": "aktif"
+       }
+      ],
+      "else": [
+       {
+        "say": "Rukmini",
+        "text": "Belum ketemu. Ya sudah. Empat puluh tahun juga belum ketemu; beberapa minggu lagi tidak akan membunuh siapa-siapa."
+       }
+      ]
+     }
+    ]
+   }
+  ],
+  "sq_pesanan": [
+   {
+    "text": "Satu bungkusan kain digantung di tiang lapak, setinggi kepala, dengan label kayu kecil supaya tidak tertukar. Di labelnya, ditulis dengan arang oleh orang yang tidak terbiasa menulis:\n\n\"BUAT MBAK ENDANG. DIAMBIL SORE.\"\n\nSorenya tidak pernah datang. Bungkusan itu masih tergantung, dan isinya masih hangat."
+   },
+   {
+    "say": "Bagas",
+    "text": "Masih hangat. Delapan abad."
+   },
+   {
+    "say": "Lintang",
+    "text": "Karena yang mengeras itu sorenya, bukan bungkusannya."
+   },
+   {
+    "choice": [
+     {
+      "text": "Buka bungkusannya.",
+      "then": [
+       {
+        "text": "Di dalamnya: sepasang sandal kulit ukuran kecil, dijahit rapi, dengan tali yang diganti baru. Bukan barang baru — barang lama yang diperbaiki sampai layak dipakai lagi."
+       },
+       {
+        "say": "Sela",
+        "text": "Ini bukan dagangan. Ini perbaikan."
+       },
+       {
+        "say": "Ratih",
+        "text": "Berarti yang menggantungnya kenal Mbak Endang. Tukang sandal tidak menulis nama di label kalau pelanggannya banyak."
+       }
+      ]
+     },
+     {
+      "text": "Biarkan tergantung, turunkan labelnya saja.",
+      "then": [
+       {
+        "text": "Rimba melepas label kayunya dan memasukkannya ke sakunya. Bungkusannya dibiarkan di tempatnya, tetap hangat."
+       },
+       {
+        "say": "Rimba",
+        "text": "Kalau nanti pasarnya kembali jadi pasar, biar bungkusannya masih menunggu di tiang yang benar."
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "text": "Waktu kalian keluar dari lorong lapak, satu lapak di ujung — yang tadi kosong — sekarang ada bayangan orang di belakangnya, membungkuk, menjahit. Ia tidak menoleh. Tapi ia ada di sana, dan tadi tidak."
+   },
+   {
+    "say": "Lintang",
+    "text": "Dia tidak kembali. Dia cuma diingat sebentar."
+   },
+   {
+    "set": "sq_pesanan_selesai"
+   },
+   {
+    "quest": "pesanan_tak_diambil",
+    "state": "selesai"
+   },
+   {
+    "give": {
+     "serpihan_ingatan": 1
+    }
+   },
+   {
+    "keping": 6000
    }
   ]
  }

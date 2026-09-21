@@ -701,3 +701,85 @@ def test_side_quest_babak2_boleh_dilewati():
     assert res == "berhenti"
     for q in SQ_BABAK2:
         assert q not in st.quests, f"jalur utama menyentuh {q}"
+
+
+# -- Side quest Babak 3 (3 baru, §5.7 menjanjikan 3) -----------------------
+SQ_BABAK3 = ("kakak_rukmini", "pesanan_tak_diambil", "nama_lapis_dua")
+
+
+def langkah_sq_babak3():
+    """SEMUA_BABAK3 dengan ketiga side quest Babak 3 disisipkan.
+
+    "Kakak yang Cuma Mau Lihat" sengaja bersandar pada Pulau Hilang: konten
+    opsional boleh menuntut konten opsional lain, asal jalur utama tetap bebas.
+    """
+    from tests.test_babak3 import SEMUA_BABAK3
+    l = list(SEMUA_BABAK3)
+    l = _sisip_sebelum(l, "Ke haluan", ["Peti kecil di sisi lentera kapal"])
+    l = _sisip(l, "Masuk ke lorong lapak", ["Bungkusan bertali", "Buka bungkusannya"])
+    # Pulau Hilang: ranselnya di Lorong Benang, lalu diserahkan di dek.
+    l = _sisip(l, "#kenangan:puncak_rimba", [
+        "Singgah: pulau yang tidak ada di peta",
+        "Ikuti benang ke dalam pulau", "Ke gudang di belakang rumah tenun",
+        "Ke lorong benang di ujung gudang", "Barang-barang di bawah lentera",
+        "Kembali ke gudang pola", "Kembali ke rumah tenun", "Kembali ke pantai",
+        "Kembali ke kapal",
+    ])
+    l = _sisip(l, "Nyai Rukmini", ["Peti kecil di sisi lentera kapal"])
+    l = _sisip(l, "Turun ke Lapis Dua", ["Rak paling bawah"])
+    return l
+
+
+@pytest.fixture(scope="module")
+def sq_babak3():
+    from tests.test_babak3 import ENDING_NYALA
+    return jalankan_babak3(langkah_sq_babak3() + ENDING_NYALA, 3)
+
+
+def test_tiga_side_quest_babak3_bisa_diselesaikan(sq_babak3):
+    res, st, wk = sq_babak3
+    assert res == "chapter_end", wk.text[-3000:]
+    kurang = [q for q in SQ_BABAK3 if st.quests.get(q) != "selesai"]
+    assert not kurang, f"belum selesai: {[(q, st.quests.get(q)) for q in kurang]}"
+    assert not wk.steps, f"langkah tersisa: {list(wk.steps)}"
+
+
+def test_side_quest_babak3_menyentuh_ceritanya(sq_babak3):
+    _, _, wk = sq_babak3
+    t = datar(wk.text)
+    assert "Bukan buat dikubur. Buat ditaruh" in t
+    assert "BUAT MBAK ENDANG" in t
+    assert "Sekar binti Warsa" in t, "dua belas keping harus menyebut nama Pelita Ketiga"
+
+
+def test_side_quest_babak3_boleh_dilewati():
+    from tests.test_babak3 import ENDING_NYALA, SEMUA_BABAK3
+    res, st, wk = jalankan_babak3(SEMUA_BABAK3 + ENDING_NYALA, 3)
+    assert res == "chapter_end"
+    for q in SQ_BABAK3:
+        assert q not in st.quests, f"jalur utama menyentuh {q}"
+
+
+def test_side_quest_genap_delapan_belas():
+    """§5.7: 18 side quest (Babak 1: 6, Babak 2: 9, Babak 3: 3).
+
+    Entri quests.json yang BUKAN side quest tidak ikut dihitung: enam di antaranya
+    pelacak cerita utama yang selesai sendiri di jalur wajib.
+    """
+    quests = json.loads(
+        (Path(__file__).resolve().parents[1] / "pelita/data/world/quests.json")
+        .read_text(encoding="utf-8"))
+    pelacak_cerita = {
+        "kirana_hilang", "mencari_guntur", "yang_hilang_di_telaga", "nama_bapak",
+        "pendendang_padasuara", "keluarga_bagas",
+    }
+    side = {k for k in quests if not k.startswith("_")} - pelacak_cerita
+    babak1 = {"hampa_pasar_malam", "surat_distrik_sunyi", "kucing_penginapan",
+              "duabelas_lentera", "pesanan_sarwa", "penunggu_gerbang"}
+    babak2 = set(SQ_BABAK2) | {"pesanan_darma", "pendendang_hilang"}
+    babak3 = set(SQ_BABAK3)
+    # Dua quest dungeon opsional adalah bonus di luar hitungan §5.7.
+    dungeon = {"daftar_suar_ketiga", "pola_pulau_hilang"}
+    assert side == babak1 | babak2 | babak3 | dungeon, sorted(side)
+    assert len(babak1) == 6 and len(babak2) == 9 and len(babak3) == 3
+    assert len(babak1 | babak2 | babak3) == 18

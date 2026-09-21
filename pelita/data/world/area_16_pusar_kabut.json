@@ -111,6 +111,16 @@
      "label": "Turun ke Lapis Tiga — Asrama",
      "to": "lapis_3_asrama"
     }
+   ],
+   "objects": [
+    {
+     "id": "rak_paling_bawah",
+     "name": "Rak paling bawah, yang labelnya sudah tidak terbaca",
+     "script": "sq_nama_pertama",
+     "if": [
+      "!sq_nama_selesai"
+     ]
+    }
    ]
   },
   "lapis_3_asrama": {
@@ -1244,6 +1254,86 @@
    },
    {
     "end_chapter": "AKHIR — \"MENDENDANGKAN\" (rahasia)\n\nKabut tidak ditahan dan tidak dilarutkan. Ia dinyanyikan kembali jadi ingatan, dan dikembalikan ke pemiliknya masing-masing.\n\nHampa pulih. Suar tidak perlu menyala. Orang pertama yang dibakar mendapatkan namanya kembali, dan memakainya.\n\nEnding \"mengingat bersama\".\n\nTerima kasih sudah bermain Pelita Terakhir."
+   }
+  ],
+  "sq_nama_pertama": [
+   {
+    "text": "Rak paling bawah tidak berlabel karena labelnya lebih tua daripada sistem pelabelannya. Kacanya cuma dua belas keping, ditaruh berjajar, dan tidak ditumpuk seperti yang lain.\n\nBegitu lentera didekatkan, kaca pertama menyala dari dalam dan memperdengarkan satu suara. Bukan ritual, bukan doa. Seseorang menyebutkan nama, umur, dan desa — miliknya sendiri — pelan-pelan, dua kali, seperti orang yang ingin dicatat dengan benar."
+   },
+   {
+    "say": "Rangga",
+    "text": "Dua belas keping. Dua belas orang pertama."
+   },
+   {
+    "say": "Lintang",
+    "text": "Mereka merekam sendiri. Tidak ada yang mencatatkan mereka."
+   },
+   {
+    "say": "Sela",
+    "text": "Kenapa?"
+   },
+   {
+    "say": "Kelana",
+    "text": "Karena belum ada yang perlu dibohongi. (Ia mendengarkan sampai keping pertama selesai.) Waktu itu Suar pertama belum menyala, jadi belum ada yang harus dibenarkan. Mereka cuma dua belas orang yang setuju dibakar supaya yang lain tidak, dan mereka ingin namanya betul."
+   },
+   {
+    "text": "Kalian mendengarkan kedua belasnya. Itu memakan waktu lebih lama daripada yang nyaman, dan tidak ada satu pun dari kalian yang mengusulkan berhenti di tengah."
+   },
+   {
+    "say": "Ratih",
+    "text": "Dinding di Suar ketiga berhenti mengeja di abad pertama. (Suaranya rata.) Berarti ini yang terakhir kali ada yang mau namanya betul, dan sesudah itu tidak ada lagi yang ditanya."
+   },
+   {
+    "say": "Rimba",
+    "text": "Nama terakhirnya siapa?"
+   },
+   {
+    "text": "Keping kedua belas menyala paling redup. Suaranya perempuan, muda, dan agak terburu-buru, seperti orang yang direkam di antara pekerjaan.\n\n\"Sekar binti Warsa. Dua puluh satu. Pesisir Wetan. Saya yang ketiga, kalau jadwalnya tidak berubah.\""
+   },
+   {
+    "if": [
+     "suar3_boss_kalah"
+    ],
+    "then": [
+     {
+      "say": "Ratih",
+      "text": "(Sangat pelan.) Saya sudah menuliskannya, Bu. Di dinding timur. Yang ada namanya."
+     },
+     {
+      "give": {
+       "serpihan_ingatan": 1
+      }
+     }
+    ],
+    "else": [
+     {
+      "say": "Rimba",
+      "text": "Yang ketiga. Suar ketiga."
+     },
+     {
+      "say": "Rangga",
+      "text": "Dan jadwalnya berubah. (Ia menutup rak itu pelan.) Jadwalnya berhenti."
+     }
+    ]
+   },
+   {
+    "set": "sq_nama_selesai"
+   },
+   {
+    "quest": "nama_lapis_dua",
+    "state": "selesai"
+   },
+   {
+    "give": {
+     "serpihan_ingatan": 2
+    }
+   },
+   {
+    "keping": 9000
+   },
+   {
+    "ilustrasi": "events/dua_belas_keping",
+    "teks": "Dua belas keping berjajar, direkam sendiri oleh pemiliknya, supaya namanya betul."
    }
   ]
  }

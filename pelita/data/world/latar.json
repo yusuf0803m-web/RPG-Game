@@ -984,6 +984,12 @@
    "kategori": "peristiwa",
    "prioritas": 2,
    "deskripsi": "Meja makan di rumah kaca Wirasaba: tujuh piring, tujuh Hampa duduk mengelilinginya, dan tujuh sendok turun ke piring bersamaan untuk pertama kalinya dalam delapan abad."
+  },
+  "events/dua_belas_keping": {
+   "nama": "Peristiwa — Dua Belas Keping",
+   "kategori": "peristiwa",
+   "prioritas": 1,
+   "deskripsi": "Rak batu paling bawah di arsip bawah tanah, tanpa label. Dua belas keping kaca ingatan berjajar rapi, tidak ditumpuk, dan yang paling ujung menyala redup dari dalam."
   }
  }
 }

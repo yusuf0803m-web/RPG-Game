@@ -159,5 +159,8 @@
                          "description": "Bantalan besi pusat roda, seukuran kepalan, masih bulat. Diambil dari bekas bengkel kota yang tidak sempat diberi nama."},
 
   "kaca_wirasaba_tua":  {"name": "Keping Kaca Wirasaba", "kind": "kunci", "price": 0,
-                         "description": "Sekeping kaca ingatan berumur delapan abad, diambil dari dinding pembatas jalan yang sudah runtuh. Bunyinya pendek: tidak ada lagi yang bergerak di dalamnya."}
+                         "description": "Sekeping kaca ingatan berumur delapan abad, diambil dari dinding pembatas jalan yang sudah runtuh. Bunyinya pendek: tidak ada lagi yang bergerak di dalamnya."},
+
+  "ransel_kafilah":     {"name": "Ransel Kafilah Tua", "kind": "kunci", "price": 0,
+                         "description": "Ransel kulit yang sudah lapuk, tali pinggangnya disimpul tujuh kali dengan simpul yang salah dan tidak pernah dibetulkan."}
 }

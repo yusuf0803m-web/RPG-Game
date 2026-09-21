@@ -172,5 +172,25 @@
   "states": {
    "selesai": "Satu kotak kecil per bilik asrama Benteng, tidak dikunci, kebanyakan milik orang yang lebih muda dari Rimba. Batu sungai, gigi susu, sisir patah, tali bersimpul tujuh. Tidak ada yang diambil, dan semua tutupnya ditutup lagi."
   }
+ },
+ "kakak_rukmini": {
+  "name": "Kakak yang Cuma Mau Lihat",
+  "states": {
+   "aktif": "Kakak Nyai Rukmini naik kapal ke Laut Lupa empat puluh tahun lalu dan bilang cuma mau lihat. Ranselnya kulit tua, tali pinggangnya disimpul tujuh kali.",
+   "ketemu": "Ranselnya ada di Lorong Benang, Pulau Hilang, disandarkan rapi di bawah lentera penjaga. Tidak ada tulang; ia berjalan naik dan tidak menaruh apa-apa lagi.",
+   "selesai": "Bukan buat dikubur — buat ditaruh. Sekarang ada tempatnya."
+  }
+ },
+ "pesanan_tak_diambil": {
+  "name": "Pesanan yang Tidak Diambil",
+  "states": {
+   "selesai": "\"BUAT MBAK ENDANG. DIAMBIL SORE.\" Sorenya tidak pernah datang, dan bungkusannya masih hangat. Di ujung lorong, satu lapak yang tadi kosong sekarang ada bayangan orang menjahit."
+  }
+ },
+ "nama_lapis_dua": {
+  "name": "Nama di Lapis Dua",
+  "states": {
+   "selesai": "Dua belas keping di rak paling bawah Arsip Pertama, direkam sendiri oleh pemiliknya: nama, umur, desa, diucapkan dua kali supaya dicatat dengan benar. Yang kedua belas Sekar binti Warsa, dua puluh satu tahun, yang ketiga kalau jadwalnya tidak berubah."
+  }
  }
 }
