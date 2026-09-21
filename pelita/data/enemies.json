@@ -3935,5 +3935,150 @@
   ],
   "lesson": "Ia memutar ketujuh elemen Suar satu per satu. Fase dua ia berhenti jadi cahaya, dan kelemahannya ikut berbalik.",
   "description": "Perempuan yang masuk ke rongga Suar ketiga di abad pertama dan masih menunggu penggantinya datang."
+ },
+ "gerobak_kurungan": {
+  "name": "Gerobak Kurungan",
+  "level": 41,
+  "xp": 20172,
+  "keping": 3400,
+  "traits": [
+   "formasi"
+  ],
+  "stats": {
+   "hp": 6000,
+   "mp": 0,
+   "atk": 72,
+   "def": 64,
+   "mag": 55,
+   "res": 64,
+   "agi": 14,
+   "lck": 8
+  },
+  "affinities": {
+   "petir": "lemah",
+   "fisik": "tahan",
+   "cahaya": "tahan"
+  },
+  "ai": [],
+  "immune": [
+   "bakar",
+   "goyah",
+   "lupa",
+   "provokasi",
+   "racun",
+   "tidur"
+  ],
+  "ketahanan": 160,
+  "lesson": "Formasi: DEF & RES ×2 selama pemanennya masih berdiri. Jatuhkan pendorongnya dulu — tapi mereka menyedot Bara tiap dua giliran.",
+  "description": "Gerobak panen Ordo yang rodanya tidak pernah diberi perintah berhenti, dan dua pemanen yang tidak pernah diberi perintah pulang.",
+  "phases": [
+   {
+    "name": "Menjalani Rute",
+    "hp_above": 0.0,
+    "pattern": [
+     "m_isi_rantai",
+     "m_seret",
+     "m_derit_besar",
+     "serang"
+    ]
+   }
+  ]
+ },
+ "gema_penghitung": {
+  "name": "Gema Penghitung",
+  "level": 50,
+  "xp": 25000,
+  "keping": 4200,
+  "stats": {
+   "hp": 5400,
+   "mp": 0,
+   "atk": 80,
+   "def": 54,
+   "mag": 92,
+   "res": 58,
+   "agi": 28,
+   "lck": 13
+  },
+  "affinities": {
+   "cahaya": "lemah",
+   "kelam": "tahan",
+   "fisik": "tahan"
+  },
+  "ai": [
+   {
+    "action": "m_panggil_gema_party",
+    "weight": 3,
+    "every_n_turns": 3
+   },
+   {
+    "action": "m_tiru_derita",
+    "weight": 2,
+    "every_n_turns": 2
+   },
+   {
+    "action": "m_tarik_ingatan",
+    "weight": 3
+   },
+   {
+    "action": "serang",
+    "weight": 2
+   }
+  ],
+  "immune": [
+   "bisu",
+   "goyah",
+   "lupa",
+   "racun",
+   "tidur"
+  ],
+  "ketahanan": 150,
+  "lesson": "Ia memanggil gema kalian sendiri. Gema itu memakai kelemahan kalian, bukan kelemahannya.",
+  "description": "Sesuatu yang berdiri di tengah laut sambil menghitung, dan yang dihitungnya adalah berapa orang yang lewat dan berapa yang kembali."
+ },
+ "penjaga_suar_kedelapan": {
+  "name": "Penjaga Suar Kedelapan",
+  "level": 53,
+  "xp": 31800,
+  "keping": 5600,
+  "stats": {
+   "hp": 5000,
+   "mp": 0,
+   "atk": 82,
+   "def": 69,
+   "mag": 88,
+   "res": 69,
+   "agi": 22,
+   "lck": 13
+  },
+  "affinities": {
+   "kelam": "lemah",
+   "cahaya": "serap",
+   "fisik": "tahan"
+  },
+  "ai": [],
+  "immune": [
+   "bakar",
+   "beku",
+   "goyah",
+   "lupa",
+   "provokasi",
+   "racun",
+   "tidur"
+  ],
+  "ketahanan": 180,
+  "lesson": "Ia mengisi sebelum menembak, dan isiannya batal kalau ia Goyah atau PECAH. Kelemahan tepat waktu lebih berguna daripada kelemahan besar.",
+  "description": "Konstruk penjaga untuk Suar kedelapan. Tidak pernah ada Suar kedelapan.",
+  "phases": [
+   {
+    "name": "Berjaga untuk yang Tidak Ada",
+    "hp_above": 0.0,
+    "pattern": [
+     "m_isi_kedelapan",
+     "m_nyala_kedelapan",
+     "m_suar_cahaya",
+     "m_derit_besar"
+    ]
+   }
+  ]
  }
 }

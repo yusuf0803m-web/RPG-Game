@@ -143,5 +143,12 @@
 
   "tali_penyelam":      {"name": "Tali Penyelam", "kind": "aksesori", "price": 0,
                          "stats": {"hp": 45, "res": 5},
-                         "description": "Tali yang diikatkan ke pinggang supaya ada yang bisa menarikmu naik. Temuan Gua Bawah Danau; tidak dijual."}
+                         "description": "Tali yang diikatkan ke pinggang supaya ada yang bisa menarikmu naik. Temuan Gua Bawah Danau; tidak dijual."},
+
+  "kunci_kurungan":     {"name": "Kunci Kurungan", "kind": "aksesori", "price": 0,
+                         "stats": {"hp": 90, "def": 8, "res": 6},
+                         "description": "Kunci gerobak panen Ordo, diambil dari gerobak yang akhirnya berhenti. Upah Buruan; tidak dijual."},
+  "lensa_kedelapan":    {"name": "Lensa Suar Kedelapan", "kind": "aksesori", "price": 0,
+                         "stats": {"mag": 14, "res": 12, "hp": 60},
+                         "description": "Lensa yang dipasang di rongga Suar yang tidak pernah dibangun. Upah Buruan; tidak dijual."}
 }

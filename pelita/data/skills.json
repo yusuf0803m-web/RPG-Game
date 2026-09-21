@@ -518,5 +518,16 @@
                          "tags": ["summon:kendi_ingatan:2"]},
   "m_ingat_air":        {"name": "Ingat Air", "kind": "sihir", "element": "kelam", "target": "semua_musuh", "power": 1.7, "level": 1,
                          "inflict": [{"status": "lupa", "chance": 0.3}],
-                         "description": "Ia berhenti memilah dan ingat bagaimana rasanya tidak bisa naik."}
+                         "description": "Ia berhenti memilah dan ingat bagaimana rasanya tidak bisa naik."},
+
+  "m_isi_rantai":       {"name": "Tegangkan Rantai", "kind": "buff", "element": "netral", "target": "diri", "level": 1,
+                         "tags": ["charge"]},
+  "m_seret":            {"name": "Seret", "kind": "fisik", "element": "fisik", "target": "semua_musuh", "power": 2.3, "level": 1,
+                         "cannot_miss": true, "tags": ["needs_charge"],
+                         "inflict": [{"status": "berat", "chance": 0.5}]},
+  "m_isi_kedelapan":    {"name": "Isi Rongga Kedelapan", "kind": "buff", "element": "netral", "target": "diri", "level": 1,
+                         "tags": ["charge"]},
+  "m_nyala_kedelapan":  {"name": "Nyala Kedelapan", "kind": "sihir", "element": "cahaya", "target": "semua_musuh", "power": 2.6, "level": 1,
+                         "cannot_miss": true, "tags": ["needs_charge"],
+                         "description": "Nyala untuk Suar yang tidak pernah dibangun, dilepas ke arah mana saja."}
 }

@@ -21,6 +21,7 @@ from pathlib import Path
 import pytest
 
 from pelita.loader import load_data
+from pelita.party import xp_to_reach
 from pelita.world.explore import Game
 from pelita.world.model import load_world
 from pelita.world.state import new_game
@@ -355,3 +356,85 @@ def test_pulau_hilang_boleh_dilewati_jalur_utama_tidak_menyentuhnya():
     assert res == "chapter_end"
     for flag in ("pulau_pantai_adegan", "pola_larung_dilihat", "penenun_kalah"):
         assert flag not in st.flags, f"jalur utama menyentuh Pulau Hilang: {flag}"
+
+
+# -- Tiga kontrak Buruan sisa (8 -> 11, §5.7) -------------------------------
+#: (id, level, aksi bernama yang HARUS muncul). Daftar aksi itu bukan hiasan: dua
+#: dari tiga target ini sempat tidak pernah memainkan satu pun mekaniknya — lihat
+#: ``test_buruan_baru_memainkan_mekanik_khasnya``.
+BURUAN_BARU = [
+    ("buruan_9_gerobak", 41, ("Tegangkan Rantai", "Seret")),
+    ("buruan_10_penghitung", 50, ("Panggil Gema Kalian", "Tarik Ingatan")),
+    ("buruan_11_kedelapan", 53, ("Isi Rongga Kedelapan", "Nyala Kedelapan")),
+]
+
+
+def lawan_buruan(bid: str, level: int, seed: int = 3):
+    """Party dinaikkan ke level buruannya, seperti pemain yang mengejar kontrak itu
+    setelah siap (pola yang sama dengan ``test_buruan_cacing_abu_ibu_bisa_ditamatkan``)."""
+    data = load_data()
+    world = load_world(data)
+    st = mulai_babak3(data, seed)
+    for h in st.party:
+        h.level = level
+        h.xp = xp_to_reach(level)
+        h.restore()
+    st.buruan[bid] = "aktif"
+    wk = Walker([])
+    g = Game(data, world, st, wk.io, auto_battle=True, auto_script=True,
+             auto_choice=True, auto_menus=True, save_dir=Path(tempfile.mkdtemp()))
+    g.lawan_buruan(bid)
+    return st, wk
+
+
+@pytest.fixture(scope="module")
+def buruan_baru():
+    return {bid: lawan_buruan(bid, lv) for bid, lv, _ in BURUAN_BARU}
+
+
+def test_papan_buruan_genap_sebelas_sesuai_pembagian_babak():
+    """§5.7: 11 target — 3 Babak 1, 5 Babak 2, 3 Babak 3."""
+    world = load_world(load_data())
+    assert len(world.buruan) == 11
+    lv = sorted(b["level"] for b in world.buruan.values())
+    assert sum(1 for x in lv if x <= 22) == 3, f"Babak 1: {lv}"
+    assert sum(1 for x in lv if 23 <= x <= 43) == 5, f"Babak 2: {lv}"
+    assert sum(1 for x in lv if x >= 44) == 3, f"Babak 3: {lv}"
+
+
+@pytest.mark.parametrize("bid,level,_aksi", BURUAN_BARU)
+def test_buruan_baru_bisa_ditamatkan_dan_membayar(bid, level, _aksi, buruan_baru):
+    st, wk = buruan_baru[bid]
+    assert st.buruan[bid] == "selesai", wk.text[-2000:]
+    world = load_world(load_data())
+    hadiah = world.buruan[bid]["hadiah"]
+    for iid, n in hadiah.get("item", {}).items():
+        assert st.count(iid) >= n, f"{bid}: {iid} tidak masuk inventori"
+    for kid in hadiah.get("kaca", []):
+        assert st.kaca.get(kid, 0) >= 1, f"{bid}: {kid} tidak diberikan"
+
+
+@pytest.mark.parametrize("bid,level,aksi", BURUAN_BARU)
+def test_buruan_baru_memainkan_mekanik_khasnya(bid, level, aksi, buruan_baru):
+    """§5.7 menjanjikan "mekanik unik" per Buruan, dan mekanik yang tidak pernah
+    dimainkan sama saja dengan tidak ada.
+
+    Dua hal membuat ketiganya nyaris mute waktu pertama ditulis:
+    1. party Babak 2-3 bisa mem-Goyah sesuka hati, dan ``ai.py`` mengganti aksi
+       musuh yang Goyah dengan serangan biasa — jadi elit yang identitasnya urutan
+       terskrip dibuat kebal Goyah (kelemahan tetap dibayar lewat Ketahanan/PECAH);
+    2. urutan isi->tembak tidak bisa dijamin tabel bobot acak, jadi keduanya pindah
+       ke pola fase seperti Penjaga Mercusuar.
+    """
+    _, wk = buruan_baru[bid]
+    hilang = [a for a in aksi if f"memakai {a}" not in wk.text]
+    assert not hilang, f"{bid} tidak pernah memainkan: {hilang}"
+
+
+def test_kaca_bara_akhirnya_punya_sumber():
+    """``kaca_bara`` sudah ada di data sejak Tahap 3 tapi tidak pernah bisa didapat:
+    tidak dijual, bukan hadiah apa pun, dan bukan penukaran Serpihan."""
+    world = load_world(load_data())
+    sumber = [bid for bid, b in world.buruan.items()
+              if "kaca_bara" in b.get("hadiah", {}).get("kaca", [])]
+    assert sumber, "kaca_bara masih tidak bisa didapat pemain"
