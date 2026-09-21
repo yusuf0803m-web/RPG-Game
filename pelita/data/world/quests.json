@@ -1,0 +1,74 @@
+{
+ "_catatan": "Teks quest per status.",
+ "kirana_hilang": {
+  "name": "Kirana Hilang",
+  "states": {
+   "aktif": "Kirana, anak Mbok Sari, menghilang ke Hutan Kelabu di barat desa. Cari dia bersama Pak Guntur.",
+   "ditemukan": "Kirana ditemukan di tepi kabut. Bawa dia pulang ke Pelita Rendah dan lapor di balai desa.",
+   "selesai": "Kirana kembali ke pelukan ibunya."
+  }
+ },
+ "mencari_guntur": {
+  "name": "Mencari Pak Guntur",
+  "states": {
+   "hilang": "Pak Guntur masuk ke kabut di Hutan Kelabu dan tidak kembali. Lentera besarnya, dan Bara di dalamnya, kini ada padamu.",
+   "aktif": "Sela melihat cahaya dari Suar Lama di Rawa Suar dua malam lalu. Mungkin Pak Guntur ke sana.",
+   "danau": "Lintang berkata Kakek berlentera berjalan ke utara, ke Danau Cermin.",
+   "tengara": "Nelayan Telaga melihat Pak Guntur berjalan memutari danau ke arah Ibukota Tengara, sambil bernyanyi.",
+   "lorong": "Gerbang istana tertutup. Masuk ke Balai Arsip lewat Lorong Bawah dari Distrik Sunyi untuk membaca catatan Penjaga Mercusuar.",
+   "tambang": "Arsip: Guntur adalah Penjaga Mercusuar terakhir. Tanpa Kaca Inti dari Tambang Kaca Ingatan, Nyala tidak bisa dibawa ke puncak. Pergi ke Gerbang Utara.",
+   "mercusuar": "Kaca Inti di tangan. Daki punggung gunung ke Mercusuar Langit.",
+   "penjaga": "Sisa kesadaran Pak Guntur bicara lewat konstruk Penjaga: bawa Bara ke puncak, dan putuskan sambil ingat.",
+   "selesai": "Mercusuar menyala kembali dengan Bara. Di balik gunung: lautan kabut."
+  }
+ },
+ "yang_hilang_di_telaga": {
+  "name": "Yang Hilang di Telaga",
+  "states": {
+   "aktif": "Dua belas warga Desa Apung hilang di malam hari, meninggalkan genangan air. Naik rakit ke tengah danau, ke pulau batu.",
+   "selesai": "Ular Cermin dikalahkan; kedua belas warga kembali dengan kenangan mereka."
+  }
+ },
+ "hampa_pasar_malam": {
+  "name": "Hampa di Pasar Malam",
+  "states": {
+   "aktif": "Juragan Salim meminta Pasar Bawah dijaga malam ini dari Hampa yang masuk dari sisi tembok. Bicara padanya saat siap.",
+   "selesai": "Pasar Bawah aman. Salim membayar dengan Gelang Kilat dan keping."
+  }
+ },
+ "surat_distrik_sunyi": {
+  "name": "Surat untuk Distrik Sunyi",
+  "states": {
+   "aktif": "Antarkan surat dari Pak Pos Harun ke Nenek Asih, rumah berlentera di Distrik Sunyi.",
+   "selesai": "Nenek Asih membaca surat dari cucunya di Wirasaba."
+  }
+ },
+ "kucing_penginapan": {
+  "name": "Kucing Penginapan",
+  "states": {
+   "aktif": "Meong, kucing Penginapan Lentera Merah, hilang ke saluran air. Cari di bagian Lorong Bawah yang kering.",
+   "selesai": "Meong pulang. Mbak Wulan memberikan Jimat Lentera."
+  }
+ },
+ "nama_bapak": {
+  "name": "Nama Bapak",
+  "states": {
+   "aktif": "Daftar Pelita: \"Arya Kelana — dibatalkan.\" Lintang ingin tahu apa artinya.",
+   "hampa_pertama": "Kristal tambang: ritual Kelana dihentikan di tengah oleh Baskara. Ia menjadi Hampa pertama, dan mencoba pulang ke Lintang."
+  }
+ },
+ "pendendang_padasuara": {
+  "name": "Khotbah di Tepi Kabut",
+  "states": {
+   "aktif": "Ordo Pelita membangun mimbar di tepi Desa Padasuara, lengkap dengan kayu bakar. Ikuti jejak sepatu dari tepi desa.",
+   "selesai": "Sunan Wirya kalah dan kayu bakar itu tidak pernah dinyalakan. Ratih ikut bersama kalian."
+  }
+ },
+ "keluarga_bagas": {
+  "name": "Keluarga Bagas",
+  "states": {
+   "aktif": "Keluarga Bagas termasuk di antara Hampa yang dipanen Ordo di Wirasaba.",
+   "selesai": "Kurungan kaca di gudang panen dibuka. Mereka tidak kembali, tapi mereka tidak lagi disimpan."
+  }
+ }
+}

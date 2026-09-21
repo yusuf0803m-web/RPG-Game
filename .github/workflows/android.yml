@@ -1,0 +1,95 @@
+name: Bangun APK
+
+on:
+  push:
+    branches: [main, "claude/**"]
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: apk-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  tes:
+    name: Tes mesin permainan
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Pasang dependensi
+        run: pip install flask pytest
+      - name: Jalankan tes
+        run: python -m pytest -q
+      - name: Kalibrasi cepat (asap)
+        run: python tools/calibrate.py --n 20 --only hutan
+
+  apk:
+    name: Bangun APK
+    needs: tes
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Siapkan JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      # Chaquopy memakai Python di mesin build untuk mengunduh paket pip
+      # yang akan dikemas ke dalam APK.
+      - name: Siapkan Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Siapkan Gradle
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: "8.7"
+
+      # Dipanggil terpisah supaya urutannya pasti: sumber Python disalin dulu,
+      # baru Chaquopy mengemasnya.
+      - name: Siapkan sumber Python
+        run: gradle -p android --no-daemon sinkronSumberPython
+
+      - name: Bangun APK debug
+        run: gradle -p android --no-daemon --stacktrace assembleDebug
+
+      - name: Ringkas hasil
+        run: |
+          set -eu
+          apk=$(find android/app/build/outputs/apk -name '*.apk' | head -1)
+          echo "APK: $apk"
+          ls -lh "$apk"
+          {
+            echo "### APK siap unduh"
+            echo ""
+            echo "- Berkas: \`$(basename "$apk")\`"
+            echo "- Ukuran: $(du -h "$apk" | cut -f1)"
+            echo "- Versi: Babak 1 (Lembah Larung)"
+            echo ""
+            echo "Unduh dari bagian **Artifacts** di halaman ini, lalu pasang di HP."
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Unggah APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: pelita-terakhir-apk
+          path: android/app/build/outputs/apk/**/*.apk
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Unggah log kalau gagal
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: log-build-gagal
+          path: |
+            android/app/build/outputs/logs/**
+            android/build/reports/**
+          if-no-files-found: ignore
+          retention-days: 7

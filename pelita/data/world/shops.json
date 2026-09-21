@@ -1,0 +1,282 @@
+{
+ "_catatan": "Toko per lokasi. Harga diambil dari items.json.",
+ "warung_ratna": {
+  "name": "Warung Bu Ratna",
+  "items": [
+   "ramuan_daun",
+   "penawar",
+   "garam_bangun",
+   "minyak_lentera",
+   "bubuk_api",
+   "zirah_kulit"
+  ]
+ },
+ "pasar_apung": {
+  "name": "Pasar Apung Telaga",
+  "items": [
+   "ramuan_daun",
+   "ramuan_akar",
+   "tetes_nyala",
+   "penawar",
+   "garam_bangun",
+   "minyak_lentera",
+   "bubuk_petir",
+   "bubuk_es",
+   "tongkat_perunggu",
+   "pedang_pengawal",
+   "lentera_rawa",
+   "zirah_kulit",
+   "cincin_anti_racun",
+   "sabuk_lumut",
+   "bekal_kemah"
+  ],
+  "kaca": [
+   "kaca_api",
+   "kaca_es",
+   "kaca_petir"
+  ]
+ },
+ "pasar_bawah": {
+  "name": "Pasar Bawah Tengara",
+  "items": [
+   "ramuan_akar",
+   "ramuan_sari",
+   "tetes_nyala",
+   "cawan_nyala",
+   "penawar",
+   "garam_bangun",
+   "abu_fajar",
+   "minyak_lentera",
+   "dupa_sunyi",
+   "bubuk_petir",
+   "bubuk_es",
+   "bubuk_api",
+   "suku_cadang",
+   "tongkat_kaca",
+   "pedang_besi_tambang",
+   "lentera_kaca",
+   "zirah_rantai",
+   "zirah_kaca_lapis",
+   "gelang_kilat",
+   "jimat_lentera",
+   "cincin_anti_racun",
+   "bekal_kemah"
+  ],
+  "kaca": [
+   "kaca_api",
+   "kaca_es",
+   "kaca_petir",
+   "kaca_angin",
+   "kaca_bumi",
+   "kaca_teguh",
+   "kaca_gesit",
+   "kaca_licin",
+   "kaca_kilat"
+  ]
+ },
+ "kafilah_tambang": {
+  "name": "Lapak Kafilah Tambang",
+  "items": [
+   "ramuan_akar",
+   "ramuan_sari",
+   "tetes_nyala",
+   "cawan_nyala",
+   "penawar",
+   "garam_bangun",
+   "abu_fajar",
+   "minyak_lentera",
+   "suku_cadang",
+   "peluncur_kaca",
+   "zirah_kaca_lapis"
+  ]
+ },
+ "pedagang_keliling": {
+  "name": "Pedagang Keliling di Kaki Menara",
+  "items": [
+   "ramuan_akar",
+   "ramuan_sari",
+   "tetes_nyala",
+   "cawan_nyala",
+   "garam_bangun",
+   "abu_fajar",
+   "suku_cadang",
+   "dupa_sunyi",
+   "jubah_penyala",
+   "kalung_bara"
+  ]
+ },
+ "kios_sarwa": {
+  "name": "Tungku Mpu Sarwa",
+  "items": [],
+  "kaca": [
+   "kaca_api",
+   "kaca_es",
+   "kaca_petir",
+   "kaca_angin",
+   "kaca_bumi",
+   "kaca_fajar",
+   "kaca_kelam",
+   "kaca_napas",
+   "kaca_tabah",
+   "kaca_tajam",
+   "kaca_rakus",
+   "kaca_kikir",
+   "kaca_sabar",
+   "kaca_teguh",
+   "kaca_gesit",
+   "kaca_licin",
+   "kaca_kilat"
+  ]
+ },
+ "pasar_sanggar": {
+  "name": "Pasar Kafilah Sanggar",
+  "items": [
+   "ramuan_akar",
+   "ramuan_sari",
+   "cawan_nyala",
+   "kendi_nyala",
+   "penawar",
+   "garam_bangun",
+   "abu_fajar",
+   "dupa_sunyi",
+   "bekal_kemah",
+   "suku_cadang",
+   "bubuk_api",
+   "bubuk_es",
+   "bubuk_petir",
+   "tongkat_kafilah",
+   "pedang_kafilah",
+   "lentera_kafilah",
+   "peluncur_kafilah",
+   "tombak_kafilah",
+   "zirah_kafilah",
+   "jimat_kafilah",
+   "lensa_juru_kaca",
+   "sabuk_karat"
+  ],
+  "kaca": [
+   "kaca_api",
+   "kaca_es",
+   "kaca_petir",
+   "kaca_angin",
+   "kaca_bumi",
+   "kaca_teguh",
+   "kaca_gesit",
+   "kaca_licin",
+   "kaca_kilat",
+   "kaca_napas"
+  ]
+ },
+ "kios_darma": {
+  "name": "Tungku Berjalan Mpu Darma",
+  "items": [],
+  "kaca": [
+   "kaca_api",
+   "kaca_es",
+   "kaca_petir",
+   "kaca_angin",
+   "kaca_bumi",
+   "kaca_fajar",
+   "kaca_kelam",
+   "kaca_napas",
+   "kaca_tabah",
+   "kaca_tajam",
+   "kaca_rakus",
+   "kaca_kikir",
+   "kaca_sabar",
+   "kaca_teguh",
+   "kaca_gesit",
+   "kaca_licin",
+   "kaca_kilat"
+  ]
+ },
+ "penjaja_padasuara": {
+  "name": "Penjaja Padasuara",
+  "items": [
+   "ramuan_akar",
+   "ramuan_sari",
+   "cawan_nyala",
+   "kendi_nyala",
+   "penawar",
+   "garam_bangun",
+   "abu_fajar",
+   "bekal_kemah",
+   "kecapi_nyanyi",
+   "jubah_pendendang",
+   "anting_pendendang"
+  ],
+  "kaca": [
+   "kaca_angin",
+   "kaca_fajar",
+   "kaca_napas",
+   "kaca_tabah"
+  ]
+ },
+ "pasar_kapal": {
+  "name": "Palka Kapal Lentera",
+  "items": [
+   "ramuan_sari",
+   "ramuan_laut",
+   "cawan_nyala",
+   "kendi_nyala",
+   "guci_nyala",
+   "penawar",
+   "garam_bangun",
+   "abu_fajar",
+   "abu_pagi",
+   "bekal_kemah",
+   "dupa_sunyi",
+   "suku_cadang",
+   "bubuk_api",
+   "bubuk_es",
+   "bubuk_petir",
+   "tongkat_lentera",
+   "pedang_laut",
+   "lentera_laut",
+   "peluncur_laut",
+   "tombak_laut",
+   "kecapi_laut",
+   "pedang_sunyi",
+   "zirah_lentera",
+   "jubah_ingatan",
+   "jimat_pulang",
+   "kalung_bara_besar"
+  ],
+  "kaca": [
+   "kaca_api",
+   "kaca_es",
+   "kaca_petir",
+   "kaca_angin",
+   "kaca_bumi",
+   "kaca_fajar",
+   "kaca_kelam",
+   "kaca_napas",
+   "kaca_tabah",
+   "kaca_tajam"
+  ]
+ },
+ "kios_laut": {
+  "name": "Tungku Terakhir Mpu Darma",
+  "items": [],
+  "kaca": [
+   "kaca_api",
+   "kaca_es",
+   "kaca_petir",
+   "kaca_angin",
+   "kaca_bumi",
+   "kaca_fajar",
+   "kaca_kelam",
+   "kaca_napas",
+   "kaca_tabah",
+   "kaca_tajam",
+   "kaca_rakus",
+   "kaca_kikir",
+   "kaca_sabar",
+   "kaca_teguh",
+   "kaca_gesit",
+   "kaca_licin",
+   "kaca_kilat",
+   "kaca_sembuh"
+  ]
+ }
+}

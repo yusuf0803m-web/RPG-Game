@@ -1,0 +1,108 @@
+{
+  "_catatan": "Jalur spesialisasi (GAME_DESIGN §4.9). Tiap karakter punya tepat dua jalur yang terbuka di level yang sama; memilih satu membuka 3 skill eksklusif (2 untuk karakter Babak 2-3) dan satu pasif. Bisa direset di Tukang Kaca dengan 3 Serpihan Ingatan.",
+
+  "rimba_kobaran": {
+    "character": "rimba", "level": 20, "name": "Kobaran",
+    "skills": ["j_lidah_api", "j_nyala_menjalar", "j_kobaran_akhir", "j_matahari_kecil"],
+    "passive": {"stat_mult": {"mag": 0.10}},
+    "passive_note": "MAG +10%",
+    "description": "Rimba berhenti menakar. Api area, Bakar, dan damage yang naik terus."
+  },
+  "rimba_penuntun": {
+    "character": "rimba", "level": 20, "name": "Penuntun",
+    "skills": ["j_suar_pemandu", "j_tanda_fajar", "j_pelita_berbagi", "j_fajar_panjang"],
+    "passive": {"mp_regen": 2},
+    "passive_note": "MP +2 tiap akhir giliran",
+    "description": "Rimba menjaga orang lain tetap berdiri. Heal Cahaya, dukungan, dan Bara yang mengisi lebih cepat."
+  },
+
+  "sela_benteng": {
+    "character": "sela", "level": 20, "name": "Benteng",
+    "skills": ["j_dinding_hidup", "j_balas_baja", "j_perisai_terakhir", "j_tembok_larung"],
+    "passive": {"stat_mult": {"def": 0.15}},
+    "passive_note": "DEF +15%",
+    "description": "Sela memilih berdiri di depan. Pengurangan damage kawan dan provokasi yang mahal untuk dilawan."
+  },
+  "sela_algojo": {
+    "character": "sela", "level": 20, "name": "Algojo",
+    "skills": ["j_tebas_pemenggal", "j_ayun_lebar", "j_algojo_sunyi", "j_penggal_sunyi"],
+    "passive": {"stat_mult": {"atk": 0.18, "def": -0.10}},
+    "passive_note": "ATK +18%, DEF −10%",
+    "description": "Sela berhenti menahan. Serangan fisik terbesar di party, dibayar dengan pertahanan."
+  },
+
+  "lintang_badai": {
+    "character": "lintang", "level": 20, "name": "Badai",
+    "skills": ["j_badai_petir", "j_hujan_es", "j_pusaran_badai", "j_langit_runtuh"],
+    "passive": {"stat_mult": {"mag": 0.12}},
+    "passive_note": "MAG +12%",
+    "description": "Es dan Petir sekaligus, seluruh barisan lawan."
+  },
+  "lintang_bisikan": {
+    "character": "lintang", "level": 20, "name": "Bisikan",
+    "skills": ["j_bisik_hampa", "j_sunyi_panjang", "j_nama_terlupa", "j_kabut_pengingat"],
+    "passive": {"stat_mult": {"res": 0.12}, "imun": ["lupa"]},
+    "passive_note": "RES +12%, kebal Lupa",
+    "description": "Lintang memakai Kabut alih-alih melawannya: Kelam, debuff, dan serapan."
+  },
+
+  "bagas_peretas": {
+    "character": "bagas", "level": 20, "name": "Peretas",
+    "skills": ["j_retas_pelindung", "j_colok_sirkuit", "j_tangan_panjang", "j_bongkar_habis"],
+    "passive": {"curi_pct": 0.25},
+    "passive_note": "Peluang Curi +25%",
+    "description": "Bagas membongkar lawannya: debuff berat, Goyah tanpa elemen, dan curian yang lebih sering berhasil."
+  },
+  "bagas_montir": {
+    "character": "bagas", "level": 20, "name": "Montir",
+    "skills": ["j_ranjau_beruntun", "j_menara_kejut", "j_dinamo", "j_menara_tujuh"],
+    "passive": {"stat_flat": {"mp": 15}},
+    "passive_note": "MP maks +15",
+    "description": "Gadget area dan pasokan MP untuk seluruh party."
+  },
+
+  "rangga_panglima": {
+    "character": "rangga", "level": 30, "name": "Panglima",
+    "skills": ["j_titah_panglima", "j_panji_tak_jatuh", "j_titah_terakhir"],
+    "passive": {"stat_mult": {"def": 0.10, "res": 0.10}},
+    "passive_note": "DEF & RES +10%",
+    "description": "Buff party yang bertahan lebih lama."
+  },
+  "rangga_penumbuk": {
+    "character": "rangga", "level": 30, "name": "Penumbuk",
+    "skills": ["j_tumbuk_bumi", "j_penumbuk_tunggal", "j_bumi_terbelah"],
+    "passive": {"stat_mult": {"atk": 0.15}},
+    "passive_note": "ATK +15%",
+    "description": "Tombak Bumi yang menembus DEF dan membuat lawan Berat."
+  },
+
+  "ratih_pemulih": {
+    "character": "ratih", "level": 30, "name": "Pemulih",
+    "skills": ["j_lagu_pemulih", "j_nada_penjaga", "j_lagu_pulang"],
+    "passive": {"stat_mult": {"res": 0.12}},
+    "passive_note": "RES +12%",
+    "description": "Heal party dan pembersih status dalam satu lagu."
+  },
+  "ratih_penggugah": {
+    "character": "ratih", "level": 30, "name": "Penggugah",
+    "skills": ["j_lagu_penggugah", "j_seruan_terakhir", "j_kidung_bara"],
+    "passive": {"bara_awal": 1},
+    "passive_note": "Party mulai dengan +1 Bara",
+    "description": "Lagu ofensif yang mengisi Bara Rimba lebih cepat."
+  },
+
+  "kelana_pendekar": {
+    "character": "kelana", "level": 40, "name": "Pendekar Sunyi",
+    "skills": ["j_tikaman_sunyi", "j_pedang_ingatan", "j_tebas_tanpa_nama"],
+    "passive": {"stat_mult": {"atk": 0.20}},
+    "passive_note": "ATK +20%",
+    "description": "Damage satu sasaran paling besar di seluruh permainan."
+  },
+  "kelana_perisai": {
+    "character": "kelana", "level": 40, "name": "Perisai Kabut",
+    "skills": ["j_perisai_kabut", "j_tirai_ayah", "j_tirai_terakhir"],
+    "passive": {"stat_mult": {"hp": 0.15}},
+    "passive_note": "HP maks +15%",
+    "description": "Kelana menyerap damage kawan ke tubuhnya sendiri."
+  }
+}

@@ -1,0 +1,521 @@
+{
+ "id": "benteng_ordo",
+ "name": "Benteng Ordo Pelita",
+ "start": "kaki_tebing",
+ "level_range": "Lv 39-43",
+ "fog": false,
+ "encounter_rate": 0.41,
+ "encounters": [
+  {
+   "enemies": [
+    "pemanen_ordo",
+    "pendeta_ordo"
+   ],
+   "weight": 3
+  },
+  {
+   "enemies": [
+    "konstruk_kaca",
+    "pemanen_ordo"
+   ],
+   "weight": 3
+  },
+  {
+   "enemies": [
+    "pelita_hidup_muda"
+   ],
+   "weight": 2
+  },
+  {
+   "enemies": [
+    "pelita_hidup_muda",
+    "pendeta_ordo"
+   ],
+   "weight": 2
+  },
+  {
+   "enemies": [
+    "konstruk_kaca",
+    "konstruk_kaca"
+   ],
+   "weight": 1
+  }
+ ],
+ "rooms": {
+  "kaki_tebing": {
+   "name": "Kaki Tebing Garam",
+   "safe": true,
+   "text": "Tebing garam setinggi seratus orang, dan dipahat langsung ke dindingnya: benteng. Tidak dibangun di atas tebing — dibangun ke dalamnya, dengan jendela-jendela sempit yang semuanya menyala.",
+   "on_enter": "masuk_benteng",
+   "exits": [
+    {
+     "label": "Kembali ke Menara Terapung",
+     "to": "puncak_terapung",
+     "area": "danau_garam"
+    },
+    {
+     "label": "Naik tangga benteng",
+     "to": "tingkat_bawah"
+    }
+   ],
+   "objects": [
+    {
+     "id": "lentera_kaki_tebing",
+     "name": "Lentera penjaga (simpan & istirahat)",
+     "script": "lentera_save"
+    }
+   ]
+  },
+  "tingkat_bawah": {
+   "name": "Tingkat Bawah — Gudang",
+   "text": "Gudang panjang berisi gerobak kurungan yang masih kosong, berjajar rapi menunggu diisi. Di dinding ada papan jadwal: kota, tanggal, jumlah yang diharapkan.",
+   "on_enter": "lihat_jadwal",
+   "exits": [
+    {
+     "label": "Turun ke kaki tebing",
+     "to": "kaki_tebing"
+    },
+    {
+     "label": "Naik ke tingkat tengah",
+     "to": "tingkat_tengah"
+    }
+   ],
+   "objects": [
+    {
+     "id": "papan_jadwal",
+     "name": "Papan jadwal panen",
+     "script": "periksa_jadwal",
+     "if": [
+      "!jadwal_diperiksa"
+     ]
+    }
+   ]
+  },
+  "tingkat_tengah": {
+   "name": "Tingkat Tengah — Asrama",
+   "text": "Deretan bilik tidur yang rapi, dan di tiap bilik ada satu kotak kecil berisi barang pribadi. Kebanyakan penghuninya seumuran Rimba.",
+   "exits": [
+    {
+     "label": "Turun ke gudang",
+     "to": "tingkat_bawah"
+    },
+    {
+     "label": "Naik ke tingkat atas",
+     "to": "tingkat_atas"
+    },
+    {
+     "label": "Ke ruang doa",
+     "to": "ruang_doa"
+    }
+   ],
+   "objects": [
+    {
+     "id": "lentera_asrama",
+     "name": "Lentera penjaga (simpan & istirahat)",
+     "script": "lentera_save"
+    }
+   ],
+   "on_enter": "sergap_asrama"
+  },
+  "ruang_doa": {
+   "name": "Ruang Doa",
+   "safe": true,
+   "text": "Ruang kecil tanpa jendela, dengan satu nyala di tengah dan bantal-bantal melingkarinya. Di dinding tertulis satu kalimat, diulang sampai penuh: GELAP NANTI LEBIH BAIK DARIPADA GELAP SEKARANG.",
+   "on_enter": "adegan_doa",
+   "exits": [
+    {
+     "label": "Kembali ke asrama",
+     "to": "tingkat_tengah"
+    }
+   ],
+   "latar": "benteng_ordo/tingkat_tengah"
+  },
+  "tingkat_atas": {
+   "name": "Tingkat Atas — Serambi Suar",
+   "text": "Serambi terbuka menghadap danau garam, dan di ujungnya pintu perunggu menuju Suar Benteng. Dari sini seluruh danau terlihat putih sampai ke kaki langit, dengan Menara Terapung sebagai satu-satunya noda di atasnya.",
+   "on_enter": "adegan_serambi",
+   "exits": [
+    {
+     "label": "Turun ke asrama",
+     "to": "tingkat_tengah"
+    },
+    {
+     "label": "Masuk ke Suar Benteng",
+     "to": "suar_benteng"
+    }
+   ],
+   "objects": [
+    {
+     "id": "lentera_serambi",
+     "name": "Lentera penjaga (simpan & istirahat)",
+     "script": "lentera_save"
+    }
+   ]
+  },
+  "suar_benteng": {
+   "name": "Suar Benteng",
+   "text": "Ruang inti Suar: rongga kaca setinggi dua orang, menyala penuh. Di depannya berdiri seorang perempuan tua berjubah putih, membelakangi kalian, menghadap nyala.",
+   "on_enter": "boss_nirmala",
+   "exits": [
+    {
+     "label": "Turun ke serambi",
+     "to": "tingkat_atas"
+    }
+   ]
+  }
+ },
+ "scripts": {
+  "lentera_save": [
+   {
+    "text": "Kau menyalakan sumbu di antara nyala-nyala Ordo yang jauh lebih besar. Nyalamu tetap nyalamu."
+   },
+   {
+    "heal": "all"
+   },
+   {
+    "save": true
+   },
+   {
+    "if": [
+     "has:bekal_kemah"
+    ],
+    "then": [
+     {
+      "kemah": true
+     }
+    ]
+   }
+  ],
+  "masuk_benteng": [
+   {
+    "once": "benteng_masuk",
+    "do": [
+     {
+      "text": "Tidak ada penjaga di gerbang. Pintunya terbuka."
+     },
+     {
+      "say": "Rangga",
+      "text": "Ini bukan kelalaian. Ini undangan."
+     },
+     {
+      "say": "Bagas",
+      "text": "Bagus. Aku benci memanjat."
+     },
+     {
+      "say": "Sela",
+      "text": "Aku lebih suka memanjat daripada diundang."
+     }
+    ]
+   }
+  ],
+  "lihat_jadwal": [
+   {
+    "once": "jadwal_dilihat",
+    "do": [
+     {
+      "text": "Papan jadwal ditulis dengan kapur, dan sebagian sudah dihapus setengah untuk diganti angka baru."
+     },
+     {
+      "say": "Ratih",
+      "text": "Padasuara ada di situ. Bulan depan."
+     },
+     {
+      "text": "Tidak ada yang menjawabnya."
+     }
+    ]
+   },
+   {
+    "run": "sergap_gudang_benteng"
+   }
+  ],
+  "periksa_jadwal": [
+   {
+    "text": "Kolom terakhir bertuliskan 'JUMLAH DIHARAPKAN'. Untuk Padasuara: empat puluh tiga. Itu seluruh isi desa, termasuk yang belum lahir bulan depan."
+   },
+   {
+    "give": {
+     "serpihan_ingatan": 1
+    }
+   },
+   {
+    "kaca": {
+     "kaca_tajam": 1
+    }
+   },
+   {
+    "set": "jadwal_diperiksa"
+   },
+   {
+    "say": "Rangga",
+    "text": "Aku pernah menandatangani papan seperti ini. Bukan untuk orang. Untuk gandum."
+   },
+   {
+    "say": "Rangga",
+    "text": "Bentuk papannya sama persis."
+   }
+  ],
+  "adegan_doa": [
+   {
+    "once": "doa_adegan",
+    "do": [
+     {
+      "text": "Ruang ini hangat, dan nyalanya ditata supaya tidak menyilaukan siapa pun yang duduk. Seseorang merapikannya tiap hari."
+     },
+     {
+      "say": "Rimba",
+      "text": "Mereka bukan orang jahat."
+     },
+     {
+      "say": "Sela",
+      "text": "Jangan mulai."
+     },
+     {
+      "say": "Rimba",
+      "text": "Aku tidak membela. Aku cuma... (Ia menunjuk bantal-bantal itu.) Mereka duduk di sini, membaca kalimat itu, dan percaya mereka sedang menyelamatkan dunia. Sama seperti aku waktu menyalakan Mercusuar."
+     },
+     {
+      "say": "Lintang",
+      "text": "Bedanya kau menyalakan dirimu sendiri. Mereka menyalakan orang lain."
+     },
+     {
+      "say": "Rimba",
+      "text": "Iya. (Jeda.) Bedanya cuma itu, dan bedanya itu segalanya."
+     }
+    ]
+   }
+  ],
+  "adegan_serambi": [
+   {
+    "once": "serambi_adegan",
+    "do": [
+     {
+      "text": "Dari serambi, danau garam terlihat seluruhnya. Kabut beku menggantung rendah di atasnya, rata, seperti selimut yang ditarik sampai dagu."
+     },
+     {
+      "say": "Kelana",
+      "text": "Banyak sekali."
+     },
+     {
+      "say": "Lintang",
+      "text": "Apanya, Yah?"
+     },
+     {
+      "say": "Kelana",
+      "text": "Orang. Di dalam kabut. (Ia menunjuk ke arah danau dengan gerakan yang sangat pelan.) Semuanya masih di sana."
+     },
+     {
+      "text": "Tidak ada yang bertanya lagi sesudah itu."
+     }
+    ]
+   },
+   {
+    "run": "sergap_serambi"
+   }
+  ],
+  "boss_nirmala": [
+   {
+    "if": [
+     "boss_nirmala_kalah"
+    ],
+    "then": [
+     {
+      "text": "Rongga Suar Benteng kosong. Nyalanya tidak padam — ia hanya tidak lagi memakan siapa pun."
+     },
+     {
+      "end": true
+     }
+    ]
+   },
+   {
+    "say": "Nirmala",
+    "text": "Rimba dari Pelita Rendah. Penyala termuda dalam empat generasi, dan satu-satunya yang menyalakan Mercusuar tanpa membakar siapa pun."
+   },
+   {
+    "text": "Ia berbalik. Ia jauh lebih tua dari yang kalian bayangkan, dan matanya jernih sekali."
+   },
+   {
+    "say": "Nirmala",
+    "text": "Aku sudah membaca laporannya tiga kali. Aku masih tidak mengerti bagaimana kau melakukannya."
+   },
+   {
+    "say": "Rimba",
+    "text": "Saya tidak mengerti juga. Nyalanya mau, jadi saya minta."
+   },
+   {
+    "say": "Nirmala",
+    "text": "'Nyalanya mau.' (Ia tersenyum tanpa mengejek.) Delapan abad Ordo mencari kalimat itu, dan seorang anak mengucapkannya seolah itu cuaca."
+   },
+   {
+    "pause": true
+   },
+   {
+    "say": "Rimba",
+    "text": "Kalian tahu Kabut naik karena Suar. Sejak abad ketiga."
+   },
+   {
+    "say": "Nirmala",
+    "text": "Sejak abad ketiga. Aku tahu sejak umurku dua puluh dua. Aku menangis selama dua hari, lalu kembali bekerja."
+   },
+   {
+    "say": "Nirmala",
+    "text": "Berhenti berarti gelap sekarang. Lanjut berarti gelap nanti. Aku memilih nanti, dan aku memilihnya tiap hari selama lima puluh tahun, dengan sadar."
+   },
+   {
+    "say": "Ratih",
+    "text": "Desaku ada di jadwal panen bulan depan. Empat puluh tiga orang."
+   },
+   {
+    "say": "Nirmala",
+    "text": "Empat puluh tiga orang, dan Suar keempat menyala seratus tahun. (Ia menatap Ratih lurus-lurus.) Katakan angka yang menurutmu benar, Nak. Aku betul-betul ingin dengar."
+   },
+   {
+    "say": "Ratih",
+    "text": "Nol."
+   },
+   {
+    "say": "Nirmala",
+    "text": "Maka kau belum pernah melihat gelap yang sungguhan."
+   },
+   {
+    "pause": true
+   },
+   {
+    "adegan": {
+     "efek": "flash"
+    }
+   },
+   {
+    "battle": [
+     "boss_nirmala"
+    ],
+    "boss": true,
+    "win": [
+     {
+      "set": "boss_nirmala_kalah"
+     },
+     {
+      "text": "Cahaya di tubuh Nirmala surut pelan, seperti air yang mengalir kembali ke wadahnya. Yang tersisa duduk bersandar di kaki rongga Suar: perempuan tua, kelelahan, dan masih jernih."
+     },
+     {
+      "say": "Nirmala",
+      "text": "Kabut itu ingatan, Rimba. Ingatan yang pernah kami bakar. Tiap Pelita yang kami nyalakan menambah lautan itu."
+     },
+     {
+      "say": "Nirmala",
+      "text": "Kami tahu. Kami tetap menyalakan. Itu bukan kekeliruan — itu pilihan, dan aku akan memilihnya lagi kalau aku hanya punya pilihan yang sama."
+     },
+     {
+      "say": "Rimba",
+      "text": "Kami akan cari pilihan yang lain."
+     },
+     {
+      "say": "Nirmala",
+      "text": "Kalau begitu pergilah ke tempat asalnya. Pusar Kabut, di tepi dunia. Aku tidak pernah berani."
+     },
+     {
+      "pause": true
+     },
+     {
+      "give": {
+       "serpihan_ingatan": 2,
+       "kaca_inti": 1
+      }
+     },
+     {
+      "kaca": {
+       "kaca_kelam": 1
+      }
+     },
+     {
+      "ilustrasi": "events/nirmala_padam",
+      "teks": "\"Gelap nanti lebih baik daripada gelap sekarang.\" Lima puluh tahun ia memilihnya tiap hari, dengan sadar."
+     },
+     {
+      "text": "Di luar benteng, di tepi danau garam, kafilah Sanggar sudah menunggu. Nyai Rukmini berdiri di depan sesuatu yang ditutupi terpal — sesuatu sepanjang tiga gerobak, dengan lambung dan lunas."
+     },
+     {
+      "say": "Rukmini",
+      "text": "Kapal Lentera. Kami menyimpannya tiga puluh tahun karena tidak ada yang cukup bodoh untuk memakainya."
+     },
+     {
+      "say": "Rukmini",
+      "text": "Sekarang ada."
+     },
+     {
+      "set": "babak_2_selesai"
+     },
+     {
+      "text": "AKHIR BABAK 2 — TANAH LUAR\n\nOrdo Pelita berhenti memanen. Padasuara tetap menyanyi. Kelana berjalan di belakang Lintang, dan kadang memanggil namanya dengan benar."
+     },
+     {
+      "pause": true
+     },
+     {
+      "text": "Terpal Kapal Lentera dibuka menghadap ke barat — ke Laut Lupa, dan ke Pusar Kabut di tepi dunia."
+     },
+     {
+      "heal": "all"
+     },
+     {
+      "travel": {
+       "area": "laut_lupa",
+       "room": "kapal_dek"
+      }
+     }
+    ]
+   }
+  ],
+  "sergap_gudang_benteng": [
+   {
+    "once": "sergap_gudang_benteng_selesai",
+    "do": [
+     {
+      "text": "Dua petugas Ordo sedang mencatat gerobak kosong. Pena salah satunya berhenti di tengah kata."
+     },
+     {
+      "battle": [
+       "pemanen_ordo",
+       "pendeta_ordo"
+      ],
+      "win": []
+     }
+    ]
+   }
+  ],
+  "sergap_asrama": [
+   {
+    "once": "sergap_asrama_selesai",
+    "do": [
+     {
+      "text": "Pintu-pintu bilik terbuka bersamaan, dan yang keluar dari dalamnya tidak semuanya manusia."
+     },
+     {
+      "battle": [
+       "konstruk_kaca",
+       "pelita_hidup_muda"
+      ],
+      "win": []
+     }
+    ]
+   }
+  ],
+  "sergap_serambi": [
+   {
+    "once": "sergap_serambi_selesai",
+    "do": [
+     {
+      "text": "Di serambi, tiga orang berdiri menghadap pintu Suar seperti sedang mengantre."
+     },
+     {
+      "battle": [
+       "pelita_hidup_muda",
+       "pelita_hidup_muda",
+       "pendeta_ordo"
+      ],
+      "win": []
+     }
+    ]
+   }
+  ]
+ }
+}

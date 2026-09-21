@@ -1,0 +1,19 @@
+__pycache__/
+*.pyc
+.pytest_cache/
+*.egg-info/
+build/
+dist/
+saves/
+
+# Gambar mentah hasil ChatGPT Image Generation, transit sebelum diproses
+# oleh tools/prepare_generated_images.py -- lihat prompts/README.md.
+prompts/generated_incoming/
+
+# Android
+android/.gradle/
+android/build/
+android/app/build/
+android/local.properties
+*.apk
+*.aab

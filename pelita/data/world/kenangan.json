@@ -1,0 +1,969 @@
+{
+ "_catatan": "Adegan Kenangan saat Berkemah (GAME_DESIGN §5.6). 'pasangan' harus ada di party (aktif atau cadangan), 'syarat' memakai bahasa kondisi GameState.check, 'setelah' menuntut adegan sebelumnya sudah dilihat. Adegan yang punya 'jurus' membuka Jurus Ganda pasangan itu.",
+ "rimba_sela_1": {
+  "pasangan": [
+   "rimba",
+   "sela"
+  ],
+  "tingkat": 1,
+  "judul": "Dua Cara Memegang Lentera",
+  "jurus": "jg_tebas_berapi",
+  "adegan": [
+   {
+    "text": "Sela mengasah pedangnya dengan batu, tiga tarikan, berhenti, tiga tarikan lagi. Rimba menyodorkan lentera supaya ia bisa melihat matanya."
+   },
+   {
+    "say": "Sela",
+    "text": "Jangan dekat-dekat. Percikannya kena minyak, kita berdua jadi obor."
+   },
+   {
+    "say": "Rimba",
+    "text": "Pak Guntur bilang lentera itu harus dipegang seperti telur. Kau memegang pedang seperti itu juga."
+   },
+   {
+    "say": "Sela",
+    "text": "Karena dua-duanya bisa pecah di tangan yang salah. (Ia berhenti mengasah.) Dulu aku pegang terlalu kencang. Sekarang aku pegang cukup buat tidak jatuh."
+   },
+   {
+    "text": "Ia mengulurkan tangan. Rimba memberikan lentera. Sela memegangnya persis seperti memegang pedang: longgar, siap."
+   },
+   {
+    "say": "Sela",
+    "text": "Kalau aku maju, kau nyalakan. Jangan ragu-ragu. Api di belakang punggungku lebih aman daripada di depan."
+   },
+   {
+    "text": "Malam itu keduanya belajar satu gerakan yang tidak diajarkan siapa pun: tebasan yang lewat tepat di atas nyala."
+   }
+  ]
+ },
+ "rimba_lintang_1": {
+  "pasangan": [
+   "rimba",
+   "lintang"
+  ],
+  "tingkat": 1,
+  "judul": "Anak yang Tidak Tahu Tempe",
+  "jurus": "jg_fajar_kelabu",
+  "adegan": [
+   {
+    "text": "Lintang memutar-mutar potongan tempe goreng di depan api, memeriksanya seperti benda arkeologi."
+   },
+   {
+    "say": "Lintang",
+    "text": "Ini... kacang yang disuruh berpelukan?"
+   },
+   {
+    "say": "Rimba",
+    "text": "Kurang lebih. Kau benar-benar tidak pernah makan ini?"
+   },
+   {
+    "say": "Lintang",
+    "text": "Di tempatku tidak ada yang menanak apa pun. Kabut tidak lapar."
+   },
+   {
+    "text": "Rimba tidak bertanya lagi. Ia hanya menambahkan satu potong lagi ke piring Lintang, dan menyalakan sumbu lebih terang, supaya anak itu bisa melihat makanannya."
+   },
+   {
+    "say": "Lintang",
+    "text": "Rimba. Kalau nanti aku lupa rasa ini, kau ingatkan, ya."
+   },
+   {
+    "say": "Rimba",
+    "text": "Aku ingat untuk kita berdua."
+   },
+   {
+    "text": "Cahaya dan Kelam duduk bersebelahan sepanjang malam, dan untuk sekali ini tidak saling memakan."
+   }
+  ]
+ },
+ "sela_lintang_1": {
+  "pasangan": [
+   "sela",
+   "lintang"
+  ],
+  "tingkat": 1,
+  "judul": "Perisai dan Petir",
+  "jurus": "jg_badai_perisai",
+  "adegan": [
+   {
+    "text": "Lintang mencoba mengangkat perisai Sela dengan dua tangan, dan gagal dengan bermartabat."
+   },
+   {
+    "say": "Lintang",
+    "text": "Berat sekali. Bagaimana kau lari dengan ini?"
+   },
+   {
+    "say": "Sela",
+    "text": "Tidak lari. Berdiri. Bedanya itu."
+   },
+   {
+    "say": "Lintang",
+    "text": "Kalau aku pukulkan petir ke permukaannya, logamnya akan menyebarkan ke sekeliling. Semua yang berdiri dekat akan kena."
+   },
+   {
+    "say": "Sela",
+    "text": "Termasuk aku."
+   },
+   {
+    "say": "Lintang",
+    "text": "...Termasuk kau. (Hening.) Tapi kau tahan, kan?"
+   },
+   {
+    "text": "Sela menatapnya lama, lalu tertawa pendek — bunyi yang jarang keluar dari mulutnya."
+   },
+   {
+    "say": "Sela",
+    "text": "Aku tahan. Sekali. Jangan biasakan."
+   }
+  ]
+ },
+ "rimba_bagas_1": {
+  "pasangan": [
+   "rimba",
+   "bagas"
+  ],
+  "tingkat": 1,
+  "judul": "Dua Belas Tahun Alat Sendiri",
+  "syarat": [
+   "party:bagas"
+  ],
+  "adegan": [
+   {
+    "text": "Bagas membongkar peluncurnya di atas kain, menata pegas dan baut dalam barisan rapi seperti orang yang sudah melakukannya seribu kali dalam gelap."
+   },
+   {
+    "say": "Bagas",
+    "text": "Tahu kenapa aku tidak pernah pakai kata takdir? Karena takdir tidak pernah datang membawa obeng."
+   },
+   {
+    "say": "Rimba",
+    "text": "Dua belas tahun di tambang. Kau tidak pernah berhenti membetulkan sesuatu?"
+   },
+   {
+    "say": "Bagas",
+    "text": "Kalau aku berhenti, aku mulai mikir. Kalau aku mulai mikir, aku ingat Wirasaba."
+   },
+   {
+    "text": "Ia memasang pegas terakhir. Peluncur itu berbunyi klik, sehat."
+   },
+   {
+    "say": "Bagas",
+    "text": "Jadi ya. Aku betulkan lentera, jerat, lift, apa saja. Sekalian kau. Duduk tegak, bahumu miring."
+   }
+  ],
+  "jurus": "jg_lentera_meledak"
+ },
+ "sela_bagas_1": {
+  "pasangan": [
+   "sela",
+   "bagas"
+  ],
+  "tingkat": 1,
+  "judul": "Dua Orang yang Pernah Diam",
+  "syarat": [
+   "party:bagas"
+  ],
+  "adegan": [
+   {
+    "text": "Sela dan Bagas berjaga bergantian, tapi keduanya terjaga."
+   },
+   {
+    "say": "Bagas",
+    "text": "Kau pengawal, ya? Dulu."
+   },
+   {
+    "say": "Sela",
+    "text": "Dulu."
+   },
+   {
+    "say": "Bagas",
+    "text": "Berarti kau pernah berdiri di depan pintu waktu di dalamnya orang diseret keluar."
+   },
+   {
+    "text": "Sela tidak menjawab. Bagas juga tidak menekan. Ia hanya melempar sepotong kayu ke api."
+   },
+   {
+    "say": "Bagas",
+    "text": "Aku juga diam waktu keluargaku diangkut. Bedanya aku diam karena takut, kau diam karena diperintah. Sama-sama diam."
+   },
+   {
+    "say": "Sela",
+    "text": "Sekarang tidak lagi."
+   },
+   {
+    "say": "Bagas",
+    "text": "Sekarang tidak lagi. (Ia menguap.) Giliranmu tidur, Bu Pengawal."
+   }
+  ]
+ },
+ "lintang_bagas_1": {
+  "pasangan": [
+   "lintang",
+   "bagas"
+  ],
+  "tingkat": 2,
+  "judul": "Kaca yang Mengingat",
+  "syarat": [
+   "party:bagas"
+  ],
+  "setelah": "rimba_bagas_1",
+  "adegan": [
+   {
+    "text": "Bagas menyorongkan sekeping Kaca Ingatan ke dekat api. Kaca itu berdengung pelan."
+   },
+   {
+    "say": "Bagas",
+    "text": "Dengar itu? Kaca ini menyimpan sesuatu. Bukan gambar, bukan suara. Lebih seperti... kebiasaan."
+   },
+   {
+    "say": "Lintang",
+    "text": "Kebiasaan siapa?"
+   },
+   {
+    "say": "Bagas",
+    "text": "Orang yang memakainya terakhir. Kalau kau pasang di senjatamu, tanganmu lama-lama bergerak seperti tangan dia."
+   },
+   {
+    "say": "Lintang",
+    "text": "Jadi kita meminjam ingatan orang mati untuk berkelahi."
+   },
+   {
+    "say": "Bagas",
+    "text": "Kita meminjam ingatan orang yang tidak sempat selesai. Beda tipis. Tapi beda."
+   },
+   {
+    "text": "Lintang memegang kaca itu lama, dan untuk pertama kalinya tidak merasa Kabut sedang mengawasinya."
+   }
+  ],
+  "jurus": "jg_sirkuit_beku"
+ },
+ "rimba_sela_2": {
+  "pasangan": [
+   "rimba",
+   "sela"
+  ],
+  "tingkat": 2,
+  "judul": "Yang Ditinggalkan di Gerbang",
+  "setelah": "rimba_sela_1",
+  "syarat": [
+   "boss_rangga_kalah"
+  ],
+  "adegan": [
+   {
+    "say": "Rimba",
+    "text": "Kau kenal Kapten Rangga."
+   },
+   {
+    "say": "Sela",
+    "text": "Aku pernah berdiri tiga langkah di belakangnya selama empat tahun."
+   },
+   {
+    "say": "Sela",
+    "text": "Dia bukan orang jahat, Rimba. Itu bagian yang membuatku susah tidur. Orang jahat gampang dilawan."
+   },
+   {
+    "say": "Rimba",
+    "text": "Kalau nanti dia berdiri di pihak kita?"
+   },
+   {
+    "text": "Sela menatap api lama sekali."
+   },
+   {
+    "say": "Sela",
+    "text": "Maka aku akan berdiri tiga langkah di belakangnya lagi. Tapi kali ini karena aku memilih, bukan karena dia kapten."
+   }
+  ]
+ },
+ "rimba_lintang_2": {
+  "pasangan": [
+   "rimba",
+   "lintang"
+  ],
+  "tingkat": 2,
+  "judul": "Nama yang Dipanggil Kabut",
+  "setelah": "rimba_lintang_1",
+  "syarat": [
+   "boss_ular_kalah"
+  ],
+  "adegan": [
+   {
+    "text": "Lintang terbangun sebelum gilirannya berjaga, dan duduk menghadap gelap, bukan menghadap api."
+   },
+   {
+    "say": "Lintang",
+    "text": "Kabut memanggil namaku tadi. Bukan suara ibu. Suara laki-laki."
+   },
+   {
+    "say": "Rimba",
+    "text": "Ayahmu?"
+   },
+   {
+    "say": "Lintang",
+    "text": "Aku tidak ingat suaranya. Itu yang menakutkan. Kalau aku tidak ingat, bagaimana aku tahu itu dia atau Kabut yang berpura-pura?"
+   },
+   {
+    "say": "Rimba",
+    "text": "Kau bawa aku waktu kau pergi mencari tahu. Aku akan ingat untukmu, kalau kau lupa."
+   },
+   {
+    "say": "Lintang",
+    "text": "Kau tidak tahu apa yang kau janjikan."
+   },
+   {
+    "say": "Rimba",
+    "text": "Tidak. Tapi aku tetap janji."
+   }
+  ]
+ },
+ "rimba_guntur_1": {
+  "pasangan": [
+   "rimba",
+   "guntur"
+  ],
+  "tingkat": 1,
+  "judul": "Murid dan Sumbu",
+  "syarat": [
+   "party:guntur"
+  ],
+  "adegan": [
+   {
+    "say": "Guntur",
+    "text": "Potong sumbunya rata, Nak. Sumbu miring bikin nyala miring, nyala miring bikin jelaga."
+   },
+   {
+    "say": "Rimba",
+    "text": "Pak Guntur selalu bilang begitu."
+   },
+   {
+    "say": "Guntur",
+    "text": "Karena kau selalu memotongnya miring. (Ia terkekeh, lalu batuk.) Dengar. Kalau nanti aku tidak ada—"
+   },
+   {
+    "say": "Rimba",
+    "text": "Pak."
+   },
+   {
+    "say": "Guntur",
+    "text": "—kalau nanti aku tidak ada, jangan kau nyalakan lebih terang dari yang kau mampu jaga. Itu saja. Semua kesalahan Penyala mulai dari situ."
+   }
+  ]
+ },
+ "sela_rangga_1": {
+  "pasangan": [
+   "sela",
+   "rangga"
+  ],
+  "tingkat": 2,
+  "judul": "Tiga Langkah di Belakang",
+  "jurus": "jg_barisan_perisai",
+  "syarat": [
+   "party:rangga"
+  ],
+  "adegan": [
+   {
+    "text": "Sela dan Rangga membersihkan perlengkapan di dua sisi api, dengan gerakan yang sama persis — urutan yang sama, jeda yang sama, sampai keduanya sadar."
+   },
+   {
+    "say": "Rangga",
+    "text": "Instruktur Pamekas."
+   },
+   {
+    "say": "Sela",
+    "text": "Instruktur Pamekas."
+   },
+   {
+    "text": "Keduanya diam beberapa saat."
+   },
+   {
+    "say": "Sela",
+    "text": "Aku desersi karena tidak bisa berdiri di depan pintu itu lagi. Kau tetap berdiri."
+   },
+   {
+    "say": "Rangga",
+    "text": "Aku tetap berdiri karena kupikir kalau aku pergi, penggantiku akan lebih buruk."
+   },
+   {
+    "say": "Sela",
+    "text": "Apa benar?"
+   },
+   {
+    "say": "Rangga",
+    "text": "Tidak tahu. Aku tidak pernah pergi untuk mencari tahu. (Ia menutup kotak alatnya.) Itu jawaban paling jujur yang kupunya."
+   },
+   {
+    "text": "Malam itu mereka melatih satu hal tanpa membicarakannya: berdiri berdampingan, perisai bertumpuk, menutupi empat orang di belakangnya."
+   }
+  ]
+ },
+ "rangga_rimba_1": {
+  "pasangan": [
+   "rangga",
+   "rimba"
+  ],
+  "tingkat": 2,
+  "judul": "Perintah yang Bisa Dipertanggungjawabkan",
+  "jurus": "jg_panji_nyala",
+  "syarat": [
+   "party:rangga"
+  ],
+  "adegan": [
+   {
+    "say": "Rangga",
+    "text": "Boleh tanya sesuatu yang bodoh?"
+   },
+   {
+    "say": "Rimba",
+    "text": "Silakan."
+   },
+   {
+    "say": "Rangga",
+    "text": "Waktu kau menyalakan Mercusuar. Siapa yang menyuruhmu?"
+   },
+   {
+    "say": "Rimba",
+    "text": "Tidak ada."
+   },
+   {
+    "say": "Rangga",
+    "text": "Itu yang tidak bisa kupahami. Sepanjang hidupku selalu ada yang menyuruh. Aku bahkan tidak tahu bagaimana rasanya memutuskan tanpa itu."
+   },
+   {
+    "text": "Rimba menyodorkan tongkat lenteranya. Rangga memegangnya dengan kaku, seperti orang memegang bayi."
+   },
+   {
+    "say": "Rimba",
+    "text": "Rasanya begini: kau pegang, dan kalau padam, itu salahmu. Tidak ada yang bisa kau tunjuk."
+   },
+   {
+    "say": "Rangga",
+    "text": "...Berat sekali."
+   },
+   {
+    "say": "Rimba",
+    "text": "Iya. (Ia mengambil kembali lenteranya.) Tapi panjinya jadi milikmu sendiri."
+   }
+  ]
+ },
+ "ratih_rimba_1": {
+  "pasangan": [
+   "ratih",
+   "rimba"
+  ],
+  "tingkat": 2,
+  "judul": "Dua Cara Menahan Gelap",
+  "jurus": "jg_nyanyian_fajar",
+  "syarat": [
+   "party:ratih"
+  ],
+  "adegan": [
+   {
+    "say": "Ratih",
+    "text": "Coba nyalakan lenteramu paling terang. Yang paling terang yang kau bisa."
+   },
+   {
+    "text": "Rimba menurut. Nyalanya naik sampai bayangan mereka menempel ke batu di belakang."
+   },
+   {
+    "say": "Ratih",
+    "text": "Sekarang aku nyanyi."
+   },
+   {
+    "text": "Ia menyanyi — satu nada panjang, tidak keras, tapi entah kenapa terdengar sampai ke tepi cahaya lentera dan sedikit lebih jauh."
+   },
+   {
+    "say": "Ratih",
+    "text": "Lihat? Sampai sana. Lebih jauh dari cahayamu."
+   },
+   {
+    "say": "Rimba",
+    "text": "Tapi nyalaku bisa dibawa orang lain kalau aku tidak ada."
+   },
+   {
+    "say": "Ratih",
+    "text": "Laguku juga. Bedanya lagunya tidak habis kalau dibagi."
+   },
+   {
+    "text": "Mereka mencobanya bersamaan malam itu: nyala dan nada, dan kabut di luar ceruk mundur lebih jauh daripada yang pernah dicapai keduanya sendiri-sendiri."
+   }
+  ]
+ },
+ "ratih_lintang_1": {
+  "pasangan": [
+   "ratih",
+   "lintang"
+  ],
+  "tingkat": 2,
+  "judul": "Anak Kabut dan Anak Suara",
+  "jurus": "jg_kidung_kabut",
+  "syarat": [
+   "party:ratih"
+  ],
+  "adegan": [
+   {
+    "say": "Ratih",
+    "text": "Kau bisa dengar Kabut bicara?"
+   },
+   {
+    "say": "Lintang",
+    "text": "Bukan bicara. Lebih seperti... banyak orang mengingat hal yang sama sekaligus."
+   },
+   {
+    "say": "Ratih",
+    "text": "Itu paduan suara."
+   },
+   {
+    "say": "Lintang",
+    "text": "Itu bukan—"
+   },
+   {
+    "say": "Ratih",
+    "text": "Itu paduan suara, Lintang. Banyak orang, satu hal, bersamaan. Di desaku namanya paduan suara."
+   },
+   {
+    "text": "Lintang membuka mulut untuk membantah, lalu menutupnya lagi."
+   },
+   {
+    "say": "Lintang",
+    "text": "Kalau begitu, selama ini aku bukan mendengar sesuatu yang jahat. Aku cuma mendengar mereka."
+   },
+   {
+    "say": "Ratih",
+    "text": "Dan kalau kau bisa mendengar mereka, kau bisa ikut menyanyi. (Ia menggeser duduknya lebih dekat.) Ayo. Nada rendah dulu."
+   }
+  ]
+ },
+ "kelana_lintang_1": {
+  "pasangan": [
+   "kelana",
+   "lintang"
+  ],
+  "tingkat": 3,
+  "judul": "Nama yang Masih Utuh",
+  "jurus": "jg_pulang",
+  "syarat": [
+   "party:kelana"
+  ],
+  "adegan": [
+   {
+    "text": "Kelana duduk menghadap api, tapi tidak melihat apinya. Ia melihat Lintang, terus-menerus, seperti orang yang takut kehilangan tempat di halaman buku."
+   },
+   {
+    "say": "Lintang",
+    "text": "Ayah ingat ibu?"
+   },
+   {
+    "text": "Jeda panjang."
+   },
+   {
+    "say": "Kelana",
+    "text": "Tidak."
+   },
+   {
+    "say": "Lintang",
+    "text": "Ingat rumah kita?"
+   },
+   {
+    "say": "Kelana",
+    "text": "Tidak."
+   },
+   {
+    "say": "Lintang",
+    "text": "Ingat kenapa Ayah pergi ke kabut malam itu?"
+   },
+   {
+    "say": "Kelana",
+    "text": "...Tidak."
+   },
+   {
+    "pause": true
+   },
+   {
+    "say": "Lintang",
+    "text": "Ingat apa?"
+   },
+   {
+    "say": "Kelana",
+    "text": "Lintang."
+   },
+   {
+    "text": "Satu kata. Ia mengucapkannya seperti orang menyebutkan satu-satunya barang yang berhasil ia bawa keluar dari rumah yang terbakar."
+   },
+   {
+    "say": "Lintang",
+    "text": "(Sangat pelan.) Ya sudah. Itu cukup untuk sekarang."
+   }
+  ]
+ },
+ "kelana_sela_1": {
+  "pasangan": [
+   "kelana",
+   "sela"
+  ],
+  "tingkat": 3,
+  "judul": "Dua yang Tidak Mundur",
+  "jurus": "jg_dua_pedang",
+  "syarat": [
+   "party:kelana"
+  ],
+  "adegan": [
+   {
+    "text": "Sela mengasah pedangnya. Kelana memperhatikan, lalu mengeluarkan pedangnya sendiri — berkarat seluruhnya, tidak mungkin diasah lagi."
+   },
+   {
+    "say": "Sela",
+    "text": "Itu tidak akan tajam lagi."
+   },
+   {
+    "say": "Kelana",
+    "text": "Tidak perlu."
+   },
+   {
+    "say": "Sela",
+    "text": "Kenapa tidak ganti?"
+   },
+   {
+    "text": "Kelana memegang gagangnya lebih erat, dan untuk pertama kalinya menjawab dengan kalimat panjang."
+   },
+   {
+    "say": "Kelana",
+    "text": "Kalau aku ganti, aku harus ingat kenapa aku ganti. Aku tidak punya tempat untuk itu."
+   },
+   {
+    "text": "Sela berhenti mengasah. Lalu ia menggeser batu asahnya ke depan Kelana, dan mereka berdua mengasah pedang yang tidak akan pernah tajam lagi sampai api padam."
+   }
+  ]
+ },
+ "ratih_kelana_1": {
+  "pasangan": [
+   "ratih",
+   "kelana"
+  ],
+  "tingkat": 3,
+  "judul": "Lagu untuk yang Tidak Mendengar",
+  "jurus": "jg_lagu_untuk_lupa",
+  "syarat": [
+   "party:kelana",
+   "party:ratih"
+  ],
+  "adegan": [
+   {
+    "text": "Ratih menyanyi pelan untuk dirinya sendiri sambil memeriksa senarnya. Kelana duduk jauh, di luar lingkaran cahaya, seperti biasa."
+   },
+   {
+    "text": "Lalu ia bergeser. Satu jengkal. Lalu satu jengkal lagi."
+   },
+   {
+    "say": "Ratih",
+    "text": "Kau dengar?"
+   },
+   {
+    "say": "Kelana",
+    "text": "Tidak. (Jeda.) Tapi hangat."
+   },
+   {
+    "say": "Ratih",
+    "text": "Lagu tidak hangat, Pak."
+   },
+   {
+    "say": "Kelana",
+    "text": "Yang ini hangat."
+   },
+   {
+    "text": "Ratih menatapnya lama, lalu mengubah lagunya: bukan lagu penahan kabut, melainkan lagu yang biasa dinyanyikan ibu-ibu Padasuara untuk orang yang sedang pulang jauh."
+   },
+   {
+    "say": "Ratih",
+    "text": "Kalau kau tidak bisa mendengar namamu, aku yang akan menyanyikannya. Tiap malam, sampai kau ingat."
+   }
+  ]
+ },
+ "puncak_rimba": {
+  "pasangan": [
+   "rimba"
+  ],
+  "tingkat": 4,
+  "puncak": true,
+  "judul": "Yang Tidak Diajarkan Pak Guntur",
+  "syarat": [
+   "pulau_lentera_dilihat"
+  ],
+  "adegan": [
+   {
+    "text": "Rimba duduk paling jauh dari api, memegang lentera sakunya yang sudah retak sejak Rawa Suar, dan merapikan sumbunya untuk kesekian kali malam itu."
+   },
+   {
+    "say": "Rimba",
+    "text": "Dia ingat semuanya. Cara memegang, cara menakar minyak, bahkan cara dia berdehem sebelum menyuruh aku pulang."
+   },
+   {
+    "say": "Rimba",
+    "text": "Satu-satunya yang tidak dia punya adalah hari waktu dia masuk ke Suar. Dan aku juga tidak punya. Aku tidak ada di sana."
+   },
+   {
+    "text": "Ia berhenti merapikan."
+   },
+   {
+    "say": "Rimba",
+    "text": "Aku selalu kira aku marah karena dia pergi. Ternyata aku marah karena dia pergi tanpa pamit, dan itu dua hal yang sangat berbeda, dan aku baru tahu malam ini."
+   },
+   {
+    "say": "Rimba",
+    "text": "Pak Guntur. Kalau Bapak dengar. (Jeda.) Sudah. Tidak apa-apa."
+   },
+   {
+    "text": "Nyala lentera sakunya menegak sendiri, sedikit, dan tidak ada angin di kemah itu."
+   }
+  ]
+ },
+ "puncak_sela": {
+  "pasangan": [
+   "sela"
+  ],
+  "tingkat": 4,
+  "puncak": true,
+  "judul": "Delapan Jam dan Tidak Ada yang Terjadi",
+  "syarat": [
+   "pulau_pernikahan_dilihat"
+  ],
+  "adegan": [
+   {
+    "text": "Sela mengasah pedangnya, tiga tarikan, berhenti, tiga tarikan lagi. Malam ini ia berhenti lebih lama di antara tarikan."
+   },
+   {
+    "say": "Sela",
+    "text": "Pernikahan di Tengara itu. Aku jaga pintu delapan jam."
+   },
+   {
+    "say": "Sela",
+    "text": "Tidak ada yang mencoba masuk. Tidak ada yang mabuk. Tidak ada yang berkelahi. Aku berdiri delapan jam dan pulang."
+   },
+   {
+    "say": "Sela",
+    "text": "Waktu itu aku pikir aku disia-siakan. Pengawal terbaik angkatanku, disuruh berdiri di pintu orang kawin."
+   },
+   {
+    "text": "Ia meletakkan batu asahnya."
+   },
+   {
+    "say": "Sela",
+    "text": "Sekarang aku tahu itu justru pekerjaannya. Berdiri di pintu supaya delapan jam itu betul-betul tidak terjadi apa-apa."
+   },
+   {
+    "say": "Sela",
+    "text": "Itu yang aku mau. Bukan menang. Cuma supaya ada delapan jam di mana tidak terjadi apa-apa, dan ada yang menjaganya."
+   }
+  ]
+ },
+ "puncak_lintang": {
+  "pasangan": [
+   "lintang"
+  ],
+  "tingkat": 4,
+  "puncak": true,
+  "judul": "Tali Jemuran",
+  "syarat": [
+   "pulau_sunyi_dilihat"
+  ],
+  "adegan": [
+   {
+    "text": "Lintang tidak tidur. Ia duduk memegang salah satu kain kecil dari jemuran pulau itu, yang entah kapan ia bawa pulang."
+   },
+   {
+    "say": "Lintang",
+    "text": "Aku ingat tinggi tali itu. Aku ingat aku harus jinjit untuk sampai ke jepitannya."
+   },
+   {
+    "say": "Lintang",
+    "text": "Waktu aku berdiri di halaman tadi, talinya setinggi dadaku. Aku yang berubah. Talinya tidak."
+   },
+   {
+    "text": "Ia melipat kain itu, dengan lipatan yang jelas diajarkan seseorang."
+   },
+   {
+    "say": "Lintang",
+    "text": "Aku dulu kira Kabut itu yang mengambil orang. Ternyata Kabut cuma menyimpan. Yang mengambil orang selalu orang."
+   },
+   {
+    "say": "Lintang",
+    "text": "Kalau sampai di sana nanti dan ada yang harus memutuskan sesuatu yang besar, aku mau ikut memutuskan. Bukan cuma ikut."
+   }
+  ]
+ },
+ "puncak_bagas": {
+  "pasangan": [
+   "bagas"
+  ],
+  "tingkat": 4,
+  "puncak": true,
+  "judul": "Sesudah Tukang Kuningan",
+  "syarat": [
+   "pulau_pasar_dilihat"
+  ],
+  "adegan": [
+   {
+    "text": "Bagas memutar-mutar kunci pas terkecil yang ia ambil dari lapak alat di Pulau Pasar. Ukurannya terlalu kecil untuk apa pun di peluncurnya."
+   },
+   {
+    "say": "Bagas",
+    "text": "Ibuku jualan di lapak sesudah tukang kuningan. Aku hafal jaraknya: dua puluh tiga langkah dari pintu pasar, kalau langkah anak-anak."
+   },
+   {
+    "say": "Bagas",
+    "text": "Aku menghitungnya tadi. Dua puluh tiga langkah, kalau langkah anak-anak. Pas."
+   },
+   {
+    "text": "Ia tertawa satu kali, pendek, dan berhenti."
+   },
+   {
+    "say": "Bagas",
+    "text": "Aku menghitung orang terus sejak Wirasaba. Dua ribu empat ratus sebelas. Tiga ratus dua puluh tujuh. Aku pikir kalau aku hitung semuanya, ada yang bisa kukembalikan."
+   },
+   {
+    "say": "Bagas",
+    "text": "Tidak ada. Menghitung itu cuma supaya aku punya kerjaan sambil takut."
+   },
+   {
+    "say": "Bagas",
+    "text": "Tapi aku akan tetap menghitung. Kalau tidak dihitung, tidak ada yang tahu ada berapa."
+   }
+  ]
+ },
+ "puncak_rangga": {
+  "pasangan": [
+   "rangga"
+  ],
+  "tingkat": 4,
+  "puncak": true,
+  "judul": "Helm yang Digantung",
+  "syarat": [
+   "pulau_perang_dilihat"
+  ],
+  "adegan": [
+   {
+    "text": "Rangga membersihkan tombaknya lebih lama daripada perlu, seperti tiap malam sejak Pulau Perang."
+   },
+   {
+    "say": "Rangga",
+    "text": "Mereka menggantung helm di tombak supaya yang datang tahu berapa yang masih hidup. Itu bukan pertahanan. Itu laporan."
+   },
+   {
+    "say": "Rangga",
+    "text": "Delapan abad mereka siap untuk sesuatu yang tidak pernah datang, dan tidak satu pun dari mereka meninggalkan posnya."
+   },
+   {
+    "say": "Rangga",
+    "text": "Aku meninggalkan posku. Di Gerbang Istana aku berdiri di pos yang salah, dan aku baru turun setelah kalian memukulku turun."
+   },
+   {
+    "text": "Ia meletakkan tombaknya melintang di depan kakinya, sama persis seperti yang dilakukan Gema terakhir di parit itu."
+   },
+   {
+    "say": "Rangga",
+    "text": "Kalau nanti di bawah sana ada perintah yang harus kutolak, aku mau menolaknya sebelum ada yang memukulku."
+   },
+   {
+    "say": "Rangga",
+    "text": "Sekali saja. Itu yang belum pernah kulakukan."
+   }
+  ]
+ },
+ "puncak_ratih": {
+  "pasangan": [
+   "ratih"
+  ],
+  "tingkat": 4,
+  "puncak": true,
+  "judul": "Tikar yang Lowong Satu",
+  "syarat": [
+   "pulau_nyanyi_dilihat"
+  ],
+  "adegan": [
+   {
+    "text": "Ratih tidak memegang kecapinya malam ini. Ia duduk bersila di luar lingkaran api, menghadap ke barat."
+   },
+   {
+    "say": "Ratih",
+    "text": "Di balai itu tikarnya lowong satu. Mereka menunggu satu orang lagi supaya bisa mulai."
+   },
+   {
+    "say": "Ratih",
+    "text": "Di Padasuara juga begitu. Tiap lingkaran nyanyi selalu menyisakan satu tempat. Aku dulu kira itu sopan santun."
+   },
+   {
+    "say": "Ratih",
+    "text": "Ternyata itu aturan: lagu tujuh Suar tidak boleh dinyanyikan sendirian. Bukan karena tidak bisa — karena tidak boleh."
+   },
+   {
+    "text": "Ia menarik napas, dan menahannya lebih lama daripada yang dilakukan penyanyi biasa."
+   },
+   {
+    "say": "Ratih",
+    "text": "Kalau di bawah sana aku harus menyanyi, aku tidak akan menyanyi sendirian. Aku akan memanggil semuanya."
+   },
+   {
+    "say": "Ratih",
+    "text": "Semua yang pernah kuajari di jalan. Semua yang pernah mengajariku. Semua yang tikarnya lowong."
+   },
+   {
+    "say": "Ratih",
+    "text": "Itu bukan mukjizat. Itu cuma banyak orang yang kebetulan hafal lagu yang sama."
+   }
+  ]
+ },
+ "puncak_kelana": {
+  "pasangan": [
+   "kelana"
+  ],
+  "tingkat": 4,
+  "puncak": true,
+  "judul": "Yang Dipasang Sendiri",
+  "syarat": [
+   "pulau_sunyi_dilihat"
+  ],
+  "setelah": "puncak_lintang",
+  "adegan": [
+   {
+    "text": "Kelana duduk menghadap api, yang sudah lama tidak ia lakukan. Biasanya ia menghadap keluar."
+   },
+   {
+    "say": "Kelana",
+    "text": "Tali itu. Aku yang pasang."
+   },
+   {
+    "say": "Lintang",
+    "text": "Iya, Pak."
+   },
+   {
+    "say": "Kelana",
+    "text": "Hari Sabtu. Pagi. Kau pegang ujungnya yang sebelah sana dan kau tidak cukup tinggi."
+   },
+   {
+    "text": "Lintang berhenti bernapas sebentar."
+   },
+   {
+    "say": "Lintang",
+    "text": "Bapak ingat harinya?"
+   },
+   {
+    "say": "Kelana",
+    "text": "(Jeda panjang.) Barusan. Sekarang. Tidak tadi."
+   },
+   {
+    "say": "Kelana",
+    "text": "Yang balik itu bukan satu-satu. Yang balik itu sekaligus, sedikit-sedikit, dan aku tidak bisa memilih yang mana."
+   },
+   {
+    "say": "Kelana",
+    "text": "Lintang."
+   },
+   {
+    "say": "Lintang",
+    "text": "Iya, Pak. Masih di sini."
+   },
+   {
+    "say": "Kelana",
+    "text": "Aku tahu. Aku cuma mau memanggil."
+   }
+  ]
+ }
+}

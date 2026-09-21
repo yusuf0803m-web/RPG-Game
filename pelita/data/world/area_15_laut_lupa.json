@@ -1,0 +1,1414 @@
+{
+ "id": "laut_lupa",
+ "name": "Laut Lupa",
+ "start": "kapal_dek",
+ "level_range": "Lv 43-47",
+ "fog": false,
+ "encounter_rate": 0.42,
+ "encounters": [
+  {
+   "enemies": [
+    "gema_pesta",
+    "gema_pesta"
+   ],
+   "weight": 3
+  },
+  {
+   "enemies": [
+    "gema_pesta",
+    "gema_pengantin"
+   ],
+   "weight": 3
+  },
+  {
+   "enemies": [
+    "gema_prajurit",
+    "gema_prajurit"
+   ],
+   "weight": 3
+  },
+  {
+   "enemies": [
+    "gema_prajurit",
+    "gema_pesta"
+   ],
+   "weight": 2
+  },
+  {
+   "enemies": [
+    "gema_pengantin",
+    "gema_pengantin",
+    "gema_pesta"
+   ],
+   "weight": 2
+  },
+  {
+   "enemies": [
+    "hampa_pengembara",
+    "gema_prajurit"
+   ],
+   "weight": 1
+  }
+ ],
+ "rooms": {
+  "kapal_dek": {
+   "name": "Kapal Lentera — Dek",
+   "safe": true,
+   "text": "Dek kapal selebar balai desa, dan di tengahnya bukan tiang layar melainkan lentera: setinggi dua orang, berkaca delapan sisi, menyala tanpa sumbu. Kabut yang menyentuh cahayanya menyingkir seperti air dari minyak.",
+   "on_enter": "naik_kapal",
+   "exits": [
+    {
+     "label": "Turun ke palka",
+     "to": "kapal_palka"
+    },
+    {
+     "label": "Ke haluan",
+     "to": "kapal_haluan"
+    }
+   ],
+   "objects": [
+    {
+     "id": "lentera_kapal",
+     "name": "Lentera penjaga (simpan & istirahat)",
+     "script": "lentera_save"
+    }
+   ],
+   "npcs": [
+    {
+     "id": "rukmini_kapal",
+     "name": "Nyai Rukmini",
+     "script": "bicara_rukmini"
+    }
+   ]
+  },
+  "kapal_palka": {
+   "name": "Kapal Lentera — Palka",
+   "safe": true,
+   "text": "Ruang bawah dek yang diisi kafilah Sanggar dengan segala yang mereka kira perlu: peti bekal, gulungan kain, tungku kecil yang dibaut ke lantai, dan satu papan kayu penuh kertas yang ditempel berlapis-lapis.",
+   "exits": [
+    {
+     "label": "Naik ke dek",
+     "to": "kapal_dek"
+    }
+   ],
+   "npcs": [
+    {
+     "id": "penjaja_kapal",
+     "name": "Penjaja Kapal",
+     "script": "toko_kapal"
+    },
+    {
+     "id": "mpu_darma_kapal",
+     "name": "Mpu Darma (Tukang Kaca)",
+     "script": "tukang_kaca_kapal"
+    }
+   ],
+   "objects": [
+    {
+     "id": "papan_kapal",
+     "name": "Papan Buruan",
+     "script": "papan_kapal"
+    }
+   ]
+  },
+  "kapal_haluan": {
+   "name": "Kapal Lentera — Haluan",
+   "safe": true,
+   "text": "Haluan kapal, dan di sini kabut paling tipis. Di papan besar terbentang peta laut yang digambar bukan dengan garis pantai melainkan dengan nama-nama: tempat-tempat yang pernah terjadi.",
+   "on_enter": "adegan_haluan",
+   "exits": [
+    {
+     "label": "Kembali ke dek",
+     "to": "kapal_dek"
+    },
+    {
+     "label": "Berlayar ke laut kabut",
+     "to": "laut_kabut"
+    },
+    {
+     "label": "Berlayar kembali ke Danau Garam",
+     "to": "dermaga_rakit",
+     "area": "danau_garam"
+    }
+   ],
+   "npcs": [
+    {
+     "id": "pandansari",
+     "name": "Nyi Pandansari",
+     "script": "bicara_pandansari"
+    }
+   ]
+  },
+  "laut_kabut": {
+   "name": "Laut Kabut",
+   "text": "Kapal berjalan di atas sesuatu yang berlapis dan pelan. Kadang di bawah lunas terlihat bentuk: atap rumah, punggung jembatan, sebuah jalan dengan pagarnya masih lengkap. Lalu lapisan berikutnya menutupnya lagi.",
+   "on_enter": "lihat_laut",
+   "encounter_rate": 0.46,
+   "exits": [
+    {
+     "label": "Kembali ke kapal",
+     "to": "kapal_haluan"
+    },
+    {
+     "label": "Singgah: Pulau Pernikahan",
+     "to": "pulau_pernikahan"
+    },
+    {
+     "label": "Singgah: Pulau Perang",
+     "to": "pulau_perang"
+    },
+    {
+     "label": "Singgah: Pulau Pasar",
+     "to": "pulau_pasar"
+    },
+    {
+     "label": "Singgah: Pulau Nyanyi (kecil)",
+     "to": "pulau_nyanyi"
+    },
+    {
+     "label": "Singgah: Pulau Sunyi (kecil)",
+     "to": "pulau_sunyi"
+    },
+    {
+     "label": "Singgah: Pulau Lentera",
+     "to": "pulau_lentera",
+     "if": [
+      {
+       "any": [
+        "pulau_pernikahan_dilihat",
+        "pulau_perang_dilihat",
+        "pulau_pasar_dilihat"
+       ]
+      }
+     ],
+     "locked": "Lenteranya masih terlalu jauh. Singgahi pulau lain dulu; Kabut membuka jalan ke sana menurut urutannya sendiri."
+    },
+    {
+     "label": "Singgah: pulau yang tidak ada di peta",
+     "to": "pulau_hilang",
+     "if": [
+      "pulau_hilang_terlihat"
+     ],
+     "locked": ""
+    },
+    {
+     "label": "Berlayar ke barat, ke Pusar Kabut",
+     "to": "tepi_pusar",
+     "area": "pusar_kabut",
+     "if": [
+      "pusar_terbuka"
+     ],
+     "locked": "Lentera kapal belum cukup terang untuk menembus barat. Nyai Rukmini menahan kemudi."
+    }
+   ]
+  },
+  "pulau_pernikahan": {
+   "name": "Pulau Pernikahan",
+   "text": "Bukan pulau: satu hari, dipadatkan. Lorong bunga sepanjang dua ratus langkah berdiri di atas air, lengkap dengan kursi-kursinya, dan di ujungnya ada pelaminan yang masih menunggu. Semuanya berwarna, dan semuanya diam.",
+   "on_enter": "masuk_pernikahan",
+   "exits": [
+    {
+     "label": "Kembali ke kapal",
+     "to": "laut_kabut"
+    },
+    {
+     "label": "Ke ujung lorong bunga",
+     "to": "aula_pernikahan"
+    }
+   ]
+  },
+  "aula_pernikahan": {
+   "name": "Pelaminan",
+   "text": "Pelaminan, dan di atasnya dua kursi kosong. Di lantai ada beras yang tidak pernah jatuh sampai bawah; butir-butirnya menggantung setinggi lutut, berhenti di tengah lemparan.",
+   "on_enter": "boss_pernikahan",
+   "exits": [
+    {
+     "label": "Kembali ke lorong bunga",
+     "to": "pulau_pernikahan"
+    }
+   ],
+   "objects": [
+    {
+     "id": "peti_pernikahan",
+     "name": "Kotak seserahan",
+     "script": "peti_pernikahan",
+     "if": [
+      "!peti_pernikahan_diambil"
+     ]
+    }
+   ]
+  },
+  "pulau_perang": {
+   "name": "Pulau Perang",
+   "text": "Parit sepanjang mata memandang, digali ke dalam sesuatu yang bukan tanah. Di sepanjang bibir parit berdiri tombak-tombak yang ditancapkan, dan di tiap tombak tergantung satu helm. Tidak ada satu pun mayat.",
+   "on_enter": "masuk_perang",
+   "exits": [
+    {
+     "label": "Kembali ke kapal",
+     "to": "laut_kabut"
+    },
+    {
+     "label": "Turun ke parit",
+     "to": "parit_perang"
+    }
+   ]
+  },
+  "parit_perang": {
+   "name": "Dasar Parit",
+   "text": "Di dasar parit, air setinggi mata kaki yang tidak pernah surut, dan barisan yang masih berdiri menghadap satu arah — arah yang sudah delapan abad tidak didatangi siapa pun.",
+   "on_enter": "boss_perang",
+   "exits": [
+    {
+     "label": "Naik dari parit",
+     "to": "pulau_perang"
+    }
+   ],
+   "objects": [
+    {
+     "id": "peti_perang",
+     "name": "Ransel yang tersandar di dinding parit",
+     "script": "peti_perang",
+     "if": [
+      "!peti_perang_diambil"
+     ]
+    }
+   ]
+  },
+  "pulau_pasar": {
+   "name": "Pulau Pasar",
+   "text": "Pasar pagi, seluruhnya. Lapak-lapak berjajar dengan dagangan lengkap, tenda-tenda terbentang, dan di udara ada bau yang benar: ikan asin, kopi, dan asap tungku. Yang tidak ada cuma orangnya.",
+   "on_enter": "masuk_pasar",
+   "exits": [
+    {
+     "label": "Kembali ke kapal",
+     "to": "laut_kabut"
+    },
+    {
+     "label": "Masuk ke lorong lapak",
+     "to": "lapak_pasar"
+    }
+   ]
+  },
+  "lapak_pasar": {
+   "name": "Lorong Lapak",
+   "text": "Lorong lapak yang makin ke dalam makin ramai suaranya, meski tidak ada satu pun yang bergerak. Di ujung lorong ada lapak alat: kunci, ragum, gerinda tangan, semuanya digantung menurut ukuran dari besar ke kecil.",
+   "on_enter": "boss_pasar",
+   "exits": [
+    {
+     "label": "Kembali ke pintu pasar",
+     "to": "pulau_pasar"
+    }
+   ],
+   "objects": [
+    {
+     "id": "peti_pasar",
+     "name": "Lapak alat di ujung lorong",
+     "script": "peti_pasar",
+     "if": [
+      "!peti_pasar_diambil"
+     ]
+    }
+   ]
+  },
+  "pulau_nyanyi": {
+   "name": "Pulau Nyanyi",
+   "safe": true,
+   "text": "Pulau kecil yang seluruhnya satu ruangan: balai bambu tanpa dinding, dengan tikar melingkar dan satu kendi di tengah. Di sini suara tidak menggema — ia ditahan, seperti di ruangan yang memang dibuat untuk menyanyi.",
+   "on_enter": "masuk_nyanyi",
+   "exits": [
+    {
+     "label": "Kembali ke kapal",
+     "to": "laut_kabut"
+    }
+   ],
+   "objects": [
+    {
+     "id": "lentera_nyanyi",
+     "name": "Lentera kecil di tiang balai (simpan & istirahat)",
+     "script": "lentera_save"
+    },
+    {
+     "id": "kendi_nyanyi",
+     "name": "Kendi di tengah tikar",
+     "script": "kendi_nyanyi",
+     "if": [
+      "!kendi_nyanyi_diambil"
+     ]
+    }
+   ]
+  },
+  "pulau_sunyi": {
+   "name": "Pulau Sunyi",
+   "safe": true,
+   "text": "Sebuah rumah. Satu rumah saja, berdiri di atas air, dengan halaman sempit dan tali jemuran yang masih terbentang. Di jemuran ada kain-kain kecil, ukuran anak, yang kering sejak lama.",
+   "on_enter": "masuk_sunyi",
+   "exits": [
+    {
+     "label": "Kembali ke kapal",
+     "to": "laut_kabut"
+    }
+   ],
+   "objects": [
+    {
+     "id": "lentera_sunyi",
+     "name": "Lentera di beranda (simpan & istirahat)",
+     "script": "lentera_save"
+    },
+    {
+     "id": "jemuran",
+     "name": "Tali jemuran",
+     "script": "periksa_jemuran",
+     "if": [
+      "!jemuran_diperiksa"
+     ]
+    }
+   ]
+  },
+  "pulau_lentera": {
+   "name": "Pulau Lentera",
+   "text": "Pulau yang seluruhnya jalan mendaki, dan di sepanjang jalan itu lentera penjaga — ratusan, berjajar seperti di Lembah Larung, semuanya menyala, semuanya persis model yang diajarkan Pak Guntur cara merapikannya.",
+   "on_enter": "masuk_lentera",
+   "exits": [
+    {
+     "label": "Kembali ke kapal",
+     "to": "laut_kabut"
+    },
+    {
+     "label": "Naik ke puncak",
+     "to": "puncak_lentera"
+    }
+   ],
+   "objects": [
+    {
+     "id": "lentera_pulau",
+     "name": "Lentera penjaga di tengah jalan (simpan & istirahat)",
+     "script": "lentera_save"
+    }
+   ]
+  },
+  "puncak_lentera": {
+   "name": "Puncak Pulau Lentera",
+   "text": "Puncak pulau: satu lentera, lebih besar dari semuanya, dan seseorang berdiri di depannya sambil merapikan sumbu — tiga tarikan, berhenti, periksa nyala, tiga tarikan lagi.",
+   "on_enter": "boss_gema_guntur",
+   "exits": [
+    {
+     "label": "Turun ke jalan lentera",
+     "to": "pulau_lentera"
+    }
+   ]
+  },
+  "pulau_hilang": {
+   "name": "Pulau Hilang",
+   "text": "Pulau kecil yang seluruhnya tertutup benang: benang di atas batu, benang di antara batu, benang yang membentang ke laut dan hilang di kabut. Di tengahnya ada sesuatu yang duduk dan bekerja tanpa berhenti.",
+   "on_enter": "superboss_penenun",
+   "exits": [
+    {
+     "label": "Kembali ke kapal",
+     "to": "laut_kabut"
+    }
+   ]
+  }
+ },
+ "scripts": {
+  "lentera_save": [
+   {
+    "text": "Kau merapikan sumbu lentera besar itu. Nyalanya tidak butuh minyak, tapi tetap suka dirapikan."
+   },
+   {
+    "heal": "all"
+   },
+   {
+    "save": true
+   },
+   {
+    "if": [
+     "has:bekal_kemah"
+    ],
+    "then": [
+     {
+      "kemah": true
+     }
+    ]
+   }
+  ],
+  "naik_kapal": [
+   {
+    "once": "babak3_mulai",
+    "do": [
+     {
+      "adegan": {
+       "efek": "fade"
+      }
+     },
+     {
+      "text": "Kapal Lentera berangkat dari Danau Garam menjelang pagi, dan dalam dua jam garam di bawah lunasnya berhenti menjadi garam. Airnya tidak berombak; ia berlapis, seperti asap yang dituang."
+     },
+     {
+      "say": "Rukmini",
+      "text": "Namanya Laut Lupa. Dulu ini dataran. Delapan abad Kabut mengalir ke barat dan mengendap di sini, dan sekarang dalamnya tidak ada yang tahu."
+     },
+     {
+      "say": "Bagas",
+      "text": "Dan kita berlayar di atasnya."
+     },
+     {
+      "say": "Rukmini",
+      "text": "Di atasnya, Nak. Bukan di dalamnya. Itu beda yang penting sekali."
+     },
+     {
+      "pause": true
+     },
+     {
+      "say": "Rimba",
+      "text": "Pusar Kabut di sebelah mana?"
+     },
+     {
+      "say": "Rukmini",
+      "text": "Barat terus, sampai lenteranya tidak lagi menerangi apa pun. Tapi kalian tidak akan sampai dengan Bara yang kalian punya sekarang."
+     },
+     {
+      "say": "Rukmini",
+      "text": "Di laut ini ada pulau-pulau. Bukan tanah — ingatan yang terlalu keras sampai mengeras jadi tempat. Singgahi empat yang paling besar. Kalian akan kembali lebih berat, dan lebih kuat."
+     },
+     {
+      "set": "kapal_terbuka"
+     }
+    ]
+   },
+   {
+    "if": [
+     "boss_gema_guntur_kalah",
+     "!pusar_terbuka"
+    ],
+    "then": [
+     {
+      "run": "rukmini_pusar"
+     }
+    ]
+   }
+  ],
+  "rukmini_pusar": [
+   {
+    "once": "pusar_terbuka",
+    "do": [
+     {
+      "say": "Rukmini",
+      "text": "Empat pulau. Kalian membawa pulang lebih dari yang kuduga."
+     },
+     {
+      "say": "Rukmini",
+      "text": "Sekarang meteran itu. Berikan padaku."
+     },
+     {
+      "text": "Ia menuang sesuatu yang bukan minyak ke dalam lentera besar, lalu menekan telapak tangan Rimba ke kacanya. Meteran Bara di dada Rimba melebar — bukan bertambah penuh, tapi *bertambah ruang*."
+     },
+     {
+      "bara": 8
+     },
+     {
+      "say": "Rukmini",
+      "text": "Delapan. Cukup untuk satu jurus yang butuh empat orang sekaligus. Kalau kalian tidak pernah memakainya, tidak apa-apa. Kalau kalian butuh, jangan ragu."
+     },
+     {
+      "say": "Rukmini",
+      "text": "Barat terus. Kabutnya akan membuka jalan; itu justru yang membuatku takut."
+     }
+    ]
+   }
+  ],
+  "bicara_rukmini": [
+   {
+    "if": [
+     "pusar_terbuka"
+    ],
+    "then": [
+     {
+      "say": "Rukmini",
+      "text": "Jalan ke Pusar sudah terbuka. Aku akan menunggu di sini selama lenteranya masih menyala."
+     },
+     {
+      "end": true
+     }
+    ]
+   },
+   {
+    "if": [
+     "boss_gema_guntur_kalah"
+    ],
+    "then": [
+     {
+      "run": "rukmini_pusar"
+     },
+     {
+      "end": true
+     }
+    ]
+   },
+   {
+    "say": "Rukmini",
+    "text": "Empat pulau besar: pernikahan, perang, pasar, dan lentera. Yang keempat itu yang paling kalian butuh dan paling tidak kalian mau."
+   },
+   {
+    "say": "Rukmini",
+    "text": "Ada dua lagi yang lebih kecil, dan satu yang tidak kutandai di peta. Yang tidak kutandai itu sebaiknya begitu."
+   }
+  ],
+  "toko_kapal": [
+   {
+    "once": "toko_kapal_dibuka",
+    "do": [
+     {
+      "say": "Penjaja",
+      "text": "Kami bawa seluruh isi pasar Sanggar ke sini. Harganya laut, bukan darat — maaf."
+     },
+     {
+      "say": "Bagas",
+      "text": "Kita punya seratus sepuluh ribu Keping dan tidak ada tempat lagi untuk membelanjakannya."
+     },
+     {
+      "say": "Penjaja",
+      "text": "Nah."
+     }
+    ]
+   },
+   {
+    "shop": "pasar_kapal"
+   }
+  ],
+  "tukang_kaca_kapal": [
+   {
+    "once": "darma_kapal",
+    "do": [
+     {
+      "say": "Darma",
+      "text": "Tungku terakhir. Setelah ini tidak ada lagi bengkel di arah mana pun."
+     },
+     {
+      "say": "Darma",
+      "text": "Jadi pikirkan baik-baik mau jadi apa kalian waktu sampai di sana."
+     }
+    ]
+   },
+   {
+    "tukang_kaca": "kios_laut"
+   }
+  ],
+  "papan_kapal": [
+   {
+    "text": "Papan buruan kafilah, dipindahkan utuh dari Sanggar beserta paku-pakunya."
+   },
+   {
+    "papan_buruan": true
+   }
+  ],
+  "adegan_haluan": [
+   {
+    "once": "haluan_dilihat",
+    "do": [
+     {
+      "text": "Di haluan ada satu orang yang tidak ikut kafilah dan tidak ikut kalian: perempuan berjubah Ordo tanpa lencana, duduk menghadap barat sejak kapal berangkat."
+     },
+     {
+      "say": "Sela",
+      "text": "Dia yang di Menara Terapung."
+     },
+     {
+      "say": "Pandansari",
+      "text": "Aku juga ingat kalian."
+     },
+     {
+      "say": "Rangga",
+      "text": "Kenapa kau di sini?"
+     },
+     {
+      "say": "Pandansari",
+      "text": "Karena Nirmala kalah, dan karena aku sudah lima belas tahun menandatangani jadwal panen. Salah satu dari dua alasan itu yang benar. Aku belum tahu yang mana."
+     },
+     {
+      "pause": true
+     }
+    ]
+   }
+  ],
+  "bicara_pandansari": [
+   {
+    "if": [
+     "pulau_lentera_dilihat"
+    ],
+    "then": [
+     {
+      "say": "Pandansari",
+      "text": "Pulau lentera. Kau bertemu gurumu di sana, bukan?"
+     },
+     {
+      "say": "Pandansari",
+      "text": "Aku juga bertemu seseorang di pulau perang. Ia memanggilku dengan pangkat yang belum pernah kupakai. Kabut tidak selalu tepat; ia cuma keras kepala."
+     },
+     {
+      "end": true
+     }
+    ]
+   },
+   {
+    "say": "Pandansari",
+    "text": "Pulau-pulau itu bukan tempat. Ia ingatan yang diingat terlalu banyak orang sekaligus sampai berdiri sendiri."
+   },
+   {
+    "say": "Pandansari",
+    "text": "Kalau kalian bertemu sesuatu yang memanggil nama kalian di sana — itu bukan hantu. Itu kalian, sebagaimana Kabut menyimpan kalian."
+   }
+  ],
+  "lihat_laut": [
+   {
+    "once": "laut_dilihat",
+    "do": [
+     {
+      "say": "Lintang",
+      "text": "Ada kota di bawah sana."
+     },
+     {
+      "say": "Rukmini",
+      "text": "Ada banyak. Jangan terlalu lama melihat ke bawah; yang di bawah juga melihat."
+     }
+    ]
+   },
+   {
+    "once": "pulau_hilang_terlihat",
+    "do": [
+     {
+      "if": [
+       "pulau_pernikahan_dilihat",
+       "pulau_perang_dilihat",
+       "pulau_pasar_dilihat"
+      ],
+      "then": [
+       {
+        "text": "Di sisi kanan kapal, di tempat yang di peta Rukmini dibiarkan kosong, kabut membuka sebentar. Ada pulau di sana: kecil, bulat, dan seluruhnya tertutup sesuatu yang berkilau seperti benang basah."
+       },
+       {
+        "say": "Rukmini",
+        "text": "Itu yang tidak kutandai. Kalian boleh ke sana. Aku tidak akan ikut turun."
+       }
+      ],
+      "else": [
+       {
+        "unset": "pulau_hilang_terlihat"
+       }
+      ]
+     }
+    ]
+   }
+  ],
+  "masuk_pernikahan": [
+   {
+    "once": "pulau_pernikahan_dilihat",
+    "do": [
+     {
+      "text": "Kalian turun ke lorong bunga dan bunganya tidak layu di bawah sepatu. Suara di sini datang terlambat: kalian mendengar langkah kalian sendiri satu detik setelah melangkah."
+     },
+     {
+      "say": "Sela",
+      "text": "Aku pernah jaga di pernikahan seperti ini. Sekali. Di Tengara."
+     },
+     {
+      "say": "Rimba",
+      "text": "Kau tidak pernah cerita."
+     },
+     {
+      "say": "Sela",
+      "text": "Tidak ada yang perlu diceritakan. Aku berdiri di pintu delapan jam dan tidak ada yang terjadi."
+     },
+     {
+      "say": "Sela",
+      "text": "(Jeda.) Itu pekerjaan terbaik yang pernah kudapat."
+     }
+    ]
+   },
+   {
+    "run": "sergap_pernikahan"
+   }
+  ],
+  "sergap_pernikahan": [
+   {
+    "once": "sergap_pernikahan_selesai",
+    "do": [
+     {
+      "text": "Beberapa kursi di barisan depan terisi sekaligus, tanpa ada yang datang. Tamu-tamu itu menoleh ke arah kalian bersamaan."
+     },
+     {
+      "battle": [
+       "gema_pesta",
+       "gema_pesta",
+       "gema_pengantin"
+      ],
+      "win": []
+     }
+    ]
+   }
+  ],
+  "boss_pernikahan": [
+   {
+    "if": [
+     "pernikahan_selesai"
+    ],
+    "then": [
+     {
+      "text": "Pelaminan itu kosong sekarang, dan berasnya sudah jatuh sampai lantai."
+     },
+     {
+      "end": true
+     }
+    ]
+   },
+   {
+    "text": "Dua sosok berdiri dari kursi pelaminan. Mereka tidak marah; mereka hanya mengulang hari itu, dan kalian berdiri di tengah lorong."
+   },
+   {
+    "say": "Rangga",
+    "text": "Jangan hancurkan lorongnya. Kalau ingatannya pecah, pulau ini ikut tenggelam bersama kita."
+   },
+   {
+    "battle": [
+     "gema_pengantin",
+     "gema_pengantin",
+     "gema_prajurit"
+    ],
+    "boss": true,
+    "win": [
+     {
+      "set": "pernikahan_selesai"
+     },
+     {
+      "text": "Keduanya duduk kembali. Beras yang menggantung setinggi lutut akhirnya jatuh, semuanya sekaligus, dan bunyinya seperti hujan yang cuma sebentar."
+     },
+     {
+      "give": {
+       "serpihan_ingatan": 1,
+       "abu_pagi": 1
+      }
+     },
+     {
+      "say": "Sela",
+      "text": "Sudah. Mereka sudah selesai."
+     }
+    ]
+   }
+  ],
+  "peti_pernikahan": [
+   {
+    "text": "Kotak seserahan yang tidak pernah dibuka. Di dalamnya kain, satu set alat makan, dan sebuah kaca kecil yang masih memutar wajah orang yang menatapnya."
+   },
+   {
+    "give": {
+     "bekal_kemah": 2,
+     "ramuan_laut": 3
+    }
+   },
+   {
+    "kaca": {
+     "kaca_sembuh": 1
+    }
+   },
+   {
+    "set": "peti_pernikahan_diambil"
+   }
+  ],
+  "masuk_perang": [
+   {
+    "once": "pulau_perang_dilihat",
+    "do": [
+     {
+      "text": "Rangga turun paling dulu, dan berhenti di bibir parit lebih lama daripada yang nyaman untuk dilihat."
+     },
+     {
+      "say": "Rangga",
+      "text": "Formasinya benar. Jarak antar-tombak benar. Helmnya digantung supaya yang datang tahu berapa banyak yang masih hidup."
+     },
+     {
+      "say": "Bagas",
+      "text": "Kapten?"
+     },
+     {
+      "say": "Rangga",
+      "text": "Ini bukan perang yang kalah, Bagas. Ini perang yang ditunggu dan tidak pernah datang. Delapan abad mereka siap."
+     }
+    ]
+   },
+   {
+    "run": "sergap_perang"
+   }
+  ],
+  "sergap_perang": [
+   {
+    "once": "sergap_perang_selesai",
+    "do": [
+     {
+      "text": "Tiga helm di tombak terdekat berputar menghadap kalian, dan yang di bawahnya ikut berputar."
+     },
+     {
+      "battle": [
+       "gema_prajurit",
+       "gema_prajurit",
+       "gema_prajurit"
+      ],
+      "win": []
+     }
+    ]
+   }
+  ],
+  "boss_perang": [
+   {
+    "if": [
+     "perang_selesai"
+    ],
+    "then": [
+     {
+      "text": "Barisan di dasar parit sekarang menghadap ke belakang, ke arah pulang."
+     },
+     {
+      "end": true
+     }
+    ]
+   },
+   {
+    "text": "Barisan di dasar parit berbalik bersamaan. Tidak ada aba-aba; mereka sudah delapan abad tahu kapan harus berbalik."
+   },
+   {
+    "say": "Rangga",
+    "text": "Sela. Sayap kiri. Jangan biarkan dua berdiri bersebelahan."
+   },
+   {
+    "battle": [
+     "gema_prajurit",
+     "gema_prajurit",
+     "gema_prajurit",
+     "gema_pesta"
+    ],
+    "boss": true,
+    "win": [
+     {
+      "set": "perang_selesai"
+     },
+     {
+      "text": "Yang terakhir jatuh berlutut dulu, lalu meletakkan tombaknya melintang di depan kaki Rangga — bukan menyerah, tapi menyerahkan."
+     },
+     {
+      "give": {
+       "serpihan_ingatan": 1
+      }
+     },
+     {
+      "kaca": {
+       "kaca_teguh": 1
+      }
+     },
+     {
+      "say": "Rangga",
+      "text": "Diterima. (Ia berdiri lama sekali.) Kalian boleh pulang."
+     }
+    ]
+   }
+  ],
+  "peti_perang": [
+   {
+    "text": "Ransel prajurit, isinya rapi: ransum kering yang tidak busuk, jarum, benang, dan satu surat yang tidak pernah dikirim."
+   },
+   {
+    "give": {
+     "ramuan_laut": 3,
+     "guci_nyala": 2
+    }
+   },
+   {
+    "set": "peti_perang_diambil"
+   }
+  ],
+  "masuk_pasar": [
+   {
+    "once": "pulau_pasar_dilihat",
+    "do": [
+     {
+      "text": "Bagas berhenti tiga langkah setelah turun dan tidak melanjutkan."
+     },
+     {
+      "say": "Bagas",
+      "text": "Ini Wirasaba."
+     },
+     {
+      "say": "Rimba",
+      "text": "Wirasaba sudah kita lewati."
+     },
+     {
+      "say": "Bagas",
+      "text": "Bukan yang sekarang. Yang dulu. (Ia menunjuk tanpa mengangkat tangan tinggi-tinggi.) Lapak ibuku di sebelah sana, sesudah tukang kuningan."
+     }
+    ]
+   },
+   {
+    "run": "sergap_pasar"
+   }
+  ],
+  "sergap_pasar": [
+   {
+    "once": "sergap_pasar_selesai",
+    "do": [
+     {
+      "text": "Semua lapak mulai menawar sekaligus, dengan angka-angka yang tidak berhubungan dengan apa pun."
+     },
+     {
+      "battle": [
+       "gema_pesta",
+       "gema_pesta",
+       "gema_pesta"
+      ],
+      "win": []
+     }
+    ]
+   }
+  ],
+  "boss_pasar": [
+   {
+    "if": [
+     "pasar_selesai"
+    ],
+    "then": [
+     {
+      "text": "Pasar itu sekarang benar-benar pagi: sepi, dan akan ramai sebentar lagi, dan tidak akan pernah sampai ke sebentar lagi itu."
+     },
+     {
+      "end": true
+     }
+    ]
+   },
+   {
+    "text": "Lorong menutup di belakang kalian. Tawar-menawar dari seluruh pasar berkumpul jadi satu suara, dan suara itu berdiri."
+   },
+   {
+    "say": "Bagas",
+    "text": "Jangan dengarkan angkanya. Angkanya bohong. Itu memang gunanya."
+   },
+   {
+    "battle": [
+     "gema_pesta",
+     "gema_pengantin",
+     "gema_prajurit"
+    ],
+    "boss": true,
+    "win": [
+     {
+      "set": "pasar_selesai"
+     },
+     {
+      "text": "Suara itu pecah kembali jadi dua ratus suara kecil, lalu jadi bunyi pagi biasa: timbangan, tali, seseorang menghitung kembalian."
+     },
+     {
+      "give": {
+       "serpihan_ingatan": 1,
+       "suku_cadang": 20
+      }
+     },
+     {
+      "kaca": {
+       "kaca_licin": 1
+      }
+     }
+    ]
+   }
+  ],
+  "peti_pasar": [
+   {
+    "text": "Lapak alat. Bagas tidak mengambil apa pun dari dagangan; ia melepas satu kunci pas paling kecil dari gantungannya, yang memang tidak pernah terpakai di lapak mana pun."
+   },
+   {
+    "give": {
+     "suku_cadang": 30,
+     "ramuan_laut": 2
+    }
+   },
+   {
+    "kaca": {
+     "kaca_kikir": 1
+    }
+   },
+   {
+    "set": "peti_pasar_diambil"
+   }
+  ],
+  "masuk_nyanyi": [
+   {
+    "once": "pulau_nyanyi_dilihat",
+    "do": [
+     {
+      "text": "Ratih turun lebih dulu, melepas sandalnya di tepi balai seperti yang diajarkan orang tuanya, lalu duduk di tikar tanpa diminta siapa pun."
+     },
+     {
+      "say": "Ratih",
+      "text": "Ini Padasuara. Bukan yang kita tinggalkan. Yang sebelum Padasuara ada."
+     },
+     {
+      "say": "Lintang",
+      "text": "Kenapa kosong?"
+     },
+     {
+      "say": "Ratih",
+      "text": "Tidak kosong. Mereka lagi menunggu satu orang lagi supaya bisa mulai. (Ia menatap tikar yang lowong di depannya.) Mereka sudah menunggu lama."
+     },
+     {
+      "pause": true
+     }
+    ]
+   }
+  ],
+  "kendi_nyanyi": [
+   {
+    "text": "Kendi berisi air yang masih dingin. Ratih menuangnya sedikit ke tikar lebih dulu, untuk yang duluan, lalu sisanya dibagi."
+   },
+   {
+    "give": {
+     "ramuan_laut": 4,
+     "bekal_kemah": 2
+    }
+   },
+   {
+    "kaca": {
+     "kaca_fajar": 1
+    }
+   },
+   {
+    "set": "kendi_nyanyi_diambil"
+   }
+  ],
+  "masuk_sunyi": [
+   {
+    "once": "pulau_sunyi_dilihat",
+    "do": [
+     {
+      "if": [
+       "kelana_dibunuh"
+      ],
+      "then": [
+       {
+        "text": "Lintang berjalan ke halaman rumah itu tanpa menunggu siapa pun. Ia berdiri di bawah tali jemuran, memegang salah satu kain kecil, dan tidak melepaskannya untuk waktu yang lama."
+       },
+       {
+        "say": "Sela",
+        "text": "Lintang."
+       },
+       {
+        "say": "Lintang",
+        "text": "Rumahnya masih ingat aku. (Jeda.) Cuma rumahnya."
+       },
+       {
+        "say": "Sela",
+        "text": "Kita bisa kembali ke kapal."
+       },
+       {
+        "say": "Lintang",
+        "text": "Tidak usah. Aku sudah lihat. Sudah cukup."
+       },
+       {
+        "text": "Ia berjalan keluar halaman lebih dulu, seperti di gudang panen dulu."
+       }
+      ],
+      "else": [
+       {
+        "text": "Kelana berhenti di pintu pagar dan tidak masuk. Lintang masuk sendirian, berdiri di ruang depan, lalu keluar lagi dan berdiri di sebelah ayahnya."
+       },
+       {
+        "say": "Lintang",
+        "text": "Talinya masih ada."
+       },
+       {
+        "say": "Kelana",
+        "text": "...Aku yang pasang."
+       },
+       {
+        "say": "Lintang",
+        "text": "Iya. Bapak yang pasang."
+       },
+       {
+        "text": "Keduanya berdiri di pagar sampai kabut turun lagi, dan tidak satu pun dari keduanya masuk ke dalam rumah."
+       }
+      ]
+     }
+    ]
+   }
+  ],
+  "periksa_jemuran": [
+   {
+    "text": "Kain-kain kecil di jemuran, dijepit rapi. Di kantong salah satunya ada kaca sebesar kuku, yang jelas disimpan anak-anak karena bentuknya, bukan karena gunanya."
+   },
+   {
+    "give": {
+     "serpihan_ingatan": 1,
+     "abu_pagi": 1
+    }
+   },
+   {
+    "kaca": {
+     "kaca_tabah": 1
+    }
+   },
+   {
+    "set": "jemuran_diperiksa"
+   }
+  ],
+  "masuk_lentera": [
+   {
+    "once": "pulau_lentera_dilihat",
+    "do": [
+     {
+      "text": "Rimba berjalan di antara lentera-lentera itu dan tangannya bergerak sendiri: merapikan sumbu yang miring, menutup kaca yang menganga, tanpa berpikir."
+     },
+     {
+      "say": "Rimba",
+      "text": "Ini caranya. Ini betul-betul caranya."
+     },
+     {
+      "say": "Ratih",
+      "text": "Siapa yang mengajarkan?"
+     },
+     {
+      "say": "Rimba",
+      "text": "Pak Guntur. (Ia berhenti.) Dan Pak Guntur belajar dari orang lain, dan orang itu dari orang lain lagi, sampai ke sini."
+     }
+    ]
+   },
+   {
+    "run": "sergap_lentera"
+   }
+  ],
+  "sergap_lentera": [
+   {
+    "once": "sergap_lentera_selesai",
+    "do": [
+     {
+      "text": "Beberapa lentera di jalan padam berurutan, dan dari tiap yang padam keluar sesuatu yang berbentuk orang."
+     },
+     {
+      "battle": [
+       "hampa_pengembara",
+       "gema_prajurit",
+       "gema_pesta"
+      ],
+      "win": []
+     }
+    ]
+   }
+  ],
+  "boss_gema_guntur": [
+   {
+    "if": [
+     "boss_gema_guntur_kalah"
+    ],
+    "then": [
+     {
+      "text": "Lentera besar di puncak menyala tenang. Tidak ada yang berdiri di depannya."
+     },
+     {
+      "end": true
+     }
+    ]
+   },
+   {
+    "say": "Rimba",
+    "text": "Pak Guntur."
+   },
+   {
+    "text": "Sosok itu tidak menoleh. Ia menyelesaikan tiga tarikan terakhir, memeriksa nyalanya, lalu baru berbalik — dan wajahnya benar."
+   },
+   {
+    "say": "Gema Guntur",
+    "text": "Rimba. Kau terlambat lima menit."
+   },
+   {
+    "say": "Rimba",
+    "text": "Saya selalu terlambat lima menit."
+   },
+   {
+    "say": "Gema Guntur",
+    "text": "Betul. Itu satu hal yang tidak pernah berhasil kuperbaiki."
+   },
+   {
+    "pause": true
+   },
+   {
+    "say": "Lintang",
+    "text": "Rimba. Itu bukan dia."
+   },
+   {
+    "say": "Rimba",
+    "text": "Aku tahu."
+   },
+   {
+    "say": "Gema Guntur",
+    "text": "Kau tahu? (Ia tersenyum, dan senyumnya juga benar.) Kalau kau tahu, coba jelaskan padaku apa bedanya. Aku ingat semua yang ia ingat. Aku merapikan sumbu dengan cara yang sama."
+   },
+   {
+    "say": "Gema Guntur",
+    "text": "Satu-satunya yang tidak kupunya adalah hari-hari sesudah ia masuk ke Suar. Dan hari-hari itu juga tidak ia punya."
+   },
+   {
+    "pause": true
+   },
+   {
+    "say": "Rimba",
+    "text": "Bedanya, Pak Guntur akan menyuruh saya pergi dari sini."
+   },
+   {
+    "say": "Gema Guntur",
+    "text": "...Ya. (Jeda panjang.) Ya, itu betul."
+   },
+   {
+    "text": "Ia mengangkat lenteranya, dan nyalanya membesar sampai bukan lagi nyala lentera."
+   },
+   {
+    "say": "Gema Guntur",
+    "text": "Kalau begitu jangan tabung apa pun, Nak. Nyala yang disimpan cuma jadi makanan."
+   },
+   {
+    "adegan": {
+     "efek": "flash"
+    }
+   },
+   {
+    "battle": [
+     "boss_gema_guntur"
+    ],
+    "boss": true,
+    "win": [
+     {
+      "set": "boss_gema_guntur_kalah"
+     },
+     {
+      "text": "Nyala itu surut ke dalam lentera yang ukurannya biasa saja. Yang memegangnya duduk di batu, dan untuk beberapa saat ia cuma seorang tua yang lelah menjaga jalan."
+     },
+     {
+      "say": "Gema Guntur",
+      "text": "Mercusuar Larung menyala tanpa membakar siapa pun."
+     },
+     {
+      "say": "Rimba",
+      "text": "Bapak sudah tahu?"
+     },
+     {
+      "say": "Gema Guntur",
+      "text": "Tidak. Aku baru dengar dari kau, barusan, waktu kau bertarung. Terima kasih."
+     },
+     {
+      "pause": true
+     },
+     {
+      "say": "Gema Guntur",
+      "text": "Satu lagi. Di Pusar nanti, yang kalian temui bukan musuh. Ia cuma orang pertama yang dibakar, dan ia tidak pernah diberi pilihan."
+     },
+     {
+      "say": "Gema Guntur",
+      "text": "Beri dia pilihan. Itu saja yang bisa kalian kasih."
+     },
+     {
+      "text": "Lentera besar di puncak itu padam pelan, dan ratusan lentera di jalan turun ikut padam satu per satu, dari atas ke bawah, seperti orang yang menutup toko."
+     },
+     {
+      "give": {
+       "serpihan_ingatan": 2,
+       "kaca_inti": 1
+      }
+     },
+     {
+      "kaca": {
+       "kaca_fajar": 1
+      }
+     },
+     {
+      "ilustrasi": "events/gema_guntur",
+      "teks": "\"Jangan tabung apa pun, Nak. Nyala yang disimpan cuma jadi makanan.\""
+     }
+    ]
+   }
+  ],
+  "superboss_penenun": [
+   {
+    "if": [
+     "penenun_kalah"
+    ],
+    "then": [
+     {
+      "text": "Benang-benang di pulau itu terurai dan hanyut ke segala arah. Tidak ada lagi yang duduk di tengahnya."
+     },
+     {
+      "end": true
+     }
+    ]
+   },
+   {
+    "text": "Yang duduk di tengah pulau itu tidak punya wajah yang bisa dijelaskan. Ia memegang sesuatu yang kalian, dan menariknya sedikit — dan Sela menjerit sekali, pendek, tanpa alasan."
+   },
+   {
+    "say": "Rukmini",
+    "text": "(Dari kapal, jauh.) NAIK. Sekarang."
+   },
+   {
+    "say": "Sang Penenun",
+    "text": "Kalian ditenun terburu-buru. Boleh kurapikan?"
+   },
+   {
+    "choice": [
+     {
+      "text": "Naik kembali ke kapal. (Superboss Lv 58 — bisa dihadapi nanti.)",
+      "then": [
+       {
+        "text": "Kalian mundur ke perahu tanpa memunggunginya. Ia tidak mengejar; ia kembali bekerja."
+       },
+       {
+        "end": true
+       }
+      ]
+     },
+     {
+      "text": "Hadapi Sang Penenun.",
+      "then": [
+       {
+        "adegan": {
+         "efek": "shake"
+        }
+       },
+       {
+        "battle": [
+         "superboss_penenun"
+        ],
+        "boss": true,
+        "win": [
+         {
+          "set": "penenun_kalah"
+         },
+         {
+          "text": "Benangnya putus semua sekaligus. Yang duduk di tengah pulau itu terurai jadi apa yang selama ini ia tenun: potongan-potongan orang, ribuan, yang langsung tenggelam ke laut dan pulang."
+         },
+         {
+          "say": "Bagas",
+          "text": "Dia bukan menenun kita. Dia menenun mereka. Kita cuma lewat."
+         },
+         {
+          "give": {
+           "serpihan_ingatan": 3
+          }
+         },
+         {
+          "kaca": {
+           "kaca_penenun": 1
+          }
+         },
+         {
+          "ilustrasi": "events/penenun",
+          "teks": "Yang menyusun ulang apa pun yang sampai ke Pulau Hilang, termasuk kalian."
+         }
+        ]
+       }
+      ]
+     }
+    ]
+   }
+  ]
+ }
+}

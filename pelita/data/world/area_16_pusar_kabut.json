@@ -1,0 +1,1249 @@
+{
+ "id": "pusar_kabut",
+ "name": "Pusar Kabut & Kota Adiluhung",
+ "start": "tepi_pusar",
+ "level_range": "Lv 47-52",
+ "fog": false,
+ "encounter_rate": 0.44,
+ "encounters": [
+  {
+   "enemies": [
+    "hampa_adiluhung",
+    "gema_prajurit"
+   ],
+   "weight": 3
+  },
+  {
+   "enemies": [
+    "pelita_padam_kuno",
+    "gema_ordo"
+   ],
+   "weight": 3
+  },
+  {
+   "enemies": [
+    "hampa_adiluhung",
+    "hampa_adiluhung"
+   ],
+   "weight": 2
+  },
+  {
+   "enemies": [
+    "gema_ordo",
+    "gema_prajurit",
+    "gema_prajurit"
+   ],
+   "weight": 2
+  },
+  {
+   "enemies": [
+    "pelita_padam_kuno",
+    "pelita_padam_kuno"
+   ],
+   "weight": 1
+  }
+ ],
+ "rooms": {
+  "tepi_pusar": {
+   "name": "Tepi Pusar",
+   "safe": true,
+   "text": "Laut berhenti di sini — betul-betul berhenti, seperti meja. Di depan lunas kapal, kabut turun ke dalam lubang selebar kota, berputar pelan searah jarum jam. Di dinding lubang itu ada kota: gedung, jalan, jembatan, seluruhnya menempel miring ke dalam pusaran.",
+   "on_enter": "sampai_pusar",
+   "exits": [
+    {
+     "label": "Kembali ke laut kabut",
+     "to": "laut_kabut",
+     "area": "laut_lupa"
+    },
+    {
+     "label": "Turun ke Kota Adiluhung (titik tanpa kembali)",
+     "to": "gerbang_adiluhung"
+    }
+   ],
+   "objects": [
+    {
+     "id": "lentera_tepi",
+     "name": "Lentera penjaga (simpan & istirahat)",
+     "script": "lentera_save"
+    }
+   ]
+  },
+  "gerbang_adiluhung": {
+   "name": "Gerbang Adiluhung",
+   "text": "Gerbang kota pertama, terbaring miring, dan di daunnya terukir sesuatu yang bukan huruf mana pun yang kalian kenal. Dari sini turun jalan melingkar: lima lapis, mengitari dinding pusaran, ke bawah.",
+   "on_enter": "masuk_adiluhung",
+   "exits": [
+    {
+     "label": "Naik kembali ke tepi",
+     "to": "tepi_pusar"
+    },
+    {
+     "label": "Turun ke Lapis Satu — Pasar",
+     "to": "lapis_1_pasar"
+    }
+   ]
+  },
+  "lapis_1_pasar": {
+   "name": "Lapis Satu — Pasar Adiluhung",
+   "text": "Pasar kota pertama, lapaknya dari batu dan bukan dari kayu. Barang dagangannya masih di tempat, dan semuanya kaca: kaca yang memutar hujan, kaca yang memutar suara ibu, kaca yang memutar satu sore yang tidak istimewa sama sekali.",
+   "on_enter": "masuk_lapis_1_pasar",
+   "exits": [
+    {
+     "label": "Naik ke gerbang",
+     "to": "gerbang_adiluhung"
+    },
+    {
+     "label": "Turun ke Lapis Dua — Arsip",
+     "to": "lapis_2_arsip"
+    }
+   ]
+  },
+  "lapis_2_arsip": {
+   "name": "Lapis Dua — Arsip Pertama",
+   "text": "Ruang panjang berisi rak setinggi tiga orang, dan di rak itu bukan buku: kaca, ditumpuk berlabel. Sistem pengarsipannya sama persis dengan Balai Arsip Tengara. Ordo tidak menemukan caranya; Ordo mewarisinya.",
+   "on_enter": "masuk_lapis_2_arsip",
+   "exits": [
+    {
+     "label": "Naik ke Lapis Satu",
+     "to": "lapis_1_pasar"
+    },
+    {
+     "label": "Turun ke Lapis Tiga — Asrama",
+     "to": "lapis_3_asrama"
+    }
+   ]
+  },
+  "lapis_3_asrama": {
+   "name": "Lapis Tiga — Asrama Penyala",
+   "text": "Deretan bilik tidur, persis seperti di Benteng Ordo, hanya lebih tua dan lebih kecil. Di tiap bilik ada satu kotak pribadi, dan di tiap kotak ada satu kaca berisi wajah keluarga yang ditinggalkan.",
+   "on_enter": "masuk_lapis_3_asrama",
+   "exits": [
+    {
+     "label": "Naik ke Lapis Dua",
+     "to": "lapis_2_arsip"
+    },
+    {
+     "label": "Turun ke Lapis Empat — Tungku",
+     "to": "lapis_4_tungku"
+    }
+   ]
+  },
+  "lapis_4_tungku": {
+   "name": "Lapis Empat — Tungku Pertama",
+   "text": "Bengkel kaca sepanjang dua ratus langkah, dengan tungku yang masih hangat. Di meja kerja ada kaca setengah jadi, dan di sebelahnya catatan: takaran, suhu, lama pembakaran — dan di kolom terakhir, satu nama per baris.",
+   "on_enter": "masuk_lapis_4_tungku",
+   "exits": [
+    {
+     "label": "Naik ke Lapis Tiga",
+     "to": "lapis_3_asrama"
+    },
+    {
+     "label": "Turun ke Lapis Lima — Serambi Suar",
+     "to": "lapis_5_serambi"
+    }
+   ]
+  },
+  "lapis_5_serambi": {
+   "name": "Lapis Lima — Serambi Suar",
+   "safe": true,
+   "text": "Serambi melingkar yang mengitari dasar pusaran. Dari sini Sumur Ingatan terlihat utuh: mulut kaca delapan sisi, sebesar alun-alun, dan di sekelilingnya tujuh menara kecil yang semuanya padam.",
+   "on_enter": "lihat_tujuh_suar",
+   "exits": [
+    {
+     "label": "Naik ke Lapis Empat",
+     "to": "lapis_4_tungku"
+    },
+    {
+     "label": "Masuk ke Aula Tujuh Suar",
+     "to": "aula_suar"
+    }
+   ],
+   "objects": [
+    {
+     "id": "lentera_serambi",
+     "name": "Lentera penjaga (simpan & istirahat)",
+     "script": "lentera_save"
+    }
+   ]
+  },
+  "aula_suar": {
+   "name": "Aula Tujuh Suar",
+   "text": "Aula bundar di kaki Sumur, dengan tujuh pintu kaca di sekelilingnya. Di depan tiap pintu berdiri satu konstruk, dan tiap konstruk berwarna berbeda.",
+   "on_enter": "midboss_tujuh_penjaga",
+   "exits": [
+    {
+     "label": "Kembali ke serambi",
+     "to": "lapis_5_serambi"
+    },
+    {
+     "label": "Turun ke mulut Sumur",
+     "to": "turun_sumur",
+     "if": [
+      "tujuh_penjaga_kalah"
+     ],
+     "locked": "Tujuh pintu kaca itu masih dijaga. Tidak ada yang lewat."
+    }
+   ]
+  },
+  "turun_sumur": {
+   "name": "Mulut Sumur Ingatan",
+   "safe": true,
+   "text": "Mulut Sumur dari dekat: kaca delapan sisi, sebesar alun-alun, dan di bawahnya tidak ada air. Yang ada di bawahnya adalah semua yang pernah diingat siapa pun, ditumpuk delapan abad, dan masih menekan ke atas.",
+   "on_enter": "sebelum_akhir",
+   "exits": [
+    {
+     "label": "Naik ke aula",
+     "to": "aula_suar"
+    },
+    {
+     "label": "Turun ke dasar Sumur",
+     "to": "sumur_ingatan"
+    }
+   ],
+   "objects": [
+    {
+     "id": "lentera_sumur",
+     "name": "Lentera penjaga terakhir (simpan & istirahat)",
+     "script": "lentera_save"
+    }
+   ]
+  },
+  "sumur_ingatan": {
+   "name": "Dasar Sumur Ingatan",
+   "text": "Dasar Sumur: ruang bundar tanpa langit-langit, dan seluruh dindingnya kaca. Di tengahnya berdiri seseorang yang terbakar — tidak sedang terbakar, tapi terbakar, dalam bentuk lampau yang tidak pernah selesai.",
+   "on_enter": "final_pelita_pertama",
+   "exits": [
+    {
+     "label": "Naik kembali ke mulut Sumur",
+     "to": "turun_sumur"
+    }
+   ]
+  }
+ },
+ "scripts": {
+  "lentera_save": [
+   {
+    "text": "Lentera penjaga, di tempat yang tidak seharusnya punya lentera penjaga. Seseorang pernah sampai sejauh ini dan sempat memasangnya."
+   },
+   {
+    "heal": "all"
+   },
+   {
+    "save": true
+   },
+   {
+    "if": [
+     "has:bekal_kemah"
+    ],
+    "then": [
+     {
+      "kemah": true
+     }
+    ]
+   }
+  ],
+  "sampai_pusar": [
+   {
+    "once": "pusar_sampai",
+    "do": [
+     {
+      "adegan": {
+       "efek": "fade"
+      }
+     },
+     {
+      "text": "Kapal Lentera berhenti sendiri. Bukan karena karang — karena tidak ada lagi arah barat untuk dilayari."
+     },
+     {
+      "say": "Rukmini",
+      "text": "Sampai sini saja aku. Bukan karena takut. Karena harus ada yang menjaga kapal supaya kalian punya jalan pulang."
+     },
+     {
+      "say": "Pandansari",
+      "text": "Aku ikut turun."
+     },
+     {
+      "say": "Rangga",
+      "text": "Kenapa?"
+     },
+     {
+      "say": "Pandansari",
+      "text": "Supaya ada satu orang Ordo yang melihatnya sendiri. Kalau tidak, laporannya akan ditulis oleh orang yang tidak ke sana lagi."
+     },
+     {
+      "pause": true
+     },
+     {
+      "text": "Di bawah sana, di dasar pusaran, ada satu titik yang tidak berputar: sumur, mulutnya berkaca delapan sisi, persis lentera penjaga — hanya sebesar alun-alun."
+     },
+     {
+      "say": "Rimba",
+      "text": "Sumur Ingatan."
+     },
+     {
+      "say": "Lintang",
+      "text": "Itu bukan sumur. (Pelan.) Itu Suar pertama."
+     }
+    ]
+   },
+   {
+    "if": [
+     "boss_pelita_pertama_kalah"
+    ],
+    "then": [
+     {
+      "text": "Kabut tidak lagi turun ke dalam lubang. Ia hanya diam, seperti air yang sudah sampai."
+     }
+    ]
+   }
+  ],
+  "masuk_adiluhung": [
+   {
+    "once": "adiluhung_masuk",
+    "do": [
+     {
+      "text": "Kota Adiluhung. Bukan reruntuhan: utuh, hanya miring. Rumah-rumahnya berdiri tegak lurus terhadap dinding pusaran, jadi kalian berjalan di dinding dan langit ada di samping."
+     },
+     {
+      "say": "Bagas",
+      "text": "Delapan abad, dan tidak satu genting pun jatuh."
+     },
+     {
+      "say": "Pandansari",
+      "text": "Karena tidak ada yang lupa kota ini. Itu yang menahannya."
+     },
+     {
+      "if": [
+       "kelana_dibunuh"
+      ],
+      "then": [
+       {
+        "say": "Lintang",
+        "text": "Bagus. Berarti dia bisa ditahan juga."
+       },
+       {
+        "say": "Sela",
+        "text": "Lintang."
+       },
+       {
+        "say": "Lintang",
+        "text": "Aku baik-baik saja, Sela. Jalan."
+       }
+      ]
+     }
+    ]
+   }
+  ],
+  "masuk_lapis_1_pasar": [
+   {
+    "once": "sergap_lapis_1_pasar_selesai",
+    "do": [
+     {
+      "text": "Tiga pembeli berdiri dari lapak batu tanpa pernah duduk sebelumnya."
+     },
+     {
+      "battle": [
+       "hampa_adiluhung",
+       "gema_ordo"
+      ],
+      "win": []
+     }
+    ]
+   }
+  ],
+  "masuk_lapis_2_arsip": [
+   {
+    "once": "arsip_pertama_dibaca",
+    "do": [
+     {
+      "text": "Bagas menarik satu kaca dari rak dan membacanya seperti membaca label suku cadang."
+     },
+     {
+      "say": "Bagas",
+      "text": "Nomor, tanggal, lama nyala. Dan ini — kolom terakhir. Ini nama."
+     },
+     {
+      "say": "Ratih",
+      "text": "Nama siapa?"
+     },
+     {
+      "say": "Bagas",
+      "text": "Nama yang dibakar untuk membuat kacanya."
+     },
+     {
+      "say": "Pandansari",
+      "text": "Formulirnya sama dengan yang kutandatangani lima belas tahun. Kolomnya sama. Urutannya sama."
+     },
+     {
+      "give": {
+       "serpihan_ingatan": 1
+      }
+     }
+    ]
+   },
+   {
+    "once": "sergap_lapis_2_arsip_selesai",
+    "do": [
+     {
+      "text": "Beberapa rak bergeser sendiri, menutup jalan keluar, dan yang menggesernya masih memegang daftar."
+     },
+     {
+      "battle": [
+       "gema_ordo",
+       "pelita_padam_kuno"
+      ],
+      "win": []
+     }
+    ]
+   }
+  ],
+  "masuk_lapis_3_asrama": [
+   {
+    "once": "sergap_lapis_3_asrama_selesai",
+    "do": [
+     {
+      "text": "Penghuni bilik keluar semua sekaligus, dan tidak satu pun dari mereka punya wajah lagi."
+     },
+     {
+      "battle": [
+       "hampa_adiluhung",
+       "hampa_adiluhung"
+      ],
+      "win": []
+     }
+    ]
+   }
+  ],
+  "masuk_lapis_4_tungku": [
+   {
+    "once": "tungku_pertama_dibaca",
+    "do": [
+     {
+      "text": "Rimba berdiri lama di depan meja kerja itu. Catatan takarannya ditulis dengan tangan yang rapi dan sabar, oleh orang yang jelas mencintai pekerjaannya."
+     },
+     {
+      "say": "Rimba",
+      "text": "Orang yang menulis ini bukan monster."
+     },
+     {
+      "say": "Pandansari",
+      "text": "Tidak ada yang monster. Itu justru masalahnya."
+     },
+     {
+      "give": {
+       "serpihan_ingatan": 1,
+       "guci_nyala": 2
+      }
+     },
+     {
+      "kaca": {
+       "kaca_kelam": 1
+      }
+     }
+    ]
+   },
+   {
+    "once": "sergap_lapis_4_tungku_selesai",
+    "do": [
+     {
+      "text": "Tungku-tungku menyala berurutan di sepanjang bengkel, dan yang keluar dari tiap tungku menyala juga."
+     },
+     {
+      "battle": [
+       "pelita_padam_kuno",
+       "gema_ordo",
+       "gema_prajurit"
+      ],
+      "win": []
+     }
+    ]
+   }
+  ],
+  "lihat_tujuh_suar": [
+   {
+    "once": "tujuh_suar_dilihat",
+    "do": [
+     {
+      "text": "Tujuh menara kecil mengelilingi Sumur. Bukan tujuh Suar dunia — ini asli-aslinya, yang ditiru semua Suar sesudahnya."
+     },
+     {
+      "say": "Pandansari",
+      "text": "Ordo membangun tujuh karena di sini ada tujuh. Tidak ada yang tahu kenapa tujuh. Kami cuma menyalin."
+     },
+     {
+      "say": "Ratih",
+      "text": "Tujuh itu jumlah nada."
+     },
+     {
+      "text": "Tidak ada yang menjawab. Ratih juga tidak melanjutkan."
+     }
+    ]
+   }
+  ],
+  "midboss_tujuh_penjaga": [
+   {
+    "if": [
+     "tujuh_penjaga_kalah"
+    ],
+    "then": [
+     {
+      "text": "Tujuh pintu kaca itu terbuka semua, dan di depan masing-masing ada satu konstruk yang tidak lagi berdiri."
+     },
+     {
+      "end": true
+     }
+    ]
+   },
+   {
+    "text": "Ketujuh konstruk mengangkat kepala bersamaan, lalu — tidak menyerang bersamaan. Yang pertama maju sendiri; enam lainnya mundur selangkah dan menunggu gilirannya."
+   },
+   {
+    "say": "Rangga",
+    "text": "Mereka bergantian. Satu-satu, sampai kita habis."
+   },
+   {
+    "say": "Sela",
+    "text": "Berarti kita juga satu-satu. Jangan buang apa pun di gelombang awal."
+   },
+   {
+    "say": "Bagas",
+    "text": "Tujuh elemen, tujuh gelombang. Tiap satu menyerap elemennya sendiri. Bawa semua yang kalian punya."
+   },
+   {
+    "pause": true
+   },
+   {
+    "adegan": {
+     "efek": "flash"
+    }
+   },
+   {
+    "text": "Gelombang 1 dari 7: pintu merah terbuka."
+   },
+   {
+    "battle": [
+     "penjaga_suar_api"
+    ],
+    "boss": true,
+    "win": []
+   },
+   {
+    "text": "Gelombang 2 dari 7: pintu putih terbuka."
+   },
+   {
+    "battle": [
+     "penjaga_suar_es"
+    ],
+    "boss": true,
+    "win": []
+   },
+   {
+    "text": "Gelombang 3 dari 7: pintu kuning terbuka."
+   },
+   {
+    "battle": [
+     "penjaga_suar_petir"
+    ],
+    "boss": true,
+    "win": []
+   },
+   {
+    "text": "Gelombang 4 dari 7: pintu hijau terbuka."
+   },
+   {
+    "battle": [
+     "penjaga_suar_angin"
+    ],
+    "boss": true,
+    "win": []
+   },
+   {
+    "text": "Gelombang 5 dari 7: pintu coklat terbuka."
+   },
+   {
+    "battle": [
+     "penjaga_suar_bumi"
+    ],
+    "boss": true,
+    "win": []
+   },
+   {
+    "text": "Gelombang 6 dari 7: pintu emas terbuka."
+   },
+   {
+    "battle": [
+     "penjaga_suar_cahaya"
+    ],
+    "boss": true,
+    "win": []
+   },
+   {
+    "text": "Gelombang 7 dari 7: pintu hitam terbuka."
+   },
+   {
+    "battle": [
+     "penjaga_suar_kelam"
+    ],
+    "boss": true,
+    "win": []
+   },
+   {
+    "set": "tujuh_penjaga_kalah"
+   },
+   {
+    "text": "Ketujuh pintu kaca terbuka bersamaan, dan udara dari baliknya tidak berbau apa-apa sama sekali."
+   },
+   {
+    "give": {
+     "serpihan_ingatan": 2,
+     "abu_pagi": 2,
+     "kaca_inti": 1
+    }
+   },
+   {
+    "heal": "all"
+   },
+   {
+    "ilustrasi": "events/tujuh_penjaga",
+    "teks": "Tujuh konstruk, tujuh elemen, satu pertarungan yang tidak berhenti di antaranya."
+   }
+  ],
+  "sebelum_akhir": [
+   {
+    "once": "sebelum_akhir_adegan",
+    "do": [
+     {
+      "text": "Kalian berhenti di mulut Sumur karena tidak ada alasan untuk tidak berhenti. Tidak ada yang mengejar. Tidak ada jadwal."
+     },
+     {
+      "say": "Bagas",
+      "text": "Aku mau bilang sesuatu yang bodoh."
+     },
+     {
+      "say": "Sela",
+      "text": "Silakan."
+     },
+     {
+      "say": "Bagas",
+      "text": "Aku senang ikut. (Jeda.) Sudah. Itu saja."
+     },
+     {
+      "say": "Rangga",
+      "text": "Tidak bodoh."
+     },
+     {
+      "say": "Ratih",
+      "text": "Aku sudah menyiapkan lagunya. Kalau perlu."
+     },
+     {
+      "say": "Rimba",
+      "text": "Kalau perlu."
+     },
+     {
+      "text": "Lentera penjaga terakhir di dunia berdiri di sebelah kalian, dipasang oleh entah siapa, entah kapan. Nyalanya kecil dan tidak goyah sama sekali."
+     },
+     {
+      "if": [
+       "!kelana_dibunuh"
+      ],
+      "then": [
+       {
+        "say": "Kelana",
+        "text": "Lintang."
+       },
+       {
+        "say": "Lintang",
+        "text": "Iya, Pak. Masih di sini."
+       }
+      ]
+     }
+    ]
+   }
+  ],
+  "final_pelita_pertama": [
+   {
+    "if": [
+     "boss_pelita_pertama_kalah"
+    ],
+    "then": [
+     {
+      "run": "pilihan_akhir"
+     },
+     {
+      "end": true
+     }
+    ]
+   },
+   {
+    "say": "Sang Pelita Pertama",
+    "text": "Delapan ratus tiga puluh satu tahun. Aku menghitung sampai tahun keempat, lalu berhenti karena tidak ada gunanya."
+   },
+   {
+    "text": "Suaranya biasa saja. Itu bagian yang paling sulit ditanggung."
+   },
+   {
+    "say": "Rimba",
+    "text": "Siapa nama Bapak?"
+   },
+   {
+    "say": "Sang Pelita Pertama",
+    "text": "(Jeda panjang.) Itu pertanyaan pertama yang diajukan siapa pun kepadaku sejak aku dimasukkan ke sini."
+   },
+   {
+    "say": "Sang Pelita Pertama",
+    "text": "Aku tidak tahu. Namaku yang pertama dibakar. Itu yang paling mudah terbakar."
+   },
+   {
+    "pause": true
+   },
+   {
+    "say": "Ratih",
+    "text": "Kami bisa carikan."
+   },
+   {
+    "say": "Sang Pelita Pertama",
+    "text": "Tidak usah. Aku tidak menginginkannya lagi. Aku menginginkan sesuatu yang lain, dan sudah lama sekali."
+   },
+   {
+    "say": "Sang Pelita Pertama",
+    "text": "Aku ingin berhenti diingat. Dan supaya aku berhenti diingat, semua orang harus berhenti mengingat."
+   },
+   {
+    "say": "Lintang",
+    "text": "Itu membunuh semua orang."
+   },
+   {
+    "say": "Sang Pelita Pertama",
+    "text": "Tidak. Itu justru satu-satunya cara supaya tidak ada lagi yang dibakar. Tidak ada ingatan, tidak ada Kabut. Tidak ada Kabut, tidak ada Suar. Tidak ada Suar, tidak ada aku yang berikutnya."
+   },
+   {
+    "say": "Sang Pelita Pertama",
+    "text": "Aku sudah memikirkan ini delapan abad. Kalian baru sampai tadi pagi. Tapi silakan, coba."
+   },
+   {
+    "pause": true
+   },
+   {
+    "adegan": {
+     "efek": "flash"
+    }
+   },
+   {
+    "battle": [
+     "boss_pelita_pertama"
+    ],
+    "boss": true,
+    "win": [
+     {
+      "set": "boss_pelita_pertama_kalah"
+     },
+     {
+      "text": "Ia tidak jatuh. Ia duduk — perlahan, seperti orang yang akhirnya diizinkan duduk — di bibir kaca di tengah ruangan, dan nyalanya turun sampai sebesar lentera saku."
+     },
+     {
+      "say": "Sang Pelita Pertama",
+      "text": "Kalian tidak membunuhku. Tidak ada yang bisa. Aku Kabutnya sendiri sekarang."
+     },
+     {
+      "say": "Sang Pelita Pertama",
+      "text": "Tapi aku bisa dibuat berhenti. Dan aku tidak bisa memilih caranya, karena aku tidak pernah diberi pilihan sejak awal."
+     },
+     {
+      "say": "Sang Pelita Pertama",
+      "text": "Jadi kalian yang pilih. Cepat. Sumur ini sudah mulai naik."
+     },
+     {
+      "pause": true
+     },
+     {
+      "run": "pilihan_akhir"
+     }
+    ]
+   }
+  ],
+  "pilihan_akhir": [
+   {
+    "text": "Kabut di dasar Sumur mulai naik: pelan, rata, setinggi lutut. Tujuh menara kecil di atas sana masih padam semua."
+   },
+   {
+    "say": "Bagas",
+    "text": "Rimba. Berapa lama?"
+   },
+   {
+    "say": "Rimba",
+    "text": "Satu menit. Mungkin kurang."
+   },
+   {
+    "choice": [
+     {
+      "text": "Menyalakan Kembali — Kelana menawarkan diri untuk tujuh Suar sekaligus.",
+      "if": [
+       "!kelana_dibunuh"
+      ],
+      "then": [
+       {
+        "run": "ending_nyala"
+       }
+      ]
+     },
+     {
+      "text": "Mengembalikan — Rimba membelanjakan seluruh Bara untuk melarutkan Nyala dan Kabut.",
+      "then": [
+       {
+        "run": "ending_kembali"
+       }
+      ]
+     },
+     {
+      "text": "Mendendangkan — Ratih memimpin Pendendang seluruh dunia.",
+      "if": [
+       "kenangan:ratih_rimba_1",
+       "kenangan:ratih_lintang_1",
+       "kenangan:ratih_kelana_1",
+       "kenangan:puncak_ratih",
+       "buruan_selesai>=7",
+       "padasuara_selamat",
+       "!kelana_dibunuh"
+      ],
+      "then": [
+       {
+        "run": "ending_dendang"
+       }
+      ]
+     }
+    ]
+   }
+  ],
+  "ending_nyala": [
+   {
+    "set": "ending_menyalakan"
+   },
+   {
+    "text": "Kelana melangkah lebih dulu, sebelum ada yang sempat mengucapkan apa pun. Ia tidak berlari. Ia berjalan, dengan kecepatan orang yang sudah tahu jalannya."
+   },
+   {
+    "say": "Lintang",
+    "text": "Pak—"
+   },
+   {
+    "say": "Kelana",
+    "text": "Lintang."
+   },
+   {
+    "say": "Lintang",
+    "text": "Iya, Pak. Masih di sini."
+   },
+   {
+    "say": "Kelana",
+    "text": "Aku tahu. (Jeda.) Itu sebabnya."
+   },
+   {
+    "pause": true
+   },
+   {
+    "text": "Ia turun ke kaca di tengah ruangan. Tujuh menara di atas sana mulai menarik: satu per satu, dengan bunyi seperti napas panjang yang diambil sebelum menyelam."
+   },
+   {
+    "say": "Sang Pelita Pertama",
+    "text": "Tujuh sekaligus. Ia tidak akan tahan satu menit."
+   },
+   {
+    "say": "Rimba",
+    "text": "Ia tidak perlu tahan satu menit. Ia cuma perlu tahan sampai ketujuhnya menyala."
+   },
+   {
+    "say": "Rangga",
+    "text": "Dan kita perlu menahan yang naik dari Sumur sampai saat itu. BARISAN."
+   },
+   {
+    "adegan": {
+     "efek": "shake"
+    }
+   },
+   {
+    "text": "Kabut yang naik dari Sumur berhenti berbentuk kabut dan mulai berbentuk orang. Semuanya sekaligus, dari segala arah, menuju satu titik: kaca di tengah tempat Kelana berdiri."
+   },
+   {
+    "text": "Tujuh menara mulai menarik, dan tarikan itu lewat menembus kalian sebelum sampai ke Kelana. Luka-luka kalian ikut tertarik menutup — bukan disembuhkan, cuma ditunda."
+   },
+   {
+    "heal": "all"
+   },
+   {
+    "battle": [
+     "kabut_gelombang",
+     "kabut_gelombang",
+     "kabut_gelombang"
+    ],
+    "boss": true,
+    "bertahan": 6,
+    "bertahan_teks": "Menara ketujuh menyala. Gelombang yang tersisa berhenti di tempatnya, lalu terhisap ke atas.",
+    "win": [
+     {
+      "text": "Tujuh menara kecil di sekeliling Sumur menyala berurutan, dan yang ketujuh menyala paling terang. Kabut yang naik berbalik arah: ia terhisap ke atas, lewat ketujuhnya sekaligus, dan tidak turun lagi."
+     },
+     {
+      "say": "Sang Pelita Pertama",
+      "text": "...Ia menahan. (Pelan sekali.) Delapan abad tidak ada yang menahan."
+     },
+     {
+      "text": "Nyala di tengah ruangan mengecil sampai sebesar lentera saku, lalu padam, dan apa yang tadi berdiri di sana tidak ada lagi. Yang tersisa cuma cahaya dari tujuh menara, dan terang itu tidak berasal dari mana-mana."
+     },
+     {
+      "pause": true
+     },
+     {
+      "ilustrasi": "events/ending_menyalakan",
+      "teks": "Tujuh Suar menyala sekaligus, dan yang membayarnya berjalan sendiri ke sana."
+     },
+     {
+      "run": "epilog_nyala"
+     }
+    ]
+   }
+  ],
+  "epilog_nyala": [
+   {
+    "text": "Tiga bulan kemudian, Kabut sudah turun setinggi pinggang di seluruh Tanah Luar dan masih turun. Kota-kota yang dulu dikurung menemukan bahwa jalan antar-kota bisa ditempuh tanpa lentera, dan tidak satu pun dari mereka tahu apa yang harus dilakukan dengan penemuan itu."
+   },
+   {
+    "text": "Ordo Pelita dibubarkan dalam rapat yang berlangsung empat hari. Yang dibentuk sesudahnya bukan Ordo: sebuah Dewan Suar dengan satu aturan yang ditulis paling atas, sebelum aturan apa pun tentang pemeliharaan dan jadwal —"
+   },
+   {
+    "say": "Lintang",
+    "text": "\"Tidak ada Suar yang dinyalakan dengan orang yang tidak memilihnya sendiri, dan tidak ada orang yang boleh ditanya dua kali.\""
+   },
+   {
+    "text": "Lintang jadi Juru Nyala pertama Dewan itu, di umur yang membuat semua orang tidak nyaman. Ia menolak jubah, menerima kuncinya, dan minta satu hal: bahwa nama ayahnya ditulis di tujuh menara, bukan di satu."
+   },
+   {
+    "pause": true
+   },
+   {
+    "text": "Rimba kembali ke Pelita Rendah dan tidak menerima jabatan apa pun. Ia membuka sekolah kecil di bekas rumah Pak Guntur: enam murid, semuanya belajar merapikan sumbu sebelum belajar apa pun tentang Nyala."
+   },
+   {
+    "text": "Sela menjaga pintu sekolah itu delapan jam sehari dan tidak ada yang terjadi, dan ia menyebutnya pekerjaan terbaik yang pernah ia dapat."
+   },
+   {
+    "text": "Bagas pulang ke Wirasaba dan menghitung ulang seluruh kota: dua ribu empat ratus sebelas orang, dan tiga ratus dua puluh tujuh di antaranya pulih cukup untuk menyebut namanya sendiri. Ia menulis ketiga ratus dua puluh tujuh nama itu di dinding bengkelnya."
+   },
+   {
+    "text": "Rangga kembali ke Tengara untuk diadili atas Gerbang Istana, menolak pembelaan, dan menjalani hukumannya sampai selesai. Sesudah itu ia melatih pengawal — dan pelajaran pertamanya selalu sama: cara menolak perintah."
+   },
+   {
+    "text": "Ratih tidak pulang ke Padasuara. Ia berjalan dari desa ke desa mencari Pendendang yang tersisa, dan setiap kali ketemu satu, ia mengajari mereka lagu tujuh Suar yang utuh — supaya kalau suatu hari tujuhnya harus dipadamkan, ada yang tahu caranya."
+   },
+   {
+    "pause": true
+   },
+   {
+    "text": "Dan di atas tujuh menara di dasar pusaran, yang sekarang bisa dilihat dari Kapal Lentera di hari cerah, nyalanya tidak pernah goyah sama sekali."
+   },
+   {
+    "set": "babak_3_selesai"
+   },
+   {
+    "end_chapter": "AKHIR — \"MENYALAKAN KEMBALI\"\n\nDunia terang lagi. Tujuh Suar hidup. Kabut turun setinggi pinggang dan masih turun.\n\nHarganya satu orang, yang berjalan ke sana sendiri, dan yang namanya ditulis di tujuh menara sekaligus supaya tidak ada yang bisa membacanya tanpa berhenti sebentar.\n\nEnding \"terang tapi berutang\".\n\nTerima kasih sudah bermain Pelita Terakhir."
+   }
+  ],
+  "ending_kembali": [
+   {
+    "set": "ending_mengembalikan"
+   },
+   {
+    "say": "Rimba",
+    "text": "Tidak. Tidak ada yang berjalan ke mana pun."
+   },
+   {
+    "text": "Ia melangkah ke kaca di tengah ruangan sendirian, dan yang ia bawa cuma meteran di dadanya sendiri."
+   },
+   {
+    "say": "Sela",
+    "text": "Rimba, itu seluruh Bara."
+   },
+   {
+    "say": "Rimba",
+    "text": "Iya."
+   },
+   {
+    "say": "Sela",
+    "text": "Itu semua yang kau punya."
+   },
+   {
+    "say": "Rimba",
+    "text": "Iya. (Ia tersenyum, agak.) Pak Guntur bilang nyala yang disimpan cuma jadi makanan."
+   },
+   {
+    "pause": true
+   },
+   {
+    "say": "Sang Pelita Pertama",
+    "text": "Kalau kau membuka ketujuhnya sekaligus, Nyala dan Kabut akan bertemu di tengah."
+   },
+   {
+    "say": "Rimba",
+    "text": "Saya tahu."
+   },
+   {
+    "say": "Sang Pelita Pertama",
+    "text": "Keduanya akan habis. Tidak akan ada lagi Nyala. Juga tidak akan ada lagi Kabut."
+   },
+   {
+    "say": "Rimba",
+    "text": "Saya tahu."
+   },
+   {
+    "say": "Sang Pelita Pertama",
+    "text": "Semua orang akan kehilangan sebagian ingatannya. Termasuk kalian. Termasuk aku."
+   },
+   {
+    "say": "Rimba",
+    "text": "Terutama Bapak."
+   },
+   {
+    "text": "Untuk pertama kali dalam delapan abad, yang berdiri di tengah Sumur itu menutup matanya."
+   },
+   {
+    "say": "Sang Pelita Pertama",
+    "text": "Ya. (Pelan.) Terutama aku. Ya. Silakan."
+   },
+   {
+    "pause": true
+   },
+   {
+    "adegan": {
+     "efek": "flash"
+    }
+   },
+   {
+    "text": "Rimba membuka ketujuhnya sekaligus. Tidak ada ledakan; tidak ada suara. Yang terjadi adalah dua hal yang selama delapan abad saling memakan akhirnya bertemu di satu titik dan berhenti menjadi keduanya."
+   },
+   {
+    "text": "Kabut naik sampai ke mata kalian, lalu tidak ada lagi. Nyala di tangan Rimba padam, dan padamnya bukan seperti lilin — seperti kata yang lupa di tengah kalimat."
+   },
+   {
+    "lucuti": true
+   },
+   {
+    "ilustrasi": "events/ending_mengembalikan",
+    "teks": "Nyala dan Kabut bertemu di tengah, dan keduanya berhenti menjadi keduanya."
+   },
+   {
+    "run": "epilog_kembali"
+   }
+  ],
+  "epilog_kembali": [
+   {
+    "text": "Yang pertama kalian sadari waktu naik ke permukaan: kalian tidak bisa mengingat nama kapal."
+   },
+   {
+    "say": "Rukmini",
+    "text": "Kapal Lentera."
+   },
+   {
+    "say": "Rimba",
+    "text": "Kapal Lentera. (Jeda.) Kenapa dinamai begitu?"
+   },
+   {
+    "text": "Tidak ada yang bisa menjawab. Lentera besar di tengah dek berdiri di sana dengan kaca delapan sisinya, gelap, dan tidak seorang pun di atas kapal itu tahu cara menyalakannya lagi."
+   },
+   {
+    "pause": true
+   },
+   {
+    "text": "Yang hilang bukan semuanya. Yang hilang adalah yang paling ditekan ke dalam Kabut: hari-hari terburuk dan hari-hari terbaik, yang ternyata disimpan di rak yang sama."
+   },
+   {
+    "text": "Bagas tidak ingat lagi wajah ibunya, tapi ia ingat urutan menggantung alat dari besar ke kecil, dan ia tidak tahu dari mana kebiasaan itu datang. Ia tetap melakukannya."
+   },
+   {
+    "text": "Sela tidak ingat kenapa ia desersi. Ia tahu ia desersi; ia tahu itu benar; alasannya tidak ada lagi. Ia memutuskan untuk percaya pada dirinya yang dulu, karena tidak ada pilihan lain."
+   },
+   {
+    "text": "Rangga lupa nama-nama di Gerbang Istana. Ia mencarinya di arsip Tengara selama dua tahun, menemukan sebelas dari empat belas, dan berhenti mencari yang tiga bukan karena menyerah."
+   },
+   {
+    "text": "Ratih masih bisa menyanyi. Lagunya tidak melakukan apa-apa lagi — dan ternyata itu tidak mengurangi apa pun."
+   },
+   {
+    "text": "Lintang bangun tiap pagi mengingat satu hal yang sama: bahwa ia punya ayah, bahwa ayahnya berhenti untuknya, dan bahwa ia tidak ingat wajahnya. Kelana duduk di seberang meja tiap pagi dan tidak ingat apa-apa juga, dan tiap pagi keduanya berkenalan lagi, dan tiap pagi keduanya memutuskan itu cukup."
+   },
+   {
+    "pause": true
+   },
+   {
+    "text": "Tidak ada lagi Hampa. Itu bagian yang tidak pernah dibantah siapa pun. Orang-orang yang berdiri kosong di seluruh Tanah Luar mengangkat kepala pada pagi yang sama, tidak mengingat siapa pun, dan mulai dari situ."
+   },
+   {
+    "text": "Tidak ada lagi Suar. Tidak ada lagi jadwal panen. Tidak ada lagi Ordo, dan tidak perlu dibubarkan karena tidak ada lagi yang bisa dilakukannya."
+   },
+   {
+    "text": "Dan di Pelita Rendah, di rumah yang dulu milik seseorang yang tidak bisa diingat lagi namanya, ada satu lentera yang dirapikan tiap malam oleh anak muda yang tidak tahu kenapa ia melakukannya. Ia melakukannya dengan tiga tarikan, berhenti, tiga tarikan lagi."
+   },
+   {
+    "set": "babak_3_selesai"
+   },
+   {
+    "end_chapter": "AKHIR — \"MENGEMBALIKAN\"\n\nTidak ada lagi Nyala. Tidak ada lagi Kabut. Tidak ada lagi sihir, dan tidak ada lagi yang jadi Hampa.\n\nSemua orang kehilangan sebagian ingatannya, termasuk kalian, dan tidak ada satu pun yang bisa dipilih mana yang hilang.\n\nEnding \"gelap yang adil\".\n\nTerima kasih sudah bermain Pelita Terakhir."
+   }
+  ],
+  "ending_dendang": [
+   {
+    "set": "ending_mendendangkan"
+   },
+   {
+    "say": "Ratih",
+    "text": "Tunggu."
+   },
+   {
+    "text": "Ia tidak melangkah ke tengah. Ia duduk — di lantai kaca, bersila, seperti di balai Padasuara — dan melepas sandalnya lebih dulu."
+   },
+   {
+    "say": "Ratih",
+    "text": "Kabut itu ingatan yang dibakar dari pemiliknya. Betul?"
+   },
+   {
+    "say": "Sang Pelita Pertama",
+    "text": "Betul."
+   },
+   {
+    "say": "Ratih",
+    "text": "Kalau begitu ia bukan racun. Ia barang hilang."
+   },
+   {
+    "say": "Ratih",
+    "text": "Dan barang hilang tidak dibakar dan tidak dilarutkan. Barang hilang dikembalikan ke yang punya."
+   },
+   {
+    "pause": true
+   },
+   {
+    "say": "Sang Pelita Pertama",
+    "text": "Delapan abad. Kau kira aku tidak pernah—"
+   },
+   {
+    "say": "Ratih",
+    "text": "Bapak sendirian. Aku tidak."
+   },
+   {
+    "text": "Ia mulai menyanyi. Satu suara saja, di dasar sumur selebar alun-alun, dan tidak menggema sama sekali."
+   },
+   {
+    "text": "Lalu suara kedua datang — dari Padasuara, delapan hari perjalanan dari sini. Lalu ketiga, dari balai di Pulau Nyanyi yang tikarnya sudah lama lowong satu. Lalu suara-suara dari desa-desa yang Ratih singgahi sepanjang jalan, satu per satu, semuanya masuk di nada yang benar tanpa ada yang memberi aba-aba."
+   },
+   {
+    "say": "Bagas",
+    "text": "...Mereka semua tahu lagunya."
+   },
+   {
+    "say": "Rimba",
+    "text": "Mereka selalu tahu. Tidak ada yang pernah minta mereka menyanyikannya."
+   },
+   {
+    "adegan": {
+     "efek": "gelap"
+    }
+   },
+   {
+    "text": "Kabut di dasar Sumur berhenti naik, lalu berdiri. Ia mengambil bentuk supaya bisa didengarkan, dan bentuk itu tidak bisa dilukai oleh apa pun yang kalian bawa."
+   },
+   {
+    "barisan": [
+     "ratih"
+    ]
+   },
+   {
+    "say": "Ratih",
+    "text": "Jangan pukul. Tidak ada gunanya memukul. (Ke seluruh party.) Nyanyi. Yang tidak bisa menyanyi, jaga aku."
+   },
+   {
+    "battle": [
+     "kabut_terakhir"
+    ],
+    "boss": true,
+    "win": [
+     {
+      "text": "Kabut Terakhir terurai bukan seperti sesuatu yang kalah. Ia terurai seperti simpul: pelan, dari satu ujung, dan tiap helai yang lepas pergi ke arahnya sendiri."
+     },
+     {
+      "text": "Ke Wirasaba. Ke Dataran Abu. Ke desa-desa yang jadwal panennya bulan depan. Masing-masing ke satu orang, dan masing-masing tepat."
+     },
+     {
+      "pause": true
+     },
+     {
+      "say": "Sang Pelita Pertama",
+      "text": "...Ada satu yang datang ke sini."
+     },
+     {
+      "text": "Ia berdiri diam sekali, sangat lama, dengan wajah orang yang sedang menunggu sesuatu muncul dari dasar."
+     },
+     {
+      "say": "Sang Pelita Pertama",
+      "text": "Namaku Sanggabuana."
+     },
+     {
+      "say": "Ratih",
+      "text": "Salam, Pak Sanggabuana."
+     },
+     {
+      "say": "Sanggabuana",
+      "text": "(Ia menangis, dan tidak ada api di mana pun waktu ia melakukannya.) Salam."
+     },
+     {
+      "ilustrasi": "events/ending_mendendangkan",
+      "teks": "Kabut tidak dibunuh dan tidak dilarutkan. Ia dikembalikan, satu helai ke satu orang."
+     },
+     {
+      "run": "epilog_dendang"
+     }
+    ]
+   }
+  ],
+  "epilog_dendang": [
+   {
+    "text": "Hampa pulih. Bukan semuanya, dan bukan seluruhnya — ingatan yang sudah terlalu lama di Kabut kembali dalam keadaan yang sama dengan kain yang terlalu lama di air. Tapi cukup untuk nama, cukup untuk wajah, cukup untuk tahu ke rumah mana harus pulang."
+   },
+   {
+    "text": "Di Wirasaba, dua ribu empat ratus sebelas orang berhenti mengulang satu gerakan kecil pada sore yang sama. Bagas ada di sana. Ia tidak menghitung siapa-siapa hari itu."
+   },
+   {
+    "pause": true
+   },
+   {
+    "text": "Suar tidak perlu menyala lagi, karena tidak ada lagi yang perlu ditahan. Ketujuh menara di dasar pusaran dibiarkan padam dan dirawat — dibersihkan, diminyaki, diperiksa tiap tahun — oleh orang-orang yang tidak akan pernah menyalakannya."
+   },
+   {
+    "text": "Ordo Pelita tidak dibubarkan. Ia berhenti sendiri, karena pekerjaannya tidak ada lagi. Nyi Pandansari menulis laporan terakhirnya sepanjang empat ratus halaman, menandatanganinya, lalu menyerahkannya ke Padasuara alih-alih ke Tengara."
+   },
+   {
+    "text": "Padasuara berhenti jadi desa dan jadi sekolah. Bukan sekolah Nyala — sekolah menyanyi. Muridnya datang dari mana-mana, dan pelajaran pertamanya selalu sama: bahwa lagu bukan untuk menahan sesuatu, tapi untuk mengembalikannya."
+   },
+   {
+    "text": "Ratih mengajar di sana sampai tua dan tidak pernah jadi apa pun yang ada gelarnya."
+   },
+   {
+    "pause": true
+   },
+   {
+    "text": "Kelana ingat empat belas hal pada minggu pertama, dan dua ratus lebih pada tahun kedua. Ia tidak pernah pulih sepenuhnya. Ia ingat cara menambal kain, ia ingat nama istrinya, dan ia ingat — tiap pagi, tanpa gagal sekali pun — nama anaknya."
+   },
+   {
+    "text": "Lintang berhenti memanggilnya 'Pak'."
+   },
+   {
+    "pause": true
+   },
+   {
+    "text": "Dan Sanggabuana, yang delapan ratus tiga puluh satu tahun tidak punya nama, tinggal di dasar sumur yang tidak menahan apa-apa lagi. Orang-orang mulai datang ke sana — bukan berziarah, cuma berkunjung — dan tiap kali ada yang datang, ia menyebutkan namanya lebih dulu, sebelum ditanya."
+   },
+   {
+    "set": "babak_3_selesai"
+   },
+   {
+    "end_chapter": "AKHIR — \"MENDENDANGKAN\" (rahasia)\n\nKabut tidak ditahan dan tidak dilarutkan. Ia dinyanyikan kembali jadi ingatan, dan dikembalikan ke pemiliknya masing-masing.\n\nHampa pulih. Suar tidak perlu menyala. Orang pertama yang dibakar mendapatkan namanya kembali, dan memakainya.\n\nEnding \"mengingat bersama\".\n\nTerima kasih sudah bermain Pelita Terakhir."
+   }
+  ]
+ }
+}
