@@ -4,12 +4,12 @@ RPG teks turn-based bergaya JRPG klasik, dibangun dengan Python. Mesin permainan
 pustaka standar; antarmuka web menambah satu dependensi, Flask.
 
 - **Dokumen desain**: [`GAME_DESIGN.md`](GAME_DESIGN.md) (edisi 20 jam, tiga babak).
-- **Status**: Tahap 6 dari rencana di §9 dokumen desain selesai — **permainannya bisa ditamatkan
-  dari prolog sampai salah satu dari tiga ending, dan keseimbangannya sekarang diukur, bukan
-  ditebak.** 16 area / 124 ruang, 67 musuh (16 boss cerita, satu mid-boss tujuh gelombang, satu
-  superboss, dan target Buruan), 225 skill, 81 item, 22 Kaca, 14 Jalur, 23 adegan Kenangan,
-  8 kontrak Buruan, 5 tingkat Arena, 139 entri latar. Party lengkap 7 orang (4 aktif + 3 cadangan).
-  Sisanya Tahap 7: Buruan, side quest, dan dungeon opsional yang belum dibuat, plus poles naskah.
+- **Status**: **Seluruh tujuh tahap rencana §9 selesai.** Permainannya bisa ditamatkan dari
+  prolog sampai salah satu dari tiga ending, keseimbangannya diukur (bukan ditebak), dan konten
+  sampingannya lengkap. 18 area / 140 ruang, 78 musuh (16 boss cerita, tiga boss dungeon opsional,
+  satu mid-boss tujuh gelombang, satu superboss, dan target Buruan), 236 skill, 88 item, 24 Kaca,
+  14 Jalur, 23 adegan Kenangan, **11 kontrak Buruan**, **18 side quest**, **3 dungeon opsional**,
+  5 tingkat Arena, 161 entri latar. Party lengkap 7 orang (4 aktif + 3 cadangan).
 - **Dua antarmuka**: web (grafis) dan terminal. Keduanya memakai mesin permainan yang sama.
 
 ## Bermain di browser
@@ -112,9 +112,10 @@ python -m pelita -s rawa --auto --seed 3 --no-pause
 
 ```bash
 pip install pytest
-python -m pytest -q                     # 205 tes: unit, walkthrough Babak 1-3, sistem Tahap 3,
+python -m pytest -q                     # 246 tes: unit, walkthrough Babak 1-3, sistem Tahap 3,
                                         # mekanik Babak 2 & 3, latar, API web, regresi menu
-                                        # (tiap prompt harus ada jalan keluar), dan kalibrasi
+                                        # (tiap prompt harus ada jalan keluar), kalibrasi, dan
+                                        # konten sampingan (tests/test_opsional.py)
 python tools/playtest.py                # laporan ekonomi & pacing seluruh permainan (§9.5)
 python tools/playtest.py --ekonomi      # hanya buku kas Keping per babak
 python tools/calibrate.py --n 200       # simulasi rasio "2–3 pukulan" per skenario
@@ -166,12 +167,14 @@ pelita/
     app.py         server Flask: /api/session, /state (long-poll), /input
     static/        index.html, style.css, app.js (klien), art.js (SVG prosedural)
   data/            characters, skills, enemies, items, kaca, jalur;
-                   world/area_*.json (16 area), shops, quests, kenangan, buruan, arena, latar
+                   world/area_*.json (18 area), shops, quests, kenangan, buruan, arena, latar
 tools/             calibrate.py, walkthrough.py, playtest.py (laporan ekonomi & pacing)
 tests/             pytest (walker.py = pemain otomatis untuk tes alur — ia berbelanja,
                    memasang Kaca, dan menukar Serpihan seperti pemain sungguhan;
                    test_menu_web.py = crawler yang memastikan tiap menu bisa ditinggalkan;
-                   test_kalibrasi.py = pita ekonomi & pacing §9.5 dikunci sebagai tes)
+                   test_kalibrasi.py = pita ekonomi & pacing §9.5 dikunci sebagai tes;
+                   test_opsional.py = tiap dungeon/Buruan/quest opsional dimainkan sungguhan,
+                   dan dibuktikan boleh dilewati)
 ```
 
 ## Sistem lanjutan (Tahap 3)
@@ -212,6 +215,25 @@ akhir cerita. Keduanya bisa ditamatkan; `tests/test_babak3.py` membuktikan keemp
 **Jurus Empat "Pelita Terakhir"** (8 Bara, §4.5) terbuka setelah meteran Bara melebar ke 8 di
 Kapal Lentera: seluruh barisan aktif memukul sekaligus, dan tiap lawan kena elemen kelemahannya
 sendiri. Itu satu-satunya cara melukai fase terakhir Sang Pelita Pertama selain Jurus Ganda.
+
+## Konten sampingan (Tahap 7)
+
+Semuanya **boleh dilewati** — walkthrough jalur utama tidak menyentuh satu pun dari ini, dan
+`tests/test_opsional.py` (40 tes) membuktikan keduanya: tiap dungeon, Buruan, dan quest bisa
+ditamatkan sungguhan, **dan** permainannya tetap tamat kalau pemain memilih lewat.
+
+- **Tiga dungeon opsional.** *Gua Bawah Danau* (Babak 1, Lv 14–17) turun dari sarang Ular Cermin
+  setelah Balai Arsip dibaca, dan membongkar apa yang ditenggelamkan Adipati ke dasar danau.
+  *Reruntuhan Suar Ketiga* (Lv 45–48) terbuka setelah Nirmala jatuh, waktu Menara Terapung ikut
+  duduk di garam — di bawahnya Suar ketiga yang asli, dengan dinding berisi nama tiap orang yang
+  dibakar untuk menyalakannya. *Pulau Hilang* (Babak 3) sekarang dungeon lima ruang menuju
+  superboss Sang Penenun, lengkap dengan gudang berisi rancangan pulau yang **belum** ditenun.
+- **11 kontrak Buruan** (3 Babak 1, 5 Babak 2, 3 Babak 3), masing-masing dengan mekaniknya
+  sendiri: formasi yang harus dibongkar dari pendorongnya, gema yang memanggil salinan party,
+  konstruk yang mengisi sebelum menembak dan bisa dipotong isiannya.
+- **18 side quest** (Babak 1: 6, Babak 2: 9, Babak 3: 3), termasuk rantai empat bagian
+  **"Pendendang yang Hilang"** yang melintasi Babak 2–3 dan merupakan salah satu syarat ending
+  rahasia.
 
 ## Latar bergambar
 

@@ -300,16 +300,36 @@
       "text": "Dari serambi, danau garam terlihat seluruhnya. Kabut beku menggantung rendah di atasnya, rata, seperti selimut yang ditarik sampai dagu."
      },
      {
-      "say": "Kelana",
-      "text": "Banyak sekali."
+      "if": [
+       "party:kelana"
+      ],
+      "then": [
+       {
+        "say": "Kelana",
+        "text": "Banyak sekali."
+       }
+      ],
+      "else": [
+       {
+        "say": "Rangga",
+        "text": "Banyak sekali. (Ia berdiri di tepi serambi dan menghitung dengan mata, cara pengawal menghitung barisan.) Dan itu baru yang kelihatan dari sini."
+       }
+      ]
      },
      {
       "say": "Lintang",
       "text": "Apanya, Yah?"
      },
      {
-      "say": "Kelana",
-      "text": "Orang. Di dalam kabut. (Ia menunjuk ke arah danau dengan gerakan yang sangat pelan.) Semuanya masih di sana."
+      "if": [
+       "party:kelana"
+      ],
+      "then": [
+       {
+        "say": "Kelana",
+        "text": "Orang. Di dalam kabut. (Ia menunjuk ke arah danau dengan gerakan yang sangat pelan.) Semuanya masih di sana."
+       }
+      ]
      },
      {
       "text": "Tidak ada yang bertanya lagi sesudah itu."

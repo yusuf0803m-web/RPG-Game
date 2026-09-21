@@ -173,3 +173,58 @@ def test_tidak_ada_nama_flag_yang_dipakai_dua_area():
         "nama flag dipakai lebih dari satu area (beri cakupan areanya sendiri): "
         + ", ".join(f"{k} {v}" for k, v in sorted(tabrakan.items())))
     assert len(setter) > 200, f"audit cuma menemukan {len(setter)} flag; polanya berubah?"
+
+
+#: Urutan area sepanjang cerita, dan babak keberapa tiap anggota party bergabung.
+#: Dipakai ``test_tidak_ada_yang_bicara_sebelum_bergabung``.
+URUT_AREA = {
+    "pelita_rendah": 1, "hutan_kelabu": 2, "rawa_suar": 3, "danau_cermin": 4,
+    "tengara": 5, "lorong_bawah": 6, "gua_danau": 6.5, "tambang": 7, "mercusuar": 8,
+    "celah_angin": 9, "dataran_abu": 10, "hutan_nyanyi": 11, "wirasaba": 12,
+    "danau_garam": 13, "benteng_ordo": 14, "suar_ketiga": 14.5, "laut_lupa": 15,
+    "pusar_kabut": 16,
+}
+GABUNG_AREA = {"Rimba": 1, "Sela": 1, "Lintang": 3, "Bagas": 7,
+               "Rangga": 9, "Ratih": 11, "Kelana": 13}
+#: Baris di mana orangnya memang hadir sebagai lawan, bukan sebagai anggota party.
+LAWAN_DULU = {("tengara", "Rangga"), ("lorong_bawah", "Rangga"), ("wirasaba", "Kelana")}
+
+
+def test_tidak_ada_yang_bicara_sebelum_bergabung():
+    """Poles naskah Tahap 7: anggota party yang belum bergabung tidak boleh punya
+    baris dialog, dan Kelana — yang bisa dihabisi di Wirasaba — tidak boleh bicara
+    di Babak 3 tanpa penjaga ``party:kelana``.
+
+    Dua bug asli yang ditemukan audit ini: Bagas mengomentari Arena Kafilah di
+    Tengara (tersedia sejak Babak 1, padahal Bagas baru bergabung di Tambang), dan
+    Kelana bicara di serambi Benteng meski pemain memilih menghabisinya.
+    """
+    import glob
+    import json as _json
+
+    salah: list[str] = []
+    for f in sorted(glob.glob(str(WORLD_DIR / "area_*.json"))):
+        d = _json.loads(Path(f).read_text(encoding="utf-8"))
+        aid, idx = d["id"], URUT_AREA[d["id"]]
+
+        def telusur(o, dijaga=False):
+            if isinstance(o, dict):
+                syarat = _json.dumps(o.get("if", ""), ensure_ascii=False)
+                jaga = dijaga or "party:kelana" in syarat or "kelana_dibunuh" in syarat
+                nama = o.get("say")
+                if nama in GABUNG_AREA and (aid, nama) not in LAWAN_DULU:
+                    if GABUNG_AREA[nama] > idx:
+                        salah.append(f"{aid}: {nama} bicara sebelum bergabung")
+                    if nama == "Kelana" and idx >= 14 and not jaga:
+                        salah.append(f"{aid}: Kelana bicara tanpa penjaga party:kelana")
+                for v in o.values():
+                    telusur(v, jaga)
+            elif isinstance(o, list):
+                for v in o:
+                    telusur(v, dijaga)
+
+        # ending "Menyalakan Kembali" hanya bisa dipilih kalau Kelana hidup,
+        # jadi seluruh skripnya sudah dijaga di tempat pilihannya ditawarkan.
+        skrip = {k: v for k, v in d["scripts"].items() if k != "ending_nyala"}
+        telusur(skrip)
+    assert not salah, "\n".join(sorted(set(salah)))

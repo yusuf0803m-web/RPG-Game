@@ -1273,8 +1273,21 @@
     "text": "Kenapa?"
    },
    {
-    "say": "Kelana",
-    "text": "Karena belum ada yang perlu dibohongi. (Ia mendengarkan sampai keping pertama selesai.) Waktu itu Suar pertama belum menyala, jadi belum ada yang harus dibenarkan. Mereka cuma dua belas orang yang setuju dibakar supaya yang lain tidak, dan mereka ingin namanya betul."
+    "if": [
+     "party:kelana"
+    ],
+    "then": [
+     {
+      "say": "Kelana",
+      "text": "Karena belum ada yang perlu dibohongi. (Ia mendengarkan sampai keping pertama selesai.) Waktu itu Suar pertama belum menyala, jadi belum ada yang harus dibenarkan. Mereka cuma dua belas orang yang setuju dibakar supaya yang lain tidak, dan mereka ingin namanya betul."
+     }
+    ],
+    "else": [
+     {
+      "say": "Rangga",
+      "text": "Karena belum ada yang perlu dibohongi. (Ia mendengarkan sampai keping pertama selesai.) Waktu itu Suar pertama belum menyala, jadi belum ada yang harus dibenarkan. Mereka cuma dua belas orang yang setuju dibakar supaya yang lain tidak, dan mereka ingin namanya betul."
+     }
+    ]
    },
    {
     "text": "Kalian mendengarkan kedua belasnya. Itu memakan waktu lebih lama daripada yang nyaman, dan tidak ada satu pun dari kalian yang mengusulkan berhenti di tengah."

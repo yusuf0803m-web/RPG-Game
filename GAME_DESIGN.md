@@ -1057,7 +1057,7 @@ waktu. Audio ditunda sebagai pekerjaan tersendiri agar tidak menggemukkan APK se
 | 4 | Babak 2 (area 7–12, 3 karakter baru, 7 boss) | Game 15 jam — **selesai** (lihat §9.3) |
 | 5 | Babak 3 + 3 ending + superboss | Game 20 jam — **selesai** (lihat §9.4) |
 | 6 | Kalibrasi ekonomi & pacing, alat playtest | Keseimbangan terukur — **selesai** (lihat §9.5) |
-| 7 | Konten sampingan sisa (Buruan, side quest, dungeon opsional) + poles naskah | Rilis |
+| 7 | Konten sampingan sisa (Buruan, side quest, dungeon opsional) + poles naskah | Rilis — **selesai** (lihat §9.6) |
 
 Tahap 2 adalah tonggak terpenting: kalau Babak 1 terasa enak dimainkan, sistemnya terbukti dan
 Babak 2–3 tinggal soal isi. Kalau tidak, lebih murah membetulkannya di sana.
@@ -1517,4 +1517,129 @@ musuh biasa 2,18–2,72 aksi per musuh, tamat di Lv 52–53.
   angka yang keluar pita. Yang dijaga pitanya, bukan angka persisnya, supaya menambah area
   atau musuh baru tetap bebas selama keseimbangannya ikut dijaga.
 - **Masih terbuka setelah Tahap 6**: Buruan 8 dari 11, side quest 7 dari 18, tiga dungeon
-  opsional, dan poles naskah menyeluruh. Semuanya isi, bukan keseimbangan.
+  opsional, dan poles naskah menyeluruh. Semuanya isi, bukan keseimbangan. (Ditutup di
+  Tahap 7; hitungan side quest "7 dari 18" ternyata terlalu murah hati — lihat §9.6.)
+
+### 9.6 Catatan implementasi Tahap 7 (konten sampingan & poles naskah)
+
+Tahap 7 menutup daftar "masih terbuka" §9.5: tiga dungeon opsional, tiga Buruan sisa,
+lima belas side quest, dan satu lintasan poles naskah. Tidak ada sistem baru — yang
+bertambah isi, dan satu aturan desain yang lahir dari mengukur isi itu.
+
+```bash
+python -m pytest tests/test_opsional.py      40 tes: tiap dungeon, tiap Buruan, tiap quest
+python tools/playtest.py                     pita ekonomi & pacing tetap dijaga
+```
+
+#### Hitungan side quest yang sebenarnya
+
+§9.5 mencatat "side quest 7 dari 18". Angka itu diambil dari jumlah entri
+`quests.json`, dan itu salah. Enam dari sembilan entri adalah **pelacak cerita utama**
+yang selesai sendiri di jalur wajib: `kirana_hilang`, `mencari_guntur`,
+`yang_hilang_di_telaga`, `nama_bapak`, `pendendang_padasuara`, dan `keluarga_bagas`.
+Side quest yang benar-benar bisa dilewati hanya **tiga**, semuanya di Babak 1.
+
+Jadi yang kurang bukan sebelas, melainkan **lima belas**. Sekarang genap delapan belas
+(Babak 1: 6, Babak 2: 9, Babak 3: 3), dan `test_side_quest_genap_delapan_belas`
+mengunci hitungannya **beserta pemisahan pelacak ceritanya**, supaya angka ini tidak
+bisa dilaporkan terlalu murah hati lagi.
+
+#### Tiga dungeon opsional
+
+| Dungeon | Babak | Lv | Masuk lewat | Boss |
+|---|---|---|---|---|
+| **Gua Bawah Danau** | 1 | 14–17 | Gua Sarang, Danau Cermin (setelah Arsip dibaca) | Juru Kaca Tenggelam |
+| **Reruntuhan Suar Ketiga** | 2 | 45–48 | Kaki Menara Terapung (setelah Nirmala jatuh) | Pelita Ketiga |
+| **Pulau Hilang** | 3 | 50+ | Laut Kabut (setelah tiga pulau besar) | Sang Penenun (sudah ada) |
+
+Ketiganya memakai pintu masuk yang **sudah ada di peta**, bukan area yang ditempelkan
+di pinggir. Gua Bawah Danau turun dari ruang buntu yang sudah dilewati pemain di Babak 1;
+Reruntuhan Suar Ketiga terbuka karena menara yang dulu mengapung ikut duduk waktu Suar-nya
+padam; Pulau Hilang — yang §5.7 sudah menyebut dungeon tapi sampai Tahap 6 cuma **satu
+ruang berisi superboss** — dikembangkan jadi lima ruang dengan Sang Penenun di puncaknya.
+
+Ketiganya dites dari keadaan yang **dijalankan**, bukan dikarang (§9.5): walkthrough
+babaknya dimainkan sampai titik dungeonnya terbuka, lalu party berbelok ke sana. Pemain
+otomatisnya tetap berbelanja — Reruntuhan Suar Ketiga **kalah** kalau party berlayar ke
+sana tanpa singgah ke palka Kapal Lentera dulu, dan pengukuran dari party penimbun
+adalah pengukuran yang bohong.
+
+#### Aturan baru: elit berpola harus kebal Goyah
+
+Ini temuan terbesar Tahap 7, dan ia mengenai **lima** musuh baru sekaligus sebelum
+ketahuan.
+
+`ai.py` membuat musuh yang kena **Goyah** selalu jatuh ke serangan biasa — polanya
+tidak maju, mekaniknya tidak jalan. Itu baik-baik saja untuk musuh biasa. Tapi party
+Babak 2–3 bisa memukul kelemahan **tiap ronde**, jadi musuh yang kelemahannya ada di
+tangan pemain praktis Goyah permanen:
+
+- **Juru Kaca Tenggelam** memainkan **satu** aksi bernama dalam tujuh ronde. Ia punya
+  dua kelemahan (Petir dan Cahaya) dan party Babak 1 kebetulan punya keduanya.
+- **Pelita Ketiga** memutar ketujuh elemen Suar — itu seluruh isi bossnya — dan hanya
+  sampai ke elemen **kedua**.
+- **Penjaga Suar Kedelapan** mengisi lalu menembak, dan tidak pernah sekali pun menembak.
+
+Aturannya sekarang: **elit yang identitasnya adalah urutan terskrip** (roda elemen,
+isi→tembak, siklus panggil) dibuat kebal Goyah. Kelemahan tetap dibayar — ia mengikis
+Ketahanan sampai **PECAH** dan tetap memberi pengali damage — tapi ia tidak lagi bisa
+menghapus mekanik bossnya. Untuk boss berfase yang bukan begitu (Juru Kaca Tenggelam),
+cukup **satu kelemahan per fase**, bukan dua.
+
+Ditambah satu temuan seumur keluarga: **urutan isi→tembak tidak bisa dijamin tabel
+bobot acak.** Aksi ber-`needs_charge` hampir selalu terpilih saat belum terisi, lalu
+mubazir. Penjaga Mercusuar memakai pola fase persis karena itu; Gerobak Kurungan dan
+Penjaga Suar Kedelapan sekarang mengikutinya.
+
+Ketiganya dikunci sebagai tes yang memeriksa **nama aksi di transkrip**, bukan cuma
+hasil pertarungannya — satu-satunya cara melihat mekanik yang diam.
+
+#### Dua penjaga baru di validator dunia
+
+- **`if` bersama `say`/`battle` ditolak.** `run_commands` mencocokkan `say` dan `battle`
+  **sebelum** `if`, jadi syaratnya diabaikan diam-diam dan barisnya selalu jalan. Ini
+  tidak sengaja ditulis lima kali di naskah Suar Ketiga, dan tidak ada yang akan
+  melihatnya sampai seseorang memainkan jalur "Kelana dibunuh".
+- **Nama flag tidak boleh dipakai dua area** (`test_tidak_ada_nama_flag_yang_dipakai_dua_area`).
+  Audit §9.5 dulu dikerjakan tangan; sekarang otomatis. 259 flag, nol tabrakan.
+
+#### Poles naskah
+
+Lintasannya bukan menulis ulang, melainkan menyisir hal yang bisa diperiksa menyeluruh:
+
+- **Nama pembicara disamakan.** "Nyi Pandansari" (6 baris di Danau Garam) vs
+  "Pandansari" (12 baris di Laut Lupa dan Pusar Kabut) — orang yang sama, dua label.
+  Proyek ini memakai nama panggil telanjang untuk pembicara (Rukmini, Darma, Lelana,
+  Sarwa), jadi yang enam disamakan.
+- **Tidak ada yang bicara sebelum bergabung** (`test_tidak_ada_yang_bicara_sebelum_bergabung`).
+  Dua bug asli: **Bagas** mengomentari Arena Kafilah di Tengara, yang terbuka sejak
+  Babak 1 padahal Bagas baru bergabung di Tambang; dan **Kelana** bicara di serambi
+  Benteng meski pemain memilih menghabisinya di Wirasaba. Keduanya juga terjadi dua kali
+  di naskah Tahap 7 sendiri, dan ketahuan oleh audit yang sama.
+
+#### Penyimpangan dari desain, dan alasannya
+
+- **Pesanan Mpu Darma diserahkan di Kapal Lentera, bukan di Pos Sanggar.** Pemain tidak
+  lewat Sanggar lagi setelah Wirasaba, dan menuntutnya berjalan balik sepuluh ruang
+  adalah jalan buntu halus yang sama keluarganya dengan teka-teki rakit Danau Garam
+  (§9.5). Mpu Darma memang ikut kapal.
+- **Rantai "Pendendang yang Hilang" menambah syarat ending 3.** §5.7 sudah menyebutnya
+  syarat, tapi sampai Tahap 6 rantainya belum ada sehingga syaratnya tidak bisa dipasang.
+  Sekarang `pendendang_terkumpul` ikut dituntut. Rantainya dimainkan sungguhan di tes,
+  bukan ditempelkan sebagai flag.
+- **Empat desa Pendendang, tiga yang menyahut.** Yang keempat sengaja tidak pernah
+  ditemukan. Ending "Mendendangkan" adalah ending yang paling penuh harapan di
+  permainan ini, dan ia lebih jujur kalau harapannya tidak lengkap.
+- **Dua quest dungeon opsional di luar hitungan 18.** "Dinding yang Berhenti Mengeja"
+  dan "Daftar Pekerjaan" melekat pada dungeonnya, bukan berdiri sendiri sebagai side
+  quest, jadi keduanya bonus — bukan bagian dari janji §5.7.
+- **`kaca_bara` akhirnya punya sumber.** Ia ada di `kaca.json` sejak Tahap 3 tapi tidak
+  dijual, bukan hadiah apa pun, dan bukan penukaran Serpihan: pemain tidak pernah bisa
+  memilikinya. Sekarang ia upah Buruan 10.
+
+#### Hasil akhir
+
+18 area / 140 ruang, 78 musuh, 236 skill, 88 item, 24 Kaca, 11 Buruan, 18 side quest,
+161 entri latar. Ekonomi dan pacing tetap di dalam pita §9.5 pada ketiga babak, dan
+keenam walkthrough tetap hijau — konten opsional memang tidak menyentuh jalur utama,
+dan itu dibuktikan tes, bukan diasumsikan.

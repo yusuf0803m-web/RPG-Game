@@ -1776,16 +1776,36 @@
       "pause": true
      },
      {
-      "say": "Kelana",
-      "text": "Duduk."
+      "if": [
+       "party:kelana"
+      ],
+      "then": [
+       {
+        "say": "Kelana",
+        "text": "Duduk."
+       }
+      ],
+      "else": [
+       {
+        "say": "Sela",
+        "text": "Duduk."
+       }
+      ]
      },
      {
       "say": "Ratih",
       "text": "Apa?"
      },
      {
-      "say": "Kelana",
-      "text": "Di tikar. Duduk. (Ia sendiri duduk di salah satu cekungan kosong, canggung, terlalu besar untuk tempatnya.) Aku tidak bisa menyanyi. Tapi aku bisa duduk di tempat yang kosong."
+      "if": [
+       "party:kelana"
+      ],
+      "then": [
+       {
+        "say": "Kelana",
+        "text": "Di tikar. Duduk. (Ia sendiri duduk di salah satu cekungan kosong, canggung, terlalu besar untuk tempatnya.) Aku tidak bisa menyanyi. Tapi aku bisa duduk di tempat yang kosong."
+       }
+      ]
      },
      {
       "text": "Sela duduk berikutnya. Lalu Bagas, yang menggerutu soal lututnya. Lalu Rangga, yang melepas panjinya dulu dan menaruhnya di luar lingkaran. Lalu Lintang, lalu Rimba.\n\nEnam cekungan terisi. Ratih berdiri di tengah cukup lama, lalu duduk di yang ketujuh."
