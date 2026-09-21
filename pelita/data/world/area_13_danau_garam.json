@@ -82,7 +82,17 @@
      "to": "dermaga_rakit"
     }
    ],
-   "on_enter": "sergap_ladang"
+   "on_enter": "sergap_ladang",
+   "objects": [
+    {
+     "id": "pemungut_garam",
+     "name": "Pemungut garam yang bekerja sendirian",
+     "script": "pd_garam",
+     "if": [
+      "quest:pendendang_hilang=wirasaba"
+     ]
+    }
+   ]
   },
   "bangkai_kapal": {
    "name": "Bangkai Kapal Garam",
@@ -655,6 +665,71 @@
        "hampa_beku"
       ],
       "win": []
+     }
+    ]
+   }
+  ],
+  "pd_garam": [
+   {
+    "text": "Seorang laki-laki setengah baya mengeruk garam ke dalam keranjang rotan, sendirian, jauh dari jalur kafilah mana pun. Ia melihat kalian datang dan tidak berhenti bekerja, juga tidak lari."
+   },
+   {
+    "once": "pd_garam_bicara",
+    "do": [
+     {
+      "say": "Rangga",
+      "text": "Bapak sendirian di sini?"
+     },
+     {
+      "text": "Laki-laki itu mengangguk. Ia tidak bicara. Waktu Rangga bertanya lagi, ia menunjuk tenggorokannya sendiri, lalu menggeleng — sekali, ringkas, seperti orang yang sudah ratusan kali menjelaskan hal yang sama tanpa suara."
+     },
+     {
+      "say": "Bagas",
+      "text": "Bukan cacat bawaan. Lihat bekas di lehernya."
+     },
+     {
+      "say": "Ratih",
+      "text": "(Ia berjongkok supaya sejajar.) Pak. Talun?"
+     },
+     {
+      "text": "Keruknya berhenti."
+     },
+     {
+      "say": "Ratih",
+      "text": "Saya Ratih. Padasuara. (Jeda.) Bapak yang menyahut waktu saya kecil?"
+     },
+     {
+      "text": "Laki-laki itu menaruh keruknya. Lalu ia mengangkat tangan dan mengetuk keranjang rotannya: empat ketukan naik, satu turun, berhenti. Sahutan Talun, tanpa satu pun suara di dalamnya."
+     },
+     {
+      "say": "Ratih",
+      "text": "Iya, Pak. Itu betul."
+     },
+     {
+      "text": "Ia mengetuknya lagi. Lalu lagi. Ratih ikut mengetuk keranjangnya sendiri, dan keduanya begitu cukup lama sampai Sela memalingkan muka."
+     },
+     {
+      "say": "Ratih",
+      "text": "Ordo ambil suaranya, bukan orangnya. (Kepada party, tanpa menoleh.) Itu lebih murah. Orang hilang dicari. Orang bisu tetap bekerja."
+     },
+     {
+      "say": "Kelana",
+      "text": "Mereka tidak membunuh yang berguna. Mereka cuma mengambil bagian yang bikin repot."
+     },
+     {
+      "text": "Sebelum kalian pergi, laki-laki itu menarik lengan Ratih dan menulis di garam dengan jarinya: satu nama, dan satu arah. PADASARI. Ke barat, ke laut."
+     },
+     {
+      "quest": "pendendang_hilang",
+      "state": "garam"
+     },
+     {
+      "set": "pd_talun_ketemu"
+     },
+     {
+      "give": {
+       "serpihan_ingatan": 1
+      }
      }
     ]
    }

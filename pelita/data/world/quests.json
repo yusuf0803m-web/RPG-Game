@@ -85,5 +85,14 @@
    "aktif": "Gudang Pola di Pulau Hilang menyimpan rancangan pulau-pulau yang belum ditenun: Sanggar, Padasuara, Tengara, dan Lembah Larung. Rak Wirasaba sudah kosong. Pola bukan janji — tapi Sang Penenun mengira kalian gagal.",
    "selesai": "Sang Penenun terurai jadi apa yang ia tenun, dan tidak ada lagi yang memegang ujung benang di dada kalian."
   }
+ },
+ "pendendang_hilang": {
+  "name": "Pendendang yang Hilang",
+  "states": {
+   "aktif": "Papan sahutan Padasuara memuat lima desa Pendendang; empat berhenti menyahut. Tetua Lelana memberi Ratih daftar nama dan arahnya. Dengarkan di tiap tempat yang kalian lewati.",
+   "wirasaba": "Karangwuni sampai ke Wirasaba dan berhenti di sana: seorang Hampa di distrik pasar masih menyahut nada yang benar. Satu dari empat.",
+   "garam": "Talun ada di ladang garam, bekerja sendirian tanpa suara — Ordo mengambil suaranya, bukan orangnya. Ia menulis satu nama lagi di garam: PADASARI, ke barat, ke laut.",
+   "selesai": "Padasari sudah jadi pulau. Tapi di tikar yang dibuat untuk dua belas, tiga desa yang dihabisi Ordo masih menyahut kalau ada yang memulai — dan Ratih yang memulai."
+  }
  }
 }

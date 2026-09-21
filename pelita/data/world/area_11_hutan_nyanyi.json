@@ -173,7 +173,17 @@
      "script": "bicara_lelana"
     }
    ],
-   "latar": "hutan_nyanyi/padasuara"
+   "latar": "hutan_nyanyi/padasuara",
+   "objects": [
+    {
+     "id": "papan_sahutan",
+     "name": "Papan sahutan di dinding balai",
+     "script": "pd_papan",
+     "if": [
+      "ratih_gabung"
+     ]
+    }
+   ]
   },
   "tepi_desa": {
    "name": "Tepi Desa",
@@ -682,6 +692,66 @@
        "bayang_arsip"
       ],
       "win": []
+     }
+    ]
+   }
+  ],
+  "pd_papan": [
+   {
+    "text": "Papan kayu selebar pintu, digantung miring karena talinya sudah lapuk. Di atasnya dipahat lima nama desa, dan di samping tiap nama ada takik-takik kecil — hitungan malam, waktu desa itu masih menyahut nyanyian Padasuara dari kejauhan.\n\nEmpat nama takiknya berhenti. Yang satu, paling bawah, takiknya sampai ke tepi papan dan dilanjutkan di kayu dinding."
+   },
+   {
+    "once": "pd_papan_dibaca",
+    "do": [
+     {
+      "say": "Ratih",
+      "text": "Ini papan sahutan. Waktu aku kecil, tiap malam ada yang menyahut dari sana — Karangwuni dulu, lalu Talun, lalu yang paling jauh, yang cuma kedengaran kalau anginnya benar."
+     },
+     {
+      "say": "Rimba",
+      "text": "Dan sekarang?"
+     },
+     {
+      "say": "Ratih",
+      "text": "Sekarang cuma kami. (Ia menyentuh takik yang berhenti.) Aku selalu dibilangi mereka pindah. Pendendang memang suka pindah, katanya. Tapi orang pindah tidak berhenti menyanyi, Rimba. Menyanyi itu bukan barang yang bisa ketinggalan di rumah lama."
+     },
+     {
+      "say": "Lelana",
+      "text": "(Dari belakang kalian; ia berdiri di pintu balai, entah sejak kapan.) Ratih."
+     },
+     {
+      "say": "Ratih",
+      "text": "Tetua tahu."
+     },
+     {
+      "say": "Lelana",
+      "text": "Tetua tahu. (Ia masuk dan duduk di tikar, pelan sekali, seperti orang yang lututnya sudah lama tidak diajak berdebat.) Ordo tidak membakar desa Pendendang. Itu akan jadi cerita. Ordo mengambil satu-dua orang tiap musim, yang suaranya paling keras, dan menyebutnya kehormatan. Sepuluh tahun begitu, dan desa yang tersisa berhenti mengajari anaknya menyanyi supaya anaknya tidak dipilih."
+     },
+     {
+      "say": "Ratih",
+      "text": "Kenapa Tetua tidak pernah bilang?"
+     },
+     {
+      "say": "Lelana",
+      "text": "Karena aku memilih desa ini tetap menyanyi, dan kau yang paling keras di antara semuanya. (Jeda.) Aku sudah menghitung risikonya tiap malam selama enam belas tahun, Nak. Aku tidak bisa bilang aku memilih benar. Aku cuma bisa bilang aku memilih."
+     },
+     {
+      "text": "Ratih berdiri cukup lama sampai Lelana mengangkat tangannya — bukan untuk dipegang, tapi untuk diberi sesuatu. Sebuah gulungan kain kecil, dengan lima nama desa dan arahnya."
+     },
+     {
+      "say": "Lelana",
+      "text": "Empat nama itu belum tentu habis. Belum tentu. Kalau kalian lewat, dengarkan. Yang masih bisa menyanyi akan menyahut kalau ada yang memulai."
+     },
+     {
+      "say": "Ratih",
+      "text": "Aku yang memulai."
+     },
+     {
+      "quest": "pendendang_hilang",
+      "state": "aktif"
+     },
+     {
+      "set": "pd_daftar_dibawa"
      }
     ]
    }

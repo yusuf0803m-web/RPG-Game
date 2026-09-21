@@ -334,6 +334,14 @@
      "if": [
       "!kendi_nyanyi_diambil"
      ]
+    },
+    {
+     "id": "tikar_melingkar",
+     "name": "Tikar melingkar di balai",
+     "script": "pd_pulau",
+     "if": [
+      "quest:pendendang_hilang=garam"
+     ]
     }
    ]
   },
@@ -1698,6 +1706,96 @@
      "kendi_nyala": 4,
      "abu_pagi": 4
     }
+   }
+  ],
+  "pd_pulau": [
+   {
+    "text": "Tikarnya melingkar, dan lingkarannya muat dua belas orang. Di pinggir tiap tempat duduk ada cekungan kecil di bambu — tempat menaruh kendi, satu per orang.\n\nDi tengah, satu kendi. Sebelas cekungan lainnya kosong."
+   },
+   {
+    "once": "pd_pulau_adegan",
+    "do": [
+     {
+      "say": "Ratih",
+      "text": "Padasari."
+     },
+     {
+      "say": "Lintang",
+      "text": "Ini pulau. Pulau itu ingatan yang mengeras."
+     },
+     {
+      "say": "Ratih",
+      "text": "Aku tahu, Lintang. (Ia berdiri di tepi tikar dan tidak masuk ke dalamnya.) Berarti desanya sudah tidak ada. Yang mengeras cuma malam terakhir mereka duduk di sini."
+     },
+     {
+      "say": "Rimba",
+      "text": "Ratih..."
+     },
+     {
+      "say": "Ratih",
+      "text": "Empat desa. Satu jadi Hampa di pasar kaca, satu jadi orang bisu di ladang garam, satu jadi pulau. (Ia mengeluarkan gulungan kain Lelana dan membacanya sampai habis, meski ia jelas sudah hafal.) Yang keempat tidak ada di daftar arah. Tetua tidak tahu ke mana."
+     },
+     {
+      "pause": true
+     },
+     {
+      "say": "Kelana",
+      "text": "Duduk."
+     },
+     {
+      "say": "Ratih",
+      "text": "Apa?"
+     },
+     {
+      "say": "Kelana",
+      "text": "Di tikar. Duduk. (Ia sendiri duduk di salah satu cekungan kosong, canggung, terlalu besar untuk tempatnya.) Aku tidak bisa menyanyi. Tapi aku bisa duduk di tempat yang kosong."
+     },
+     {
+      "text": "Sela duduk berikutnya. Lalu Bagas, yang menggerutu soal lututnya. Lalu Rangga, yang melepas panjinya dulu dan menaruhnya di luar lingkaran. Lalu Lintang, lalu Rimba.\n\nEnam cekungan terisi. Ratih berdiri di tengah cukup lama, lalu duduk di yang ketujuh."
+     },
+     {
+      "say": "Ratih",
+      "text": "Kalian tidak tahu lagunya."
+     },
+     {
+      "say": "Rimba",
+      "text": "Kami tahu urutannya kalau kau mulai. Kau sudah menyanyikannya tiap malam sejak Padasuara."
+     },
+     {
+      "text": "Ratih memulai. Empat nada naik, satu turun.\n\nDan dari kabut di sekeliling pulau, sesuatu menyahut — bukan gema, karena gema mengulang; yang datang adalah nada berikutnya. Dari arah timur, jauh: Karangwuni. Dari selatan, tanpa suara tapi terasa di lantai bambu seperti ketukan: Talun. Dan dari bawah tikar itu sendiri, dari dalam pulaunya: Padasari, dua belas suara sekaligus, terakhir kali."
+     },
+     {
+      "say": "Ratih",
+      "text": "(Sambil menyanyi, tanpa berhenti.) Yang keempat. Ada yang dengar yang keempat?"
+     },
+     {
+      "text": "Tidak ada. Empat nada itu berputar tiga kali lagi, lalu turun sendiri, dan laut kembali diam.\n\nRatih tidak menangis. Ia menghitung: tiga jari terangkat, lalu diam di situ."
+     },
+     {
+      "say": "Ratih",
+      "text": "Tiga. (Ia berdiri, dan suaranya sudah berubah jadi suara orang yang sedang merencanakan sesuatu.) Tiga cukup untuk mulai. Rimba — kalau kita sampai ke Sumur itu dan ternyata satu-satunya cara cuma membakar seseorang lagi, aku mau kau ingat malam ini. Aku mau kau ingat bahwa tiga desa yang sudah dihabisi Ordo masih menyahut kalau ada yang memulai."
+     },
+     {
+      "say": "Rimba",
+      "text": "Aku ingat."
+     },
+     {
+      "quest": "pendendang_hilang",
+      "state": "selesai"
+     },
+     {
+      "set": "pendendang_terkumpul"
+     },
+     {
+      "give": {
+       "serpihan_ingatan": 2
+      }
+     },
+     {
+      "ilustrasi": "events/tikar_padasari",
+      "teks": "Tujuh orang duduk di tikar yang dibuat untuk dua belas, dan kabut menyahut dari tiga arah."
+     }
+    ]
    }
   ]
  }

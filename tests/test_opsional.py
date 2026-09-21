@@ -13,6 +13,7 @@ sampai titik tempat dungeonnya terbuka, lalu party berbelok ke sana.
 """
 from __future__ import annotations
 
+import json
 import random
 import re
 import tempfile
@@ -26,6 +27,8 @@ from pelita.world.explore import Game
 from pelita.world.model import load_world
 from pelita.world.state import new_game
 from tests.test_babak1 import AREA1, DANAU, LORONG, RAWA, TENGARA_1, BerhentiUji, make_equipper
+from tests.test_babak2 import SEMUA_BABAK2
+from tests.test_babak2 import jalankan as jalankan_babak2
 from tests.test_babak3 import KAPAL, make_pemain, mulai_babak3
 from tests.walker import Walker
 
@@ -438,3 +441,83 @@ def test_kaca_bara_akhirnya_punya_sumber():
     sumber = [bid for bid, b in world.buruan.items()
               if "kaca_bara" in b.get("hadiah", {}).get("kaca", [])]
     assert sumber, "kaca_bara masih tidak bisa didapat pemain"
+
+
+# -- Rantai "Pendendang yang Hilang" (side quest 4 bagian, §5.7) ------------
+def _sisip(langkah, setelah, tambahan):
+    out = list(langkah)
+    i = out.index(setelah) + 1
+    out[i:i] = tambahan
+    return out
+
+
+def langkah_rantai_babak2():
+    """SEMUA_BABAK2 dengan tiga bagian pertama rantai disisipkan di tempatnya.
+
+    Bagian 1 butuh Ratih, dan Ratih baru bergabung di Tepi Desa — jadi party
+    kembali sebentar ke Balai Nyanyi sesudahnya, persis seperti pemain yang baru
+    dapat anggota baru lalu balik bertanya ke tetuanya.
+    """
+    l = list(SEMUA_BABAK2)
+    l = _sisip(l, "Ke tepi desa", [
+        "Kembali ke desa", "Ke Balai Nyanyi", "Papan sahutan",
+        "Kembali ke desa", "Ke tepi desa",
+    ])
+    l = _sisip(l, "Masuk ke distrik pasar", ["Hampa yang bersenandung"])
+    l = _sisip(l, "Menyeberang ke ladang garam", ["Pemungut garam"])
+    return l
+
+
+@pytest.fixture(scope="module")
+def rantai():
+    """Tiga bagian di Babak 2 dimainkan sungguhan, lalu bagian empat di Laut Lupa."""
+    data = load_data()
+    world = load_world(data)
+    res, st, wk2 = jalankan_babak2(langkah_rantai_babak2(), 5, Path(tempfile.mkdtemp()))
+    assert res == "berhenti", wk2.text[-2500:]
+    assert st.quests.get("pendendang_hilang") == "garam", st.quests
+    kotak: list = []
+    wk = Walker([
+        "Ke haluan", "Berlayar ke laut kabut",
+        "Singgah: Pulau Nyanyi", "Tikar melingkar",
+        "#stop:pendendang_terkumpul",
+    ], on_command=make_pemain(st, kotak))
+    g = Game(data, world, st, wk.io, auto_battle=True, auto_script=True,
+             auto_choice=False, save_dir=Path(tempfile.mkdtemp()))
+    kotak.append(g)
+    try:
+        g.run()
+    except BerhentiUji:
+        pass
+    return st, wk2, wk
+
+
+def test_rantai_pendendang_melewati_keempat_bagiannya(rantai):
+    """Padasuara -> Wirasaba -> Danau Garam -> Laut Lupa, tiap bagian di babaknya."""
+    st, wk2, wk = rantai
+    assert st.quests.get("pendendang_hilang") == "selesai"
+    assert "pendendang_terkumpul" in st.flags
+    for frasa in ("Ini papan sahutan", "Itu sahutan Karangwuni",
+                  "Ordo ambil suaranya, bukan orangnya"):
+        assert frasa in datar(wk2.text), f"bagian rantai tidak dimainkan: {frasa}"
+    assert "tiga desa yang sudah dihabisi Ordo masih menyahut" in datar(wk.text)
+
+
+def test_rantai_pendendang_jadi_syarat_ending_mendendangkan():
+    """§5.7 menyebut rantai ini syarat ending 3; sampai Tahap 6 syaratnya belum
+    bisa dipasang karena rantainya belum ada."""
+    world = load_world(load_data())
+    teks = json.dumps(world.area("pusar_kabut").scripts, ensure_ascii=False)
+    assert "pendendang_terkumpul" in teks
+
+    data = load_data()
+    st = mulai_babak3(data, 3)          # tanpa lengkap=True: syaratnya belum terpenuhi
+    assert not st.check(["pendendang_terkumpul"])
+
+
+def test_rantai_pendendang_boleh_dilewati():
+    """Walkthrough Babak 2 biasa tidak menyentuh rantainya, dan tetap tamat."""
+    res, st, wk = jalankan_babak2(list(SEMUA_BABAK2), 5, Path(tempfile.mkdtemp()))
+    assert res == "berhenti"
+    assert "pendendang_hilang" not in st.quests
+    assert "pendendang_terkumpul" not in st.flags

@@ -143,8 +143,8 @@ def mulai_babak3(data, seed, kelana_dibunuh: bool = False, lengkap: bool = False
 
     ``kelana_dibunuh`` memainkan ulang Babak 2 dengan pilihan "Habisi dia" di
     Wirasaba, jadi konsekuensinya lahir dari keputusan, bukan dari flag yang
-    ditempelkan. ``lengkap`` menambahkan syarat ending rahasia (Kenangan Ratih +
-    7 Buruan) yang berasal dari konten sampingan di luar jalur walkthrough.
+    ditempelkan. ``lengkap`` menambahkan syarat ending rahasia (Kenangan Ratih, 7 Buruan, dan
+    rantai Pendendang) yang berasal dari konten sampingan di luar jalur walkthrough.
     """
     langkah = list(SEMUA_BABAK2)
     if kelana_dibunuh:
@@ -158,6 +158,9 @@ def mulai_babak3(data, seed, kelana_dibunuh: bool = False, lengkap: bool = False
         # Kenangan Ratih dan papan Buruan adalah konten sampingan yang sengaja tidak
         # dilewati walkthrough jalur utama; syarat ending rahasia dipasang langsung.
         st.kenangan.update({"ratih_rimba_1", "ratih_lintang_1", "ratih_kelana_1"})
+        # Rantai "Pendendang yang Hilang" (§5.7) melintasi Babak 2 dan 3 di luar
+        # jalur walkthrough; ia dimainkan sungguhan di tests/test_opsional.py.
+        st.flags.add("pendendang_terkumpul")
         for bid in ("buruan_1_kunang", "buruan_2_nelayan", "buruan_3_zirah", "buruan_4_kambing",
                     "buruan_5_hantu", "buruan_6_pohon", "buruan_7_konstruk"):
             st.buruan[bid] = "selesai"

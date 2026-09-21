@@ -90,7 +90,17 @@
      "to": "jalan_kaca"
     }
    ],
-   "on_enter": "sergap_pasar_w"
+   "on_enter": "sergap_pasar_w",
+   "objects": [
+    {
+     "id": "hampa_bersenandung",
+     "name": "Hampa yang bersenandung di lapak kain",
+     "script": "pd_wirasaba",
+     "if": [
+      "quest:pendendang_hilang=aktif"
+     ]
+    }
+   ]
   },
   "jalan_rumah": {
    "name": "Jalan Rumah-Rumah",
@@ -714,6 +724,56 @@
        "warga_wirasaba"
       ],
       "win": []
+     }
+    ]
+   }
+  ],
+  "pd_wirasaba": [
+   {
+    "text": "Di antara Hampa yang mengulang hari terakhirnya, satu tidak mengulang pekerjaan. Ia perempuan tua, duduk di belakang lapak kain yang tidak ada kainnya, dan yang ia ulang bukan gerakan — ia bersenandung. Empat nada naik, satu turun, berhenti. Lalu lagi."
+   },
+   {
+    "once": "pd_wirasaba_dengar",
+    "do": [
+     {
+      "say": "Ratih",
+      "text": "(Sangat pelan.) Itu sahutan Karangwuni."
+     },
+     {
+      "say": "Bagas",
+      "text": "Ratih, dia Hampa. Dia tidak ada di dalam sana."
+     },
+     {
+      "say": "Ratih",
+      "text": "Aku tahu apa itu Hampa, Bagas. (Ia berlutut di depan perempuan itu, dan tidak menyentuhnya.) Aku cuma mau tahu satu hal."
+     },
+     {
+      "text": "Ratih menyanyikan empat nada pembuka Padasuara. Bukan keras — separuh napas, cara orang memanggil dari jauh tanpa membangunkan yang tidur.\n\nPerempuan itu berhenti. Lalu ia menyahut. Bukan nada yang tadi ia ulang: nada berikutnya. Yang benar."
+     },
+     {
+      "say": "Sela",
+      "text": "...Dia menjawab."
+     },
+     {
+      "say": "Ratih",
+      "text": "Dia tidak menjawab. Dia menyahut. Itu beda. (Suaranya rata, terlalu rata.) Yang menjawab perlu mengerti. Yang menyahut cuma perlu ingat urutannya."
+     },
+     {
+      "say": "Rangga",
+      "text": "Berarti Karangwuni tidak pindah."
+     },
+     {
+      "say": "Ratih",
+      "text": "Berarti Karangwuni sampai di sini, dan berhenti di sini. (Ia berdiri.) Satu dari empat. Ayo jalan."
+     },
+     {
+      "quest": "pendendang_hilang",
+      "state": "wirasaba"
+     },
+     {
+      "give": {
+       "serpihan_ingatan": 1
+      }
      }
     ]
    }

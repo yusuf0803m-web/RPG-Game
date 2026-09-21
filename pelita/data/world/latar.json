@@ -972,6 +972,12 @@
    "kategori": "peristiwa",
    "prioritas": 1,
    "deskripsi": "Sebuah gulungan pola terbuka: Pelita Rendah digambar seluruhnya dari benang, lengkap sampai warung, balai desa, dan rumah berpintu tidak rapat. Di sudut gambar, Mercusuar Langit menyala."
+  },
+  "events/tikar_padasari": {
+   "nama": "Peristiwa — Tikar Padasari",
+   "kategori": "peristiwa",
+   "prioritas": 1,
+   "deskripsi": "Balai bambu tanpa dinding di pulau kecil di tengah kabut. Tikar melingkar untuk dua belas orang, tujuh tempat terisi, lima cekungan kendi kosong. Kabut di sekeliling balai bercahaya samar dari tiga arah."
   }
  }
 }
