@@ -3,6 +3,7 @@
 RPG teks turn-based bergaya JRPG klasik, dibangun dengan Python. Mesin permainan hanya memakai
 pustaka standar; antarmuka web menambah satu dependensi, Flask.
 
+- **Versi**: [`v1.0.0`](RELEASE_NOTES.md) — rilis pertama.
 - **Dokumen desain**: [`GAME_DESIGN.md`](GAME_DESIGN.md) (edisi 20 jam, tiga babak).
 - **Status**: **Seluruh tujuh tahap rencana §9 selesai.** Permainannya bisa ditamatkan dari
   prolog sampai salah satu dari tiga ending, keseimbangannya diukur (bukan ditebak), dan konten

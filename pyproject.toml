@@ -1,7 +1,7 @@
 [project]
 name = "pelita-terakhir"
-version = "0.1.0"
-description = "RPG teks turn-based bergaya JRPG klasik (prototipe)"
+version = "1.0.0"
+description = "RPG teks turn-based bergaya JRPG klasik, tiga babak, tiga ending"
 requires-python = ">=3.10"
 dependencies = []
 

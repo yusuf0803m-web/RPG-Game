@@ -1062,6 +1062,9 @@ waktu. Audio ditunda sebagai pekerjaan tersendiri agar tidak menggemukkan APK se
 Tahap 2 adalah tonggak terpenting: kalau Babak 1 terasa enak dimainkan, sistemnya terbukti dan
 Babak 2–3 tinggal soal isi. Kalau tidak, lebih murah membetulkannya di sana.
 
+Ketujuh tahap rencana ini selesai di Tahap 7 (§9.6). Yang datang sesudahnya bukan tahap
+pembangunan baru, melainkan rilis — dicatat di §9.7.
+
 ### 9.1 Catatan implementasi Tahap 2 (Babak 1)
 
 Yang dibangun: 8 area (Pelita Rendah, Hutan Kelabu, Rawa Suar, Danau Cermin, Tengara, Lorong Bawah,
@@ -1643,3 +1646,52 @@ Lintasannya bukan menulis ulang, melainkan menyisir hal yang bisa diperiksa meny
 161 entri latar. Ekonomi dan pacing tetap di dalam pita §9.5 pada ketiga babak, dan
 keenam walkthrough tetap hijau — konten opsional memang tidak menyentuh jalur utama,
 dan itu dibuktikan tes, bukan diasumsikan.
+
+### 9.7 Catatan rilis v1.0.0
+
+Tahap 7 menutup tabel rencana di §9. Yang dikerjakan sesudahnya bukan isi baru,
+melainkan mengeluarkan PR #1 dari draft dan memberinya bentuk rilis: nomor versi,
+catatan rilis, dan tag git. Rinciannya ada di `RELEASE_NOTES.md`; bagian ini mencatat
+keputusan dan penyimpangannya.
+
+#### Nomor versi: v1.0.0
+
+Belum ada tag sebelumnya, dan tujuh tahap rencana sudah selesai, jadi ini rilis
+publik pertama, bukan `0.x`. `pyproject.toml` dan `versionName` di
+`android/app/build.gradle` disamakan ke `1.0.0`; `versionCode` tetap `1` (build
+Android pertama yang diberi nomor).
+
+#### Penyimpangan: APK tetap ditandatangani kunci debug
+
+`.github/workflows/android.yml` menjalankan `gradle assembleDebug`, bukan
+`assembleRelease` dengan keystore sendiri, dan itu **tidak diubah** di rilis ini.
+Alasannya bukan kemalasan: menandatangani APK rilis butuh sebuah keystore (berkas
+`.jks`/`.keystore` beserta kata sandinya) yang harus dibuat sekali oleh pemilik
+proyek dan disimpan sebagai *secret* Actions (`signingConfigs` di Gradle membaca
+secret itu lewat variabel lingkungan) — itu kredensial jangka panjang milik
+pemilik repo, bukan sesuatu yang aman atau masuk akal untuk dibuat begitu saja
+oleh proses build otomatis atas nama pemilik proyek.
+
+README sudah menjelaskan konsekuensinya ke pemain (peringatan Play Protect saat
+sideload, "Pasang saja"), jadi tidak ada yang berubah dari sisi pemain. Kalau
+kelak dibutuhkan APK bertanda tangan rilis (misalnya untuk didistribusikan di
+luar unduhan langsung, atau lewat Play Store), langkahnya:
+
+1. Buat keystore sekali (`keytool -genkeypair -v -keystore rilis.jks -alias pelita ...`)
+   di mesin pemilik proyek, **bukan** di sesi ini.
+2. Simpan isi keystore (base64) dan kata sandinya sebagai secret repo (mis.
+   `ANDROID_KEYSTORE_BASE64`, `ANDROID_KEYSTORE_PASSWORD`, `ANDROID_KEY_ALIAS`,
+   `ANDROID_KEY_PASSWORD`).
+3. Tambah `signingConfigs.release` di `android/app/build.gradle` yang membaca
+   variabel-variabel itu, dan pasang ke `buildTypes.release.signingConfig`.
+4. Tambah langkah di `android.yml` yang menulis keystore dari secret sebelum
+   `gradle assembleRelease`.
+
+Ini sengaja tidak dikerjakan di rilis ini karena butuh secret yang hanya bisa
+dipasang pemilik proyek lewat pengaturan repo GitHub.
+
+#### Yang tidak berubah
+
+Tidak ada kode permainan yang disentuh untuk rilis ini — 247 tes, ekonomi/pacing
+§9.5, dan keenam walkthrough tetap seperti di §9.6. Rilis murni administratif:
+nomor versi, `RELEASE_NOTES.md`, tag `v1.0.0`, dan PR #1 keluar dari draft.

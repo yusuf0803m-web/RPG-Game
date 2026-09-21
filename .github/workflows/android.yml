@@ -70,7 +70,7 @@ jobs:
             echo ""
             echo "- Berkas: \`$(basename "$apk")\`"
             echo "- Ukuran: $(du -h "$apk" | cut -f1)"
-            echo "- Versi: Babak 1 (Lembah Larung)"
+            echo "- Versi: v1.0.0 (Babak 1-3 lengkap, tiga ending)"
             echo ""
             echo "Unduh dari bagian **Artifacts** di halaman ini, lalu pasang di HP."
           } >> "$GITHUB_STEP_SUMMARY"

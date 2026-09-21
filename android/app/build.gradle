@@ -28,7 +28,7 @@ android {
         minSdk 24
         targetSdk 34
         versionCode 1
-        versionName "0.1.0-babak1"
+        versionName "1.0.0"
 
         ndk {
             // arm64 untuk HP modern, armeabi-v7a untuk perangkat 32-bit lama.
