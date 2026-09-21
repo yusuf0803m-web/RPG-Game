@@ -150,5 +150,8 @@
                          "description": "Kunci gerobak panen Ordo, diambil dari gerobak yang akhirnya berhenti. Upah Buruan; tidak dijual."},
   "lensa_kedelapan":    {"name": "Lensa Suar Kedelapan", "kind": "aksesori", "price": 0,
                          "stats": {"mag": 14, "res": 12, "hp": 60},
-                         "description": "Lensa yang dipasang di rongga Suar yang tidak pernah dibangun. Upah Buruan; tidak dijual."}
+                         "description": "Lensa yang dipasang di rongga Suar yang tidak pernah dibangun. Upah Buruan; tidak dijual."},
+
+  "kotak_juru_ukur":    {"name": "Kotak Juru Ukur", "kind": "kunci", "price": 0,
+                         "description": "Kotak kayu hijau bertuliskan TIRTA — JURU UKUR. Isinya meteran lipat, pensil tukang, dan kaca pembesar murah."}
 }

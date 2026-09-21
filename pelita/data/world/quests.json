@@ -94,5 +94,28 @@
    "garam": "Talun ada di ladang garam, bekerja sendirian tanpa suara — Ordo mengambil suaranya, bukan orangnya. Ia menulis satu nama lagi di garam: PADASARI, ke barat, ke laut.",
    "selesai": "Padasari sudah jadi pulau. Tapi di tikar yang dibuat untuk dua belas, tiga desa yang dihabisi Ordo masih menyahut kalau ada yang memulai — dan Ratih yang memulai."
   }
+ },
+ "duabelas_lentera": {
+  "name": "Dua Belas Lentera",
+  "states": {
+   "aktif": "Dua belas warga yang kembali dari Ular Cermin lupa menyalakan lentera jembatan Desa Apung. Tetua Baruna minta satu lentera dinyalakan: yang di rakit paling ujung, yang paling tidak ada gunanya.",
+   "nyala": "Lentera di rakit paling ujung menyala. Kembali ke jembatan desa dan lihat apakah ada yang melihatnya.",
+   "selesai": "Dua belas lentera jembatan menyala lagi, dalam waktu yang lebih singkat daripada yang dibutuhkan untuk menjelaskannya."
+  }
+ },
+ "pesanan_sarwa": {
+  "name": "Pesanan Mpu Sarwa",
+  "states": {
+   "aktif": "Rangka kaca sembilan lekuk untuk Bu Warsih berhenti di empat karena kuningannya habis. Mpu Sarwa butuh lima belas suku cadang kuningan; pasar mana pun menjualnya.",
+   "selesai": "Sembilan keping untuk sembilan tahun. Sarwa mengantarnya sendiri besok pagi."
+  }
+ },
+ "penunggu_gerbang": {
+  "name": "Yang Menunggu di Gerbang Utara",
+  "states": {
+   "aktif": "Enting menunggu bapaknya, Pak Tirta si juru ukur, di bawah Gerbang Utara. Kotaknya hijau, ada namanya di tutupnya.",
+   "ketemu": "Kotak hijau Pak Tirta ada di Lorong Tengah Tambang, terjepit di bawah balok tumbang. Ia mendorongnya keluar sebelum baloknya jatuh.",
+   "selesai": "Enting membawa kotak bapaknya pulang, supaya ibunya tidak bisa bilang ia bohong."
+  }
  }
 }

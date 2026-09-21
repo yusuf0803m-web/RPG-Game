@@ -26,7 +26,8 @@ from pelita.party import xp_to_reach
 from pelita.world.explore import Game
 from pelita.world.model import load_world
 from pelita.world.state import new_game
-from tests.test_babak1 import AREA1, DANAU, LORONG, RAWA, TENGARA_1, BerhentiUji, make_equipper
+from tests.test_babak1 import (AREA1, DANAU, LORONG, RAWA, SEMUA, TENGARA_1, BerhentiUji,
+                                make_equipper)
 from tests.test_babak2 import SEMUA_BABAK2
 from tests.test_babak2 import jalankan as jalankan_babak2
 from tests.test_babak3 import KAPAL, make_pemain, mulai_babak3
@@ -521,3 +522,70 @@ def test_rantai_pendendang_boleh_dilewati():
     assert res == "berhenti"
     assert "pendendang_hilang" not in st.quests
     assert "pendendang_terkumpul" not in st.flags
+
+
+# -- Side quest Babak 1 (3 baru, §5.7 menjanjikan 6) ------------------------
+def langkah_sq_babak1():
+    """SEMUA (Babak 1) dengan tiga side quest baru disisipkan di tempatnya.
+
+    Ketiganya sengaja disisipkan ke jalur yang memang dilewati pemain, bukan
+    dijalankan dari fixture terpisah: yang diuji bukan cuma skripnya jalan, tapi
+    bahwa urutannya masuk akal dari kursi pemain.
+    """
+    l = list(SEMUA)
+    # Dua Belas Lentera: sesudah Ular Cermin jatuh, di Desa Apung. Jangkarnya
+    # "#equip:...kalung_bara" karena "Tetua Baruna" muncul dua kali — yang pertama
+    # jauh sebelum ularnya dikalahkan.
+    l = _sisip(l, "#equip:rimba:aksesori:kalung_bara", [
+        "Kembali ke dermaga", "Lentera jembatan yang padam",
+        "Sisi danau", "Lentera di rakit paling ujung",
+        "Kembali ke dermaga", "Lentera jembatan yang padam",
+        "Rumah Tetua",
+    ])
+    # Pesanan Mpu Sarwa: di kios Tukang Kaca Tengara, sesudah Lorong Bawah.
+    l = _sisip(l, "Naik ke Balai Arsip", [
+        "Kembali ke Pasar Bawah",
+        "Kios Tukang Kaca", "Pesanan yang belum selesai",
+        "#stok:suku_cadang:15",
+        "Pesanan yang belum selesai",
+        "Kembali ke Pasar Bawah", "Ke Balai Arsip",
+    ])
+    # Yang Menunggu di Gerbang Utara: kenalan di gerbang, kotaknya di Lorong Tengah.
+    l = _sisip(l, "Ke Gerbang Utara", ["Anak perempuan yang duduk"])
+    l = _sisip(l, "Turun dengan lift", [
+        "Kotak kayu hijau",
+        "Naik lift ke ruang lift", "Kembali ke lorong atas", "Kembali ke mulut tambang",
+        "Turun kembali ke Gerbang Utara", "Anak perempuan yang duduk",
+        "Mendaki ke Tambang", "Masuk ke lorong atas", "Ke ruang lift",
+        "Turun dengan lift",
+    ])
+    return l
+
+
+@pytest.fixture(scope="module")
+def sq_babak1():
+    return jalankan_babak1(langkah_sq_babak1(), 11)
+
+
+def test_tiga_side_quest_babak1_bisa_diselesaikan(sq_babak1):
+    res, st, wk = sq_babak1
+    assert res == "berhenti", wk.text[-3000:]
+    for qid in ("duabelas_lentera", "pesanan_sarwa", "penunggu_gerbang"):
+        assert st.quests.get(qid) == "selesai", f"{qid}: {st.quests.get(qid)}"
+    assert not wk.steps, f"langkah tersisa: {list(wk.steps)}"
+
+
+def test_side_quest_babak1_membayar_dan_tetap_tamat(sq_babak1):
+    res, st, wk = sq_babak1
+    assert "babak2_mulai" in st.flags, "Babak 1 tetap harus tamat"
+    assert st.kaca.get("kaca_sabar") == 1        # upah Mpu Sarwa
+    assert "Sembilan keping untuk sembilan tahun" in datar(wk.text)
+    assert "Aku sudah tahu, kok. Aku cuma belum boleh tahu" in datar(wk.text)
+
+
+def test_side_quest_babak1_boleh_dilewati():
+    """Walkthrough Babak 1 biasa tidak menyentuh satu pun dari ketiganya."""
+    res, st, wk = jalankan_babak1(list(SEMUA), 11)
+    assert res == "berhenti"
+    for qid in ("duabelas_lentera", "pesanan_sarwa", "penunggu_gerbang"):
+        assert qid not in st.quests, f"jalur utama menyentuh {qid}"

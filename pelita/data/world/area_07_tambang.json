@@ -177,6 +177,15 @@
      "if": [
       "!peti_tambang_diambil"
      ]
+    },
+    {
+     "id": "kotak_hijau",
+     "name": "Kotak kayu hijau di bawah balok tumbang",
+     "script": "sq_kotak_tirta",
+     "if": [
+      "sq_anak_aktif",
+      "!sq_kotak_diambil"
+     ]
     }
    ],
    "on_enter": "sergap_tengah",
@@ -563,6 +572,31 @@
       "lose": "gameover"
      }
     ]
+   }
+  ],
+  "sq_kotak_tirta": [
+   {
+    "text": "Di bawah balok penyangga yang tumbang, terjepit dan karena itu tidak ikut hancur: kotak kayu, dicat hijau, dengan nama dipahat di tutupnya.\n\nTIRTA — JURU UKUR.\n\nBaloknya terlalu berat untuk diangkat, tapi kotaknya bisa ditarik keluar. Di bawah balok yang sama, lebih dalam, ada yang tidak bisa ditarik keluar."
+   },
+   {
+    "say": "Bagas",
+    "text": "(Ia melihat lebih lama dari yang lain, lalu memalingkan lampunya.) Sudah. Jangan disorot."
+   },
+   {
+    "say": "Bagas",
+    "text": "Aku kenal cara balok ini jatuh. Itu jatuh waktu orangnya masih di bawahnya dan masih sempat memutuskan mau menyelamatkan apa. Dia memilih mendorong kotaknya keluar."
+   },
+   {
+    "set": "sq_kotak_diambil"
+   },
+   {
+    "give": {
+     "kotak_juru_ukur": 1
+    }
+   },
+   {
+    "quest": "penunggu_gerbang",
+    "state": "ketemu"
    }
   ]
  }

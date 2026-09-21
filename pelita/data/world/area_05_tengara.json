@@ -154,6 +154,16 @@
      "name": "Mpu Sarwa (Tukang Kaca)",
      "script": "bicara_sarwa"
     }
+   ],
+   "objects": [
+    {
+     "id": "pesanan_sarwa",
+     "name": "Pesanan yang belum selesai di sudut bengkel",
+     "script": "sq_pesanan_sarwa",
+     "if": [
+      "!sq_sarwa_selesai"
+     ]
+    }
    ]
   },
   "gerbang_istana": {
@@ -248,7 +258,14 @@
      "script": "lentera_save"
     }
    ],
-   "latar": "tengara/distrik_sunyi"
+   "latar": "tengara/distrik_sunyi",
+   "npcs": [
+    {
+     "id": "anak_gerbang",
+     "name": "Anak perempuan yang duduk di bawah gerbang",
+     "script": "sq_anak_gerbang"
+    }
+   ]
   }
  },
  "scripts": {
@@ -848,6 +865,234 @@
    },
    {
     "arena": true
+   }
+  ],
+  "sq_pesanan_sarwa": [
+   {
+    "if": [
+     "!sq_sarwa_aktif"
+    ],
+    "then": [
+     {
+      "text": "Di sudut bengkel, di bawah kain, ada rangka kaca setinggi lutut yang belum selesai: bingkai kuningan, sembilan lekuk, dan cuma empat yang terisi kaca."
+     },
+     {
+      "say": "Sarwa",
+      "text": "Jangan disentuh. (Lalu, lebih pelan.) ...Maaf. Bukan salahmu."
+     },
+     {
+      "say": "Sarwa",
+      "text": "Itu pesanan. Sembilan keping untuk sembilan tahun. Yang memesan namanya Bu Warsih, suaminya diambil Ordo sembilan tahun lalu — \"kehormatan\", katanya. Bu Warsih mau satu keping tiap tahun mereka sempat bersama, supaya ada yang bisa dilihat cucunya kalau bertanya."
+     },
+     {
+      "say": "Rimba",
+      "text": "Kenapa berhenti di empat?"
+     },
+     {
+      "say": "Sarwa",
+      "text": "Karena kuningannya habis, dan pedagang yang biasa membawanya berhenti lewat sejak gerbang utara dirantai. (Ia mengangkat bahu, dan bahunya tidak ikut naik dengan yakin.) Lima belas suku cadang kuningan. Itu saja. Aku sudah dua tahun bilang \"minggu depan\" ke perempuan berumur tujuh puluh."
+     },
+     {
+      "say": "Sela",
+      "text": "Kami bisa bawa lima belas."
+     },
+     {
+      "set": "sq_sarwa_aktif"
+     },
+     {
+      "quest": "pesanan_sarwa",
+      "state": "aktif"
+     }
+    ],
+    "else": [
+     {
+      "if": [
+       "has:suku_cadang*15"
+      ],
+      "then": [
+       {
+        "take": {
+         "suku_cadang": 15
+        }
+       },
+       {
+        "text": "Sarwa menghitungnya dua kali, lalu sekali lagi, lalu duduk."
+       },
+       {
+        "say": "Sarwa",
+        "text": "Lima belas."
+       },
+       {
+        "text": "Ia bekerja di depan kalian tanpa bicara lagi. Lima keping terakhir masuk ke lekuknya satu per satu, dan tiap kali satu masuk, rangka itu menyala sebentar dari dalam — sembilan tahun, dinyalakan berurutan, cepat sekali kalau dilihat dari luar."
+       },
+       {
+        "say": "Sarwa",
+        "text": "Besok pagi aku antar sendiri. (Ia melepas kacamatanya dan mengelapnya, lama.) Ambil itu. Aku melelehkannya waktu menunggu kuningan, dan aku tidak punya tempat memakainya."
+       },
+       {
+        "set": "sq_sarwa_selesai"
+       },
+       {
+        "quest": "pesanan_sarwa",
+        "state": "selesai"
+       },
+       {
+        "kaca": {
+         "kaca_sabar": 1
+        }
+       },
+       {
+        "give": {
+         "serpihan_ingatan": 1
+        }
+       },
+       {
+        "keping": 500
+       }
+      ],
+      "else": [
+       {
+        "text": "Rangka sembilan lekuk itu masih berisi empat. Sarwa butuh lima belas suku cadang kuningan; pasar mana pun menjualnya."
+       }
+      ]
+     }
+    ]
+   }
+  ],
+  "sq_anak_gerbang": [
+   {
+    "if": [
+     "sq_anak_selesai"
+    ],
+    "then": [
+     {
+      "say": "Enting",
+      "text": "Ibu bilang aku boleh pindah nunggu di dalam sekarang. Di balai. Katanya kalau ada yang turun dari gunung, balai juga kelihatan."
+     },
+     {
+      "end": true
+     }
+    ]
+   },
+   {
+    "if": [
+     "has:kotak_juru_ukur"
+    ],
+    "then": [
+     {
+      "text": "Anak itu melihat kotak di tangan Rimba sebelum Rimba sempat bicara. Ia tidak berdiri."
+     },
+     {
+      "say": "Enting",
+      "text": "Itu punya Bapak."
+     },
+     {
+      "say": "Rimba",
+      "text": "Iya."
+     },
+     {
+      "say": "Enting",
+      "text": "Bapak di mana?"
+     },
+     {
+      "text": "Rimba tidak menjawab cepat, dan itu jawabannya. Anak itu mengangguk sekali — bukan anggukan anak-anak; anggukan orang yang sudah menyusun kemungkinan ini berkali-kali sambil duduk di batu yang sama selama dua tahun."
+     },
+     {
+      "say": "Enting",
+      "text": "Aku sudah tahu, kok. Aku cuma belum boleh tahu."
+     },
+     {
+      "say": "Sela",
+      "text": "(Ia berjongkok.) Siapa yang tidak memperbolehkan?"
+     },
+     {
+      "say": "Enting",
+      "text": "Ibu. Kalau aku bilang Bapak tidak pulang, Ibu marah. Jadi aku nunggu di sini saja, biar Ibu tidak dengar aku nunggu."
+     },
+     {
+      "text": "Sela mengambil kotak itu dari Rimba dan menaruhnya di pangkuan anak itu, lalu tetap berjongkok sampai anak itu selesai membuka tutupnya: satu meteran lipat, satu pensil tukang, dan satu kaca kecil yang dibungkus kain — bukan Kaca Ingatan, cuma kaca pembesar murah untuk membaca ukuran."
+     },
+     {
+      "say": "Enting",
+      "text": "Ini buat lihat angka kecil. Bapak matanya jelek."
+     },
+     {
+      "say": "Enting",
+      "text": "(Ia menutup kotaknya.) Makasih. Sekarang aku bisa bilang ke Ibu, soalnya sekarang ada barangnya. Kalau cuma omongan, Ibu bisa bilang aku bohong."
+     },
+     {
+      "take": {
+       "kotak_juru_ukur": 1
+      }
+     },
+     {
+      "set": "sq_anak_selesai"
+     },
+     {
+      "quest": "penunggu_gerbang",
+      "state": "selesai"
+     },
+     {
+      "give": {
+       "serpihan_ingatan": 1,
+       "cincin_anti_racun": 1
+      }
+     },
+     {
+      "keping": 400
+     },
+     {
+      "say": "Sela",
+      "text": "(Waktu kalian sudah jauh, tanpa ditanya.) Aku pernah mengantar delapan kotak seperti itu. Semuanya ke rumah, ke ibunya. Tidak pernah sekali pun ke anaknya. (Jeda.) Ternyata anaknya yang menunggu di gerbang."
+     }
+    ]
+   },
+   {
+    "once": "sq_anak_kenal",
+    "do": [
+     {
+      "text": "Seorang anak perempuan, sepuluh tahun mungkin, duduk di batu di bawah gerbang dengan bekal terbungkus daun di pangkuannya. Bekalnya masih utuh."
+     },
+     {
+      "say": "Enting",
+      "text": "Kalian mau ke tambang?"
+     },
+     {
+      "say": "Rimba",
+      "text": "Iya."
+     },
+     {
+      "say": "Enting",
+      "text": "Kalau ketemu Pak Tirta, bilang Enting nunggu di gerbang. Dia juru ukur. Kotaknya hijau, ada namanya di tutupnya."
+     },
+     {
+      "say": "Rimba",
+      "text": "Sudah berapa lama nunggu?"
+     },
+     {
+      "say": "Enting",
+      "text": "(Ia menghitung dengan jari, dua kali, lalu menyerah.) Lama. Tapi tidak apa-apa. Gerbangnya cuma satu, jadi kalau dia turun, pasti lewat sini."
+     },
+     {
+      "quest": "penunggu_gerbang",
+      "state": "aktif"
+     },
+     {
+      "set": "sq_anak_aktif"
+     }
+    ]
+   },
+   {
+    "if": [
+     "sq_anak_aktif",
+     "!has:kotak_juru_ukur"
+    ],
+    "then": [
+     {
+      "say": "Enting",
+      "text": "Belum ketemu? Tidak apa-apa. Tambangnya besar, kata orang."
+     }
+    ]
    }
   ]
  }

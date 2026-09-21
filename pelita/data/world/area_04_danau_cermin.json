@@ -120,6 +120,17 @@
      ],
      "latar": "danau_cermin/dermaga_telaga_lega"
     }
+   ],
+   "objects": [
+    {
+     "id": "lentera_jembatan",
+     "name": "Lentera jembatan yang padam",
+     "script": "sq_lentera_jembatan",
+     "if": [
+      "boss_ular_kalah",
+      "!sq_duabelas_selesai"
+     ]
+    }
    ]
   },
   "rumah_tetua": {
@@ -180,6 +191,15 @@
      "id": "air_tenang",
      "name": "Tatap permukaan air",
      "script": "pantulan_sela"
+    },
+    {
+     "id": "lentera_ujung",
+     "name": "Lentera di rakit paling ujung",
+     "script": "sq_lentera_ujung",
+     "if": [
+      "sq_duabelas_aktif",
+      "!sq_lentera_ujung_nyala"
+     ]
     }
    ],
    "latar": "danau_cermin/dermaga_telaga"
@@ -620,6 +640,101 @@
       "lose": "gameover"
      }
     ]
+   }
+  ],
+  "sq_lentera_jembatan": [
+   {
+    "if": [
+     "!sq_duabelas_aktif"
+    ],
+    "then": [
+     {
+      "text": "Lentera di tiang jembatan pertama mati. Begitu juga yang berikutnya, dan yang berikutnya lagi — dua belas lentera sepanjang jembatan desa, semuanya dingin, padahal minyaknya penuh."
+     },
+     {
+      "say": "Baruna",
+      "text": "(Ia sudah berdiri di belakang kalian.) Dua belas yang kembali itu yang biasanya menyalakannya. Tiap senja, satu orang satu lentera; sudah begitu sejak kakek mereka."
+     },
+     {
+      "say": "Rimba",
+      "text": "Mereka tidak mau menyalakannya lagi?"
+     },
+     {
+      "say": "Baruna",
+      "text": "Mereka lupa caranya, Nak. Bukan cara menyalakan api. Cara... (ia mencari kata) ...cara menganggapnya penting. Ular itu mengembalikan mereka, tapi yang dikembalikan tidak persis sama."
+     },
+     {
+      "say": "Baruna",
+      "text": "Nyalakan yang di rakit paling ujung. Yang paling jauh dari desa, yang paling tidak ada gunanya. Kalau ada yang melihat lentera itu menyala dari sini, mereka akan ingat kenapa sebelas sisanya perlu."
+     },
+     {
+      "set": "sq_duabelas_aktif"
+     },
+     {
+      "quest": "duabelas_lentera",
+      "state": "aktif"
+     }
+    ],
+    "else": [
+     {
+      "if": [
+       "sq_lentera_ujung_nyala"
+      ],
+      "then": [
+       {
+        "text": "Dari jembatan, titik kecil di ujung danau itu terlihat jelas — satu-satunya nyala di sisi gelap air.\n\nSeseorang di pasar apung berhenti menawar. Lalu ia mengambil korek dari sakunya dan menyalakan lentera jembatan yang paling dekat dengannya, tanpa bicara. Lalu tetangganya. Dua belas lentera menyala dalam waktu yang lebih singkat daripada yang dibutuhkan untuk menjelaskannya."
+       },
+       {
+        "say": "Baruna",
+        "text": "Nah. (Ia tidak menoleh.) Ambil ini. Dulu punya bapakku, yang juga tukang menyalakan lentera, dan yang juga tidak pernah tahu kenapa itu penting sampai ia berhenti sebentar."
+       },
+       {
+        "set": "sq_duabelas_selesai"
+       },
+       {
+        "quest": "duabelas_lentera",
+        "state": "selesai"
+       },
+       {
+        "give": {
+         "jimat_lentera": 1,
+         "serpihan_ingatan": 1
+        }
+       },
+       {
+        "keping": 600
+       }
+      ],
+      "else": [
+       {
+        "text": "Dua belas lentera jembatan masih dingin. Yang di rakit paling ujung belum menyala."
+       }
+      ]
+     }
+    ]
+   }
+  ],
+  "sq_lentera_ujung": [
+   {
+    "text": "Lentera di tiang rakit paling ujung, jauh dari mana-mana. Sumbunya utuh, minyaknya penuh, dan tidak ada satu pun alasan praktis untuk menyalakannya: tidak ada yang lewat sini."
+   },
+   {
+    "say": "Sela",
+    "text": "Ini yang paling tidak berguna dari dua belas."
+   },
+   {
+    "say": "Lintang",
+    "text": "Makanya ini yang dihitung."
+   },
+   {
+    "text": "Rimba menyalakannya dengan Bara. Nyalanya kecil, lalu tegak."
+   },
+   {
+    "set": "sq_lentera_ujung_nyala"
+   },
+   {
+    "quest": "duabelas_lentera",
+    "state": "nyala"
    }
   ]
  }
