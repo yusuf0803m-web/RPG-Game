@@ -929,7 +929,8 @@ class Battle:
                 handled = True
         if "charge" in tags:
             actor.statuses["mengisi"] = make_status("mengisi")
-            self._emit(ev, f"{actor.display_name} mengisi tenaga... (Goyah atau Pecah membatalkannya)")
+            batal = "hanya Pecah" if "goyah" in actor.immune else "Goyah atau Pecah"
+            self._emit(ev, f"{actor.display_name} mengisi tenaga... ({batal} membatalkannya)")
             handled = True
         for t in tags:
             if t.startswith("nyala_penjaga:"):

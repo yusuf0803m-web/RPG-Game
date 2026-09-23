@@ -48,6 +48,11 @@ from tests.walker import Walker  # noqa: E402
 BOSS_RONDE = (4, 12)
 GELOMBANG_RONDE = (2, 6)
 AKSI_PER_MUSUH = (2.0, 4.0)
+#: Bagian giliran boss cerita yang memakai aksi bernama (skill polanya), bukan Serang
+#: biasa. Di bawah ini polanya praktis tidak pernah jalan — biasanya karena Goyah
+#: permanen (§9.8). Pola terlemah yang sah (Hampa Penjaga Hutan: dua Serang dari empat)
+#: memberi ±0,4 kalau tidak diganggu apa pun.
+RASIO_POLA_MIN = 0.3
 #: Pertarungan yang memang di luar pita umum, beserta alasannya.
 BAND_KHUSUS = {
     "boss_pelita_pertama": ((12, 22), "final empat fase (§9.4)"),
@@ -82,6 +87,14 @@ class Pertarungan:
     aksi: int = 0
     hasil: str = ""
     hp_dasar: float = 1.0       # HP party terendah selama pertarungan (titik paling genting)
+    nama_boss: frozenset[str] = frozenset()   # nama tampilan boss cerita di laga ini
+    aksi_bernama: int = 0       # giliran boss yang memakai skill (pola)
+    aksi_serang: int = 0        # giliran boss yang jatuh ke Serang biasa
+
+    @property
+    def rasio_pola(self) -> float:
+        total = self.aksi_bernama + self.aksi_serang
+        return self.aksi_bernama / total if total else float("nan")
 
     @property
     def nama(self) -> str:
@@ -143,6 +156,8 @@ class GameTerekam(Game):
 
     def do_battle(self, enemy_ids, boss, can_flee, *args, **kwargs):
         self.sekarang = Pertarungan(list(enemy_ids), boss)
+        self.sekarang.nama_boss = frozenset(
+            self.data.enemies[m].name for m in enemy_ids if m.startswith("boss_"))
         self.rekaman.pertarungan.append(self.sekarang)
         try:
             hasil = super().do_battle(enemy_ids, boss, can_flee, *args, **kwargs)
@@ -153,12 +168,22 @@ class GameTerekam(Game):
 
 
 def pasang_perekam(game: GameTerekam, wk: Walker) -> None:
-    """Rekam ronde (lewat event ``battle_end``) dan aksi party (lewat baris "(auto):")."""
+    """Rekam ronde (lewat event ``battle_end``), aksi party (lewat baris "(auto):"), dan
+    apakah boss cerita memainkan polanya atau jatuh ke Serang biasa."""
     tulis_asli = wk.io.write
 
     def tulis(s: str) -> None:
-        if game.sekarang is not None and AUTO_RE.match(s):
-            game.sekarang.aksi += 1
+        p = game.sekarang
+        if p is not None:
+            if AUTO_RE.match(s):
+                p.aksi += 1
+            for baris in s.splitlines():
+                baris = baris.strip()
+                for nama in p.nama_boss:
+                    if baris.startswith(f"{nama} memakai "):
+                        p.aksi_bernama += 1
+                    elif baris.startswith(f"{nama} menyerang "):
+                        p.aksi_serang += 1
         tulis_asli(s)
 
     def emit(kind: str, payload: dict) -> None:
@@ -266,6 +291,13 @@ def aksi_per_musuh(reks: list[Rekaman]) -> float:
     return aksi / musuh if musuh else float("nan")
 
 
+def rasio_pola(laga: list[Pertarungan]) -> float:
+    """Rasio aksi bernama boss, dijumlah dulu dari beberapa laga (bukan rata-rata rasio)."""
+    bernama = sum(p.aksi_bernama for p in laga)
+    total = bernama + sum(p.aksi_serang for p in laga)
+    return bernama / total if total else float("nan")
+
+
 def rupiah(n: int) -> str:
     return f"{n:,}".replace(",", ".")
 
@@ -303,20 +335,27 @@ def lapor_pacing(per_babak: dict[int, list[Rekaman]], peringatan: list[str]) -> 
     print()
     print("═══ PACING BOSS ═══")
     for babak, reks in sorted(per_babak.items()):
-        urut: dict[str, tuple[Pertarungan, list[int], list[float]]] = {}
+        urut: dict[str, tuple[Pertarungan, list[int], list[float], list[Pertarungan]]] = {}
         for r in reks:
             for p in r.bos:
-                baris = urut.setdefault(p.nama, (p, [], []))
+                baris = urut.setdefault(p.nama, (p, [], [], []))
                 baris[1].append(p.ronde)
                 baris[2].append(p.hp_dasar)
-        for nama, (contoh, ronde, hp) in urut.items():
+                baris[3].append(p)
+        for nama, (contoh, ronde, hp, laga) in urut.items():
             (lo, hi), alasan = contoh.band()
             rata = statistics.mean(ronde)
             luar = not (lo <= rata <= hi)
             jenis = "boss " if contoh.boss_cerita else "gelombang"
             print(f"  B{babak} {jenis} {nama[:38]:<38} {str(ronde):<11} rata {rata:>4.1f}"
                   f"  [{lo}-{hi}]  HP terendah {statistics.mean(hp):>4.0%}"
+                  + (f"  pola {rasio_pola(laga):.2f}" if contoh.boss_cerita else "")
                   + ("  <-" if luar else ""))
+            if contoh.boss_cerita and rasio_pola(laga) < RASIO_POLA_MIN:
+                peringatan.append(
+                    f"Babak {babak}: {nama} hampir tidak memainkan polanya (rasio aksi "
+                    f"bernama {rasio_pola(laga):.2f}; sasaran >= {RASIO_POLA_MIN}). "
+                    f"Cek Goyah permanen, §9.8.")
             if luar:
                 arah = "terlalu cepat" if rata < lo else "terlalu lama"
                 peringatan.append(

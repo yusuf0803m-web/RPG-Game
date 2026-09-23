@@ -20,7 +20,8 @@ import pytest
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "tools"))
 
 from playtest import (  # noqa: E402
-    AKSI_PER_MUSUH, BEKAL_PENGALI, SEED_BAWAAN, aksi_per_musuh, jalankan, keranjang)
+    AKSI_PER_MUSUH, BEKAL_PENGALI, RASIO_POLA_MIN, SEED_BAWAAN, aksi_per_musuh, jalankan,
+    keranjang, rasio_pola)
 from pelita.loader import load_data  # noqa: E402
 from pelita.world.model import load_world  # noqa: E402
 
@@ -95,6 +96,26 @@ def test_boss_benar_benar_melukai_party(babak, ukur):
             assert p.hp_dasar <= 0.92, (
                 f"Babak {babak} seed {r.seed}: {p.nama} tidak pernah menurunkan HP party "
                 f"di bawah {p.hp_dasar:.0%}")
+
+
+@pytest.mark.parametrize("babak", [1, 2, 3])
+def test_boss_cerita_benar_benar_memainkan_polanya(babak, ukur):
+    """Regresi §9.8. ``ai.py`` membuat musuh yang Goyah selalu jatuh ke Serang biasa, dan
+    party yang memukul kelemahan tiap ronde membuat boss Goyah permanen: empat boss
+    cerita dulu tidak memainkan SATU pun aksi polanya, termasuk isi->tembak Penjaga
+    Mercusuar. Tes ronde dan HP tidak bisa melihatnya — yang diperiksa di sini nama
+    aksinya di transkrip."""
+    urut: dict[str, list] = {}
+    for r in ukur[babak]:
+        for p in r.bos:
+            if p.boss_cerita:
+                urut.setdefault(p.nama, []).append(p)
+    for nama, laga in urut.items():
+        rasio = rasio_pola(laga)
+        assert rasio >= RASIO_POLA_MIN, (
+            f"Babak {babak}: {nama} hanya memainkan polanya {rasio:.2f} dari gilirannya "
+            f"(sisanya Serang biasa). Boss yang kelemahannya bisa dipukul tiap ronde "
+            f"perlu kebal Goyah — lihat GAME_DESIGN §9.8.")
 
 
 def test_level_tamat_sesuai_rentang_desain(ukur):

@@ -500,7 +500,8 @@
   "immune": [
    "lupa",
    "tidur",
-   "beku"
+   "beku",
+   "goyah"
   ],
   "lesson": "Tutorial boss: Raung Lupa; (Tahap 2: memanggil Kunang tiap 3 giliran).",
   "description": "Hampa besar bekas penebang kayu."
@@ -607,11 +608,11 @@
   "is_boss": true,
   "ketahanan": 80,
   "stats": {
-   "hp": 1000,
+   "hp": 800,
    "mp": 0,
-   "atk": 23,
+   "atk": 19,
    "def": 16,
-   "mag": 26,
+   "mag": 20,
    "res": 18,
    "agi": 12,
    "lck": 6
@@ -656,7 +657,8 @@
    "tidur",
    "beku",
    "lupa",
-   "berat"
+   "berat",
+   "goyah"
   ],
   "lesson": "Kelemahan berubah di fase 2; pindai ulang.",
   "description": "Ular sepanjang dermaga yang sisiknya memantulkan orang-orang yang pernah menatapnya."
@@ -725,7 +727,7 @@
   "stats": {
    "hp": 1900,
    "mp": 0,
-   "atk": 49,
+   "atk": 40,
    "def": 23,
    "mag": 26,
    "res": 20,
@@ -791,7 +793,8 @@
    "tidur",
    "beku",
    "berat",
-   "racun"
+   "racun",
+   "goyah"
   ],
   "lesson": "Afinitas berganti tiap 3 giliran (diumumkan); kelemahan = lawan dari yang diserap.",
   "description": "Beberapa penambang yang meleleh jadi satu, punggungnya berkerak kristal ingatan."
@@ -802,13 +805,13 @@
   "xp": 13230,
   "keping": 2205,
   "is_boss": true,
-  "ketahanan": 150,
+  "ketahanan": 240,
   "stats": {
    "hp": 4092,
    "mp": 0,
-   "atk": 53,
+   "atk": 62,
    "def": 26,
-   "mag": 50,
+   "mag": 38,
    "res": 24,
    "agi": 9,
    "lck": 5
@@ -851,9 +854,10 @@
    "racun",
    "bakar",
    "lelah",
-   "buta"
+   "buta",
+   "goyah"
   ],
-  "lesson": "Meriam Nyala mengisi 1 giliran; Goyah (kelemahan/Bantingan Perisai) atau Pecah membatalkannya.",
+  "lesson": "Meriam Nyala mengisi 1 giliran. Ia kebal Goyah, jadi hanya PECAH yang membatalkannya: kikis Ketahanannya dengan kelemahan (Petir, Kelam) atau Bantingan Perisai sebelum ia menembak.",
   "description": "Konstruk batu putih yang dulu dikendalikan Guntur. Sekarang liar."
  },
  "boss_baskara": {
@@ -972,7 +976,8 @@
    "berat",
    "racun",
    "bakar",
-   "lelah"
+   "lelah",
+   "goyah"
   ],
   "lesson": "Bergantian tiap 4 giliran; Fajar Kelabu (Jurus Ganda) mengabaikan Serap. Padamkan di <25%: siapkan Nyala Pulih.",
   "description": "Kabut yang selama ini ditahan Baskara di dalam menara, menelan dan membentuknya."
@@ -1942,7 +1947,8 @@
    "berat",
    "buta",
    "tidur",
-   "racun"
+   "racun",
+   "goyah"
   ],
   "drops": [
    {
@@ -2004,7 +2010,8 @@
   ],
   "immune": [
    "lupa",
-   "tidur"
+   "tidur",
+   "goyah"
   ],
   "drops": [
    {
@@ -2081,7 +2088,8 @@
    "beku",
    "bisu",
    "buta",
-   "berat"
+   "berat",
+   "goyah"
   ],
   "drops": [
    {
@@ -2093,7 +2101,7 @@
     "chance": 1.0
    }
   ],
-  "lesson": "Meriam ganda mengisi dua giliran; Goyah atau Pecah membatalkannya. Lapisannya berganti tiap empat giliran.",
+  "lesson": "Meriam ganda mengisi dua giliran. Ia kebal Goyah, jadi hanya PECAH yang membatalkannya. Lapisannya berganti tiap empat giliran.",
   "description": "Konstruk setinggi tiga orang yang masih menjaga Suar yang sudah lama padam."
  },
  "boss_kelana_berzirah": {
@@ -2145,7 +2153,8 @@
   "immune": [
    "lupa",
    "tidur",
-   "bisu"
+   "bisu",
+   "goyah"
   ],
   "drops": [
    {
@@ -2168,7 +2177,7 @@
    "mp": 0,
    "atk": 80,
    "def": 46,
-   "mag": 84,
+   "mag": 78,
    "res": 50,
    "agi": 28,
    "lck": 18
@@ -2230,9 +2239,9 @@
   "stats": {
    "hp": 9000,
    "mp": 0,
-   "atk": 90,
+   "atk": 72,
    "def": 52,
-   "mag": 96,
+   "mag": 77,
    "res": 56,
    "agi": 26,
    "lck": 16
@@ -2278,7 +2287,8 @@
    "lupa",
    "tidur",
    "bakar",
-   "bisu"
+   "bisu",
+   "goyah"
   ],
   "drops": [
    {
@@ -2304,7 +2314,7 @@
    "mp": 0,
    "atk": 79,
    "def": 48,
-   "mag": 86,
+   "mag": 78,
    "res": 48,
    "agi": 22,
    "lck": 11
@@ -2763,7 +2773,8 @@
    "tidur",
    "bakar",
    "bisu",
-   "racun"
+   "racun",
+   "goyah"
   ],
   "drops": [
    {
@@ -3185,7 +3196,7 @@
   "is_boss": true,
   "ketahanan": 220,
   "stats": {
-   "hp": 15000,
+   "hp": 14500,
    "mp": 0,
    "atk": 72,
    "def": 56,
@@ -3278,7 +3289,8 @@
    "bisu",
    "buta",
    "berat",
-   "provokasi"
+   "provokasi",
+   "goyah"
   ],
   "drops": [
    {
@@ -4004,24 +4016,19 @@
    "kelam": "tahan",
    "fisik": "tahan"
   },
-  "ai": [
+  "ai": [],
+  "phases": [
    {
-    "action": "m_panggil_gema_party",
-    "weight": 3,
-    "every_n_turns": 3
-   },
-   {
-    "action": "m_tiru_derita",
-    "weight": 2,
-    "every_n_turns": 2
-   },
-   {
-    "action": "m_tarik_ingatan",
-    "weight": 3
-   },
-   {
-    "action": "serang",
-    "weight": 2
+    "name": "Menghitung",
+    "hp_above": 0.0,
+    "pattern": [
+     "m_tarik_ingatan",
+     "m_tiru_derita",
+     "m_panggil_gema_party",
+     "m_tarik_ingatan",
+     "serang",
+     "m_tiru_derita"
+    ]
    }
   ],
   "immune": [
@@ -4066,7 +4073,7 @@
    "tidur"
   ],
   "ketahanan": 180,
-  "lesson": "Ia mengisi sebelum menembak, dan isiannya batal kalau ia Goyah atau PECAH. Kelemahan tepat waktu lebih berguna daripada kelemahan besar.",
+  "lesson": "Ia mengisi sebelum menembak. Ia kebal Goyah, jadi isiannya hanya batal kalau ia PECAH. Kelemahan tepat waktu lebih berguna daripada kelemahan besar.",
   "description": "Konstruk penjaga untuk Suar kedelapan. Tidak pernah ada Suar kedelapan.",
   "phases": [
    {

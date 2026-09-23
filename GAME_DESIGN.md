@@ -1695,3 +1695,122 @@ dipasang pemilik proyek lewat pengaturan repo GitHub.
 Tidak ada kode permainan yang disentuh untuk rilis ini — 247 tes, ekonomi/pacing
 §9.5, dan keenam walkthrough tetap seperti di §9.6. Rilis murni administratif:
 nomor versi, `RELEASE_NOTES.md`, tag `v1.0.0`, dan PR #1 keluar dari draft.
+
+### 9.8 Sesudah v1.0.0: boss cerita kebal Goyah
+
+§9.6 menutup bug Goyah untuk lima elit baru Tahap 7 dan **sengaja** membiarkan boss
+cerita lama, supaya kalibrasi §9.5 tidak bergeser. Pengukuran sesudah rilis
+menunjukkan harga membiarkannya terlalu mahal: bukan satu-dua boss yang terkena,
+melainkan dua belas dari tujuh belas.
+
+#### Cara mengukurnya
+
+Walkthrough sungguhan tiap babak (party "pintar", yang berbelanja), 16 seed, lalu
+hitung **rasio aksi bernama**: giliran boss yang memakai skill polanya dibagi seluruh
+gilirannya. Serang biasa di luar pola adalah tanda Goyah menimpa polanya. Pengukur ini
+sekarang bagian dari `tools/playtest.py` (kolom `pola`) dan dikunci
+`test_boss_cerita_benar_benar_memainkan_polanya`: rasio di bawah 0,3 menggagalkan build.
+Tes itu gagal pada data v1.0.0 (Hampa Penjaga Hutan dan Cacing Abu Purba, 0,00) dan
+lulus sekarang.
+
+#### Temuan
+
+| Boss | Rasio v1.0.0 | Sesudah |
+|---|---|---|
+| Hampa Penjaga Hutan | 0,03 | 0,41 |
+| Penambang Raksasa Terlupa | 0,00 | 0,76 |
+| Penjaga Mercusuar | 0,00 | 0,73 |
+| Cacing Abu Purba | 0,00 | 0,81 |
+| Sunan Wirya | 0,01 | 0,72 |
+| Hampa Berzirah | 0,12 | 0,56 |
+| Ular Cermin | 0,25 | 0,86 |
+| Penjaga Suar Wirasaba | 0,31 | 0,83 |
+| Juru Nyala Nirmala | 0,30 | 0,74 |
+| Sang Pelita Pertama | 0,31 | 0,71 |
+| Kelam Berwajah | 0,43 | 0,83 |
+| Gema Guntur | 0,46 | 0,98 |
+
+Rasio Hampa Penjaga Hutan tidak pernah bisa jauh di atas 0,5 karena dua dari empat
+langkah polanya memang Serang.
+
+Empat boss yang **sehat** (0,66–0,80: Raja Katak Lumpur, Kapten Rangga, Adipati
+Baskara, Garuda Kelabu) dan Nyi Pandansari (0,75) tidak dibuat kebal.
+
+Sepuluh boss pertama di tabel adalah daftar awal (sembilan dari audit sebelum rilis,
+ditambah **Sunan Wirya**, yang terlewat karena laganya tercatat bersama Bayang Arsip).
+Dua terakhir (**Kelam Berwajah**, **Gema Guntur**) ikut karena kriterianya sama (rasio
+di bawah 0,5), dan karena Gema Guntur sampai gagal di `test_boss_benar_benar_melukai_party`
+begitu RNG seed-nya bergeser: jatuh dalam 4 ronde tanpa menurunkan HP party di bawah
+96%.
+
+#### Perbaikan: aturan §9.6 berlaku untuk boss cerita
+
+Kedua belas boss di atas diberi `"goyah"` di `immune`, dengan mekanisme yang sama persis
+dengan elit Tahap 7 (`_add_status` menolak status yang ada di `target.immune`). `ai.py`
+**tidak** diubah. Kelemahan tetap dibayar: ia masih mengikis Ketahanan sampai **PECAH**,
+masih memberi Bara, dan masih memberi pengali damage elemen. Yang hilang hanya GOYAH_MULT
+1,2× dan kemampuan menghapus pola boss.
+
+Konsekuensinya untuk boss **pengisi** (isi→tembak): kelemahan tidak lagi membatalkan
+isian dalam satu pukulan, hanya PECAH yang bisa. Teks `lesson` Penjaga Mercusuar,
+Penjaga Suar Wirasaba, dan Penjaga Suar Kedelapan (yang sudah salah sejak Tahap 7)
+disesuaikan, dan pesan "mengisi tenaga" di `engine.py` sekarang berbunyi "(hanya Pecah
+membatalkannya)" untuk musuh yang kebal Goyah. `test_meriam_butuh_isian_dan_goyah_membatalkan`
+diganti `..._hanya_pecah_membatalkan`, karena perilaku yang dikuncinya memang sengaja
+diubah.
+
+#### Rekalibrasi
+
+Boss yang memainkan polanya memukul jauh lebih keras daripada boss yang cuma
+Serang. Angka akhirnya diturunkan dari pengukuran (§9.5), bukan dari rumus:
+
+| Musuh | Diubah | Alasan terukur |
+|---|---|---|
+| Ular Cermin | HP 1.000 → 800, ATK 23 → 19, MAG 26 → 20 | 10,4 ronde, HP party terendah 7–14% |
+| Penambang Raksasa | ATK 49 → 40 | satu kekalahan dari 5 seed |
+| Penjaga Mercusuar | Ketahanan 150 → 240, ATK 53 → 62, MAG 50 → 38 | lihat bawah |
+| Juru Nyala Nirmala | ATK 90 → 72, MAG 96 → 77 | 13 ronde, kalah 1 dari 5 seed |
+| Sang Pelita Pertama | HP 15.000 → 14.500 | 23,5 ronde (pita 12–22) |
+| Nyi Pandansari | MAG 84 → 78 | kalah di seed 5 jalur rantai Pendendang |
+| Gema Pesta | MAG 86 → 78 | lihat "Yang masih terbuka" |
+| Gema Penghitung | tabel bobot → pola fase | lihat bawah |
+
+**Penjaga Mercusuar bimodal.** Begitu kebal Goyah, laganya punya dua hasil: party
+memecahkan Ketahanannya sebelum meriam menembak (HP terendah 95–99%, gagal tes "boss
+harus melukai") atau meriamnya menembak (kalah). Menaikkan ATK saja tidak menolong,
+karena Serang-nya bukan ancamannya. Yang berhasil: Ketahanan dinaikkan supaya meriam
+**kadang** sempat menembak, dan MAG diturunkan supaya tembakan itu melukai tanpa
+menghabisi. Hasil pada 48 seed: 9,1 ronde, HP terendah 8–88%, nol kekalahan.
+
+**Gema Penghitung** (Buruan 10) memanggil klonnya lewat tabel bobot `every_n_turns: 3`,
+jadi di seed yang sial ia tidak pernah memanggilnya sama sekali. Ini keluarga yang sama
+dengan catatan §9.6 soal isi→tembak ("urutan tidak bisa dijamin tabel bobot acak"), dan
+`test_buruan_baru_memainkan_mekanik_khasnya` gagal begitu RNG handoff-nya bergeser.
+Polanya sekarang pola fase deterministik; Panggil Gema Kalian keluar di giliran ketiga.
+
+#### Hasil (16 seed, sebelum → sesudah)
+
+Semua boss cerita di dalam pita ronde §9.5, `test_kalibrasi.py` hijau, keenam
+walkthrough menang, 250 tes lulus. Perubahan yang paling terasa: Penjaga Mercusuar
+(HP terendah median 80% → 40%), Cacing Abu Purba (88% → 60%), Penambang Raksasa
+(78% → 68%), Penjaga Suar Wirasaba (86% → 64%). Boss yang dulu walkover sekarang
+benar-benar pertarungan.
+
+Kelam Berwajah dan Sang Pelita Pertama kini hampir selalu mencatat HP terendah ±0%. Itu
+bukan kekalahan: Padamkan (Kelam Berwajah) dan fase akhir Sang Pelita Pertama memang
+menjatuhkan HP party ke 1 dan menuntut pemulihan. Mekaniknya ditulis sejak Tahap 2 dan
+5, tapi dulu jarang dimainkan karena bossnya Goyah.
+
+#### Yang masih terbuka
+
+- **Sergapan Gema di Laut Lupa** (Gema Pesta + Gema Prajurit/Pengantin) mengalahkan
+  pemain otomatis di sekitar 15% seed Babak 3, **sudah sejak v1.0.0** (4 dari 24 seed
+  sebelum perubahan ini). Menurunkan MAG Gema Pesta menurunkannya ke 2 dari 22, tapi
+  tidak menghapusnya. Akarnya kemungkinan kebijakan otomatis yang tidak memulihkan diri di
+  antara laga di laut (tidak ada penginapan), bukan statnya. Belum ditelusuri.
+- **Babak 1 kalah 4 dari 48 seed** (Raja Katak Lumpur dan sergapan Ikan Cermin tepat
+  sesudahnya), dibanding 2 dari 48 di v1.0.0. Keduanya musuh yang tidak disentuh di sini;
+  selisihnya muncul karena RNG bergeser begitu Hampa Penjaga Hutan memainkan polanya. Raja
+  Katak memang sudah kalah sesekali di v1.0.0. Seed yang dipakai tes tidak terkena.
+- **Sang Pelita Pertama** rata-rata 19,2 ronde, di dalam pita khusus 12–22 tapi dekat
+  ujung atasnya.

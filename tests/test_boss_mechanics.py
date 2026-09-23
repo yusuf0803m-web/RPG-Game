@@ -95,17 +95,26 @@ def test_fase_mengubah_afinitas_dan_mengumumkan(data):
     assert any("retak" in e.lower() for e in ev)
 
 
-def test_meriam_butuh_isian_dan_goyah_membatalkan(data):
+def test_meriam_butuh_isian_dan_hanya_pecah_membatalkan(data):
+    """Penjaga Mercusuar kebal Goyah (GAME_DESIGN §9.8): kelemahan tidak lagi membuyarkan
+    isian dalam satu pukulan, tapi tetap mengikis Ketahanan sampai PECAH — dan PECAH
+    membatalkannya."""
     b = make(data, [("rimba", 21), ("lintang", 20)], ["boss_penjaga_mercusuar"])
     boss = b.enemies[0]
     hp = [h.hp for h in b.heroes]
     ev = b.act(boss, Action("skill", skill=data.skill("m_meriam_nyala"), targets=[]))
     assert any("belum siap" in e for e in ev) and [h.hp for h in b.heroes] == hp
-    b.act(boss, Action("skill", skill=data.skill("m_isi_meriam"), targets=[]))
-    assert boss.has("mengisi")
-    # kelemahan (Petir) → Goyah → isian buyar
+    ev = b.act(boss, Action("skill", skill=data.skill("m_isi_meriam"), targets=[]))
+    assert boss.has("mengisi") and any("hanya Pecah" in e for e in ev)
+    # kelemahan (Petir): tidak Goyah, isian bertahan, Ketahanan terkikis
+    k0 = boss.ketahanan
+    b.act(hero(b, "lintang"), Action("skill", skill=data.skill("kilat_kecil"), targets=[boss]))
+    assert not boss.has("goyah") and boss.has("mengisi") and boss.ketahanan < k0
+    # Ketahanan habis → PECAH → isian batal
+    boss.ketahanan = 1
     ev = b.act(hero(b, "lintang"), Action("skill", skill=data.skill("kilat_kecil"), targets=[boss]))
-    assert not boss.has("mengisi") and any("buyar" in e for e in ev)
+    assert boss.has("pecah") and not boss.has("mengisi") and any("PECAH" in e for e in ev)
+    boss.statuses.pop("pecah")
     # isi lagi, lalu tembak
     b.act(boss, Action("skill", skill=data.skill("m_isi_meriam"), targets=[]))
     b.act(boss, Action("skill", skill=data.skill("m_meriam_nyala"), targets=[]))
