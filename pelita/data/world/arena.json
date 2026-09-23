@@ -1,0 +1,145 @@
+{
+ "_catatan": "Arena Kafilah (GAME_DESIGN §5.7). Tiap tingkat = tiga gelombang beruntun tanpa item. Tiga tingkat untuk Babak 1; sisanya menyusul bersama Sanggar di Babak 2.",
+ "tingkat": [
+  {
+   "nama": "Tingkat 1 — Pemanasan Kafilah",
+   "level": 8,
+   "gelombang": [
+    [
+     "serigala_kabut",
+     "serigala_kabut"
+    ],
+    [
+     "katak_rawa_bengkak",
+     "lumut_berjalan",
+     "lumut_berjalan"
+    ],
+    [
+     "hampa_pengembara",
+     "kunang_kelam",
+     "kunang_kelam"
+    ]
+   ],
+   "hadiah": {
+    "keping": 350,
+    "kaca": [
+     "kaca_gesit"
+    ]
+   }
+  },
+  {
+   "nama": "Tingkat 2 — Lingkaran Garam",
+   "level": 14,
+   "gelombang": [
+    [
+     "ikan_cermin",
+     "ikan_cermin",
+     "nelayan_hampa"
+    ],
+    [
+     "pengawal_karat",
+     "bayang_arsip"
+    ],
+    [
+     "pengawal_istana",
+     "pengawal_istana",
+     "pelita_padam"
+    ]
+   ],
+   "hadiah": {
+    "keping": 900,
+    "item": {
+     "serpihan_ingatan": 1
+    },
+    "kaca": [
+     "kaca_sabar"
+    ]
+   }
+  },
+  {
+   "nama": "Tingkat 3 — Lingkaran Tanpa Nama",
+   "level": 20,
+   "gelombang": [
+    [
+     "kelelawar_kristal",
+     "kelelawar_kristal",
+     "penambang_terlupa"
+    ],
+    [
+     "penambang_terlupa",
+     "pengawal_karat",
+     "pengawal_karat"
+    ],
+    [
+     "buruan_zirah_tanpa_nama"
+    ]
+   ],
+   "hadiah": {
+    "keping": 2000,
+    "item": {
+     "serpihan_ingatan": 2
+    },
+    "kaca": [
+     "kaca_rakus"
+    ]
+   }
+  },
+  {
+   "nama": "Tingkat 4 — Lingkaran Kafilah",
+   "level": 30,
+   "gelombang": [
+    [
+     "elang_badai",
+     "elang_badai",
+     "kambing_batu"
+    ],
+    [
+     "kalajengking_abu",
+     "kalajengking_abu",
+     "hantu_kafilah"
+    ],
+    [
+     "cacing_abu_muda",
+     "kambing_batu"
+    ]
+   ],
+   "hadiah": {
+    "keping": 3500,
+    "item": {
+     "serpihan_ingatan": 1
+    },
+    "kaca": [
+     "kaca_tabah"
+    ]
+   }
+  },
+  {
+   "nama": "Tingkat 5 — Lingkaran Tanpa Ampun",
+   "level": 38,
+   "gelombang": [
+    [
+     "pohon_gema",
+     "burung_peniru",
+     "burung_peniru"
+    ],
+    [
+     "konstruk_kaca",
+     "cermin_berjalan"
+    ],
+    [
+     "pemanen_ordo",
+     "pelita_hidup_muda"
+    ]
+   ],
+   "hadiah": {
+    "keping": 7000,
+    "item": {
+     "serpihan_ingatan": 2
+    },
+    "kaca": [
+     "kaca_kikir"
+    ]
+   }
+  }
+ ]
+}

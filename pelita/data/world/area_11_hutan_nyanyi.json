@@ -1,0 +1,849 @@
+{
+ "id": "hutan_nyanyi",
+ "name": "Hutan Nyanyi",
+ "start": "gerbang_hutan",
+ "level_range": "Lv 29-32",
+ "fog": false,
+ "encounter_rate": 0.39,
+ "encounters": [
+  {
+   "enemies": [
+    "burung_peniru",
+    "burung_peniru"
+   ],
+   "weight": 3
+  },
+  {
+   "enemies": [
+    "pohon_gema"
+   ],
+   "weight": 3
+  },
+  {
+   "enemies": [
+    "pohon_gema",
+    "burung_peniru"
+   ],
+   "weight": 2
+  },
+  {
+   "enemies": [
+    "pendeta_ordo"
+   ],
+   "weight": 2
+  },
+  {
+   "enemies": [
+    "pendeta_ordo",
+    "bayang_arsip"
+   ],
+   "weight": 1
+  }
+ ],
+ "rooms": {
+  "gerbang_hutan": {
+   "name": "Gerbang Hutan",
+   "safe": true,
+   "text": "Abu berhenti di sini, sama tiba-tibanya seperti ia mulai. Rumput pertama tumbuh menembus kelabu, lalu semak, lalu pohon-pohon setinggi menara. Dari dalam hutan terdengar suara yang butuh beberapa saat untuk dikenali: orang bernyanyi, jauh, banyak, bersama-sama.",
+   "on_enter": "masuk_hutan",
+   "exits": [
+    {
+     "label": "Kembali ke Dataran Abu",
+     "to": "jalan_utara",
+     "area": "dataran_abu"
+    },
+    {
+     "label": "Masuk ke hutan",
+     "to": "hutan_gema"
+    }
+   ],
+   "objects": [
+    {
+     "id": "lentera_gerbang_hutan",
+     "name": "Lentera penjaga (simpan & istirahat)",
+     "script": "lentera_save"
+    }
+   ]
+  },
+  "hutan_gema": {
+   "name": "Hutan Gema",
+   "text": "Pohon-pohon di sini mengulang suara. Bukan seperti lembah yang memantulkan teriakan — ini mengulang dengan jeda, dengan nada yang sedikit berbeda, seperti sedang mencoba mengingat lagunya dengan benar.",
+   "exits": [
+    {
+     "label": "Kembali ke gerbang",
+     "to": "gerbang_hutan"
+    },
+    {
+     "label": "Ikuti suara nyanyian",
+     "to": "pohon_induk"
+    }
+   ],
+   "on_enter": "sergap_hutan_gema"
+  },
+  "pohon_induk": {
+   "name": "Pohon Induk",
+   "text": "Satu pohon yang batangnya selebar rumah, dengan lubang di pangkalnya yang cukup besar untuk dimasuki. Nyanyian dari desa masuk ke lubang itu dan keluar lagi dari batang-batang lain di seluruh hutan.",
+   "on_enter": "lihat_pohon_induk",
+   "exits": [
+    {
+     "label": "Kembali ke hutan gema",
+     "to": "hutan_gema"
+    },
+    {
+     "label": "Lanjut ke desa",
+     "to": "padasuara"
+    }
+   ],
+   "objects": [
+    {
+     "id": "lubang_pohon",
+     "name": "Lubang di pangkal pohon",
+     "script": "periksa_lubang",
+     "if": [
+      "!lubang_diperiksa"
+     ]
+    }
+   ]
+  },
+  "padasuara": {
+   "name": "Desa Padasuara",
+   "safe": true,
+   "text": "Desa di antara akar-akar: rumah dibangun menempel batang, dihubungkan tangga tali. Tidak ada satu pun lentera. Yang menahan kabut di sini adalah suara — selalu ada yang menyanyi, bergantian, siang dan malam, sejak entah berapa generasi.",
+   "on_enter": "masuk_padasuara",
+   "exits": [
+    {
+     "label": "Kembali ke pohon induk",
+     "to": "pohon_induk"
+    },
+    {
+     "label": "Ke Balai Nyanyi",
+     "to": "balai_nyanyi"
+    },
+    {
+     "label": "Ke tepi desa",
+     "to": "tepi_desa"
+    }
+   ],
+   "npcs": [
+    {
+     "id": "pedagang_padasuara",
+     "name": "Penjaja Padasuara",
+     "script": "toko_padasuara"
+    },
+    {
+     "id": "ratih_npc",
+     "name": "Ratih",
+     "script": "bicara_ratih",
+     "if": [
+      "!ratih_gabung"
+     ]
+    }
+   ],
+   "objects": [
+    {
+     "id": "lentera_padasuara",
+     "name": "Api kecil di balai (simpan & istirahat)",
+     "script": "lentera_save"
+    },
+    {
+     "id": "murid_keras",
+     "name": "Anak laki-laki yang dilarang ikut latihan",
+     "script": "sq_murid",
+     "if": [
+      "ratih_gabung",
+      "!sq_murid_selesai"
+     ]
+    }
+   ],
+   "latar_varian": [
+    {
+     "if": [
+      "boss_wirya_kalah"
+     ],
+     "latar": "hutan_nyanyi/padasuara_lega"
+    }
+   ]
+  },
+  "balai_nyanyi": {
+   "name": "Balai Nyanyi",
+   "safe": true,
+   "text": "Balai bundar tanpa dinding di tengah desa. Delapan orang duduk melingkar, bernyanyi tanpa jeda; tiap kali satu berhenti untuk minum, yang lain menutupi celahnya. Di tengah lingkaran ada batu pipih dengan nama-nama terukir sampai ke sisi bawahnya.",
+   "on_enter": "adegan_balai",
+   "exits": [
+    {
+     "label": "Kembali ke desa",
+     "to": "padasuara"
+    }
+   ],
+   "npcs": [
+    {
+     "id": "tetua_lelana",
+     "name": "Tetua Lelana",
+     "script": "bicara_lelana"
+    }
+   ],
+   "latar": "hutan_nyanyi/padasuara",
+   "objects": [
+    {
+     "id": "papan_sahutan",
+     "name": "Papan sahutan di dinding balai",
+     "script": "pd_papan",
+     "if": [
+      "ratih_gabung"
+     ]
+    }
+   ]
+  },
+  "tepi_desa": {
+   "name": "Tepi Desa",
+   "text": "Batas desa, tempat nyanyian mulai menipis dan kabut berdiri menunggu di luar seperti binatang yang sabar. Di tanah ada jejak sepatu bersol keras — bukan sepatu orang hutan.",
+   "on_enter": "lihat_jejak",
+   "exits": [
+    {
+     "label": "Kembali ke desa",
+     "to": "padasuara"
+    },
+    {
+     "label": "Ikuti jejak sepatu",
+     "to": "mimbar_ordo",
+     "if": [
+      "ordo_terlihat"
+     ],
+     "locked": "Jejaknya menuju ke dalam kabut. Sebaiknya kalian bicara dengan tetua dulu."
+    }
+   ]
+  },
+  "mimbar_ordo": {
+   "name": "Mimbar di Kabut",
+   "text": "Tanah lapang yang sudah dibersihkan, dengan mimbar kayu yang dibangun buru-buru dan tumpukan kayu bakar di belakangnya. Ada tali. Ada obor. Ada pendengar yang duduk rapi, dan semuanya memakai jubah Ordo.",
+   "on_enter": "boss_wirya",
+   "exits": [
+    {
+     "label": "Kembali ke tepi desa",
+     "to": "tepi_desa"
+    },
+    {
+     "label": "Lanjut ke jalan Wirasaba",
+     "to": "jalan_wirasaba",
+     "if": [
+      "boss_wirya_kalah"
+     ],
+     "locked": "Khotbah itu belum selesai."
+    }
+   ]
+  },
+  "jalan_wirasaba": {
+   "name": "Jalan ke Wirasaba",
+   "safe": true,
+   "text": "Jalan batu tua yang lebarnya cukup untuk empat gerobak berjajar — peninggalan kerajaan yang dulu memerintah sampai ke lembah. Sekarang lumut menutup separuhnya. Di ujungnya, di kejauhan, sesuatu memantulkan cahaya matahari: banyak sekali kaca.",
+   "on_enter": "lihat_wirasaba",
+   "exits": [
+    {
+     "label": "Kembali ke mimbar",
+     "to": "mimbar_ordo"
+    },
+    {
+     "label": "Menuju Kota Kaca Wirasaba",
+     "to": "gerbang_wirasaba",
+     "area": "wirasaba"
+    }
+   ],
+   "objects": [
+    {
+     "id": "lentera_jalan_wirasaba",
+     "name": "Lentera penjaga (simpan & istirahat)",
+     "script": "lentera_save"
+    }
+   ]
+  }
+ },
+ "scripts": {
+  "lentera_save": [
+   {
+    "text": "Di sini tidak ada lentera penjaga; yang ada api kecil dan seseorang yang bernyanyi di dekatnya. Kalian beristirahat."
+   },
+   {
+    "heal": "all"
+   },
+   {
+    "save": true
+   },
+   {
+    "if": [
+     "has:bekal_kemah"
+    ],
+    "then": [
+     {
+      "kemah": true
+     }
+    ]
+   }
+  ],
+  "masuk_hutan": [
+   {
+    "once": "hutan_nyanyi_masuk",
+    "do": [
+     {
+      "text": "Kalian berhenti tanpa sengaja, semuanya, di langkah yang sama. Suara itu datang dari dalam hutan: puluhan orang menyanyikan satu lagu yang tidak pernah berhenti."
+     },
+     {
+      "say": "Lintang",
+      "text": "Kabutnya mundur. Bukan karena cahaya. (Ia menoleh ke Rimba.) Tidak ada cahaya apa pun di sini."
+     },
+     {
+      "say": "Rimba",
+      "text": "Lalu apa yang menahannya?"
+     },
+     {
+      "say": "Bagas",
+      "text": "Suara. Mereka menahan Kabut pakai suara."
+     },
+     {
+      "say": "Rangga",
+      "text": "Ordo menyebut tempat ini bidah. Sekarang aku mengerti kenapa: kalau ini berhasil, seluruh Ordo tidak perlu ada."
+     }
+    ]
+   }
+  ],
+  "lihat_pohon_induk": [
+   {
+    "once": "pohon_induk_dilihat",
+    "do": [
+     {
+      "text": "Nyanyian dari desa masuk ke lubang pohon dan keluar dari pohon-pohon lain, sudah berubah sedikit tiap kali — seperti ingatan yang diceritakan ulang."
+     },
+     {
+      "say": "Lintang",
+      "text": "Hutan ini ikut mengingat untuk mereka."
+     }
+    ]
+   },
+   {
+    "run": "sergap_pohon_induk"
+   }
+  ],
+  "periksa_lubang": [
+   {
+    "text": "Di dalam lubang ada barang-barang kecil yang ditinggalkan orang: sisir, cincin, gigi susu, secarik kain bayi. Bukan sesaji. Lebih seperti titipan."
+   },
+   {
+    "give": {
+     "serpihan_ingatan": 1
+    }
+   },
+   {
+    "kaca": {
+     "kaca_napas": 1
+    }
+   },
+   {
+    "set": "lubang_diperiksa"
+   }
+  ],
+  "masuk_padasuara": [
+   {
+    "once": "padasuara_masuk",
+    "do": [
+     {
+      "text": "Tidak ada yang menahan kalian di gerbang desa. Seorang perempuan muda melompat turun dari tangga tali, mendarat terlalu keras, dan berdiri terlalu dekat."
+     },
+     {
+      "say": "Ratih",
+      "text": "Kalian dari luar! Dari seberang dataran? Kalian lewat dataran abu dan masih hidup? Kalian dengar kami dari mana? Dari gerbang? Dari pohon induk?"
+     },
+     {
+      "say": "Sela",
+      "text": "...Dari gerbang."
+     },
+     {
+      "say": "Ratih",
+      "text": "DARI GERBANG! (Ia berbalik dan berteriak ke atas.) TETUA! SUARA KITA SAMPAI GERBANG!"
+     },
+     {
+      "say": "Bagas",
+      "text": "(Pelan, ke Rimba.) Aku suka desa ini."
+     }
+    ]
+   }
+  ],
+  "toko_padasuara": [
+   {
+    "say": "Penjaja",
+    "text": "Kami tidak jual minyak lentera. Tidak ada yang pakai. Tapi ramuan kami bagus — akarnya dari sini."
+   },
+   {
+    "shop": "penjaja_padasuara"
+   }
+  ],
+  "bicara_ratih": [
+   {
+    "if": [
+     "ordo_terlihat"
+    ],
+    "then": [
+     {
+      "say": "Ratih",
+      "text": "Mereka bangun mimbar di tepi kabut. Dengan kayu bakar. Kau tahu kayu bakar itu untuk apa."
+     },
+     {
+      "say": "Ratih",
+      "text": "Tetua bilang kita nyanyi saja, biar mereka pergi sendiri. Tetua salah. Aku ikut kalian."
+     },
+     {
+      "end": true
+     }
+    ]
+   },
+   {
+    "say": "Ratih",
+    "text": "Namaku Ratih. Kata orang sini suaraku terlalu keras untuk desa. Menurutku desanya yang terlalu kecil untuk suaraku."
+   },
+   {
+    "say": "Ratih",
+    "text": "Kalian dari lembah yang punya Mercusuar itu, ya? Apa benar nyalanya harus dikasih makan orang?"
+   },
+   {
+    "say": "Rimba",
+    "text": "...Ya."
+   },
+   {
+    "say": "Ratih",
+    "text": "Di sini tidak ada yang dibakar sejak desa ini berdiri. Kami cuma menyanyi. (Ia menunjuk dirinya sendiri.) Dan aku yang paling keras."
+   }
+  ],
+  "adegan_balai": [
+   {
+    "once": "balai_adegan",
+    "do": [
+     {
+      "text": "Delapan orang di lingkaran itu tidak menoleh saat kalian masuk. Lagunya tidak boleh putus; itu aturan pertama dan satu-satunya."
+     },
+     {
+      "say": "Lelana",
+      "text": "(Berbisik, karena gilirannya baru selesai.) Duduk. Jangan bernyanyi kalau tidak tahu lagunya; nada yang salah lebih buruk daripada diam."
+     },
+     {
+      "say": "Rimba",
+      "text": "Nama-nama di batu itu?"
+     },
+     {
+      "say": "Lelana",
+      "text": "Semua yang pernah tinggal di sini. Kami menyanyikan namanya bergantian. Selama namanya dinyanyikan, Kabut tidak bisa mengambilnya."
+     },
+     {
+      "pause": true
+     },
+     {
+      "say": "Lelana",
+      "text": "Lembah kalian membakar satu orang tiap tujuh puluh tahun untuk menahan Kabut. Kami menyanyikan semua orang, setiap hari, selamanya. Mana yang lebih murah?"
+     },
+     {
+      "say": "Sela",
+      "text": "Yang kalian lakukan butuh semua orang, terus-menerus."
+     },
+     {
+      "say": "Lelana",
+      "text": "Ya. Itu harganya. Kami bayar tiap hari, sedikit-sedikit, dan tidak ada yang mati untuk itu."
+     }
+    ]
+   }
+  ],
+  "bicara_lelana": [
+   {
+    "if": [
+     "!ordo_terlihat"
+    ],
+    "then": [
+     {
+      "say": "Lelana",
+      "text": "Ada jejak sepatu keras di tepi desa. Tiga hari ini. Mereka datang, melihat, dan pergi lagi tanpa bicara."
+     },
+     {
+      "say": "Lelana",
+      "text": "Kalau kalian mau melihatnya sendiri, silakan. Tapi jangan bawa kekerasan ke dalam desa. Lagu tidak bisa dinyanyikan sambil berteriak."
+     },
+     {
+      "set": "ordo_terlihat"
+     },
+     {
+      "quest": "pendendang_padasuara",
+      "state": "aktif"
+     },
+     {
+      "end": true
+     }
+    ]
+   },
+   {
+    "if": [
+     "boss_wirya_kalah"
+    ],
+    "then": [
+     {
+      "say": "Lelana",
+      "text": "Kalian menyelesaikannya dengan kekerasan. Aku tidak akan berterima kasih, dan aku tidak akan berpura-pura menyesal. Dua-duanya akan bohong."
+     },
+     {
+      "say": "Lelana",
+      "text": "Bawa Ratih. Suaranya memang tidak muat di sini."
+     },
+     {
+      "end": true
+     }
+    ]
+   },
+   {
+    "say": "Lelana",
+    "text": "Mereka membangun mimbar. Ordo selalu berkhotbah dulu sebelum membakar; katanya supaya yang dibakar mengerti."
+   }
+  ],
+  "lihat_jejak": [
+   {
+    "if": [
+     "!ordo_terlihat"
+    ],
+    "then": [
+     {
+      "text": "Jejak sepatu bersol keras, berbaris rapi, menuju ke dalam kabut. Di sebelahnya, bekas roda kereta kecil."
+     },
+     {
+      "end": true
+     }
+    ]
+   },
+   {
+    "once": "jejak_diikuti",
+    "do": [
+     {
+      "text": "Dari tepi desa kalian bisa melihatnya sekarang: asap tipis di dalam kabut, dan suara satu orang yang berbicara panjang tanpa dijawab siapa pun."
+     },
+     {
+      "say": "Ratih",
+      "text": "Itu suara khotbah. Aku ikut."
+     },
+     {
+      "say": "Sela",
+      "text": "Ini bukan—"
+     },
+     {
+      "say": "Ratih",
+      "text": "Kalau kalian bilang ini bukan urusanku, aku akan tetap ikut, dan aku akan menyanyi sepanjang jalan supaya kalian tidak bisa mikir. Pilih."
+     },
+     {
+      "join": "ratih",
+      "equip": {
+       "senjata": "kecapi_desa",
+       "zirah": "jubah_pendendang"
+      }
+     },
+     {
+      "set": "ratih_gabung"
+     },
+     {
+      "say": "Bagas",
+      "text": "Sudah kubilang aku suka desa ini."
+     }
+    ]
+   }
+  ],
+  "boss_wirya": [
+   {
+    "if": [
+     "boss_wirya_kalah"
+    ],
+    "then": [
+     {
+      "text": "Mimbar itu sudah roboh. Kayu bakarnya tetap kalian biarkan menumpuk, tidak dinyalakan siapa pun."
+     },
+     {
+      "end": true
+     }
+    ]
+   },
+   {
+    "say": "Sunan Wirya",
+    "text": "...dan karena itu, saudara-saudara, nyanyian mereka bukan penyelamatan. Nyanyian mereka adalah menunda. Mereka menahan Kabut hari ini dengan mengorbankan semua hari sesudahnya."
+   },
+   {
+    "text": "Ia berhenti. Ia melihat kalian. Ia tidak terkejut sama sekali."
+   },
+   {
+    "say": "Sunan Wirya",
+    "text": "Penyala dari lembah. Bagus. Kau tahu harga Pelita. Katakan pada mereka: berapa orang yang lembahmu bakar supaya kau bisa berdiri di sini?"
+   },
+   {
+    "say": "Rimba",
+    "text": "Satu. Tiap tujuh puluh tahun."
+   },
+   {
+    "say": "Sunan Wirya",
+    "text": "Satu. Dan dunia kalian bertahan delapan abad. (Ke jemaahnya.) Satu orang, saudara-saudara. Sedangkan di sini, tidak ada yang mau membayar apa pun."
+   },
+   {
+    "say": "Ratih",
+    "text": "Kami membayar tiap hari. Kau saja yang tidak menghitung pembayaran yang tidak berdarah."
+   },
+   {
+    "pause": true
+   },
+   {
+    "adegan": {
+     "efek": "gelap"
+    }
+   },
+   {
+    "say": "Sunan Wirya",
+    "text": "Anak yang bersuara keras. (Ia mengangkat tangannya, dan dua bayangan berdiri dari belakang mimbar.) Mari kita lihat apakah suaramu cukup keras untuk ini."
+   },
+   {
+    "battle": [
+     "boss_sunan_wirya",
+     "bayang_arsip",
+     "bayang_arsip"
+    ],
+    "boss": true,
+    "win": [
+     {
+      "set": "padasuara_selamat"
+     },
+     {
+      "set": "boss_wirya_kalah"
+     },
+     {
+      "text": "Sunan Wirya jatuh berlutut di depan mimbarnya sendiri. Jemaahnya sudah lama pergi."
+     },
+     {
+      "say": "Sunan Wirya",
+      "text": "Kalian... menunda. Itu saja. Kalian menunda."
+     },
+     {
+      "say": "Ratih",
+      "text": "Iya. Tiap hari. Itu namanya hidup."
+     },
+     {
+      "give": {
+       "serpihan_ingatan": 1
+      }
+     },
+     {
+      "kaca": {
+       "kaca_fajar": 1
+      }
+     },
+     {
+      "quest": "pendendang_padasuara",
+      "state": "selesai"
+     },
+     {
+      "ilustrasi": "events/khotbah_padam",
+      "teks": "Kayu bakar itu tidak pernah dinyalakan. Untuk pertama kalinya, Ordo pergi dari sebuah desa tanpa membawa siapa pun."
+     }
+    ]
+   }
+  ],
+  "lihat_wirasaba": [
+   {
+    "once": "wirasaba_terlihat",
+    "do": [
+     {
+      "text": "Dari jalan batu, kota itu terlihat utuh. Itu bagian yang salah — kota yang sudah runtuh tidak memantulkan cahaya sebanyak itu."
+     },
+     {
+      "say": "Bagas",
+      "text": "Wirasaba."
+     },
+     {
+      "text": "Ia mengatakannya seperti orang menyebut nama yang sudah lama tidak diucapkan dengan suara keras."
+     },
+     {
+      "say": "Bagas",
+      "text": "Aku lahir di sana. Rumah kami dekat gerbang timur. (Jeda.) Ayah, ibu, dua adik."
+     },
+     {
+      "say": "Rimba",
+      "text": "Bagas—"
+     },
+     {
+      "say": "Bagas",
+      "text": "Jangan. Belum. Nanti saja kalau kita sudah di dalam."
+     }
+    ]
+   }
+  ],
+  "sergap_hutan_gema": [
+   {
+    "once": "sergap_hutan_gema_selesai",
+    "do": [
+     {
+      "text": "Nyanyian desa yang diulang pohon-pohon ini tiba-tiba berubah nada: jadi tiruan suara kalian sendiri."
+     },
+     {
+      "battle": [
+       "burung_peniru",
+       "burung_peniru",
+       "pohon_gema"
+      ],
+      "win": []
+     }
+    ]
+   }
+  ],
+  "sergap_pohon_induk": [
+   {
+    "once": "sergap_pohon_induk_selesai",
+    "do": [
+     {
+      "text": "Dua orang berjubah sedang berdiri di pangkal pohon induk, dan salah satunya memegang obor."
+     },
+     {
+      "battle": [
+       "pendeta_ordo",
+       "bayang_arsip"
+      ],
+      "win": []
+     }
+    ]
+   }
+  ],
+  "pd_papan": [
+   {
+    "text": "Papan kayu selebar pintu, digantung miring karena talinya sudah lapuk. Di atasnya dipahat lima nama desa, dan di samping tiap nama ada takik-takik kecil — hitungan malam, waktu desa itu masih menyahut nyanyian Padasuara dari kejauhan.\n\nEmpat nama takiknya berhenti. Yang satu, paling bawah, takiknya sampai ke tepi papan dan dilanjutkan di kayu dinding."
+   },
+   {
+    "once": "pd_papan_dibaca",
+    "do": [
+     {
+      "say": "Ratih",
+      "text": "Ini papan sahutan. Waktu aku kecil, tiap malam ada yang menyahut dari sana — Karangwuni dulu, lalu Talun, lalu yang paling jauh, yang cuma kedengaran kalau anginnya benar."
+     },
+     {
+      "say": "Rimba",
+      "text": "Dan sekarang?"
+     },
+     {
+      "say": "Ratih",
+      "text": "Sekarang cuma kami. (Ia menyentuh takik yang berhenti.) Aku selalu dibilangi mereka pindah. Pendendang memang suka pindah, katanya. Tapi orang pindah tidak berhenti menyanyi, Rimba. Menyanyi itu bukan barang yang bisa ketinggalan di rumah lama."
+     },
+     {
+      "say": "Lelana",
+      "text": "(Dari belakang kalian; ia berdiri di pintu balai, entah sejak kapan.) Ratih."
+     },
+     {
+      "say": "Ratih",
+      "text": "Tetua tahu."
+     },
+     {
+      "say": "Lelana",
+      "text": "Tetua tahu. (Ia masuk dan duduk di tikar, pelan sekali, seperti orang yang lututnya sudah lama tidak diajak berdebat.) Ordo tidak membakar desa Pendendang. Itu akan jadi cerita. Ordo mengambil satu-dua orang tiap musim, yang suaranya paling keras, dan menyebutnya kehormatan. Sepuluh tahun begitu, dan desa yang tersisa berhenti mengajari anaknya menyanyi supaya anaknya tidak dipilih."
+     },
+     {
+      "say": "Ratih",
+      "text": "Kenapa Tetua tidak pernah bilang?"
+     },
+     {
+      "say": "Lelana",
+      "text": "Karena aku memilih desa ini tetap menyanyi, dan kau yang paling keras di antara semuanya. (Jeda.) Aku sudah menghitung risikonya tiap malam selama enam belas tahun, Nak. Aku tidak bisa bilang aku memilih benar. Aku cuma bisa bilang aku memilih."
+     },
+     {
+      "text": "Ratih berdiri cukup lama sampai Lelana mengangkat tangannya — bukan untuk dipegang, tapi untuk diberi sesuatu. Sebuah gulungan kain kecil, dengan lima nama desa dan arahnya."
+     },
+     {
+      "say": "Lelana",
+      "text": "Empat nama itu belum tentu habis. Belum tentu. Kalau kalian lewat, dengarkan. Yang masih bisa menyanyi akan menyahut kalau ada yang memulai."
+     },
+     {
+      "say": "Ratih",
+      "text": "Aku yang memulai."
+     },
+     {
+      "quest": "pendendang_hilang",
+      "state": "aktif"
+     },
+     {
+      "set": "pd_daftar_dibawa"
+     }
+    ]
+   }
+  ],
+  "sq_murid": [
+   {
+    "if": [
+     "!sq_murid_aktif"
+    ],
+    "then": [
+     {
+      "text": "Di belakang balai, seorang anak laki-laki duduk menghadap dinding dan bernyanyi ke arah dinding itu. Pelan, tapi tidak bisa berhenti: begitu satu lagu habis, ia mulai lagi."
+     },
+     {
+      "say": "Ratih",
+      "text": "Kenapa kau di sini, bukan di dalam?"
+     },
+     {
+      "say": "Klawu",
+      "text": "Tidak boleh. Kata Tetua suaraku terlalu keras, nanti kedengaran sampai jauh."
+     },
+     {
+      "say": "Ratih",
+      "text": "(Ia diam beberapa saat lebih lama dari yang wajar.) Iya. Aku juga dulu begitu."
+     },
+     {
+      "say": "Klawu",
+      "text": "Terus Mbak jadi berhenti?"
+     },
+     {
+      "say": "Ratih",
+      "text": "Tidak. Aku jadi pergi. (Ia berjongkok.) Dengar. Aku tidak akan bilang teruskan, dan aku tidak akan bilang berhenti. Dua-duanya bukan urusanku. Tapi ada satu hal yang aku sendiri baru tahu kemarin: yang bikin Ordo datang bukan suaramu. Yang bikin mereka datang, mereka butuh orang yang bisa membakar. Kau diam atau tidak, mereka tetap butuh."
+     },
+     {
+      "say": "Klawu",
+      "text": "Jadi percuma aku diam?"
+     },
+     {
+      "say": "Ratih",
+      "text": "Jadi kalau kau diam, pastikan itu karena kau yang memilih. Bukan karena kau kira itu menyelamatkan siapa-siapa."
+     },
+     {
+      "text": "Anak itu berpikir dengan wajah anak yang benar-benar berpikir, lalu berdiri dan masuk ke balai lewat pintu depan, bukan pintu belakang."
+     },
+     {
+      "set": "sq_murid_aktif"
+     },
+     {
+      "quest": "murid_klawu",
+      "state": "aktif"
+     }
+    ],
+    "else": [
+     {
+      "say": "Klawu",
+      "text": "Tetua marah. Tapi cuma sebentar, terus dia nyuruh aku duduk di barisan depan, soalnya katanya kalau sudah terlanjur keras, mending kedengarannya jelas sekalian."
+     },
+     {
+      "say": "Ratih",
+      "text": "Itu Tetua Lelana sekali."
+     },
+     {
+      "say": "Klawu",
+      "text": "Ini buat Mbak. Dari Tetua. Katanya Mbak lupa bawa waktu pergi."
+     },
+     {
+      "set": "sq_murid_selesai"
+     },
+     {
+      "quest": "murid_klawu",
+      "state": "selesai"
+     },
+     {
+      "give": {
+       "serpihan_ingatan": 1,
+       "anting_pendendang": 1
+      }
+     },
+     {
+      "keping": 1800
+     }
+    ]
+   }
+  ]
+ }
+}

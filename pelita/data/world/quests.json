@@ -1,0 +1,196 @@
+{
+ "_catatan": "Teks quest per status.",
+ "kirana_hilang": {
+  "name": "Kirana Hilang",
+  "states": {
+   "aktif": "Kirana, anak Mbok Sari, menghilang ke Hutan Kelabu di barat desa. Cari dia bersama Pak Guntur.",
+   "ditemukan": "Kirana ditemukan di tepi kabut. Bawa dia pulang ke Pelita Rendah dan lapor di balai desa.",
+   "selesai": "Kirana kembali ke pelukan ibunya."
+  }
+ },
+ "mencari_guntur": {
+  "name": "Mencari Pak Guntur",
+  "states": {
+   "hilang": "Pak Guntur masuk ke kabut di Hutan Kelabu dan tidak kembali. Lentera besarnya, dan Bara di dalamnya, kini ada padamu.",
+   "aktif": "Sela melihat cahaya dari Suar Lama di Rawa Suar dua malam lalu. Mungkin Pak Guntur ke sana.",
+   "danau": "Lintang berkata Kakek berlentera berjalan ke utara, ke Danau Cermin.",
+   "tengara": "Nelayan Telaga melihat Pak Guntur berjalan memutari danau ke arah Ibukota Tengara, sambil bernyanyi.",
+   "lorong": "Gerbang istana tertutup. Masuk ke Balai Arsip lewat Lorong Bawah dari Distrik Sunyi untuk membaca catatan Penjaga Mercusuar.",
+   "tambang": "Arsip: Guntur adalah Penjaga Mercusuar terakhir. Tanpa Kaca Inti dari Tambang Kaca Ingatan, Nyala tidak bisa dibawa ke puncak. Pergi ke Gerbang Utara.",
+   "mercusuar": "Kaca Inti di tangan. Daki punggung gunung ke Mercusuar Langit.",
+   "penjaga": "Sisa kesadaran Pak Guntur bicara lewat konstruk Penjaga: bawa Bara ke puncak, dan putuskan sambil ingat.",
+   "selesai": "Mercusuar menyala kembali dengan Bara. Di balik gunung: lautan kabut."
+  }
+ },
+ "yang_hilang_di_telaga": {
+  "name": "Yang Hilang di Telaga",
+  "states": {
+   "aktif": "Dua belas warga Desa Apung hilang di malam hari, meninggalkan genangan air. Naik rakit ke tengah danau, ke pulau batu.",
+   "selesai": "Ular Cermin dikalahkan; kedua belas warga kembali dengan kenangan mereka."
+  }
+ },
+ "hampa_pasar_malam": {
+  "name": "Hampa di Pasar Malam",
+  "states": {
+   "aktif": "Juragan Salim meminta Pasar Bawah dijaga malam ini dari Hampa yang masuk dari sisi tembok. Bicara padanya saat siap.",
+   "selesai": "Pasar Bawah aman. Salim membayar dengan Gelang Kilat dan keping."
+  }
+ },
+ "surat_distrik_sunyi": {
+  "name": "Surat untuk Distrik Sunyi",
+  "states": {
+   "aktif": "Antarkan surat dari Pak Pos Harun ke Nenek Asih, rumah berlentera di Distrik Sunyi.",
+   "selesai": "Nenek Asih membaca surat dari cucunya di Wirasaba."
+  }
+ },
+ "kucing_penginapan": {
+  "name": "Kucing Penginapan",
+  "states": {
+   "aktif": "Meong, kucing Penginapan Lentera Merah, hilang ke saluran air. Cari di bagian Lorong Bawah yang kering.",
+   "selesai": "Meong pulang. Mbak Wulan memberikan Jimat Lentera."
+  }
+ },
+ "nama_bapak": {
+  "name": "Nama Bapak",
+  "states": {
+   "aktif": "Daftar Pelita: \"Arya Kelana — dibatalkan.\" Lintang ingin tahu apa artinya.",
+   "hampa_pertama": "Kristal tambang: ritual Kelana dihentikan di tengah oleh Baskara. Ia menjadi Hampa pertama, dan mencoba pulang ke Lintang."
+  }
+ },
+ "pendendang_padasuara": {
+  "name": "Khotbah di Tepi Kabut",
+  "states": {
+   "aktif": "Ordo Pelita membangun mimbar di tepi Desa Padasuara, lengkap dengan kayu bakar. Ikuti jejak sepatu dari tepi desa.",
+   "selesai": "Sunan Wirya kalah dan kayu bakar itu tidak pernah dinyalakan. Ratih ikut bersama kalian."
+  }
+ },
+ "keluarga_bagas": {
+  "name": "Keluarga Bagas",
+  "states": {
+   "aktif": "Keluarga Bagas termasuk di antara Hampa yang dipanen Ordo di Wirasaba.",
+   "selesai": "Kurungan kaca di gudang panen dibuka. Mereka tidak kembali, tapi mereka tidak lagi disimpan."
+  }
+ },
+ "daftar_suar_ketiga": {
+  "name": "Dinding yang Berhenti Mengeja",
+  "states": {
+   "aktif": "Di bawah Menara Terapung yang sudah duduk di garam, dinding Suar ketiga memuat daftar orang yang dibakar untuk menyalakannya. Dua puluh satu di antaranya dari Padasuara.",
+   "nomor": "Daftar itu berhenti menulis nama di akhir abad pertama dan menggantinya dengan nomor. Seseorang memutuskan itu. Cari yang masih menyala di ujung serambi.",
+   "selesai": "Sekar binti Warsa keluar dari rongga Suar setelah delapan ratus sebelas tahun menunggu penggantinya, dan namanya dibawa naik."
+  }
+ },
+ "pola_pulau_hilang": {
+  "name": "Daftar Pekerjaan",
+  "states": {
+   "aktif": "Gudang Pola di Pulau Hilang menyimpan rancangan pulau-pulau yang belum ditenun: Sanggar, Padasuara, Tengara, dan Lembah Larung. Rak Wirasaba sudah kosong. Pola bukan janji — tapi Sang Penenun mengira kalian gagal.",
+   "selesai": "Sang Penenun terurai jadi apa yang ia tenun, dan tidak ada lagi yang memegang ujung benang di dada kalian."
+  }
+ },
+ "pendendang_hilang": {
+  "name": "Pendendang yang Hilang",
+  "states": {
+   "aktif": "Papan sahutan Padasuara memuat lima desa Pendendang; empat berhenti menyahut. Tetua Lelana memberi Ratih daftar nama dan arahnya. Dengarkan di tiap tempat yang kalian lewati.",
+   "wirasaba": "Karangwuni sampai ke Wirasaba dan berhenti di sana: seorang Hampa di distrik pasar masih menyahut nada yang benar. Satu dari empat.",
+   "garam": "Talun ada di ladang garam, bekerja sendirian tanpa suara — Ordo mengambil suaranya, bukan orangnya. Ia menulis satu nama lagi di garam: PADASARI, ke barat, ke laut.",
+   "selesai": "Padasari sudah jadi pulau. Tapi di tikar yang dibuat untuk dua belas, tiga desa yang dihabisi Ordo masih menyahut kalau ada yang memulai — dan Ratih yang memulai."
+  }
+ },
+ "duabelas_lentera": {
+  "name": "Dua Belas Lentera",
+  "states": {
+   "aktif": "Dua belas warga yang kembali dari Ular Cermin lupa menyalakan lentera jembatan Desa Apung. Tetua Baruna minta satu lentera dinyalakan: yang di rakit paling ujung, yang paling tidak ada gunanya.",
+   "nyala": "Lentera di rakit paling ujung menyala. Kembali ke jembatan desa dan lihat apakah ada yang melihatnya.",
+   "selesai": "Dua belas lentera jembatan menyala lagi, dalam waktu yang lebih singkat daripada yang dibutuhkan untuk menjelaskannya."
+  }
+ },
+ "pesanan_sarwa": {
+  "name": "Pesanan Mpu Sarwa",
+  "states": {
+   "aktif": "Rangka kaca sembilan lekuk untuk Bu Warsih berhenti di empat karena kuningannya habis. Mpu Sarwa butuh lima belas suku cadang kuningan; pasar mana pun menjualnya.",
+   "selesai": "Sembilan keping untuk sembilan tahun. Sarwa mengantarnya sendiri besok pagi."
+  }
+ },
+ "penunggu_gerbang": {
+  "name": "Yang Menunggu di Gerbang Utara",
+  "states": {
+   "aktif": "Enting menunggu bapaknya, Pak Tirta si juru ukur, di bawah Gerbang Utara. Kotaknya hijau, ada namanya di tutupnya.",
+   "ketemu": "Kotak hijau Pak Tirta ada di Lorong Tengah Tambang, terjepit di bawah balok tumbang. Ia mendorongnya keluar sebelum baloknya jatuh.",
+   "selesai": "Enting membawa kotak bapaknya pulang, supaya ibunya tidak bisa bilang ia bohong."
+  }
+ },
+ "panji_ditinggal": {
+  "name": "Panji yang Ditinggal",
+  "states": {
+   "selesai": "Panji Regu Celah, dua puluh dua orang, tahun ketiga. Delapan pulang, dan Adipati memutuskan angka itu lebih baik tidak ada."
+  }
+ },
+ "roda_keempat": {
+  "name": "Roda Keempat",
+  "states": {
+   "aktif": "Naf roda keempat gerobak lentera Nyai Rukmini retak. Yang seukuran itu cuma ada di reruntuhan tanpa nama di selatan.",
+   "ketemu": "Naf besi ditemukan di bekas bengkel kota yang tidak sempat diberi nama. Bawa kembali ke gerobak.",
+   "selesai": "Rodanya berputar lagi, longgar seperempat supaya abunya tidak macet di tengah jalan."
+  }
+ },
+ "sumur_asin": {
+  "name": "Sumur yang Asin",
+  "states": {
+   "aktif": "Sumur di Lingkaran Garam berubah asin empat bulan lalu, dan kafilah berhenti singgah. Bagas mau turun melihat.",
+   "selesai": "Pecahan Kaca Suar yang jatuh dari gerobak Ordo mengeringkan jalur airnya dari dalam. Diangkat; tiga hari kemudian airnya tawar."
+  }
+ },
+ "murid_klawu": {
+  "name": "Murid yang Tidak Bisa Diam",
+  "states": {
+   "aktif": "Klawu dilarang ikut latihan karena suaranya terlalu keras — persis alasan Ratih dulu pergi. Ia masuk lewat pintu depan.",
+   "selesai": "Lelana menyuruhnya duduk di barisan depan: kalau sudah terlanjur keras, mending kedengarannya jelas sekalian."
+  }
+ },
+ "pesanan_darma": {
+  "name": "Pesanan Mpu Darma",
+  "states": {
+   "aktif": "Kaca kafilah terlalu muda: dua belas percobaan Mpu Darma retak di sumbu yang sama. Ia butuh satu keping kaca Wirasaba tua — dari dinding yang sudah runtuh, bukan yang masih berdiri.",
+   "selesai": "Delapan abad, dan bunyinya pendek: tidak ada lagi yang bergerak di dalamnya. Potongannya tidak retak."
+  }
+ },
+ "hari_terakhir_sumirat": {
+  "name": "Hari Terakhir Keluarga Sumirat",
+  "states": {
+   "aktif": "Enam Hampa keluarga Sumirat mengangkat sendok dan menurunkannya, delapan ratus tahun, tanpa ada yang mulai duluan. Kursi ketujuh kosong.",
+   "selesai": "Yang ketujuh dipanggil dari gudang panen dengan lagu memanggil makan, dan duduk. Itu tidak mengembalikan mereka; itu cuma menyelesaikan makan malamnya."
+  }
+ },
+ "buku_tak_dibakar": {
+  "name": "Buku yang Tidak Dibakar",
+  "states": {
+   "aktif": "Satu buku hilang dari rak tahun keempat ratus, dan kekosongannya dirapikan. Yang menyembunyikannya tidak membakarnya — berarti ia ingin bukunya tetap ada.",
+   "selesai": "Sebelas tahun surat yang tidak pernah dikirim, dari orang yang terus bertanya sambil terus bekerja. Yang terakhir satu baris: \"Kabutnya naik lagi tahun ini. Tolong dijawab.\""
+  }
+ },
+ "kotak_pribadi": {
+  "name": "Kotak Pribadi",
+  "states": {
+   "selesai": "Satu kotak kecil per bilik asrama Benteng, tidak dikunci, kebanyakan milik orang yang lebih muda dari Rimba. Batu sungai, gigi susu, sisir patah, tali bersimpul tujuh. Tidak ada yang diambil, dan semua tutupnya ditutup lagi."
+  }
+ },
+ "kakak_rukmini": {
+  "name": "Kakak yang Cuma Mau Lihat",
+  "states": {
+   "aktif": "Kakak Nyai Rukmini naik kapal ke Laut Lupa empat puluh tahun lalu dan bilang cuma mau lihat. Ranselnya kulit tua, tali pinggangnya disimpul tujuh kali.",
+   "ketemu": "Ranselnya ada di Lorong Benang, Pulau Hilang, disandarkan rapi di bawah lentera penjaga. Tidak ada tulang; ia berjalan naik dan tidak menaruh apa-apa lagi.",
+   "selesai": "Bukan buat dikubur — buat ditaruh. Sekarang ada tempatnya."
+  }
+ },
+ "pesanan_tak_diambil": {
+  "name": "Pesanan yang Tidak Diambil",
+  "states": {
+   "selesai": "\"BUAT MBAK ENDANG. DIAMBIL SORE.\" Sorenya tidak pernah datang, dan bungkusannya masih hangat. Di ujung lorong, satu lapak yang tadi kosong sekarang ada bayangan orang menjahit."
+  }
+ },
+ "nama_lapis_dua": {
+  "name": "Nama di Lapis Dua",
+  "states": {
+   "selesai": "Dua belas keping di rak paling bawah Arsip Pertama, direkam sendiri oleh pemiliknya: nama, umur, desa, diucapkan dua kali supaya dicatat dengan benar. Yang kedua belas Sekar binti Warsa, dua puluh satu tahun, yang ketiga kalau jadwalnya tidak berubah."
+  }
+ }
+}

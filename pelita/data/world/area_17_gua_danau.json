@@ -1,0 +1,610 @@
+{
+ "id": "gua_danau",
+ "name": "Gua Bawah Danau",
+ "level_range": "14–17",
+ "start": "mulut_dasar",
+ "fog": false,
+ "encounter_rate": 0.36,
+ "encounters": [
+  {
+   "enemies": [
+    "kendi_ingatan",
+    "kendi_ingatan"
+   ],
+   "weight": 3
+  },
+  {
+   "enemies": [
+    "perenang_dasar"
+   ],
+   "weight": 3
+  },
+  {
+   "enemies": [
+    "perenang_dasar",
+    "kendi_ingatan"
+   ],
+   "weight": 2
+  },
+  {
+   "enemies": [
+    "serpih_cacat"
+   ],
+   "weight": 2
+  },
+  {
+   "enemies": [
+    "serpih_cacat",
+    "kendi_ingatan"
+   ],
+   "weight": 1
+  },
+  {
+   "enemies": [
+    "ikan_cermin",
+    "perenang_dasar"
+   ],
+   "weight": 1
+  }
+ ],
+ "rooms": {
+  "mulut_dasar": {
+   "name": "Mulut Dasar",
+   "text": "Di bawah sarang Ular Cermin, lantainya bukan batu — ia celah selebar pintu yang turun lurus ke bawah, dan udara yang naik dari sana kering. Danau ada di atas kepala kalian sekarang, menahan dirinya sendiri, dan tidak setetes pun jatuh.",
+   "on_enter": "gua_masuk",
+   "exits": [
+    {
+     "label": "Naik kembali ke Gua Sarang",
+     "to": "sarang_ular",
+     "area": "danau_cermin"
+    },
+    {
+     "label": "Turun ke tangga air",
+     "to": "tangga_air"
+    }
+   ],
+   "objects": [
+    {
+     "id": "lentera_mulut",
+     "name": "Lentera penjaga di bibir celah (simpan & istirahat)",
+     "script": "lentera_save"
+    }
+   ]
+  },
+  "tangga_air": {
+   "name": "Tangga Air Berdiri",
+   "text": "Tangga yang dipahat ke dalam air. Bukan kiasan: dindingnya air yang berdiri tegak, setebal lengan, dan anak tangganya batu yang menggantung di dalamnya. Tiap kali kalian lewat, dinding itu menunjukkan kalian sedang lewat — sedikit terlambat, seperti orang yang baru sempat menoleh.",
+   "exits": [
+    {
+     "label": "Naik ke mulut dasar",
+     "to": "mulut_dasar"
+    },
+    {
+     "label": "Ke ceruk jala di samping tangga",
+     "to": "ceruk_jala"
+    },
+    {
+     "label": "Turun ke ladang kendi",
+     "to": "ladang_kendi"
+    }
+   ],
+   "on_enter": "sergap_tangga"
+  },
+  "ceruk_jala": {
+   "name": "Ceruk Jala",
+   "text": "Ceruk sempit yang penuh jala — jala nelayan Telaga, berlapis-lapis, dilempar ke bawah selama entah berapa tahun dan tidak pernah ditarik. Di dalamnya tersangkut barang-barang yang ikut turun bersama jala.",
+   "exits": [
+    {
+     "label": "Kembali ke tangga air",
+     "to": "tangga_air"
+    }
+   ],
+   "objects": [
+    {
+     "id": "jala_ceruk",
+     "name": "Jala yang paling bawah",
+     "script": "gua_jala",
+     "if": [
+      "!gua_jala_diambil"
+     ]
+    }
+   ]
+  },
+  "ladang_kendi": {
+   "name": "Ladang Kendi",
+   "text": "Ruang selebar pasar, dan lantainya kendi. Ribuan, berdiri rapat sampai ke gelap, masing-masing setinggi lutut dan masing-masing tersumbat kain. Yang paling dekat bergetar pelan kalau kalian bicara keras.\n\nDi tengahnya ada cekungan batu bundar dengan tiga lekuk, dan di dinding belakangnya pintu tanpa gagang.",
+   "exits": [
+    {
+     "label": "Naik ke tangga air",
+     "to": "tangga_air"
+    },
+    {
+     "label": "Lewat pintu tanpa gagang",
+     "to": "palka_peti",
+     "if": [
+      "gua_cekungan_terbuka"
+     ],
+     "locked": "Pintu itu tidak punya gagang, tidak punya engsel, dan tidak bergerak. Cekungan batu di tengah ruangan punya tiga lekuk yang kosong."
+    }
+   ],
+   "objects": [
+    {
+     "id": "prasasti_kendi",
+     "name": "Batu berukir di sisi cekungan",
+     "script": "gua_prasasti"
+    },
+    {
+     "id": "cekungan",
+     "name": "Cekungan batu bertiga lekuk",
+     "script": "gua_cekungan",
+     "if": [
+      "!gua_cekungan_terbuka"
+     ]
+    }
+   ]
+  },
+  "palka_peti": {
+   "name": "Palka Peti Tenggelam",
+   "text": "Ruang panjang berlangit rendah, dan di sepanjang dindingnya peti — peti kayu bersegel timah, ditumpuk dua-dua, semuanya bertanda yang sama: lingkaran dengan satu garis melintang. Tanda Ordo Pelita, dicoret.",
+   "on_enter": "gua_palka",
+   "exits": [
+    {
+     "label": "Kembali ke ladang kendi",
+     "to": "ladang_kendi"
+    },
+    {
+     "label": "Ke ujung palka",
+     "to": "dasar_menelan"
+    }
+   ],
+   "objects": [
+    {
+     "id": "lentera_palka",
+     "name": "Lentera penjaga di antara peti (simpan & istirahat)",
+     "script": "lentera_save"
+    },
+    {
+     "id": "peti_segel",
+     "name": "Peti bersegel timah yang paling atas",
+     "script": "gua_peti",
+     "if": [
+      "!gua_peti_diambil"
+     ]
+    }
+   ]
+  },
+  "dasar_menelan": {
+   "name": "Dasar yang Menelan",
+   "safe": true,
+   "text": "Ujung palka melebar jadi ruang bundar, dan di tengahnya seseorang berdiri membelakangi kalian, setinggi dada di dalam air yang tidak ada. Ia mengangkat satu kaca dari peti di sebelahnya, menaikkannya ke arah cahaya yang tidak ada, memeriksanya, lalu menaruhnya di tumpukan kiri. Mengambil yang berikutnya. Sudah dua puluh tahun.",
+   "on_enter": "gua_boss",
+   "exits": [
+    {
+     "label": "Kembali ke palka",
+     "to": "palka_peti"
+    }
+   ]
+  }
+ },
+ "scripts": {
+  "lentera_save": [
+   {
+    "text": "Kau merapikan sumbu dan menuang sedikit minyak. Nyalanya menegak."
+   },
+   {
+    "heal": "all"
+   },
+   {
+    "save": true
+   },
+   {
+    "if": [
+     "has:bekal_kemah"
+    ],
+    "then": [
+     {
+      "kemah": true
+     }
+    ]
+   }
+  ],
+  "gua_masuk": [
+   {
+    "once": "gua_masuk_adegan",
+    "do": [
+     {
+      "text": "Turun lima belas langkah dan suara danau hilang sama sekali. Bukan mengecil — hilang, seperti pintu yang ditutup di belakang kalian. Yang tersisa cuma suara kalian sendiri, dan di kejauhan, sesuatu yang berdenting pelan dan teratur: kaca disentuh kaca."
+     },
+     {
+      "say": "Sela",
+      "text": "Air di atas kita. Berton-ton. Dan tidak menetes."
+     },
+     {
+      "say": "Lintang",
+      "text": "Karena dia tidak sedang jatuh. Dia sedang menyimpan."
+     },
+     {
+      "say": "Rimba",
+      "text": "\"Dititipkan ke dasar Danau Cermin.\" Peti empat puluh sampai lima puluh delapan."
+     },
+     {
+      "say": "Sela",
+      "text": "Dan satu orang yang mengantar dan tidak naik. Rimba — kalau di bawah sana ada yang masih berjalan, dia sudah dua puluh tahun di sini sendirian. Jangan harap dia senang kita datang."
+     },
+     {
+      "say": "Lintang",
+      "text": "Aku tidak berharap dia senang. Aku cuma mau dia berhenti."
+     },
+     {
+      "text": "(Tip: gua ini tidak ada hubungannya dengan Pak Guntur dan bisa ditinggalkan kapan saja. Lentera penjaga di belakang kalian tetap menyala.)"
+     }
+    ]
+   }
+  ],
+  "sergap_tangga": [
+   {
+    "once": "gua_sergap_tangga",
+    "do": [
+     {
+      "text": "Di tengah tangga, dinding air di kanan kalian menonjol keluar — lalu seseorang keluar dari dalamnya, masih berenang, masih menggerakkan tangan seperti orang yang mengira dirinya sedang naik."
+     },
+     {
+      "battle": [
+       "perenang_dasar",
+       "kendi_ingatan",
+       "kendi_ingatan"
+      ],
+      "boss": false,
+      "can_flee": false,
+      "lose": "gameover"
+     },
+     {
+      "say": "Sela",
+      "text": "Kendi-kendi itu pecah dan aku lupa nama jurusku sendiri selama dua tarikan napas. Rimba, pecahkan yang kecil dulu. Selalu yang kecil dulu."
+     }
+    ]
+   }
+  ],
+  "gua_jala": [
+   {
+    "set": "gua_jala_diambil"
+   },
+   {
+    "text": "Jala yang paling bawah sudah berubah jadi kantong, dan isinya dua puluh tahun barang yang jatuh dari desa di atas: pisau, sendok, satu sepatu anak, dan di dasarnya sebuah tali panjang bersimpul rapat yang masih kuat."
+   },
+   {
+    "say": "Lintang",
+    "text": "Tali penyelam. Diikat ke pinggang, ujungnya dipegang orang di atas. Supaya ada yang menarik kalau kau tidak naik-naik."
+   },
+   {
+    "say": "Sela",
+    "text": "Ujung satunya putus."
+   },
+   {
+    "give": {
+     "tali_penyelam": 1,
+     "ramuan_akar": 3,
+     "cawan_nyala": 2,
+     "suku_cadang": 6
+    }
+   }
+  ],
+  "gua_prasasti": [
+   {
+    "text": "Batu berukir, hurufnya tua tapi masih terbaca — dipahat oleh orang yang punya banyak waktu:\n\n\"CEKUNGAN INI MENERIMA TIGA. HANYA YANG TIDAK DIAMBIL DARI SIAPA PUN.\n\nHujan bukan milik siapa-siapa.\nJalan yang belum dilewati belum jadi milik.\nLagu yang belum berkata belum menyebut nama.\""
+   },
+   {
+    "once": "gua_prasasti_dibaca",
+    "do": [
+     {
+      "say": "Rimba",
+      "text": "Jadi kendinya harus yang isinya bukan punya orang."
+     },
+     {
+      "say": "Sela",
+      "text": "Artinya sisanya punya orang. Ribuan kendi di lantai ini, dan tiap satu ada pemiliknya yang masih hidup di atas sana, bertanya-tanya kenapa ada bolong di kepalanya."
+     }
+    ]
+   }
+  ],
+  "gua_cekungan": [
+   {
+    "text": "Tiga lekuk bundar di batu, sedalam kendi. Yang di sekitarmu semuanya bisa diangkat; kainnya ditulisi dengan tinta yang sudah pudar."
+   },
+   {
+    "choice": [
+     {
+      "text": "Kendi bertanda \"hujan, tiga hari, tahun ke-lima\"",
+      "if": [
+       "!gua_k_hujan"
+      ],
+      "then": [
+       {
+        "set": "gua_k_hujan"
+       },
+       {
+        "text": "Kendi itu duduk di lekuknya seperti memang dibuat untuk di situ. Batu di bawahnya menghangat."
+       },
+       {
+        "run": "gua_cek_pintu"
+       }
+      ]
+     },
+     {
+      "text": "Kendi bertanda \"jalan yang belum pernah dilewati\"",
+      "if": [
+       "!gua_k_jalan"
+      ],
+      "then": [
+       {
+        "set": "gua_k_jalan"
+       },
+       {
+        "text": "Kendi itu duduk di lekuknya seperti memang dibuat untuk di situ. Batu di bawahnya menghangat."
+       },
+       {
+        "run": "gua_cek_pintu"
+       }
+      ]
+     },
+     {
+      "text": "Kendi bertanda \"lagu tanpa syair\"",
+      "if": [
+       "!gua_k_lagu"
+      ],
+      "then": [
+       {
+        "set": "gua_k_lagu"
+       },
+       {
+        "text": "Kendi itu duduk di lekuknya seperti memang dibuat untuk di situ. Batu di bawahnya menghangat."
+       },
+       {
+        "run": "gua_cek_pintu"
+       }
+      ]
+     },
+     {
+      "text": "Kendi bertanda \"sebuah nama, perempuan, dua suku kata\"",
+      "then": [
+       {
+        "text": "Begitu nama itu menyentuh batu, seluruh cekungan mendingin. Kendi-kendi yang sudah terpasang terangkat sendiri dan kembali ke lantai, satu per satu, tanpa suara."
+       },
+       {
+        "run": "gua_kosongkan"
+       }
+      ]
+     },
+     {
+      "text": "Kendi bertanda \"wajah bapak dari bawah, sambil digendong\"",
+      "then": [
+       {
+        "text": "Begitu wajah itu menyentuh batu, seluruh cekungan mendingin. Kendi-kendi yang sudah terpasang terangkat sendiri dan kembali ke lantai, satu per satu, tanpa suara."
+       },
+       {
+        "run": "gua_kosongkan"
+       }
+      ]
+     },
+     {
+      "text": "Kendi bertanda \"sakit di lutut kiri tiap mau hujan\"",
+      "then": [
+       {
+        "text": "Begitu sakit itu menyentuh batu, seluruh cekungan mendingin. Kendi-kendi yang sudah terpasang terangkat sendiri dan kembali ke lantai, satu per satu, tanpa suara."
+       },
+       {
+        "run": "gua_kosongkan"
+       }
+      ]
+     },
+     {
+      "text": "Mundur dulu dan pikir lagi",
+      "then": []
+     }
+    ]
+   }
+  ],
+  "gua_cek_pintu": [
+   {
+    "if": [
+     "gua_k_hujan",
+     "gua_k_jalan",
+     "gua_k_lagu"
+    ],
+    "then": [
+     {
+      "set": "gua_cekungan_terbuka"
+     },
+     {
+      "text": "Ketiga kendi menghangat bersamaan, dan sumbat kainnya terlepas sendiri. Yang keluar bukan asap dan bukan cahaya: suara hujan, langkah di jalan yang tidak dikenal, dan satu orang bersenandung tanpa kata.\n\nPintu tanpa gagang itu membuka ke dalam."
+     },
+     {
+      "say": "Lintang",
+      "text": "Dia tidak mau ditagih. Dia cuma mau dibayar dengan yang tidak dicuri."
+     }
+    ]
+   }
+  ],
+  "gua_kosongkan": [
+   {
+    "unset": [
+     "gua_k_hujan",
+     "gua_k_jalan",
+     "gua_k_lagu"
+    ]
+   },
+   {
+    "say": "Sela",
+    "text": "Salah. Dan dia mengembalikan semuanya, bukan cuma yang salah. Rapi sekali marahnya."
+   }
+  ],
+  "gua_palka": [
+   {
+    "once": "gua_palka_adegan",
+    "do": [
+     {
+      "text": "Peti-peti itu bersegel timah, dan timahnya dicap dua kali: sekali dengan tanda Ordo, sekali lagi dengan tanda yang sama tapi dicoret. Di lantai di antara tumpukan ada garis-garis panjang — bekas seret. Semua garisnya menuju ke ujung palka, dan tidak ada satu pun yang menuju balik."
+     },
+     {
+      "say": "Sela",
+      "text": "Dia menyeretnya sendirian. Sembilan belas peti."
+     },
+     {
+      "say": "Rimba",
+      "text": "Kenapa tidak ada yang menolongnya?"
+     },
+     {
+      "say": "Sela",
+      "text": "Karena yang menyuruh tidak mau ada saksi kedua, Rimba. Satu orang bisa dibilang tenggelam. Dua orang jadi cerita."
+     }
+    ]
+   }
+  ],
+  "gua_peti": [
+   {
+    "set": "gua_peti_diambil"
+   },
+   {
+    "text": "Segel timahnya sudah lapuk dan patah di tangan Rimba. Di dalam peti, disusun dalam jerami yang tidak pernah basah: kaca-kaca ingatan, seratusan keping, semuanya retak dengan cara yang sama — satu garis melintang dari sudut ke sudut."
+   },
+   {
+    "say": "Lintang",
+    "text": "(Ia mengambil satu dan menaikkannya ke lentera.) Ini tidak cacat."
+   },
+   {
+    "say": "Sela",
+    "text": "Retaknya sama persis di semua keping. Kaca tidak retak seragam. Ini dipotong."
+   },
+   {
+    "say": "Rimba",
+    "text": "...Seseorang memotong seratus keping satu per satu supaya kelihatan rusak, lalu menyuruh orang lain menenggelamkannya."
+   },
+   {
+    "say": "Lintang",
+    "text": "Yang di dalamnya masih ada. (Jeda.) Mereka berteriak, Rimba. Pelan sekali, tapi semuanya berteriak."
+   },
+   {
+    "give": {
+     "serpihan_ingatan": 1,
+     "abu_fajar": 2,
+     "ramuan_akar": 4
+    }
+   },
+   {
+    "text": "(Catatan Penyala: kaca \"cacat\" ini adalah ingatan orang-orang yang dibakar Ordo, dipotong supaya tidak ada yang mau membacanya. Adipati Baskara menandatangani perintah titipannya sendiri.)"
+   }
+  ],
+  "gua_boss": [
+   {
+    "once": "gua_boss_adegan",
+    "do": [
+     {
+      "text": "Ia tidak menoleh. Ia mengangkat keping berikutnya, memeriksanya terhadap cahaya yang sudah dua puluh tahun tidak ada, dan menaruhnya di tumpukan kiri. Tumpukan kiri setinggi orang. Tumpukan kanan kosong."
+     },
+     {
+      "say": "Rimba",
+      "text": "Pak Padmo?"
+     },
+     {
+      "text": "Tangannya berhenti di udara. Air keluar dari sela-sela zirah kerjanya, sedikit, seperti orang yang baru diingatkan bahwa ia basah."
+     },
+     {
+      "say": "Juru Kaca",
+      "text": "...Belum selesai."
+     },
+     {
+      "say": "Sela",
+      "text": "Sudah selesai. Dua puluh tahun lalu."
+     },
+     {
+      "say": "Juru Kaca",
+      "text": "Belum. (Ia mengangkat keping berikutnya.) Yang retak ke kiri. Yang utuh ke kanan. Sampai sekarang belum ada yang utuh, jadi belum selesai. Kalau saya naik sebelum selesai, saya tidak dibayar."
+     },
+     {
+      "say": "Lintang",
+      "text": "Tidak ada yang utuh karena semuanya dipotong sebelum diserahkan ke Bapak."
+     },
+     {
+      "text": "Untuk pertama kalinya ia menoleh. Wajahnya wajah orang biasa: kumis tipis, dahi berkerut karena terlalu lama memicing ke arah kaca."
+     },
+     {
+      "say": "Juru Kaca",
+      "text": "(Pelan.) Dipotong."
+     },
+     {
+      "say": "Lintang",
+      "text": "Semuanya. Supaya tidak ada yang mau membacanya."
+     },
+     {
+      "text": "Ia berdiri diam cukup lama. Lalu ia meletakkan keping di tangannya — hati-hati, di tumpukan kanan, yang kosong — dan mengambil beliung kerjanya."
+     },
+     {
+      "say": "Juru Kaca",
+      "text": "Kalau begitu saya sudah dua puluh tahun memilah sampah. (Ia mengangkat beliung itu.) Maaf, Nak. Saya tidak marah sama kalian. Saya cuma tidak punya tempat lain untuk marah."
+     },
+     {
+      "text": "(Tip: fase satu ia masih bekerja — ia memanggil kendi dan menuang Nyala kalian ke dalamnya. Fase dua ia berhenti bekerja, dan kelemahannya berubah: pindai ulang. Petir lewat air; Cahaya menembus kaca.)"
+     },
+     {
+      "battle": [
+       "boss_juru_kaca_tenggelam"
+      ],
+      "boss": true,
+      "lose": "gameover",
+      "win": [
+       {
+        "text": "Beliungnya jatuh ke lantai dan tidak menimbulkan suara. Pak Padmo duduk, punggungnya ke peti, dan air berhenti keluar dari zirahnya."
+       },
+       {
+        "say": "Juru Kaca",
+        "text": "Nak. Kalau kalian naik... (Ia berhenti, mencari.) Tidak. Tidak ada yang menunggu. Saya sudah hitung. Istri saya sudah tua sekali sekarang, dan dia sudah lama berhenti ke dermaga."
+       },
+       {
+        "say": "Rimba",
+        "text": "Siapa nama Bapak? Yang lengkap."
+       },
+       {
+        "say": "Juru Kaca",
+        "text": "(Jeda panjang.) Padmo. Juru kaca tingkat dua, tambang lereng utara. (Lebih pelan.) Saya bukan orang yang menenggelamkan orang. Saya cuma disuruh menenggelamkan peti."
+       },
+       {
+        "say": "Lintang",
+        "text": "Saya tahu. Saya bawa nama Bapak ke atas."
+       },
+       {
+        "text": "Ia mengangguk sekali. Lalu tumpukan kiri — setinggi orang, seratus kali seratus keping yang ditolak — runtuh pelan ke lantai, dan Pak Padmo tidak ada lagi di antaranya.\n\nDi atas tumpukan yang runtuh, satu keping tidak retak."
+       },
+       {
+        "set": "gua_boss_kalah"
+       },
+       {
+        "kaca": {
+         "kaca_endap": 1
+        }
+       },
+       {
+        "give": {
+         "serpihan_ingatan": 1
+        }
+       },
+       {
+        "keping": 1800
+       },
+       {
+        "say": "Sela",
+        "text": "Rimba. Catat ini baik-baik, dan bawa sampai Mercusuar. Adipati tahu kaca ini masih bisa dibaca. Itu sebabnya dia memotongnya."
+       },
+       {
+        "heal": "all"
+       },
+       {
+        "ilustrasi": "events/dasar_menelan",
+        "teks": "Seratus keping yang ditolak runtuh, dan satu di antaranya utuh."
+       }
+      ]
+     }
+    ]
+   }
+  ]
+ }
+}

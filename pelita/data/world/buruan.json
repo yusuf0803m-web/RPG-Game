@@ -1,0 +1,267 @@
+{
+ "_catatan": "Papan Buruan (GAME_DESIGN §5.7). Kontrak diambil di papan Kafilah; targetnya muncul sebagai pilihan di ruang yang disebut selama kontraknya 'aktif'. Tiga target untuk Babak 1.",
+ "buruan_1_kunang": {
+  "nama": "Kunang Raja di Lembah Kabut",
+  "level": 7,
+  "area": "hutan_kelabu",
+  "room": "lembah_kabut",
+  "syarat": [
+   "boss_hutan_kalah"
+  ],
+  "musuh": [
+   "buruan_kunang_raja"
+  ],
+  "deskripsi": "Kunang sebesar kepala kerbau. Memanggil kawanan, lalu berkelahi sendirian dua kali lebih cepat.",
+  "petunjuk": "Di tengah lembah, cahaya kecil berkumpul jadi satu cahaya besar. Cahaya itu tidak menerangi apa-apa.",
+  "hadiah": {
+   "keping": 400,
+   "item": {
+    "bekal_kemah": 2
+   },
+   "kaca": [
+    "kaca_tabah"
+   ]
+  }
+ },
+ "buruan_2_nelayan": {
+  "nama": "Nelayan yang Tidak Pulang",
+  "level": 12,
+  "area": "danau_cermin",
+  "room": "sisi_danau",
+  "syarat": [
+   "boss_katak_kalah"
+  ],
+  "musuh": [
+   "buruan_nelayan_tenggelam"
+  ],
+  "deskripsi": "Sesuatu masih menebar jala di sisi danau tiap malam. Jalanya penuh, tapi tidak ada ikan di dalamnya.",
+  "petunjuk": "Jala dilempar ke arah kalian sebelum kalian sempat memanggil. Ia mengisi sesuatu di dadanya — sesuatu yang bersinar makin terang.",
+  "hadiah": {
+   "keping": 900,
+   "item": {
+    "ramuan_sari": 3
+   },
+   "kaca": [
+    "kaca_napas"
+   ]
+  }
+ },
+ "buruan_3_zirah": {
+  "nama": "Zirah Tanpa Nama",
+  "level": 17,
+  "area": "lorong_bawah",
+  "room": "ruang_pompa",
+  "syarat": [
+   "boss_rangga_kalah"
+  ],
+  "musuh": [
+   "buruan_zirah_tanpa_nama"
+  ],
+  "deskripsi": "Zirah pengawal istana yang masih menjaga pos yang sudah tidak ada. Kebal provokasi; ia hanya melihat yang paling lemah.",
+  "petunjuk": "Di ruang pompa, sesuatu berdiri tegak di air setinggi lutut, menghadap pintu yang tidak dipakai siapa pun sejak dua puluh tahun lalu.",
+  "hadiah": {
+   "keping": 1600,
+   "item": {
+    "abu_fajar": 2
+   },
+   "kaca": [
+    "kaca_pindai"
+   ]
+  }
+ },
+ "buruan_4_kambing": {
+  "nama": "Kambing Batu Bertanduk Tiga",
+  "level": 26,
+  "area": "celah_angin",
+  "room": "tangga_angin",
+  "syarat": [
+   "boss_garuda_kalah"
+  ],
+  "musuh": [
+   "kambing_batu",
+   "kambing_batu",
+   "kambing_batu"
+  ],
+  "deskripsi": "Tiga kambing batu yang menjatuhkan dua kafilah dari tangga angin. Menyerap Bumi; jangan bawa tombak.",
+  "petunjuk": "Di tangga tanpa pegangan itu, tiga bayangan bertanduk berdiri menghadap kalian dan tidak berniat memberi jalan.",
+  "hadiah": {
+   "keping": 2500,
+   "item": {
+    "ramuan_sari": 3
+   },
+   "kaca": [
+    "kaca_teguh"
+   ]
+  }
+ },
+ "buruan_5_hantu": {
+  "nama": "Hantu Kafilah Pengumpul",
+  "level": 29,
+  "area": "dataran_abu",
+  "room": "reruntuhan_kota",
+  "syarat": [
+   "sanggar_masuk"
+  ],
+  "musuh": [
+   "hantu_kafilah",
+   "hantu_kafilah",
+   "kalajengking_abu"
+  ],
+  "deskripsi": "Hantu yang mengumpulkan barang rampasan di reruntuhan tanpa nama. Curi (Bagas) merebut kembali yang ia bawa.",
+  "petunjuk": "Di antara dinding setinggi lutut, sesuatu sedang menata barang-barang kecil dalam barisan rapi.",
+  "hadiah": {
+   "keping": 3200,
+   "item": {
+    "abu_fajar": 2
+   },
+   "kaca": [
+    "kaca_licin"
+   ]
+  }
+ },
+ "buruan_6_pohon": {
+  "nama": "Pohon Gema Tertua",
+  "level": 33,
+  "area": "hutan_nyanyi",
+  "room": "hutan_gema",
+  "syarat": [
+   "ratih_gabung"
+  ],
+  "musuh": [
+   "pohon_gema",
+   "pohon_gema",
+   "burung_peniru"
+  ],
+  "deskripsi": "Pohon gema yang mengulang lagu Ordo, bukan lagu desa. Padasuara ingin ia diam.",
+  "petunjuk": "Satu batang mengulang suara khotbah, bukan nyanyian. Batang-batang di sekelilingnya mulai menirunya.",
+  "hadiah": {
+   "keping": 4500,
+   "item": {
+    "serpihan_ingatan": 1
+   },
+   "kaca": [
+    "kaca_rakus"
+   ]
+  }
+ },
+ "buruan_7_konstruk": {
+  "nama": "Konstruk Kaca Tanpa Perintah",
+  "level": 37,
+  "area": "wirasaba",
+  "room": "distrik_pasar",
+  "syarat": [
+   "boss_penjaga_suar_kalah"
+  ],
+  "musuh": [
+   "konstruk_kaca",
+   "konstruk_kaca",
+   "cermin_berjalan"
+  ],
+  "deskripsi": "Dua konstruk yang masih menjaga pasar yang sudah tidak berdagang apa pun, dan satu cermin yang mengikuti mereka.",
+  "petunjuk": "Di antara lapak-lapak kosong, dua sosok kaca berjalan berkeliling menurut rute jaga yang sudah dua puluh tahun sama.",
+  "hadiah": {
+   "keping": 6000,
+   "item": {
+    "serpihan_ingatan": 1,
+    "abu_fajar": 2
+   },
+   "kaca": [
+    "kaca_sembuh"
+   ]
+  }
+ },
+ "buruan_8_cacing_ibu": {
+  "nama": "Cacing Abu Ibu",
+  "level": 55,
+  "area": "dataran_abu",
+  "room": "sarang_cacing",
+  "syarat": [
+   "boss_nirmala_kalah"
+  ],
+  "musuh": [
+   "buruan_cacing_ibu",
+   "buruan_cacing_ibu_segmen",
+   "buruan_cacing_ibu_segmen",
+   "buruan_cacing_ibu_segmen",
+   "buruan_cacing_ibu_segmen"
+  ],
+  "deskripsi": "Yang melahirkan cacing-cacing Dataran Abu. Lima segmen; keempat segmennya menutup lukanya tiap ronde kalau kepalanya dibiarkan.",
+  "petunjuk": "Cekungan abu itu sekarang punya dasar, dan dasarnya bergerak. Yang keluar lebih dulu bukan kepalanya — empat ruas tubuh, lalu kepalanya, paling belakang.",
+  "hadiah": {
+   "keping": 30000,
+   "item": {
+    "tongkat_pelita_pertama": 1,
+    "serpihan_ingatan": 3
+   }
+  }
+ },
+ "buruan_9_gerobak": {
+  "nama": "Gerobak yang Masih Berjalan",
+  "level": 41,
+  "area": "danau_garam",
+  "room": "ladang_garam",
+  "syarat": [
+   "boss_pandansari_kalah"
+  ],
+  "musuh": [
+   "gerobak_kurungan",
+   "pemanen_ordo",
+   "pemanen_ordo"
+  ],
+  "deskripsi": "Gerobak panen Ordo yang masih menjalani rutenya di ladang garam, dengan dua pemanen yang mendorongnya. Selama keduanya berdiri, gerobaknya hampir tidak bisa dilukai.",
+  "petunjuk": "Ada alur roda di garam, lurus, dan alurnya sudah melingkari ladang ini entah berapa ratus kali. Di ujung alur yang paling baru ada sesuatu yang bergerak, pelan sekali, dan dua bayangan berjubah mendorongnya dari belakang.",
+  "hadiah": {
+   "keping": 9000,
+   "item": {
+    "kunci_kurungan": 1,
+    "serpihan_ingatan": 1
+   }
+  }
+ },
+ "buruan_10_penghitung": {
+  "nama": "Gema yang Menghitung",
+  "level": 50,
+  "area": "laut_lupa",
+  "room": "laut_kabut",
+  "syarat": [
+   "boss_gema_guntur_kalah"
+  ],
+  "musuh": [
+   "gema_penghitung",
+   "gema_prajurit",
+   "gema_prajurit"
+  ],
+  "deskripsi": "Sesuatu yang berdiri di kabut sambil menghitung kapal yang lewat. Ia memanggil gema kalian sendiri untuk melawan kalian.",
+  "petunjuk": "Kabut di sisi kiri lunas tidak ikut bergerak. Di dalamnya ada suara yang menghitung pelan — dan angkanya naik satu tiap kali salah seorang dari kalian menoleh.",
+  "hadiah": {
+   "keping": 14000,
+   "item": {
+    "serpihan_ingatan": 2
+   },
+   "kaca": [
+    "kaca_bara"
+   ]
+  }
+ },
+ "buruan_11_kedelapan": {
+  "nama": "Penjaga Suar Kedelapan",
+  "level": 53,
+  "area": "pusar_kabut",
+  "room": "aula_suar",
+  "syarat": [
+   "tujuh_penjaga_kalah"
+  ],
+  "musuh": [
+   "penjaga_suar_kedelapan"
+  ],
+  "deskripsi": "Konstruk penjaga kedelapan di aula yang cuma punya tujuh rongga. Ia mengisi sebelum menembak; isiannya batal kalau ia Goyah atau PECAH.",
+  "petunjuk": "Di dinding aula, di belakang rongga ketujuh, ada rongga lagi. Belum dipahat sampai selesai, dan di depannya berdiri sesuatu yang sudah berjaga selama delapan abad untuk sesuatu yang belum pernah ada.",
+  "hadiah": {
+   "keping": 20000,
+   "item": {
+    "lensa_kedelapan": 1,
+    "serpihan_ingatan": 2
+   }
+  }
+ }
+}

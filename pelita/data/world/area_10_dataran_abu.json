@@ -1,0 +1,905 @@
+{
+ "id": "dataran_abu",
+ "name": "Dataran Abu",
+ "start": "tepi_dataran",
+ "level_range": "Lv 26-29",
+ "fog": false,
+ "encounter_rate": 0.4,
+ "encounters": [
+  {
+   "enemies": [
+    "kalajengking_abu"
+   ],
+   "weight": 3
+  },
+  {
+   "enemies": [
+    "kalajengking_abu",
+    "kalajengking_abu"
+   ],
+   "weight": 2
+  },
+  {
+   "enemies": [
+    "hantu_kafilah"
+   ],
+   "weight": 3
+  },
+  {
+   "enemies": [
+    "hantu_kafilah",
+    "kalajengking_abu"
+   ],
+   "weight": 2
+  },
+  {
+   "enemies": [
+    "cacing_abu_muda"
+   ],
+   "weight": 2
+  },
+  {
+   "enemies": [
+    "hampa_pengembara",
+    "hantu_kafilah"
+   ],
+   "weight": 1
+  }
+ ],
+ "rooms": {
+  "tepi_dataran": {
+   "name": "Tepi Dataran",
+   "safe": true,
+   "text": "Kaki pegunungan berakhir dan abu dimulai, segaris seperti ditarik penggaris. Di belakang: batu. Di depan: kelabu sampai ke ujung mata. Abu itu naik sedikit setiap kali kalian melangkah, lalu turun lagi dengan malas.",
+   "on_enter": "masuk_dataran",
+   "exits": [
+    {
+     "label": "Naik kembali ke Celah Angin",
+     "to": "punggung_celah",
+     "area": "celah_angin"
+    },
+    {
+     "label": "Masuk ke dataran",
+     "to": "jalan_abu"
+    }
+   ],
+   "objects": [
+    {
+     "id": "lentera_tepi",
+     "name": "Lentera penjaga (simpan & istirahat)",
+     "script": "lentera_save"
+    }
+   ]
+  },
+  "jalan_abu": {
+   "name": "Jalan Abu",
+   "text": "Tidak ada jalan sebenarnya, hanya bekas roda yang ditinggalkan kafilah dan diisi ulang abu tiap beberapa hari. Sesekali kaki kalian menyentuh sesuatu yang keras di bawah permukaan: genteng, tiang, tulang.",
+   "exits": [
+    {
+     "label": "Kembali ke tepi dataran",
+     "to": "tepi_dataran"
+    },
+    {
+     "label": "Ikuti bekas roda",
+     "to": "pos_sanggar"
+    },
+    {
+     "label": "Menyimpang ke reruntuhan",
+     "to": "reruntuhan_kota"
+    }
+   ],
+   "on_enter": "sergap_jalan_abu"
+  },
+  "reruntuhan_kota": {
+   "name": "Reruntuhan Tanpa Nama",
+   "text": "Kerangka sebuah kota kecil: dinding setinggi lutut, tungku yang masih berdiri utuh, dan satu tiang lentera yang bengkok tapi tidak roboh. Tidak ada papan nama di mana pun.",
+   "on_enter": "lihat_reruntuhan",
+   "exits": [
+    {
+     "label": "Kembali ke jalan abu",
+     "to": "jalan_abu"
+    }
+   ],
+   "objects": [
+    {
+     "id": "tungku",
+     "name": "Tungku yang masih utuh",
+     "script": "periksa_tungku",
+     "if": [
+      "!tungku_diperiksa"
+     ]
+    },
+    {
+     "id": "naf_besi",
+     "name": "Naf besi di antara reruntuhan",
+     "script": "sq_naf",
+     "if": [
+      "!has:naf_besi",
+      "!sq_roda_selesai"
+     ]
+    }
+   ]
+  },
+  "pos_sanggar": {
+   "name": "Pos Kafilah Sanggar",
+   "safe": true,
+   "text": "Kafilah Sanggar: tiga puluh gerobak diparkir melingkar, dan di tengah lingkaran itu sebuah lentera setinggi dua orang yang tidak pernah dipadamkan. Di luar lingkaran cahayanya, abu. Di dalam: pasar, tawa, bau kopi gosong.",
+   "on_enter": "masuk_sanggar",
+   "exits": [
+    {
+     "label": "Keluar ke jalan abu",
+     "to": "jalan_abu"
+    },
+    {
+     "label": "Ke lingkaran garam (Arena)",
+     "to": "lingkaran_garam"
+    },
+    {
+     "label": "Ke gerobak Nyai Rukmini",
+     "to": "gerobak_rukmini"
+    },
+    {
+     "label": "Ke jalan utara",
+     "to": "jalan_utara",
+     "if": [
+      "rukmini_arah"
+     ],
+     "locked": "Kalian belum tahu harus ke mana. Nyai Rukmini mungkin tahu."
+    }
+   ],
+   "npcs": [
+    {
+     "id": "pedagang_sanggar",
+     "name": "Pedagang Kafilah",
+     "script": "toko_sanggar"
+    },
+    {
+     "id": "mpu_darma",
+     "name": "Mpu Darma (Tukang Kaca)",
+     "script": "tukang_kaca_sanggar"
+    },
+    {
+     "id": "juru_arena2",
+     "name": "Juru Arena Kafilah",
+     "script": "arena_sanggar"
+    }
+   ],
+   "objects": [
+    {
+     "id": "lentera_sanggar",
+     "name": "Lentera raksasa (simpan & istirahat)",
+     "script": "lentera_save"
+    },
+    {
+     "id": "papan_buruan2",
+     "name": "Papan Buruan Kafilah",
+     "verb": "Baca",
+     "script": "papan_sanggar"
+    },
+    {
+     "id": "pesanan_darma",
+     "name": "Meja kerja Mpu Darma yang berantakan",
+     "script": "sq_darma",
+     "if": [
+      "!sq_darma_selesai"
+     ]
+    }
+   ],
+   "latar_varian": [
+    {
+     "if": [
+      "babak_2_selesai"
+     ],
+     "latar": "dataran_abu/pos_sanggar_berkemas"
+    }
+   ]
+  },
+  "gerobak_rukmini": {
+   "name": "Gerobak Nyai Rukmini",
+   "safe": true,
+   "text": "Gerobak paling besar, penuh peta yang digambar di kulit dan digantung seperti jemuran. Nyai Rukmini duduk di tengahnya, tujuh puluhan, memegang cangkir yang sudah dingin sejak tadi.",
+   "on_enter": "adegan_rukmini",
+   "exits": [
+    {
+     "label": "Kembali ke pos",
+     "to": "pos_sanggar"
+    }
+   ],
+   "npcs": [
+    {
+     "id": "rukmini",
+     "name": "Nyai Rukmini",
+     "script": "bicara_rukmini"
+    }
+   ],
+   "objects": [
+    {
+     "id": "naf_roda",
+     "name": "Roda keempat gerobak lentera yang dibongkar",
+     "script": "sq_roda",
+     "if": [
+      "!sq_roda_selesai"
+     ]
+    }
+   ]
+  },
+  "lingkaran_garam": {
+   "name": "Lingkaran Garam",
+   "safe": true,
+   "text": "Lingkaran garam setebal telapak digambar di atas abu, dijaga supaya tidak tertiup. Di dalamnya orang berkelahi untuk hadiah; di luarnya orang bertaruh untuk hal yang sama.",
+   "exits": [
+    {
+     "label": "Kembali ke pos",
+     "to": "pos_sanggar"
+    }
+   ],
+   "npcs": [
+    {
+     "id": "juru_arena3",
+     "name": "Juru Arena Kafilah",
+     "script": "arena_sanggar"
+    }
+   ],
+   "latar": "dataran_abu/pos_sanggar",
+   "objects": [
+    {
+     "id": "sumur_asin",
+     "name": "Sumur di tengah lingkaran garam",
+     "script": "sq_sumur",
+     "if": [
+      "!sq_sumur_selesai"
+     ]
+    }
+   ]
+  },
+  "jalan_utara": {
+   "name": "Jalan Utara",
+   "text": "Bekas roda yang lebih lama, lebih dalam, dan berhenti mendadak di tengah dataran. Dari sini tanah mulai naik sedikit, dan di kejauhan ada garis hijau yang tidak seharusnya ada di dataran abu.",
+   "exits": [
+    {
+     "label": "Kembali ke pos",
+     "to": "pos_sanggar"
+    },
+    {
+     "label": "Periksa bekas roda yang terputus",
+     "to": "sarang_cacing"
+    },
+    {
+     "label": "Menuju garis hijau di utara",
+     "to": "gerbang_hutan",
+     "area": "hutan_nyanyi",
+     "if": [
+      "boss_cacing_kalah"
+     ],
+     "locked": "Tanah di depan bergetar pelan, naik-turun seperti napas. Nyai Rukmini melarang siapa pun lewat sebelum itu berhenti."
+    }
+   ],
+   "on_enter": "sergap_jalan_utara"
+  },
+  "sarang_cacing": {
+   "name": "Cekungan Abu",
+   "text": "Cekungan selebar alun-alun, dan di dasarnya abu bergerak melingkar pelan — seperti air yang sedang dihisap lubang.",
+   "on_enter": "boss_cacing",
+   "exits": [
+    {
+     "label": "Kembali ke jalan utara",
+     "to": "jalan_utara"
+    }
+   ]
+  }
+ },
+ "scripts": {
+  "lentera_save": [
+   {
+    "text": "Kau merapikan sumbu. Di dataran ini nyala kecil terlihat jauh lebih penting daripada di lembah."
+   },
+   {
+    "heal": "all"
+   },
+   {
+    "save": true
+   },
+   {
+    "if": [
+     "has:bekal_kemah"
+    ],
+    "then": [
+     {
+      "kemah": true
+     }
+    ]
+   }
+  ],
+  "masuk_dataran": [
+   {
+    "once": "dataran_masuk",
+    "do": [
+     {
+      "text": "Abu itu hangat. Bukan panas — hangat, seperti sesuatu yang baru berhenti terbakar minggu lalu, bukan delapan abad lalu."
+     },
+     {
+      "say": "Bagas",
+      "text": "Aku pernah dengar ini dari pengangkut di tambang. Katanya abu dataran tidak pernah dingin."
+     },
+     {
+      "say": "Lintang",
+      "text": "Karena yang terbakar belum selesai terbakar."
+     },
+     {
+      "say": "Sela",
+      "text": "Jangan bicara begitu sambil berjalan di atasnya."
+     }
+    ]
+   }
+  ],
+  "lihat_reruntuhan": [
+   {
+    "once": "reruntuhan_dilihat",
+    "do": [
+     {
+      "text": "Kota ini tidak punya nama yang tersisa. Yang tersisa hanya bentuknya: di mana orang tidur, di mana orang masak, di mana orang berkumpul."
+     },
+     {
+      "say": "Rangga",
+      "text": "Di Tengara kami diajari bahwa dataran ini selalu kosong. Bahwa tidak ada yang hilang di sini."
+     },
+     {
+      "say": "Rimba",
+      "text": "Kau percaya?"
+     },
+     {
+      "say": "Rangga",
+      "text": "Aku percaya selama tiga puluh tahun. Itu jawabannya."
+     }
+    ]
+   },
+   {
+    "run": "sergap_reruntuhan"
+   }
+  ],
+  "periksa_tungku": [
+   {
+    "text": "Tungku batu yang masih utuh, dan di dalamnya — bukan abu, tapi kaca. Api yang membakar kota ini cukup panas untuk melelehkan pasir tungkunya sendiri."
+   },
+   {
+    "give": {
+     "serpihan_ingatan": 1
+    }
+   },
+   {
+    "kaca": {
+     "kaca_teguh": 1
+    }
+   },
+   {
+    "set": "tungku_diperiksa"
+   }
+  ],
+  "masuk_sanggar": [
+   {
+    "once": "sanggar_masuk",
+    "do": [
+     {
+      "text": "Penjaga gerbang kafilah menahan kalian dengan tombak, melihat lentera Rimba, lalu menurunkan tombaknya."
+     },
+     {
+      "say": "Penjaga",
+      "text": "Penyala. Dari lembah? (Ia memanggil ke belakang.) Nyai! Ada orang lembah!"
+     },
+     {
+      "text": "Di dalam lingkaran lentera, dunia berubah: ada anak-anak, ada ayam, ada orang menawar harga kain. Dataran mati mengelilingi semua itu dalam jarak dua puluh langkah."
+     },
+     {
+      "say": "Bagas",
+      "text": "Mereka hidup di sini. Beneran hidup, bukan bertahan."
+     },
+     {
+      "say": "Rangga",
+      "text": "Mereka bergerak. Kabut lebih sulit mengingat yang bergerak."
+     }
+    ]
+   }
+  ],
+  "toko_sanggar": [
+   {
+    "say": "Pedagang",
+    "text": "Harga dataran, bukan harga lembah. Kami bawa semuanya dari jauh dan separuh gerobak tidak sampai."
+   },
+   {
+    "shop": "pasar_sanggar"
+   }
+  ],
+  "tukang_kaca_sanggar": [
+   {
+    "once": "darma_kenal",
+    "do": [
+     {
+      "say": "Darma",
+      "text": "Mpu Sarwa di Tengara itu guruku. Kalau kau bawa serpihan dari lembah, aku bisa lelehkan di sini juga — tungkuku ikut jalan di gerobak."
+     },
+     {
+      "say": "Bagas",
+      "text": "Tungku di atas roda."
+     },
+     {
+      "say": "Darma",
+      "text": "Semua di sini di atas roda, Nak. Termasuk kuburan."
+     }
+    ]
+   },
+   {
+    "tukang_kaca": "kios_darma"
+   }
+  ],
+  "arena_sanggar": [
+   {
+    "once": "arena_sanggar_kenal",
+    "do": [
+     {
+      "say": "Juru Arena",
+      "text": "Lingkaran garam. Tiga gelombang, tanpa ramuan. Di lembah katanya kalian sudah coba yang mudah — ini tingkat kafilah."
+     }
+    ]
+   },
+   {
+    "arena": true
+   }
+  ],
+  "papan_sanggar": [
+   {
+    "once": "papan_sanggar_kenal",
+    "do": [
+     {
+      "text": "Papan buruan kafilah jauh lebih penuh daripada yang di Tengara. Beberapa kertas sudah kuning; beberapa ditempel di atas kertas yang lebih tua."
+     },
+     {
+      "say": "Juru Tulis",
+      "text": "Yang di bawah itu kontrak yang tidak pernah diambil pulang. Kami biarkan saja. Kertasnya masih bagus."
+     }
+    ]
+   },
+   {
+    "papan_buruan": true
+   }
+  ],
+  "adegan_rukmini": [
+   {
+    "once": "rukmini_adegan",
+    "do": [
+     {
+      "say": "Rukmini",
+      "text": "Duduk. Semua. Yang berdiri bikin gerobak miring."
+     },
+     {
+      "text": "Ia menuang kopi tanpa bertanya, lima cangkir, dan mendorongnya satu per satu."
+     },
+     {
+      "say": "Rukmini",
+      "text": "Mercusuar lembah menyala lagi. Kami lihat dari sini, tiga malam lalu. Kafilah berhenti setengah jam cuma untuk melihat."
+     },
+     {
+      "say": "Rimba",
+      "text": "Nyai tahu soal Ordo Pelita?"
+     },
+     {
+      "text": "Cangkir berhenti di depan bibirnya."
+     },
+     {
+      "say": "Rukmini",
+      "text": "Aku tahu Ordo waktu umurku sembilan tahun. Mereka datang ke kota kami, bilang Suar kami perlu 'diperbarui'. Ayahku ikut masuk ke menara dengan bangga. Yang keluar cuma cahaya."
+     },
+     {
+      "pause": true
+     },
+     {
+      "say": "Rukmini",
+      "text": "Kota itu sekarang ada di bawah kakimu waktu kau lewat reruntuhan tadi."
+     },
+     {
+      "say": "Sela",
+      "text": "Kenapa Nyai tidak melawan?"
+     },
+     {
+      "say": "Rukmini",
+      "text": "Karena melawan butuh tempat berpijak, dan kami memilih roda. (Ia meletakkan cangkir.) Tapi kalian punya lembah, punya Mercusuar, dan punya Penyala yang belum dibakar. Itu bukan sedikit."
+     },
+     {
+      "set": "rukmini_arah"
+     }
+    ]
+   }
+  ],
+  "bicara_rukmini": [
+   {
+    "if": [
+     "!boss_cacing_kalah"
+    ],
+    "then": [
+     {
+      "say": "Rukmini",
+      "text": "Jalan utara terputus. Ada cacing abu purba di bawah cekungan — yang muda-muda itu anaknya. Selama induknya belum tidur lagi, tidak ada gerobak yang lewat."
+     },
+     {
+      "say": "Rukmini",
+      "text": "Kalau kalian memang mau ke Hutan Nyanyi, kalian harus membangunkannya dulu. Aku tidak akan bilang itu ide bagus."
+     },
+     {
+      "end": true
+     }
+    ]
+   },
+   {
+    "if": [
+     "!ratih_gabung"
+    ],
+    "then": [
+     {
+      "say": "Rukmini",
+      "text": "Garis hijau di utara itu Hutan Nyanyi. Di dalamnya ada desa yang menahan Kabut tanpa membakar siapa pun. Ordo menyebut mereka bidah."
+     },
+     {
+      "say": "Rukmini",
+      "text": "Kalau ada satu tempat yang harus kalian lihat sebelum Wirasaba, itu Padasuara."
+     },
+     {
+      "end": true
+     }
+    ]
+   },
+   {
+    "say": "Rukmini",
+    "text": "Kalian sudah dengar mereka menyanyi, kan? (Ia tersenyum, lalu berhenti tersenyum.) Ordo juga sudah dengar."
+   }
+  ],
+  "boss_cacing": [
+   {
+    "if": [
+     "boss_cacing_kalah"
+    ],
+    "then": [
+     {
+      "text": "Cekungan itu diam sekarang. Abu di dasarnya sudah berhenti berputar."
+     },
+     {
+      "end": true
+     }
+    ]
+   },
+   {
+    "text": "Abu di dasar cekungan berputar makin cepat. Lalu berhenti. Lalu naik — bukan tertiup, tapi terdorong dari bawah."
+   },
+   {
+    "say": "Bagas",
+    "text": "Itu bukan angin."
+   },
+   {
+    "adegan": {
+     "efek": "shake"
+    }
+   },
+   {
+    "text": "Sesuatu sepanjang jalan desa keluar dari dataran, dan kepalanya saja lebih tinggi dari gerobak Nyai Rukmini."
+   },
+   {
+    "pause": true
+   },
+   {
+    "battle": [
+     "boss_cacing_abu_purba"
+    ],
+    "boss": true,
+    "win": [
+     {
+      "set": "boss_cacing_kalah"
+     },
+     {
+      "text": "Cacing itu roboh melintang di cekungan, dan abu perlahan menutupinya kembali, seperti dataran ini memang selalu menelan apa pun yang berhenti bergerak."
+     },
+     {
+      "give": {
+       "serpihan_ingatan": 1,
+       "ramuan_sari": 3
+      }
+     },
+     {
+      "kaca": {
+       "kaca_es": 1
+      }
+     },
+     {
+      "say": "Rukmini",
+      "text": "(Dari tepi cekungan, entah sejak kapan ada di sana.) Tiga puluh tahun kafilah memutar sejauh dua hari untuk menghindari itu. Kalian menyelesaikannya sebelum kopiku dingin."
+     },
+     {
+      "say": "Rangga",
+      "text": "Kopi Nyai memang sudah dingin dari tadi."
+     },
+     {
+      "say": "Rukmini",
+      "text": "Itu bukan urusanmu, Kapten."
+     }
+    ]
+   }
+  ],
+  "sergap_jalan_abu": [
+   {
+    "once": "sergap_jalan_abu_selesai",
+    "do": [
+     {
+      "text": "Abu di depan kalian naik dua gundukan kecil, lalu keduanya bergerak."
+     },
+     {
+      "battle": [
+       "kalajengking_abu",
+       "kalajengking_abu"
+      ],
+      "win": []
+     }
+    ]
+   }
+  ],
+  "sergap_reruntuhan": [
+   {
+    "once": "sergap_reruntuhan_selesai",
+    "do": [
+     {
+      "text": "Dua sosok berdiri di antara dinding setinggi lutut, sedang menata sesuatu. Mereka berhenti menata."
+     },
+     {
+      "battle": [
+       "hantu_kafilah",
+       "hantu_kafilah"
+      ],
+      "win": []
+     }
+    ]
+   }
+  ],
+  "sergap_jalan_utara": [
+   {
+    "once": "sergap_jalan_utara_selesai",
+    "do": [
+     {
+      "text": "Tanah di bekas roda itu retak memanjang, dan sesuatu yang masih muda keluar dari dalamnya."
+     },
+     {
+      "battle": [
+       "cacing_abu_muda",
+       "kalajengking_abu"
+      ],
+      "win": []
+     }
+    ]
+   }
+  ],
+  "sq_roda": [
+   {
+    "if": [
+     "!sq_roda_aktif"
+    ],
+    "then": [
+     {
+      "text": "Roda keempat gerobak lentera itu dicopot dan disandarkan. Jari-jarinya utuh; nafnya — bantalan besi di pusat roda — retak melingkar."
+     },
+     {
+      "say": "Rukmini",
+      "text": "Tiga roda masih bisa jalan kalau bebannya dikurangi. Yang dikurangi air. (Ia bicara sambil terus menganyam.) Kafilah ini tiga puluh satu orang, Nak, dan sebelas di antaranya belum sepuluh tahun."
+     },
+     {
+      "say": "Bagas",
+      "text": "Nafnya saja yang rusak. Rodanya tidak perlu diganti."
+     },
+     {
+      "say": "Rukmini",
+      "text": "Nah, ini yang kucari. Naf besi seukuran itu cuma ada di kota-kota yang sudah tidak ada. Reruntuhan tanpa nama di selatan, kalau kau tidak takut."
+     },
+     {
+      "set": "sq_roda_aktif"
+     },
+     {
+      "quest": "roda_keempat",
+      "state": "aktif"
+     }
+    ],
+    "else": [
+     {
+      "if": [
+       "has:naf_besi"
+      ],
+      "then": [
+       {
+        "take": {
+         "naf_besi": 1
+        }
+       },
+       {
+        "text": "Bagas memasangnya sendiri dan tidak mengizinkan siapa pun membantu, lalu memutar rodanya dua kali sambil mendengarkan."
+       },
+       {
+        "say": "Bagas",
+        "text": "Longgar seperempat. Sengaja. Kalau terlalu rapat, abunya masuk dan macet di tengah jalan."
+       },
+       {
+        "say": "Rukmini",
+        "text": "Kau belajar di mana?"
+       },
+       {
+        "say": "Bagas",
+        "text": "Sendirian, dua belas tahun, di dalam tambang. (Ia mengelap tangannya.) Tidak ada yang mengajari. Cuma ada banyak sekali barang rusak dan tidak ada tempat untuk pergi."
+       },
+       {
+        "say": "Rukmini",
+        "text": "(Ia berhenti menganyam.) Duduk sini sebentar, Nak."
+       },
+       {
+        "set": "sq_roda_selesai"
+       },
+       {
+        "quest": "roda_keempat",
+        "state": "selesai"
+       },
+       {
+        "give": {
+         "serpihan_ingatan": 1,
+         "bekal_kemah": 3
+        }
+       },
+       {
+        "keping": 2400
+       }
+      ],
+      "else": [
+       {
+        "text": "Roda keempat masih disandarkan. Nafnya perlu diganti; yang seukuran itu cuma ada di reruntuhan."
+       }
+      ]
+     }
+    ]
+   }
+  ],
+  "sq_naf": [
+   {
+    "text": "Di bawah dinding setinggi lutut, di tempat yang dulu bengkel: tumpukan besi yang sudah kehilangan bentuk aslinya. Di antaranya, satu naf roda seukuran kepalan, masih bulat."
+   },
+   {
+    "say": "Sela",
+    "text": "Kota ini tidak dibakar Ordo."
+   },
+   {
+    "say": "Rangga",
+    "text": "Tidak. Ini terbakar waktu Kabut datang, sebelum ada yang mengerti apa itu. (Ia menyentuh dinding.) Tidak ada namanya karena tidak ada yang sempat keluar untuk menyebutkannya."
+   },
+   {
+    "give": {
+     "naf_besi": 1
+    }
+   },
+   {
+    "if": [
+     "sq_roda_aktif"
+    ],
+    "then": [
+     {
+      "quest": "roda_keempat",
+      "state": "ketemu"
+     }
+    ]
+   }
+  ],
+  "sq_sumur": [
+   {
+    "if": [
+     "!sq_sumur_aktif"
+    ],
+    "then": [
+     {
+      "text": "Sumur batu di tengah lingkaran. Timbanya masih ada dan talinya masih baru — seseorang masih memakainya. Airnya naik jernih, dan begitu menyentuh lidah, asin sekali."
+     },
+     {
+      "say": "Penimba",
+      "text": "(Perempuan muda, dengan dua jeriken kosong.) Sudah empat bulan begini. Dulu tawar. Kafilah berhenti singgah, dan kalau kafilah tidak singgah, kami tidak punya apa-apa untuk ditukar."
+     },
+     {
+      "say": "Bagas",
+      "text": "Boleh kulihat ke bawah?"
+     },
+     {
+      "set": "sq_sumur_aktif"
+     },
+     {
+      "quest": "sumur_asin",
+      "state": "aktif"
+     }
+    ],
+    "else": [
+     {
+      "text": "Bagas turun dengan tali dan lampu, lama sekali, lalu naik lagi sambil membawa sesuatu yang dibungkus kainnya."
+     },
+     {
+      "say": "Bagas",
+      "text": "Ini bukan garam alam. (Ia membuka kainnya: pecahan kaca sebesar telapak, putih dan berbutir.) Kaca Suar. Pecahan, sudah lama, tersangkut di celah air. Kaca Suar menarik air keluar dari apa pun di dekatnya — makanya gudang Ordo selalu kering. Empat bulan ia duduk di jalur air sumur ini dan mengeringkan tanahnya dari dalam."
+     },
+     {
+      "say": "Rimba",
+      "text": "Dari mana pecahannya?"
+     },
+     {
+      "say": "Rangga",
+      "text": "Dari gerobak yang lewat. (Ia melihat ke jalan utara.) Mereka mengangkutnya lewat sini tiap musim, dan sesekali ada yang jatuh, dan tidak ada yang berhenti untuk memungutnya."
+     },
+     {
+      "text": "Perempuan itu menimba lagi tiga hari kemudian, kata kafilah, dan airnya tawar."
+     },
+     {
+      "set": "sq_sumur_selesai"
+     },
+     {
+      "quest": "sumur_asin",
+      "state": "selesai"
+     },
+     {
+      "give": {
+       "serpihan_ingatan": 1
+      }
+     },
+     {
+      "kaca": {
+       "kaca_kikir": 1
+      }
+     },
+     {
+      "keping": 2000
+     }
+    ]
+   }
+  ],
+  "sq_darma": [
+   {
+    "if": [
+     "!sq_darma_aktif"
+    ],
+    "then": [
+     {
+      "text": "Meja Mpu Darma penuh percobaan yang gagal: dua belas keping kaca yang semuanya retak di tempat yang sama, disusun berjajar seperti bukti."
+     },
+     {
+      "say": "Darma",
+      "text": "Retak di sumbu yang sama, dua belas kali. Berarti bukan salah tanganku, berarti salah kacanya. Kaca kafilah ini terlalu muda."
+     },
+     {
+      "say": "Bagas",
+      "text": "Butuh kaca tambang tua."
+     },
+     {
+      "say": "Darma",
+      "text": "Butuh kaca Wirasaba. Gedung-gedung di sana kaca ingatan semua, dan yang sudah delapan abad berdiri itu sudah selesai bergerak. (Ia mengangkat bahu.) Aku tidak akan ke sana. Kalau kalian ke sana dan sempat, ambilkan satu keping dari dinding yang sudah runtuh. Jangan dari yang masih berdiri."
+     },
+     {
+      "say": "Rimba",
+      "text": "Kenapa jangan yang masih berdiri?"
+     },
+     {
+      "say": "Darma",
+      "text": "Karena yang masih berdiri itu rumah orang, Nak. Meski orangnya Hampa."
+     },
+     {
+      "set": "sq_darma_aktif"
+     },
+     {
+      "quest": "pesanan_darma",
+      "state": "aktif"
+     }
+    ],
+    "else": [
+     {
+      "text": "Dua belas keping retak masih berjajar di meja Darma."
+     },
+     {
+      "say": "Darma",
+      "text": "Kalau nanti kalian dapat kacanya dan aku sudah tidak di sini, cari aku di kapal. Kafilah ini menyumbang kapal buat kalian, dan aku ikut — tidak ada tukang kaca yang mau ketinggalan kesempatan melihat laut yang isinya ingatan."
+     }
+    ]
+   }
+  ]
+ }
+}

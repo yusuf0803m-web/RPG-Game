@@ -1,0 +1,814 @@
+{
+ "id": "danau_garam",
+ "name": "Danau Garam",
+ "start": "tepi_garam",
+ "level_range": "Lv 36-39",
+ "fog": true,
+ "encounter_rate": 0.4,
+ "encounters": [
+  {
+   "enemies": [
+    "kepiting_garam"
+   ],
+   "weight": 3
+  },
+  {
+   "enemies": [
+    "hampa_beku",
+    "hampa_beku"
+   ],
+   "weight": 3
+  },
+  {
+   "enemies": [
+    "kepiting_garam",
+    "hampa_beku"
+   ],
+   "weight": 2
+  },
+  {
+   "enemies": [
+    "pemanen_ordo"
+   ],
+   "weight": 2
+  },
+  {
+   "enemies": [
+    "pemanen_ordo",
+    "hampa_beku"
+   ],
+   "weight": 1
+  }
+ ],
+ "rooms": {
+  "tepi_garam": {
+   "name": "Tepi Garam",
+   "safe": true,
+   "text": "Tanah berubah jadi kerak putih yang berderak di bawah sepatu. Kabut di sini tidak bergerak sama sekali — ia berdiri seperti dinding setinggi lutut, dan kalau kau melangkah menembusnya, dingin itu masuk lewat kulit dan mengambil sesuatu yang bukan panas.",
+   "on_enter": "masuk_garam",
+   "exits": [
+    {
+     "label": "Kembali ke Wirasaba",
+     "to": "gerbang_barat_w",
+     "area": "wirasaba"
+    },
+    {
+     "label": "Menyeberang ke ladang garam",
+     "to": "ladang_garam"
+    }
+   ],
+   "objects": [
+    {
+     "id": "lentera_tepi_garam",
+     "name": "Lentera penjaga (simpan & istirahat)",
+     "script": "lentera_save"
+    }
+   ]
+  },
+  "ladang_garam": {
+   "name": "Ladang Garam",
+   "text": "Hamparan putih tanpa bayangan, karena tidak ada apa pun yang cukup tinggi untuk membuat bayangan. Kristal garam tumbuh dari permukaan seperti rumput kaca, setinggi lutut, dan pecah berdenting kalau terinjak.",
+   "exits": [
+    {
+     "label": "Kembali ke tepi",
+     "to": "tepi_garam"
+    },
+    {
+     "label": "Ke bangkai kapal",
+     "to": "bangkai_kapal"
+    },
+    {
+     "label": "Ke dermaga rakit",
+     "to": "dermaga_rakit"
+    }
+   ],
+   "on_enter": "sergap_ladang",
+   "objects": [
+    {
+     "id": "pemungut_garam",
+     "name": "Pemungut garam yang bekerja sendirian",
+     "script": "pd_garam",
+     "if": [
+      "quest:pendendang_hilang=wirasaba"
+     ]
+    }
+   ]
+  },
+  "bangkai_kapal": {
+   "name": "Bangkai Kapal Garam",
+   "text": "Kapal sepanjang tiga rumah, berdiri miring di tengah ladang. Danau ini dulu berair, dan cukup dalam untuk kapal sebesar ini. Lambungnya sudah jadi garam seluruhnya; kalau kau ketuk, bunyinya seperti piring.",
+   "on_enter": "lihat_kapal",
+   "exits": [
+    {
+     "label": "Kembali ke ladang",
+     "to": "ladang_garam"
+    }
+   ],
+   "objects": [
+    {
+     "id": "palka",
+     "name": "Palka yang masih tertutup",
+     "script": "peti_kapal",
+     "if": [
+      "!peti_kapal_diambil"
+     ]
+    }
+   ]
+  },
+  "dermaga_rakit": {
+   "name": "Dermaga Rakit",
+   "safe": true,
+   "text": "Dermaga kayu yang tidak menghadap air, melainkan menghadap garam. Ada rakit bersandar di ujungnya, dengan galah panjang dan bekas alur di permukaan garam yang menunjukkan ia memang pernah didorong ke tengah.",
+   "on_enter": "adegan_rakit",
+   "exits": [
+    {
+     "label": "Kembali ke ladang",
+     "to": "ladang_garam"
+    },
+    {
+     "label": "Dorong rakit ke menara",
+     "to": "menara_terapung",
+     "if": [
+      "rakit_siap"
+     ],
+     "locked": "Rakit itu kandas di kerak garam. Perlu sesuatu untuk melicinkan alurnya."
+    }
+   ],
+   "objects": [
+    {
+     "id": "lentera_dermaga_garam",
+     "name": "Lentera penjaga (simpan & istirahat)",
+     "script": "lentera_save"
+    },
+    {
+     "id": "alur_garam",
+     "name": "Alur garam di depan rakit",
+     "script": "siapkan_rakit",
+     "if": [
+      "!rakit_siap"
+     ]
+    }
+   ]
+  },
+  "menara_terapung": {
+   "name": "Kaki Menara Terapung",
+   "text": "Menara itu benar-benar tidak menyentuh apa pun. Ia mengapung setinggi lutut di atas garam, condong beberapa derajat, dan tidak bergerak sedikit pun meski rakit kalian menabraknya.",
+   "on_enter": "masuk_menara_terapung",
+   "exits": [
+    {
+     "label": "Kembali ke dermaga",
+     "to": "dermaga_rakit"
+    },
+    {
+     "label": "Naik ke ruang buku besar",
+     "to": "ruang_buku"
+    },
+    {
+     "label": "Turun ke retakan di bawah kaki menara",
+     "to": "retak_kaki",
+     "area": "suar_ketiga",
+     "if": [
+      "boss_nirmala_kalah"
+     ],
+     "locked": "Menara ini masih mengapung setinggi lutut di atas garam, dan di bawahnya tidak ada apa-apa selain kerak putih yang utuh."
+    }
+   ]
+  },
+  "ruang_buku": {
+   "name": "Ruang Buku Besar",
+   "text": "Ruang bundar penuh rak, dan raknya penuh buku yang sampulnya kaca. Ini bukan perpustakaan — ini pembukuan. Tiap buku mencatat satu Suar: kapan dinyalakan, siapa yang masuk, berapa lama bertahan.",
+   "on_enter": "adegan_buku",
+   "exits": [
+    {
+     "label": "Turun ke kaki menara",
+     "to": "menara_terapung"
+    },
+    {
+     "label": "Naik ke puncak menara",
+     "to": "puncak_terapung",
+     "if": [
+      "buku_dibaca"
+     ],
+     "locked": "Ada yang harus kalian baca dulu."
+    }
+   ],
+   "objects": [
+    {
+     "id": "buku_besar",
+     "name": "Buku besar di meja tengah",
+     "script": "baca_buku",
+     "if": [
+      "!buku_dibaca"
+     ]
+    },
+    {
+     "id": "rak_kosong",
+     "name": "Rak yang satu bukunya hilang",
+     "script": "sq_buku",
+     "if": [
+      "buku_dibaca",
+      "!sq_buku_selesai"
+     ]
+    }
+   ]
+  },
+  "puncak_terapung": {
+   "name": "Puncak Menara Terapung",
+   "text": "Ruang terbuka di puncak, dengan rongga Suar di tengahnya — dan rongga itu tidak kosong. Ada kaca sebesar gerobak terpasang di sana, berputar pelan, menyedot sesuatu dari udara ke dalam dirinya.",
+   "on_enter": "boss_pandansari",
+   "exits": [
+    {
+     "label": "Turun ke ruang buku",
+     "to": "ruang_buku"
+    },
+    {
+     "label": "Turun ke rakit, menuju Benteng Ordo",
+     "to": "kaki_tebing",
+     "area": "benteng_ordo",
+     "if": [
+      "boss_pandansari_kalah"
+     ],
+     "locked": "Nyi Pandansari masih berdiri di antara kalian dan tangga."
+    }
+   ]
+  }
+ },
+ "scripts": {
+  "lentera_save": [
+   {
+    "text": "Kau menyalakan sumbu. Nyalanya berdiri tegak dan tidak bergoyang sama sekali — tidak ada angin di danau ini."
+   },
+   {
+    "heal": "all"
+   },
+   {
+    "save": true
+   },
+   {
+    "if": [
+     "has:bekal_kemah"
+    ],
+    "then": [
+     {
+      "kemah": true
+     }
+    ]
+   }
+  ],
+  "masuk_garam": [
+   {
+    "once": "garam_masuk",
+    "do": [
+     {
+      "text": "Kabut beku. Kalian bisa melewatinya — tidak ada Lupa, tidak ada bisikan. Tapi setelah sepuluh langkah, Lintang berhenti dan memegang kepalanya."
+     },
+     {
+      "say": "Lintang",
+      "text": "MP-ku. Berkurang sendiri."
+     },
+     {
+      "say": "Bagas",
+      "text": "Punyaku juga. (Ia mengetuk lenteranya.) Kabut di sini tidak makan ingatan. Dia makan nyala."
+     },
+     {
+      "say": "Rangga",
+      "text": "Berarti jangan berlama-lama di luar. Cari tempat berpijak, lalu bergerak cepat."
+     },
+     {
+      "text": "Kelana berjalan paling belakang, di dalam kabut beku itu, tanpa terpengaruh sama sekali."
+     }
+    ]
+   }
+  ],
+  "lihat_kapal": [
+   {
+    "once": "kapal_dilihat",
+    "do": [
+     {
+      "text": "Di lambung kapal masih terbaca namanya, dipahat dalam-dalam: PADASUARA II."
+     },
+     {
+      "say": "Ratih",
+      "text": "Itu nama desaku."
+     },
+     {
+      "say": "Rangga",
+      "text": "Kapal dagang. Berarti dulu desamu punya pelabuhan di danau ini, waktu danaunya masih air."
+     },
+     {
+      "say": "Ratih",
+      "text": "Kami tidak punya cerita apa pun tentang danau. Tidak satu lagu pun."
+     },
+     {
+      "say": "Lintang",
+      "text": "Kalau lagunya berhenti dinyanyikan, namanya hilang. Itu aturan kalian sendiri."
+     },
+     {
+      "text": "Ratih berdiri lama di depan pahatan itu, lalu mulai menyanyi — pelan, satu bait, untuk kapal yang namanya baru saja ia temukan."
+     }
+    ]
+   }
+  ],
+  "peti_kapal": [
+   {
+    "text": "Palka yang masih tertutup rapat. Di dalamnya, kering sempurna karena garam: peti perbekalan pedagang yang tidak sempat dibongkar."
+   },
+   {
+    "give": {
+     "lentera_garam": 1,
+     "ramuan_sari": 3,
+     "serpihan_ingatan": 1
+    }
+   },
+   {
+    "set": "peti_kapal_diambil"
+   }
+  ],
+  "adegan_rakit": [
+   {
+    "once": "rakit_adegan",
+    "do": [
+     {
+      "text": "Rakit itu terlalu berat untuk didorong di atas kerak garam yang kasar. Alurnya ada, tapi garamnya sudah mengkristal kembali dan mengunci lambungnya."
+     },
+     {
+      "say": "Bagas",
+      "text": "Butuh sesuatu yang bikin licin. Minyak lentera terlalu sayang."
+     },
+     {
+      "say": "Ratih",
+      "text": "Air?"
+     },
+     {
+      "say": "Bagas",
+      "text": "Air melarutkan garam. (Ia berhenti.) Air melarutkan garam."
+     }
+    ]
+   }
+  ],
+  "siapkan_rakit": [
+   {
+    "if": [
+     "has:ramuan_daun*2"
+    ],
+    "then": [
+     {
+      "text": "Kalian menuang air ramuan ke sepanjang alur. Kristal garam di bawah lambung larut, berdesis pelan, dan rakit itu bergeser satu jengkal dengan mudahnya."
+     },
+     {
+      "take": {
+       "ramuan_daun": 2
+      }
+     },
+     {
+      "set": "rakit_siap"
+     },
+     {
+      "say": "Bagas",
+      "text": "Dua ramuan untuk satu menara. Kafilah bilang ini namanya harga bagus."
+     },
+     {
+      "end": true
+     }
+    ]
+   },
+   {
+    "if": [
+     "has:ramuan_akar*2"
+    ],
+    "then": [
+     {
+      "text": "Kalian menuang air ramuan ke sepanjang alur. Kristal garam di bawah lambung larut, berdesis pelan, dan rakit itu bergeser satu jengkal dengan mudahnya."
+     },
+     {
+      "take": {
+       "ramuan_akar": 2
+      }
+     },
+     {
+      "set": "rakit_siap"
+     },
+     {
+      "say": "Bagas",
+      "text": "Dua ramuan untuk satu menara. Kafilah bilang ini namanya harga bagus."
+     },
+     {
+      "end": true
+     }
+    ]
+   },
+   {
+    "if": [
+     "has:ramuan_sari*2"
+    ],
+    "then": [
+     {
+      "text": "Kalian menuang air ramuan ke sepanjang alur. Kristal garam di bawah lambung larut, berdesis pelan, dan rakit itu bergeser satu jengkal dengan mudahnya."
+     },
+     {
+      "take": {
+       "ramuan_sari": 2
+      }
+     },
+     {
+      "set": "rakit_siap"
+     },
+     {
+      "say": "Bagas",
+      "text": "Dua ramuan untuk satu menara. Kafilah bilang ini namanya harga bagus."
+     },
+     {
+      "end": true
+     }
+    ]
+   },
+   {
+    "if": [
+     "has:ramuan_laut*2"
+    ],
+    "then": [
+     {
+      "text": "Kalian menuang air ramuan ke sepanjang alur. Kristal garam di bawah lambung larut, berdesis pelan, dan rakit itu bergeser satu jengkal dengan mudahnya."
+     },
+     {
+      "take": {
+       "ramuan_laut": 2
+      }
+     },
+     {
+      "set": "rakit_siap"
+     },
+     {
+      "say": "Bagas",
+      "text": "Dua ramuan untuk satu menara. Kafilah bilang ini namanya harga bagus."
+     },
+     {
+      "end": true
+     }
+    ]
+   },
+   {
+    "text": "Alur di bawah lambung rakit sudah mengkristal rapat. Kalian butuh cairan untuk melarutkannya — air ramuan pun cukup, kalau rela. (Perlu dua botol ramuan penyembuh jenis apa pun.)"
+   }
+  ],
+  "masuk_menara_terapung": [
+   {
+    "once": "menara_terapung_masuk",
+    "do": [
+     {
+      "text": "Dari dekat, menara itu jelas sekali tidak mengapung karena sihir: ia berdiri di atas kabut yang memadat, dan kabut itu ditahan oleh sesuatu di dalam menara."
+     },
+     {
+      "say": "Lintang",
+      "text": "Suarnya masih menyala. Di dalam."
+     },
+     {
+      "say": "Rimba",
+      "text": "Tapi puncaknya gelap."
+     },
+     {
+      "say": "Lintang",
+      "text": "Karena nyalanya tidak dipakai untuk menerangi apa-apa."
+     }
+    ]
+   },
+   {
+    "run": "sergap_menara"
+   }
+  ],
+  "adegan_buku": [
+   {
+    "once": "ruang_buku_masuk",
+    "do": [
+     {
+      "text": "Rak demi rak, buku demi buku, dengan urutan yang rapi dan tulisan tangan yang berganti tiap beberapa generasi. Ordo Pelita mencatat semuanya."
+     },
+     {
+      "say": "Rangga",
+      "text": "Ini pembukuan tugas. Aku pernah mengisi yang seperti ini untuk jadwal jaga."
+     },
+     {
+      "say": "Sela",
+      "text": "Bedanya yang ditulis di sini bukan jadwal jaga."
+     }
+    ]
+   }
+  ],
+  "baca_buku": [
+   {
+    "text": "Buku besar di meja tengah terbuka pada halaman yang sudah menguning. Kolomnya sederhana: TAHUN. SUAR. NAMA. LAMA BERTAHAN. CATATAN."
+   },
+   {
+    "say": "Rimba",
+    "text": "Abad pertama... Suar Pertama... 'Kabut surut sepenuhnya.' Abad kedua, 'Kabut surut.' Abad ketiga—"
+   },
+   {
+    "text": "Ia berhenti."
+   },
+   {
+    "say": "Rimba",
+    "text": "'Kabut surut sebentar, lalu naik lebih tinggi dari sebelumnya. Diduga ada hubungan dengan penyalaan. Perlu diselidiki.'"
+   },
+   {
+    "pause": true
+   },
+   {
+    "say": "Rimba",
+    "text": "Abad keempat. Sama. Abad kelima. Sama. Abad keenam — 'Hubungan itu pasti. Kabut naik karena kita menyalakan.'"
+   },
+   {
+    "say": "Sela",
+    "text": "Mereka tahu."
+   },
+   {
+    "say": "Rimba",
+    "text": "Mereka tahu sejak abad ketiga. Dan mereka menyalakan empat Suar lagi sesudah itu."
+   },
+   {
+    "adegan": {
+     "efek": "gelap"
+    }
+   },
+   {
+    "say": "Kelana",
+    "text": "...Kabut adalah yang dibakar."
+   },
+   {
+    "text": "Semua menoleh. Itu kalimat kedua yang ia ucapkan sejak Wirasaba."
+   },
+   {
+    "say": "Kelana",
+    "text": "Di dalam sana. Semuanya. Yang dibakar tidak hilang. Mereka cuma... di luar."
+   },
+   {
+    "set": "buku_dibaca"
+   },
+   {
+    "give": {
+     "serpihan_ingatan": 1
+    }
+   },
+   {
+    "ilustrasi": "events/buku_besar",
+    "teks": "Mereka tahu sejak abad ketiga, dan menyalakan empat Suar lagi sesudah itu."
+   }
+  ],
+  "boss_pandansari": [
+   {
+    "if": [
+     "boss_pandansari_kalah"
+    ],
+    "then": [
+     {
+      "text": "Rongga Suar di puncak menara kosong sekarang. Kaca Pemanen itu sudah pecah jadi pasir putih di lantai."
+     },
+     {
+      "end": true
+     }
+    ]
+   },
+   {
+    "text": "Perempuan berjubah kelabu berdiri di samping kaca besar itu, memeriksa putarannya seperti orang memeriksa jam."
+   },
+   {
+    "say": "Pandansari",
+    "text": "Kalian membaca bukunya. Bagus. Sekarang kalian tahu sebanyak yang aku tahu, dan kalian akan mengerti kenapa aku tetap di sini."
+   },
+   {
+    "say": "Rimba",
+    "text": "Kalian tahu Kabut naik karena Suar. Kenapa masih memanen?"
+   },
+   {
+    "say": "Pandansari",
+    "text": "Karena berhenti berarti gelap sekarang. Anak-anak, panen, jalan, kafilah — semuanya, tahun ini. Lanjut berarti gelap nanti, dan nanti itu bukan zamanku."
+   },
+   {
+    "say": "Pandansari",
+    "text": "Aku tidak berpura-pura itu mulia. Itu cuma aritmetika."
+   },
+   {
+    "pause": true
+   },
+   {
+    "say": "Ratih",
+    "text": "Aritmetika yang tidak menghitung orang."
+   },
+   {
+    "say": "Pandansari",
+    "text": "Aritmetika selalu menghitung orang, Nak. Itu sebabnya ia berat."
+   },
+   {
+    "adegan": {
+     "efek": "flash"
+    }
+   },
+   {
+    "battle": [
+     "boss_nyi_pandansari"
+    ],
+    "boss": true,
+    "win": [
+     {
+      "set": "boss_pandansari_kalah"
+     },
+     {
+      "text": "Kaca Pemanen pecah, dan yang keluar darinya bukan cahaya — melainkan kabut tipis yang naik pelan dan menghilang di langit-langit."
+     },
+     {
+      "say": "Pandansari",
+      "text": "(Bersandar di dinding, tidak mencoba berdiri.) Nirmala di Benteng. Ia tidak akan berdebat dengan kalian seperti aku. Ia sudah selesai berdebat sejak lama."
+     },
+     {
+      "say": "Sela",
+      "text": "Kenapa kau memberi tahu?"
+     },
+     {
+      "say": "Pandansari",
+      "text": "Karena aritmetikaku barusan salah, dan aku terlalu tua untuk menghitung ulang seumur hidup."
+     },
+     {
+      "give": {
+       "serpihan_ingatan": 1,
+       "abu_fajar": 2
+      }
+     },
+     {
+      "kaca": {
+       "kaca_sabar": 1
+      }
+     },
+     {
+      "set": "pandansari_membelot"
+     }
+    ]
+   }
+  ],
+  "sergap_ladang": [
+   {
+    "once": "sergap_ladang_selesai",
+    "do": [
+     {
+      "text": "Kristal garam di depan kalian pecah dari bawah, dan yang keluar berjalan miring."
+     },
+     {
+      "battle": [
+       "kepiting_garam",
+       "hampa_beku"
+      ],
+      "win": []
+     }
+    ]
+   }
+  ],
+  "sergap_menara": [
+   {
+    "once": "sergap_menara_selesai",
+    "do": [
+     {
+      "text": "Di kaki menara ada gerobak kurungan yang masih terisi — dan seseorang yang sedang mengisinya."
+     },
+     {
+      "battle": [
+       "pemanen_ordo",
+       "hampa_beku",
+       "hampa_beku"
+      ],
+      "win": []
+     }
+    ]
+   }
+  ],
+  "pd_garam": [
+   {
+    "text": "Seorang laki-laki setengah baya mengeruk garam ke dalam keranjang rotan, sendirian, jauh dari jalur kafilah mana pun. Ia melihat kalian datang dan tidak berhenti bekerja, juga tidak lari."
+   },
+   {
+    "once": "pd_garam_bicara",
+    "do": [
+     {
+      "say": "Rangga",
+      "text": "Bapak sendirian di sini?"
+     },
+     {
+      "text": "Laki-laki itu mengangguk. Ia tidak bicara. Waktu Rangga bertanya lagi, ia menunjuk tenggorokannya sendiri, lalu menggeleng — sekali, ringkas, seperti orang yang sudah ratusan kali menjelaskan hal yang sama tanpa suara."
+     },
+     {
+      "say": "Bagas",
+      "text": "Bukan cacat bawaan. Lihat bekas di lehernya."
+     },
+     {
+      "say": "Ratih",
+      "text": "(Ia berjongkok supaya sejajar.) Pak. Talun?"
+     },
+     {
+      "text": "Keruknya berhenti."
+     },
+     {
+      "say": "Ratih",
+      "text": "Saya Ratih. Padasuara. (Jeda.) Bapak yang menyahut waktu saya kecil?"
+     },
+     {
+      "text": "Laki-laki itu menaruh keruknya. Lalu ia mengangkat tangan dan mengetuk keranjang rotannya: empat ketukan naik, satu turun, berhenti. Sahutan Talun, tanpa satu pun suara di dalamnya."
+     },
+     {
+      "say": "Ratih",
+      "text": "Iya, Pak. Itu betul."
+     },
+     {
+      "text": "Ia mengetuknya lagi. Lalu lagi. Ratih ikut mengetuk keranjangnya sendiri, dan keduanya begitu cukup lama sampai Sela memalingkan muka."
+     },
+     {
+      "say": "Ratih",
+      "text": "Ordo ambil suaranya, bukan orangnya. (Kepada party, tanpa menoleh.) Itu lebih murah. Orang hilang dicari. Orang bisu tetap bekerja."
+     },
+     {
+      "say": "Kelana",
+      "text": "Mereka tidak membunuh yang berguna. Mereka cuma mengambil bagian yang bikin repot."
+     },
+     {
+      "text": "Sebelum kalian pergi, laki-laki itu menarik lengan Ratih dan menulis di garam dengan jarinya: satu nama, dan satu arah. PADASARI. Ke barat, ke laut."
+     },
+     {
+      "quest": "pendendang_hilang",
+      "state": "garam"
+     },
+     {
+      "set": "pd_talun_ketemu"
+     },
+     {
+      "give": {
+       "serpihan_ingatan": 1
+      }
+     }
+    ]
+   }
+  ],
+  "sq_buku": [
+   {
+    "if": [
+     "!sq_buku_aktif"
+    ],
+    "then": [
+     {
+      "text": "Di rak tahun keempat ratus, satu tempat kosong. Bukan diambil buru-buru: debu di sekelilingnya dirapikan, dan buku di kiri-kanannya digeser supaya kekosongannya tidak terlalu kelihatan."
+     },
+     {
+      "say": "Rangga",
+      "text": "Yang menyembunyikan ini punya waktu, dan takut ketahuan."
+     },
+     {
+      "say": "Kelana",
+      "text": "Dan tidak membakarnya. (Ia menyentuh celah itu.) Orang yang mau menghilangkan sesuatu di gedung yang penuh tungku akan membakarnya. Ini disembunyikan supaya tetap ada."
+     },
+     {
+      "say": "Bagas",
+      "text": "Berarti masih di dalam menara ini."
+     },
+     {
+      "set": "sq_buku_aktif"
+     },
+     {
+      "quest": "buku_tak_dibakar",
+      "state": "aktif"
+     }
+    ],
+    "else": [
+     {
+      "text": "Bagas menemukannya di tempat yang paling membosankan: di bawah papan lantai di belakang tangga, dibungkus kain minyak, di tempat yang harus dilewati siapa pun yang naik-turun tiap hari.\n\nIsinya bukan pembukuan panen. Isinya surat — salinan surat yang tidak pernah dikirim, ditulis tangan yang sama selama sebelas tahun, semuanya ditujukan ke Juru Nyala kepala, dan semuanya menanyakan hal yang sama dengan kata yang makin sedikit.\n\nSurat pertama tiga halaman. Surat terakhir satu baris: \"Kabutnya naik lagi tahun ini. Tolong dijawab.\""
+     },
+     {
+      "say": "Rangga",
+      "text": "Sebelas tahun bertanya, dan tidak sekali pun berhenti bekerja."
+     },
+     {
+      "say": "Sela",
+      "text": "Itu yang paling sering, Kapten. Bukan yang menolak, bukan yang setuju. Yang bertanya terus sambil tetap mengangkat gerobak."
+     },
+     {
+      "say": "Kelana",
+      "text": "Nirmala akan bilang ini bukti mereka jujur."
+     },
+     {
+      "say": "Rangga",
+      "text": "Nirmala akan bilang begitu, dan ia tidak akan sepenuhnya salah, dan itu sebabnya simpan bukunya. Bawa ke Sumur. Kalau yang di sana menanyakan kenapa kita tidak mau melanjutkan, ini jawabannya: karena ada yang bertanya sebelas tahun dan tidak ada yang menjawab."
+     },
+     {
+      "set": "sq_buku_selesai"
+     },
+     {
+      "quest": "buku_tak_dibakar",
+      "state": "selesai"
+     },
+     {
+      "give": {
+       "serpihan_ingatan": 2
+      }
+     },
+     {
+      "keping": 3200
+     }
+    ]
+   }
+  ]
+ }
+}
