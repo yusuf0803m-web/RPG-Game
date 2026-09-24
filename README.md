@@ -113,7 +113,7 @@ python -m pelita -s rawa --auto --seed 3 --no-pause
 
 ```bash
 pip install pytest
-python -m pytest -q                     # 276 tes: unit, walkthrough Babak 1-3, sistem Tahap 3,
+python -m pytest -q                     # 279 tes: unit, walkthrough Babak 1-3, sistem Tahap 3,
                                         # mekanik Babak 2 & 3, latar, tokoh bergambar, API web, regresi menu
                                         # (tiap prompt harus ada jalan keluar), kalibrasi, dan
                                         # konten sampingan (tests/test_opsional.py)
@@ -170,7 +170,8 @@ pelita/
     static/        index.html, style.css, app.js (klien), art.js (SVG prosedural)
   data/            characters, skills, enemies, items, kaca, jalur, tokoh (potret dialog);
                    world/area_*.json (18 area), shops, quests, kenangan, buruan, arena, latar
-tools/             calibrate.py, walkthrough.py, playtest.py (laporan ekonomi & pacing)
+tools/             calibrate.py, walkthrough.py, playtest.py (laporan ekonomi & pacing),
+                   audit_potret.py & rapikan_potret.py (aset tokoh bergambar)
 tests/             pytest (walker.py = pemain otomatis untuk tes alur — ia berbelanja,
                    memasang Kaca, dan menukar Serpihan seperti pemain sungguhan;
                    test_menu_web.py = crawler yang memastikan tiap menu bisa ditinggalkan;
@@ -271,6 +272,10 @@ Tanpa `ekspresi`, tokoh memakai ekspresi bawaannya. `tokoh` hanya perlu kalau te
 atau alias tokoh itu. Registri ada di `pelita/data/tokoh.json`, gambarnya di
 `pelita/web/static/assets/characters/<id>/<ekspresi>.webp` (atau `.png`). Terminal tidak berubah
 sama sekali, dan tokoh tanpa gambar tetap tampil sebagai dialog biasa.
+
+```bash
+python tools/audit_potret.py rimba     # kelayakan panggung tiap berkas (butuh Pillow + numpy)
+```
 
 ## Cara antarmuka web bekerja
 

@@ -20,7 +20,7 @@ jobs:
         with:
           python-version: "3.11"
       - name: Pasang dependensi
-        run: pip install flask pytest
+        run: pip install flask pytest pillow numpy   # pillow+numpy: audit aset tokoh (tests/test_tokoh.py)
       - name: Jalankan tes
         run: python -m pytest -q
       - name: Kalibrasi cepat (asap)

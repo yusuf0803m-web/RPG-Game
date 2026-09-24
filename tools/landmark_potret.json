@@ -1,0 +1,183 @@
+{
+ "_catatan": "Landmark wajah (koordinat kanvas 720x960), diukur manual pada zoom 2x. '<tokoh>' = berkas yang sekarang terpasang (dipakai tools/audit_potret.py); '<tokoh>@<sumber>' = berkas sumber sebelum dirapikan (dipakai tools/rapikan_potret.py --landmark). Ukur ulang setiap kali berkas potret diganti.",
+ "rimba": {
+  "neutral": {
+   "pupil_kiri": [
+    282.5,
+    354
+   ],
+   "pupil_kanan": [
+    359,
+    342.5
+   ],
+   "hidung": [
+    317.5,
+    400
+   ],
+   "dagu": [
+    325,
+    485
+   ],
+   "telinga": [
+    462.5,
+    375
+   ]
+  },
+  "happy": {
+   "pupil_kiri": [
+    282.3,
+    353.2
+   ],
+   "pupil_kanan": [
+    357.3,
+    340.5
+   ],
+   "hidung": [
+    317.5,
+    394.4
+   ],
+   "dagu": [
+    324.5,
+    481.0
+   ],
+   "telinga": [
+    464.9,
+    387.4
+   ]
+  },
+  "worried": {
+   "pupil_kiri": [
+    285.9,
+    353.1
+   ],
+   "pupil_kanan": [
+    360.8,
+    342.1
+   ],
+   "hidung": [
+    313.4,
+    393.0
+   ],
+   "dagu": [
+    320.9,
+    480.3
+   ],
+   "telinga": [
+    465.5,
+    388.0
+   ]
+  },
+  "serious": {
+   "pupil_kiri": [
+    285.2,
+    351.0
+   ],
+   "pupil_kanan": [
+    360.3,
+    342.5
+   ],
+   "hidung": [
+    315.2,
+    390.1
+   ],
+   "dagu": [
+    320.2,
+    477.8
+   ],
+   "telinga": [
+    465.6,
+    395.1
+   ]
+  }
+ },
+ "rimba@rilis2": {
+  "neutral": {
+   "pupil_kiri": [
+    282.5,
+    354
+   ],
+   "pupil_kanan": [
+    359,
+    342.5
+   ],
+   "hidung": [
+    317.5,
+    400
+   ],
+   "dagu": [
+    325,
+    485
+   ],
+   "telinga": [
+    462.5,
+    375
+   ]
+  },
+  "happy": {
+   "pupil_kiri": [
+    270,
+    283.5
+   ],
+   "pupil_kanan": [
+    350,
+    270
+   ],
+   "hidung": [
+    307.5,
+    327.5
+   ],
+   "dagu": [
+    315,
+    420
+   ],
+   "telinga": [
+    465,
+    320
+   ]
+  },
+  "worried": {
+   "pupil_kiri": [
+    285,
+    315
+   ],
+   "pupil_kanan": [
+    360,
+    304
+   ],
+   "hidung": [
+    312.5,
+    355
+   ],
+   "dagu": [
+    320,
+    442.5
+   ],
+   "telinga": [
+    465,
+    350
+   ]
+  },
+  "serious": {
+   "pupil_kiri": [
+    290,
+    321
+   ],
+   "pupil_kanan": [
+    365,
+    312.5
+   ],
+   "hidung": [
+    320,
+    360
+   ],
+   "dagu": [
+    325,
+    447.5
+   ],
+   "telinga": [
+    470,
+    365
+   ]
+  }
+ }
+}

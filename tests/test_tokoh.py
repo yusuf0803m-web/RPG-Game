@@ -110,7 +110,7 @@ def test_alias_tidak_peka_huruf_besar(tokoh):
 
 def test_panggung_tidak_memakai_gambar_tanpa_alpha_atau_yang_ditandai(tokoh, registri):
     """Gambar berlatar buram tetap jadi face graphic, tapi panggung jatuh ke bawaan."""
-    tanda = registri["tokoh"]["rimba"]["ekspresi"]
+    tanda = registri["tokoh"]["rimba"].get("ekspresi", {})
     for eks in EKSPRESI_RIMBA:
         v = tokoh.visual("Rimba", None, eks)
         berkas = ASET_TOKOH / v["potret_url"].split("/characters/")[1]
@@ -120,12 +120,27 @@ def test_panggung_tidak_memakai_gambar_tanpa_alpha_atau_yang_ditandai(tokoh, reg
             assert v["panggung_url"].endswith("/rimba/neutral.webp")
 
 
+def test_keempat_ekspresi_rimba_tampil_di_panggung(tokoh):
+    """Pilot selesai: tidak ada lagi ekspresi Rimba yang hanya boleh jadi face graphic."""
+    for eks in EKSPRESI_RIMBA:
+        v = tokoh.visual("Rimba", None, eks)
+        assert v["panggung_url"] == v["potret_url"], eks
+
+
 def test_tanda_panggung_false(tmp_path, registri):
     reg = json.loads(json.dumps(registri))
-    reg["tokoh"]["rimba"]["ekspresi"]["serious"]["panggung"] = False
+    reg["tokoh"]["rimba"].setdefault("ekspresi", {})["serious"] = {"panggung": False}
     v = DaftarTokoh(reg).visual("Rimba", None, "serious")
     assert v["potret_url"].endswith("/rimba/serious.webp")
     assert v["panggung_url"].endswith("/rimba/neutral.webp")
+
+
+def test_crop_wajah_per_ekspresi_masih_bisa_ditimpa(registri):
+    reg = json.loads(json.dumps(registri))
+    reg["tokoh"]["rimba"]["ekspresi"] = {"happy": {"wajah": [216, 120, 288]}}
+    t = DaftarTokoh(reg)
+    assert t.visual("Rimba", None, "happy")["wajah"] == DaftarTokoh.css_wajah([216, 120, 288])
+    assert t.visual("Rimba", None, "worried")["wajah"] == DaftarTokoh.css_wajah(reg["tokoh"]["rimba"]["wajah"])
 
 
 def test_aset_tokoh_dalam_batas_ukuran():
@@ -247,3 +262,25 @@ def test_klien_punya_lapisan_panggung():
     assert 'id="scene-cast"' in html
     assert "dialog-portrait" in js and "panggung_url" in js
     assert "rimba" not in js.lower(), "klien tidak boleh punya logika khusus tokoh tertentu"
+
+
+# ── Kelayakan aset untuk panggung (tools/audit_potret.py) ────────────────
+def test_aset_tokoh_layak_panggung(registri):
+    """Tiap berkas tokoh terdaftar: 720x960, latar benar-benar transparan (bukan papan catur
+    atau latar yang tercetak), tanpa lubang di pakaian, dan — kalau landmark wajahnya tercatat —
+    garis mata & dagu dalam toleransi Bible terhadap ekspresi bawaan, serta muat di crop wajah."""
+    pytest.importorskip("numpy")
+    pytest.importorskip("PIL")
+    import sys
+    sys.path.insert(0, str(Path("tools").resolve()))
+    from audit_potret import audit_tokoh
+    for tid in registri["tokoh"]:
+        for r in audit_tokoh(tid):
+            nama = f"{tid}/{r['ekspresi']}"
+            assert r["kanvas"] == [720, 960], nama
+            assert r["alpha_min_maks"][0] == 0, f"{nama}: tidak ada piksel transparan"
+            assert not r["latar_tercetak"], f"{nama}: latar tercetak ({r['bingkai_opak_pct']}% bingkai opak)"
+            assert r["lubang_pakaian_px"] < 50, f"{nama}: {r['lubang_pakaian_px']} px lubang di pakaian"
+            if "garis_mata" in r:
+                assert r["crop_ok"], f"{nama}: mata/dagu di luar crop wajah {r['crop_wajah']}"
+            assert r["panggung_siap"], f"{nama}: {r}"

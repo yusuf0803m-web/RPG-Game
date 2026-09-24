@@ -8,12 +8,7 @@
    "alias": ["Rimba"],
    "sisi": "kanan",
    "ekspresi_bawaan": "neutral",
-   "ekspresi": {
-    "neutral": {"wajah": [205, 237, 260]},
-    "happy": {"wajah": [205, 161, 280], "panggung": false},
-    "worried": {"wajah": [200, 178, 280]},
-    "serious": {"wajah": [200, 188, 280]}
-   }
+   "wajah": [205, 237, 260]
   }
  }
 }
