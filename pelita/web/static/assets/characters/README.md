@@ -16,17 +16,17 @@ di atas latar, dan di-crop jadi wajah kecil di samping baris dialog.
 
 ## Catatan aset pilot Rimba
 
-Dipasang apa adanya dari set pilot, tanpa diubah:
+Rilis kedua (semua 720×960 WebP dengan alpha, ≤ 160 KB), dipasang apa adanya:
 
-| Berkas | Ukuran | Alpha | Catatan |
+| Berkas | Ukuran | Panggung | Catatan |
 |---|---|---|---|
-| `rimba/neutral.webp` | 720×960, 113 KB | ya | Sesuai spesifikasi. |
-| `rimba/happy.png` | 1086×1448, 2,2 MB | **tidak** | Pola papan catur tercetak di gambar. Panggung memakai neutral. |
-| `rimba/worried.png` | 1086×1448, 1,6 MB | **tidak** | Latar hitam pekat. Panggung memakai neutral. |
-| `rimba/serious.png` | 1086×1448, 1,7 MB | ya | Terlalu besar untuk rilis; ujung bawah memudar transparan. |
+| `rimba/neutral.webp` | 123 KB | ya | Master. |
+| `rimba/happy.webp` | 159 KB | **tidak** (`"panggung": false`) | Latar papan catur masih tercetak di gambar (piksel opak), dan ada lubang transparan di rompi. Hanya dipakai untuk face graphic; panggung memakai neutral. |
+| `rimba/worried.webp` | 134 KB | ya | Ada lubang transparan di rompi bagian bawah; di panggung nyaris tak terlihat karena tertutup gradien bawah panorama. |
+| `rimba/serious.webp` | 133 KB | ya | Ujung bawah memudar transparan. |
 
-Framing keempatnya tidak sama (kepala `neutral` lebih kecil dan lebih rendah), jadi crop wajah
-diatur per ekspresi di `tokoh.json`, dan bust-up terlihat "melompat" saat ganti ekspresi.
-Perbaikannya ada di sisi aset: ekspor ulang ketiga ekspresi dari master `neutral` dengan kanvas,
-posisi kepala, dan alpha yang sama, lalu simpan sebagai WebP 720×960. Setelah itu kotak crop
-per ekspresi di `tokoh.json` bisa dihapus.
+Framing ketiga ekspresi masih lebih besar dan lebih tinggi daripada `neutral`, jadi crop wajah
+diatur per ekspresi di `tokoh.json`, dan bust-up terlihat "melompat" saat berganti dari/ke neutral.
+Perbaikannya di sisi aset: buat ekspresi dari master `neutral` dengan kanvas dan posisi kepala yang
+sama (inpainting di Zona Ekspresi). Setelah itu kotak crop per ekspresi bisa dihapus, dan setelah
+`happy` punya latar yang benar-benar transparan, hapus `"panggung": false`-nya.

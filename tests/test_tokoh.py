@@ -108,15 +108,31 @@ def test_alias_tidak_peka_huruf_besar(tokoh):
     assert tokoh.cari_id("RIMBA") == "rimba"
 
 
-def test_panggung_tidak_memakai_gambar_tanpa_alpha(tokoh):
+def test_panggung_tidak_memakai_gambar_tanpa_alpha_atau_yang_ditandai(tokoh, registri):
     """Gambar berlatar buram tetap jadi face graphic, tapi panggung jatuh ke bawaan."""
+    tanda = registri["tokoh"]["rimba"]["ekspresi"]
     for eks in EKSPRESI_RIMBA:
         v = tokoh.visual("Rimba", None, eks)
         berkas = ASET_TOKOH / v["potret_url"].split("/characters/")[1]
-        if punya_alpha(berkas):
+        if punya_alpha(berkas) and tanda.get(eks, {}).get("panggung", True):
             assert v["panggung_url"] == v["potret_url"]
         else:
             assert v["panggung_url"].endswith("/rimba/neutral.webp")
+
+
+def test_tanda_panggung_false(tmp_path, registri):
+    reg = json.loads(json.dumps(registri))
+    reg["tokoh"]["rimba"]["ekspresi"]["serious"]["panggung"] = False
+    v = DaftarTokoh(reg).visual("Rimba", None, "serious")
+    assert v["potret_url"].endswith("/rimba/serious.webp")
+    assert v["panggung_url"].endswith("/rimba/neutral.webp")
+
+
+def test_aset_tokoh_dalam_batas_ukuran():
+    """Bible §3: WebP ≤ 160 KB per berkas (APK & HP)."""
+    for b in ASET_TOKOH.glob("*/*.*"):
+        if b.suffix in (".webp", ".png"):
+            assert b.stat().st_size <= 160 * 1024, f"{b.name}: {b.stat().st_size} byte"
 
 
 def test_deteksi_alpha_dari_header(tmp_path):

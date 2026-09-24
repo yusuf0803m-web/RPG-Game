@@ -1059,12 +1059,14 @@ narasi, tokoh lain bicara, atau menu muncul, dan dikosongkan saat pindah ruang, 
 ilustrasi, atau adegan berlatar baru. Di layar lanskap pendek panggung disembunyikan; wajah di
 log tetap ada.
 
-**Panggung butuh alpha.** Berkas tanpa kanal alpha (dicek dari header PNG/WebP) tetap dipakai
-untuk wajah di log, tapi panggung memakai ekspresi bawaan supaya tidak muncul kotak berlatar.
+**Panggung butuh alpha.** Berkas tanpa kanal alpha (dicek dari header PNG/WebP), atau yang ditandai
+`"panggung": false` di registri karena latarnya tercetak, tetap dipakai untuk wajah di log, tapi
+panggung memakai ekspresi bawaan supaya tidak muncul kotak berlatar.
 
-**Status pilot.** Rimba: empat ekspresi terpasang apa adanya dari set pilot. `happy` dan `worried`
-belum transparan dan framing keempatnya belum seragam (lihat catatan aset di
-`pelita/web/static/assets/characters/README.md`). Tokoh lain didaftarkan setelah gambarnya ada.
+**Status pilot.** Rimba: empat ekspresi (720×960 WebP, ≤ 160 KB) terpasang apa adanya. `happy`
+masih berlatar papan catur tercetak (hanya face graphic), dan framing ketiga ekspresi belum sama
+dengan `neutral` (lihat `pelita/web/static/assets/characters/README.md`). Tokoh lain didaftarkan
+setelah gambarnya ada.
 
 ---
 

@@ -113,7 +113,7 @@ python -m pelita -s rawa --auto --seed 3 --no-pause
 
 ```bash
 pip install pytest
-python -m pytest -q                     # 274 tes: unit, walkthrough Babak 1-3, sistem Tahap 3,
+python -m pytest -q                     # 276 tes: unit, walkthrough Babak 1-3, sistem Tahap 3,
                                         # mekanik Babak 2 & 3, latar, tokoh bergambar, API web, regresi menu
                                         # (tiap prompt harus ada jalan keluar), kalibrasi, dan
                                         # konten sampingan (tests/test_opsional.py)

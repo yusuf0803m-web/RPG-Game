@@ -16,6 +16,8 @@ Urutan pencarian untuk satu baris ``say``:
 Panggung (bust-up di atas latar) hanya memakai berkas yang punya kanal alpha. Gambar
 yang latarnya masih buram tetap dipakai untuk face graphic di log, tapi panggungnya
 jatuh ke ekspresi bawaan supaya tidak muncul kotak berlatar di atas pemandangan.
+Header hanya tahu *ada* kanal alpha, bukan apakah latarnya sudah bersih; berkas yang
+latarnya tercetak ditandai ``"panggung": false`` di registri.
 """
 from __future__ import annotations
 
@@ -63,6 +65,7 @@ class Tokoh:
     ekspresi_bawaan: str
     wajah: list
     wajah_ekspresi: dict = field(default_factory=dict)
+    bukan_panggung: set = field(default_factory=set)      # ekspresi yang hanya untuk face graphic
 
 
 class DaftarTokoh:
@@ -82,6 +85,7 @@ class DaftarTokoh:
                 ekspresi_bawaan=t.get("ekspresi_bawaan", self.kosakata[0]),
                 wajah=list(t.get("wajah", bawaan)),
                 wajah_ekspresi={k: list(v["wajah"]) for k, v in eks.items() if isinstance(v, dict) and "wajah" in v},
+                bukan_panggung={k for k, v in eks.items() if isinstance(v, dict) and v.get("panggung") is False},
             )
             for nama in [t.get("nama", tid)] + list(t.get("alias", [])):
                 self.alias.setdefault(nama.casefold(), tid)
@@ -132,7 +136,7 @@ class DaftarTokoh:
             return out
         out["potret_url"] = berkas[0]
         out["wajah"] = self.css_wajah(t.wajah_ekspresi.get(eks, t.wajah))
-        if berkas[1]:
+        if berkas[1] and eks not in t.bukan_panggung:
             out["panggung_url"] = berkas[0]
         else:
             cadangan = self._cari_berkas(tid, t.ekspresi_bawaan)
