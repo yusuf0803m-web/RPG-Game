@@ -1033,6 +1033,39 @@ dan permainan tetap bisa dimainkan tanpa satu pun berkas gambar.
 karena Nyala melemah, bukan karena jam — jadi perubahan langit diikat ke progres cerita, bukan ke
 waktu. Audio ditunda sebagai pekerjaan tersendiri agar tidak menggemukkan APK setengah jadi.
 
+### 7.3 Tokoh bergambar & ekspresi (pilot: Rimba)
+
+Lapisan ketiga di atas latar: saat tokoh terdaftar bicara, **bust-up-nya muncul di panorama** dan
+**wajahnya muncul di samping baris dialog**. Tetap bukan visual novel: tidak ada perintah panggung,
+tidak ada posisi yang diatur per kalimat, dan pertarungan tidak disentuh.
+
+**Data.** Baris `say` boleh membawa `"ekspresi"` (kosakata tetap: neutral, happy, worried, serious,
+angry, sad, surprised, scared) dan `"tokoh"` (id stabil, hanya kalau teks `say` bukan nama/aliasnya,
+mis. `"???"`). Registri `pelita/data/tokoh.json` memetakan nama & alias ke id, sisi panggung, ekspresi
+bawaan, dan kotak crop wajah. Mesin cerita hanya meneruskan kedua kolom itu ke `emit("say")`;
+teks terminal tidak berubah.
+
+**Pencarian berkas** (server, `pelita/web/tokoh.py`): `characters/<id>/<ekspresi>.webp` lalu `.png` →
+ekspresi bawaan → tanpa gambar (dialog biasa). Ekspresi di luar kosakata dianggap bawaan. Salah
+ketik di data ditangkap `tests/test_tokoh.py`.
+
+**Satu berkas, dua fungsi.** Wajah di log adalah crop CSS (`background-size`/`-position` dalam persen)
+dari berkas yang sama dengan panggung. Kotak crop `[x, y, sisi]` dinyatakan di kanvas acuan
+720×960 dan boleh ditimpa per ekspresi, karena framing gambar hasil generate tidak selalu sama.
+
+**Riwayat tetap benar.** Beberapa baris bisa tiba dalam satu kiriman, jadi tiap baris log membawa
+wajah & ekspresinya sendiri; panggung cukup menampilkan pembicara terbaru. Panggung meredup saat
+narasi, tokoh lain bicara, atau menu muncul, dan dikosongkan saat pindah ruang, pertarungan,
+ilustrasi, atau adegan berlatar baru. Di layar lanskap pendek panggung disembunyikan; wajah di
+log tetap ada.
+
+**Panggung butuh alpha.** Berkas tanpa kanal alpha (dicek dari header PNG/WebP) tetap dipakai
+untuk wajah di log, tapi panggung memakai ekspresi bawaan supaya tidak muncul kotak berlatar.
+
+**Status pilot.** Rimba: empat ekspresi terpasang apa adanya dari set pilot. `happy` dan `worried`
+belum transparan dan framing keempatnya belum seragam (lihat catatan aset di
+`pelita/web/static/assets/characters/README.md`). Tokoh lain didaftarkan setelah gambarnya ada.
+
 ---
 
 ## 8. Yang Sengaja TIDAK Dimasukkan

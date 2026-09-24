@@ -39,6 +39,7 @@ from ..ui.terminal import IO
 from ..world.explore import Game
 from ..world.model import World, load_world
 from ..world.state import SAVE_SLOTS, GameState, new_game
+from .tokoh import daftar_tokoh
 
 # Gambar latar yang benar-benar ada di folder aset. Server yang memberi tahu klien,
 # supaya klien tidak perlu menebak lewat permintaan yang berakhir 404 (GAME_DESIGN §7.2).
@@ -103,6 +104,13 @@ class WebIO(IO):
         # menembak berkas yang belum digambar dan meninggalkan 404 di konsol.
         if kind in ("room", "adegan", "ilustrasi") and "latar" in payload:
             payload = dict(payload, latar_url=url_latar(payload["latar"]))
+        elif kind == "say":
+            # Tokoh bergambar (§7.3): id stabil, ekspresi yang benar-benar ada, dan
+            # URL potret. Tokoh yang tidak terdaftar dikirim apa adanya.
+            visual = daftar_tokoh().visual(payload.get("who", ""), payload.get("tokoh"),
+                                           payload.get("ekspresi"))
+            if visual is not None:
+                payload = dict(payload, **visual)
         self.session.push(kind, payload)
 
     def render_options(self, options, header: Optional[Header] = None) -> None:
