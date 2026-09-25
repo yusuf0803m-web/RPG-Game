@@ -1,5 +1,5 @@
 {
- "_catatan": "Landmark wajah (koordinat kanvas 720x960), diukur manual pada zoom 2x. '<tokoh>' = berkas yang sekarang terpasang (dipakai tools/audit_potret.py); untuk ekspresi hasil transplantasi, pupil & hidung dipetakan dari '<tokoh>@selaras', dagu & telinga = milik master. '<tokoh>@<sumber>' = berkas sumber sebelum diproses (dipakai tools/rapikan_potret.py --landmark). Ukur ulang setiap kali berkas potret diganti.",
+ "_catatan": "Landmark wajah (koordinat kanvas 720x960), diukur manual pada zoom 2x. '<tokoh>' = berkas yang sekarang terpasang (dipakai tools/audit_potret.py); untuk ekspresi hasil transplantasi, pupil & hidung dipetakan dari '<tokoh>@selaras', dagu & telinga = milik master. '<tokoh>@<sumber>' = berkas sumber sebelum diproses (dipakai tools/rapikan_potret.py --landmark). Ukur ulang setiap kali berkas potret diganti. Sela: semua titik (termasuk dagu & telinga) diukur langsung pada tiap berkas terpasang, karena transplantasi ekspresinya ikut menggeser kontur rahang.",
  "rimba": {
   "neutral": {
    "pupil_kiri": [
@@ -245,6 +245,96 @@
    "telinga": [
     465.6,
     395.1
+   ]
+  }
+ },
+ "sela": {
+  "neutral": {
+   "pupil_kiri": [
+    268,
+    355
+   ],
+   "pupil_kanan": [
+    324,
+    340
+   ],
+   "hidung": [
+    287,
+    397
+   ],
+   "dagu": [
+    322,
+    485
+   ],
+   "telinga": [
+    458,
+    368
+   ]
+  },
+  "happy": {
+   "pupil_kiri": [
+    268,
+    355
+   ],
+   "pupil_kanan": [
+    323,
+    339.5
+   ],
+   "hidung": [
+    288,
+    396
+   ],
+   "dagu": [
+    318,
+    485
+   ],
+   "telinga": [
+    458,
+    368
+   ]
+  },
+  "angry": {
+   "pupil_kiri": [
+    268,
+    356
+   ],
+   "pupil_kanan": [
+    322,
+    339
+   ],
+   "hidung": [
+    287,
+    397
+   ],
+   "dagu": [
+    320,
+    482.5
+   ],
+   "telinga": [
+    458,
+    368
+   ]
+  },
+  "sad": {
+   "pupil_kiri": [
+    268,
+    356.5
+   ],
+   "pupil_kanan": [
+    324,
+    341
+   ],
+   "hidung": [
+    288,
+    397
+   ],
+   "dagu": [
+    320,
+    484
+   ],
+   "telinga": [
+    458,
+    368
    ]
   }
  }

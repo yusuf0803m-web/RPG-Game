@@ -9,6 +9,13 @@
    "sisi": "kanan",
    "ekspresi_bawaan": "neutral",
    "wajah": [205, 237, 260]
+  },
+  "sela": {
+   "nama": "Sela",
+   "alias": ["Sela"],
+   "sisi": "kanan",
+   "ekspresi_bawaan": "neutral",
+   "wajah": [180, 236, 260]
   }
  }
 }

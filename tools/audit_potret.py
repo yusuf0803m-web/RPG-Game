@@ -6,7 +6,8 @@ melaporkan apakah berkas itu layak tampil di panggung:
 - kanvas, ukuran berkas, kanal alpha, bounding box piksel opak
 - puncak kepala (crown), badan sampai tepi bawah, lebar bahu di y=600
 - latar tercetak: piksel opak di bingkai 4 px tepi kanvas (papan catur, latar hitam, dst.)
-- lubang pakaian: piksel transparan di dalam siluet, di bawah leher (y >= 480)
+- lubang pakaian: piksel transparan di bawah leher (y >= 480) yang sepenuhnya dikelilingi
+  karakter; celah yang tembus ke tepi kanvas (lengan-badan) bukan lubang
 - identitas dengan master di luar zona ekspresi (``tools/zona_ekspresi.json``, Bible A6):
   selisih piksel rata-rata & persentil 99 harus setara derau encode ulang WebP
 - landmark wajah (pupil, dagu) dari ``landmark_potret.json`` yang diukur manual,
@@ -28,7 +29,7 @@ import sys
 from pathlib import Path
 
 import numpy as np
-from PIL import Image, ImageFilter
+from PIL import Image, ImageDraw, ImageFilter
 
 AKAR = Path(__file__).resolve().parent.parent
 ASET = AKAR / "pelita" / "web" / "static" / "assets" / "characters"
@@ -49,8 +50,28 @@ TOLERANSI_MATA = 4       # px, Bible A2: garis mata ±4
 TOLERANSI_DAGU = 12      # px, Bible A2: dagu ±12
 
 
+def lubang_tertutup(alpha: np.ndarray, y0: int = Y_PAKAIAN) -> np.ndarray:
+    """Lubang pakaian untuk audit: piksel transparan di bawah leher yang TIDAK terhubung ke
+    tepi kanvas, yaitu sepenuhnya dikelilingi piksel opak.
+
+    Transparansi yang tembus ke tepi kanvas (celah antara lengan dan badan, tepi bawah yang
+    memudar) adalah celah terbuka, bukan lubang.
+    """
+    h, w = alpha.shape
+    transparan = Image.fromarray(((alpha < 128) * 255).astype(np.uint8)).copy()
+    tepi = [(x, y) for x in range(w) for y in (0, h - 1)] + [(x, y) for y in range(h) for x in (0, w - 1)]
+    for p in tepi:
+        if transparan.getpixel(p) == 255:
+            ImageDraw.floodfill(transparan, p, 128)        # terhubung ke luar kanvas = celah terbuka
+    hasil = np.array(transparan) == 255
+    hasil[:y0] = False
+    return hasil
+
+
 def lubang_pakaian(alpha: np.ndarray, y0: int = Y_PAKAIAN) -> np.ndarray:
-    """Piksel transparan di dalam badan, di bawah leher.
+    """Piksel transparan di dalam rentang badan, di bawah leher. Dipakai
+    ``rapikan_potret.py --tutup-lubang`` untuk menemukan piksel yang dipulihkan; audit memakai
+    ``lubang_tertutup`` karena rentang baris juga menangkap celah terbuka lengan-badan.
 
     Bust-up dari dada ke atas: tiap baris badan adalah satu rentang tanpa celah
     (lengan menempel ke badan). Jadi "di dalam badan" = di antara piksel opak
@@ -87,7 +108,7 @@ def ukur(berkas: Path) -> dict:
     opak_bingkai = a[idx] >= 250
     rgb_bingkai = rgba[..., :3][idx].astype(int)
     netral_terang = ((rgb_bingkai.max(1) - rgb_bingkai.min(1)) <= 14) & (rgb_bingkai.mean(1) >= 185)
-    lubang = lubang_pakaian(a)
+    lubang = lubang_tertutup(a)
     baris_bahu = np.nonzero(a[Y_BAHU] >= 128)[0]
     return {
         "berkas": berkas.name,
@@ -144,8 +165,7 @@ def audit_tokoh(tid: str) -> list[dict]:
     zona = muat_json(ZONA).get(tid)
     berkas_master = next((b for b in (ASET / tid).glob(f"{bawaan}.*") if b.suffix in (".webp", ".png")), None)
     if zona and berkas_master:
-        from PIL import ImageDraw
-        M = np.array(Image.open(berkas_master).convert("RGBA")).astype(int)
+        M =np.array(Image.open(berkas_master).convert("RGBA")).astype(int)
         img = Image.new("L", KANVAS, 0)
         ImageDraw.Draw(img).polygon([tuple(p) for p in zona["poligon"]], fill=255)
         dalam = np.array(img.filter(ImageFilter.MaxFilter(9))) > 0        # + pita 4 px derau di tepi zona

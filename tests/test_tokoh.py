@@ -13,6 +13,7 @@ from pelita.world.script import Hooks, ScriptRunner
 from pelita.world.state import new_game
 
 EKSPRESI_RIMBA = ("neutral", "happy", "worried", "serious")
+EKSPRESI_SELA = ("neutral", "happy", "angry", "sad")
 
 
 @pytest.fixture(scope="module")
@@ -84,6 +85,21 @@ def test_rimba_keempat_ekspresi_ketemu(tokoh, eks):
     assert v["panggung_url"], "panggung selalu punya gambar (ekspresi ini atau bawaan)"
 
 
+@pytest.mark.parametrize("eks", EKSPRESI_SELA)
+def test_sela_keempat_ekspresi_ketemu_dan_tampil_di_panggung(tokoh, eks):
+    v = tokoh.visual("Sela", None, eks)
+    assert v["tokoh"] == "sela" and v["nama"] == "Sela" and v["ekspresi"] == eks
+    assert v["potret_url"] == f"/static/assets/characters/sela/{eks}.webp"
+    assert v["panggung_url"] == v["potret_url"]
+    assert v["sisi"] == "kanan"
+    assert v["wajah"] == DaftarTokoh.css_wajah([180, 236, 260])
+
+
+def test_sela_ekspresi_tanpa_gambar_jatuh_ke_neutral(tokoh):
+    v = tokoh.visual("Sela", None, "worried")
+    assert v["ekspresi"] == "neutral" and v["potret_url"].endswith("/sela/neutral.webp")
+
+
 def test_tanpa_ekspresi_pakai_bawaan(tokoh):
     assert tokoh.visual("Rimba")["ekspresi"] == "neutral"
 
@@ -96,7 +112,12 @@ def test_ekspresi_ngawur_jatuh_ke_neutral(tokoh):
 def test_tokoh_tidak_dikenal_tanpa_visual(tokoh):
     assert tokoh.visual("Pedagang") is None
     assert tokoh.visual("???") is None
-    assert tokoh.visual("Sela", "bukan_tokoh", "happy") is None
+    assert tokoh.visual("Guntur", "bukan_tokoh", "happy") is None
+
+
+def test_id_tak_dikenal_jatuh_ke_alias(tokoh):
+    v = tokoh.visual("Sela", "bukan_tokoh", "happy")
+    assert v["tokoh"] == "sela" and v["ekspresi"] == "happy"
 
 
 def test_id_eksplisit_mengalahkan_nama_tampilan(tokoh):
