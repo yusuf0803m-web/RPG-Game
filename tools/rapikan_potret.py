@@ -1,6 +1,6 @@
 """Rapikan potret tokoh tanpa menggambar ulang (GAME_DESIGN §7.3).
 
-Tiga operasi, semuanya deterministik dan hanya memakai piksel yang sudah ada:
+Empat operasi, semuanya deterministik dan hanya memakai piksel yang sudah ada:
 
 1. ``--papan-catur``: latar papan catur yang tercetak sebagai piksel opak diganti
    transparansi sungguhan. Tepi karakter di-matte terhadap dua nada latar yang
@@ -13,6 +13,11 @@ Tiga operasi, semuanya deterministik dan hanya memakai piksel yang sudah ada:
    cocok dengan master. Landmark berkas sumber dari ``tools/landmark_potret.json``
    (``--landmark tokoh@sumber``); transformnya
    kuadrat-terkecil atas pupil, hidung, dagu, telinga.
+
+4. ``--transplantasi MASTER``: wajah bagian dalam (alis–mata–hidung–mulut–pipi, poligon di
+   ``tools/zona_ekspresi.json``) dari berkas masuk ditempel ke master; di luar zona, keluaran
+   = master piksel demi piksel. Dipakai supaya semua ekspresi memakai rambut, kepala, bahu,
+   dan pakaian yang sama persis dengan master.
 
 Pemakaian:
 
@@ -193,6 +198,79 @@ def terapkan(rgba: np.ndarray, s: float, tx: float, ty: float) -> np.ndarray:
     return np.array(hasil.convert("RGBA"))
 
 
+# ── 4. Transplantasi zona ekspresi ke master ─────────────────────────────
+ZONA = Path(__file__).resolve().parent / "zona_ekspresi.json"
+
+
+def _poligon(poligon, shape) -> np.ndarray:
+    img = Image.new("L", (shape[1], shape[0]), 0)
+    ImageDraw.Draw(img).polygon([tuple(p) for p in poligon], fill=255)
+    return np.array(img) > 0
+
+
+def _blur(mask: np.ndarray, sigma: float) -> np.ndarray:
+    img = Image.fromarray((np.clip(mask, 0, 1) * 255).astype(np.uint8))
+    return np.array(img.filter(ImageFilter.GaussianBlur(sigma))).astype(np.float64) / 255
+
+
+def _ke_lab(rgb):
+    return np.array(Image.fromarray(rgb.astype(np.uint8)).convert("LAB")).astype(np.float64)
+
+
+def _dari_lab(lab):
+    return np.array(Image.fromarray(np.clip(np.round(lab), 0, 255).astype(np.uint8), "LAB").convert("RGB"))
+
+
+def transplantasi(master: np.ndarray, eks: np.ndarray, s: float, tx: float, ty: float,
+                  poligon: list, poni: list) -> tuple[np.ndarray, dict]:
+    """Master utuh + wajah bagian dalam dari ``eks`` (Bible A6).
+
+    1. ``eks`` diskalakan/digeser supaya pupil & hidungnya jatuh di pupil & hidung master.
+    2. Warna kulitnya disamakan dengan master di cincin tepi zona (rata-rata & sebaran Lab).
+    3. Dicampur ke master lewat zona yang dihaluskan dan dikecilkan ke dalam, jadi tepi
+       zona tetap 100% master; helai poni master di kotak ``poni`` tetap di atas.
+    Di luar poligon, keluaran = master piksel demi piksel.
+    """
+    h, w = master.shape[:2]
+    Ew = terapkan(eks, s, tx, ty)[..., :3].astype(np.float64)
+    M = master[..., :3].astype(np.float64)
+    m = _poligon(poligon, (h, w))
+
+    luar = _lebarkan(m, 7) & ~_sempitkan(m, 7) & m
+    lum_m, lum_e = M.mean(2), Ew.mean(2)
+    kulit = luar & (lum_m > 90) & (lum_e > 90)
+    la, lb = _ke_lab(Ew), _ke_lab(M)
+    ma, sa = la[kulit].mean(0), la[kulit].std(0) + 1e-3
+    mb, sb = lb[kulit].mean(0), lb[kulit].std(0) + 1e-3
+    E = _dari_lab((la - ma) * np.clip(sb / sa, 0.85, 1.15) + mb).astype(np.float64)
+
+    x0, y0, x1, y1 = poni
+    kotak = np.zeros((h, w), bool)
+    kotak[y0:y1, x0:x1] = True
+    rambut = _lebarkan(kotak & m & (lum_m < 85), 1)
+
+    alpha = _blur(_sempitkan(m, 8), 4) * (1 - _blur(rambut, 1.0))
+    alpha = np.where(m, alpha, 0.0)[..., None]
+    keluar = master.copy()
+    keluar[..., :3] = np.round(alpha * E + (1 - alpha) * M).astype(np.uint8)
+    berubah = np.abs(keluar.astype(int) - master.astype(int)).max(2) > 0
+    return keluar, {"geser_warna_lab": np.round(mb - ma, 1).tolist(),
+                    "piksel_zona": int(m.sum()), "piksel_poni_master_dipertahankan": int(rambut.sum()),
+                    "piksel_berubah": int(berubah.sum()),
+                    "piksel_berubah_di_luar_zona": int((berubah & ~m).sum())}
+
+
+def fit_mata_hidung(sumber: dict, sasaran: dict) -> tuple[float, float, float, list]:
+    """Similarity dari pupil & hidung saja (wajah bagian dalam), bukan telinga/dagu."""
+    k = ("pupil_kiri", "pupil_kanan", "hidung")
+    P = np.array([sumber[x] for x in k], float)
+    Q = np.array([sasaran[x] for x in k], float)
+    pm, qm = P.mean(0), Q.mean(0)
+    s = ((P - pm) * (Q - qm)).sum() / ((P - pm) ** 2).sum()
+    t = qm - s * pm
+    return float(s), float(t[0]), float(t[1]), np.round(np.linalg.norm(s * P + t - Q, axis=1), 1).tolist()
+
+
 def main(argv: list[str]) -> int:
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     ap.add_argument("masuk")
@@ -204,6 +282,8 @@ def main(argv: list[str]) -> int:
     ap.add_argument("--papan-catur", action="store_true")
     ap.add_argument("--tutup-lubang", action="store_true")
     ap.add_argument("--selaraskan", action="store_true")
+    ap.add_argument("--transplantasi", metavar="MASTER",
+                    help="tempel wajah bagian dalam MASUK ke berkas master (zona dari tools/zona_ekspresi.json)")
     ap.add_argument("--kualitas", type=int, default=85)
     ap.add_argument("--batas-kepala", type=int, default=0,
                     help="y kerah di berkas sumber; di atasnya kantong latar di sela rambut ikut dibuang")
@@ -221,6 +301,14 @@ def main(argv: list[str]) -> int:
         rgba = terapkan(rgba, s, tx, ty)
         laporan["selaraskan"] = {"skala": round(s, 4), "geser_x": round(tx, 1), "geser_y": round(ty, 1),
                                  "galat_landmark_px": round(galat, 1)}
+    if a.transplantasi:
+        lm = json.loads(LANDMARK.read_text(encoding="utf-8"))
+        zona = json.loads(ZONA.read_text(encoding="utf-8"))[a.tokoh]
+        s, tx, ty, galat = fit_mata_hidung(lm[a.landmark or a.tokoh][a.ekspresi], lm[a.tokoh][a.master])
+        master = np.array(Image.open(a.transplantasi).convert("RGBA"))
+        rgba, laporan["transplantasi"] = transplantasi(master, rgba, s, tx, ty, zona["poligon"], zona["poni"])
+        laporan["transplantasi"].update({"skala": round(s, 4), "geser_x": round(tx, 1), "geser_y": round(ty, 1),
+                                         "galat_pupil_hidung_px": galat})
     Image.fromarray(rgba, "RGBA").save(a.keluar, "WEBP", quality=a.kualitas, alpha_quality=100, method=6)
     laporan["kb"] = round(Path(a.keluar).stat().st_size / 1024, 1)
     print(json.dumps(laporan, ensure_ascii=False))

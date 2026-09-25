@@ -1,5 +1,5 @@
 {
- "_catatan": "Landmark wajah (koordinat kanvas 720x960), diukur manual pada zoom 2x. '<tokoh>' = berkas yang sekarang terpasang (dipakai tools/audit_potret.py); '<tokoh>@<sumber>' = berkas sumber sebelum dirapikan (dipakai tools/rapikan_potret.py --landmark). Ukur ulang setiap kali berkas potret diganti.",
+ "_catatan": "Landmark wajah (koordinat kanvas 720x960), diukur manual pada zoom 2x. '<tokoh>' = berkas yang sekarang terpasang (dipakai tools/audit_potret.py); untuk ekspresi hasil transplantasi, pupil & hidung dipetakan dari '<tokoh>@selaras', dagu & telinga = milik master. '<tokoh>@<sumber>' = berkas sumber sebelum diproses (dipakai tools/rapikan_potret.py --landmark). Ukur ulang setiap kali berkas potret diganti.",
  "rimba": {
   "neutral": {
    "pupil_kiri": [
@@ -25,68 +25,68 @@
   },
   "happy": {
    "pupil_kiri": [
-    282.3,
-    353.2
+    281.4,
+    355.6
    ],
    "pupil_kanan": [
-    357.3,
-    340.5
+    359.5,
+    342.4
    ],
    "hidung": [
-    317.5,
-    394.4
+    318.1,
+    398.5
    ],
    "dagu": [
-    324.5,
-    481.0
+    325,
+    485
    ],
    "telinga": [
-    464.9,
-    387.4
+    462.5,
+    375
    ]
   },
   "worried": {
    "pupil_kiri": [
-    285.9,
-    353.1
+    283.9,
+    355.4
    ],
    "pupil_kanan": [
-    360.8,
-    342.1
+    362.4,
+    343.9
    ],
    "hidung": [
-    313.4,
-    393.0
+    312.7,
+    397.2
    ],
    "dagu": [
-    320.9,
-    480.3
+    325,
+    485
    ],
    "telinga": [
-    465.5,
-    388.0
+    462.5,
+    375
    ]
   },
   "serious": {
    "pupil_kiri": [
-    285.2,
-    351.0
+    282.2,
+    354.6
    ],
    "pupil_kanan": [
-    360.3,
-    342.5
+    362.5,
+    345.5
    ],
    "hidung": [
-    315.2,
-    390.1
+    314.3,
+    396.4
    ],
    "dagu": [
-    320.2,
-    477.8
+    325,
+    485
    ],
    "telinga": [
-    465.6,
-    395.1
+    462.5,
+    375
    ]
   }
  },
@@ -177,6 +177,74 @@
    "telinga": [
     470,
     365
+   ]
+  }
+ },
+ "rimba@selaras": {
+  "happy": {
+   "pupil_kiri": [
+    282.3,
+    353.2
+   ],
+   "pupil_kanan": [
+    357.3,
+    340.5
+   ],
+   "hidung": [
+    317.5,
+    394.4
+   ],
+   "dagu": [
+    324.5,
+    481.0
+   ],
+   "telinga": [
+    464.9,
+    387.4
+   ]
+  },
+  "worried": {
+   "pupil_kiri": [
+    285.9,
+    353.1
+   ],
+   "pupil_kanan": [
+    360.8,
+    342.1
+   ],
+   "hidung": [
+    313.4,
+    393.0
+   ],
+   "dagu": [
+    320.9,
+    480.3
+   ],
+   "telinga": [
+    465.5,
+    388.0
+   ]
+  },
+  "serious": {
+   "pupil_kiri": [
+    285.2,
+    351.0
+   ],
+   "pupil_kanan": [
+    360.3,
+    342.5
+   ],
+   "hidung": [
+    315.2,
+    390.1
+   ],
+   "dagu": [
+    320.2,
+    477.8
+   ],
+   "telinga": [
+    465.6,
+    395.1
    ]
   }
  }

@@ -1,0 +1,7 @@
+{
+ "_catatan": "Zona ekspresi per tokoh (koordinat kanvas 720x960 berkas master). 'poligon' = wajah bagian dalam: alis sampai bawah mulut, di dalam kontur pipi dan sebelum rambut dekat telinga; di luar poligon, ekspresi harus identik dengan master (Bible A6). 'poni' = kotak [x0, y0, x1, y1] tempat helai poni master menyilang zona; helai gelap di sana tetap milik master dan menutupi wajah ekspresi. Grid Bible (zona y 175-400) mengasumsikan mata di y=240; master Rimba punya mata di y~348, jadi zonanya diturunkan mengikuti landmark.",
+ "rimba": {
+  "poligon": [[272, 318], [300, 306], [345, 300], [392, 306], [412, 330], [414, 380], [398, 430], [368, 458], [330, 466], [296, 458], [276, 432], [270, 380]],
+  "poni": [262, 290, 316, 372]
+ }
+}

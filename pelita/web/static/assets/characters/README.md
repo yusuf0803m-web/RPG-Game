@@ -17,41 +17,44 @@ di atas latar, dan di-crop jadi wajah kecil di samping baris dialog.
 ## Memeriksa & merapikan aset
 
 ```bash
-python tools/audit_potret.py rimba      # ukuran, alpha, latar tercetak, lubang pakaian, garis mata vs neutral
+python tools/audit_potret.py rimba      # ukuran, alpha, latar tercetak, lubang, identitas di luar zona, garis mata
 python tools/rapikan_potret.py SUMBER.webp rimba/happy.webp --tokoh rimba --ekspresi happy \
-    --papan-catur --batas-kepala 440 --tutup-lubang --selaraskan --landmark rimba@rilis2
+    --landmark rimba@selaras --transplantasi rimba/neutral.webp
 ```
 
-`audit_potret.py` juga dijalankan oleh `tests/test_tokoh.py`: berkas dengan latar tercetak,
-lubang di pakaian, atau garis mata/dagu di luar toleransi Bible (±4 / ±12 px terhadap
-ekspresi bawaan) membuat tes gagal. Landmark wajah dicatat di `tools/landmark_potret.json`
-dan harus diukur ulang setiap kali berkas diganti.
+`audit_potret.py` juga dijalankan oleh `tests/test_tokoh.py`. Tes gagal kalau ada berkas dengan:
+latar tercetak, lubang di pakaian, piksel di luar zona ekspresi yang berbeda dari master
+(`tools/zona_ekspresi.json`, Bible A6), atau garis mata/dagu di luar toleransi Bible
+(±4 / ±12 px). Landmark wajah dicatat di `tools/landmark_potret.json` dan harus diukur ulang
+setiap kali berkas diganti.
 
 ## Catatan aset pilot Rimba
 
-Sumber: set rilis kedua. `neutral` dipasang apa adanya (master). Tiga ekspresi lain dirapikan
-dengan `tools/rapikan_potret.py`, tanpa menggambar ulang: hanya matting latar, pemulihan alpha,
-dan skala + geser (tanpa rotasi).
+`neutral.webp` adalah master dan dipasang apa adanya. `happy`, `worried`, dan `serious` dibangun
+ulang dari master: **seluruh gambar = neutral**, kecuali wajah bagian dalam (alis, mata, hidung,
+mulut, pipi) di poligon `tools/zona_ekspresi.json`. Wajah itu diambil dari artwork ekspresi yang
+sudah disetujui (set rilis kedua, setelah dibersihkan & diselaraskan pada commit 069ebcd),
+diskalakan supaya pupil & hidungnya jatuh di pupil & hidung neutral, disamakan warna kulitnya,
+lalu dicampur dengan tepi yang dihaluskan. Helai poni neutral yang menyilang mata kiri tetap di
+atas. Tidak ada piksel yang digambar/digenerate.
 
-| Berkas | KB | Perbaikan | Transform ke neutral |
-|---|---|---|---|
-| `neutral.webp` | 123 | — (master) | — |
-| `happy.webp` | 94 | Papan catur tercetak di-matte jadi transparan; lubang rompi tertutup (RGB di bawahnya masih utuh) | skala 0,9364, geser (+29,5; +87,7) |
-| `worried.webp` | 88 | Lubang rompi (11.293 px) ditutup dengan memulihkan alpha | skala 0,9977, geser (+1,6; +38,8) |
-| `serious.webp` | 133 | — | skala 1,0022, geser (−5,5; +29,3) |
+| Berkas | KB | Skala wajah | Geser | Galat pupil/hidung |
+|---|---|---|---|---|
+| `neutral.webp` | 123 | — (master) | — | — |
+| `happy.webp` | 115 | 1,0416 | (−12,6; −12,3) | 1,9 / 0,5 / 1,6 px |
+| `worried.webp` | 115 | 1,0489 | (−16,0; −15,0) | 2,0 / 3,7 / 5,5 px |
+| `serious.webp` | 115 | 1,0691 | (−22,7; −20,6) | 0,7 / 4,6 / 4,8 px |
 
-Setelah dirapikan, garis mata keempatnya dalam ±1,4 px dan dagu dalam ±7,2 px dari neutral,
-jadi satu crop wajah `[205, 237, 260]` dipakai untuk semuanya.
+Hasil: siluet keempatnya identik (IoU 1,0000), di luar zona selisihnya setara derau encode WebP
+(rata-rata 3,0, p99 11), garis mata dalam ±1,9 px, margin & framing = neutral.
 
-**Yang masih tersisa (butuh gambar baru, bukan transform):**
+**Yang masih tersisa:**
 
-- Neutral dibuat terpisah dari tiga ekspresi lain: rambutnya lebih tipis dan bahunya lebih
-  sempit/rendah. Wajah tidak melompat, tapi siluet rambut dan bahu berubah sedikit saat
-  berganti dari/ke neutral (IoU siluet kepala 0,86–0,89; antar-ekspresi lain 0,93–0,94).
-- Putaran kepala sedikit berbeda (galat landmark telinga 12–20 px); skala + geser tidak bisa
-  memperbaikinya tanpa warp.
-- Keempatnya tidak memenuhi grid Bible §4 (garis mata di y≈347, bukan 240; margin samping
-  `happy`/`worried`/`serious` 11–30 px, bukan ≥ 48). Neutral master sendiri sudah di luar grid.
-- `happy`: tepi lengan kiri terpotong lurus di x≈30 (tepi kanvas sumber ikut tergeser), di
-  bawah y≈610; di panggung hanya ujungnya yang terlihat. Beberapa bintik 1–2 px sisa papan
-  catur mungkin masih ada di ujung helai.
+- Keempatnya di luar grid Bible §4 (garis mata di y≈348, bukan 240), karena neutral master
+  sendiri begitu. Memperbaikinya butuh master baru, bukan transform.
+- Fitur wajah `worried`/`serious` sedikit lebih besar daripada neutral (skala 1,05–1,07),
+  mengikuti proporsi artwork sumbernya. Di ukuran panggung hampir tak terlihat.
+- `happy` sumbernya jauh lebih terang (L −24 dikoreksi); rona kulitnya sudah disamakan di tepi
+  zona, tapi di dalam wajah tetap sedikit lebih hangat daripada neutral.
+- Ekspresi hanya berubah di dalam zona: senyum `happy` tidak mengangkat kontur pipi luar atau
+  rahang, karena itu milik neutral.

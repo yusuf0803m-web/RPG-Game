@@ -267,8 +267,9 @@ def test_klien_punya_lapisan_panggung():
 # ── Kelayakan aset untuk panggung (tools/audit_potret.py) ────────────────
 def test_aset_tokoh_layak_panggung(registri):
     """Tiap berkas tokoh terdaftar: 720x960, latar benar-benar transparan (bukan papan catur
-    atau latar yang tercetak), tanpa lubang di pakaian, dan — kalau landmark wajahnya tercatat —
-    garis mata & dagu dalam toleransi Bible terhadap ekspresi bawaan, serta muat di crop wajah."""
+    atau latar yang tercetak), tanpa lubang di pakaian, di luar zona ekspresi identik dengan
+    master (Bible A6), dan — kalau landmark wajahnya tercatat — garis mata & dagu dalam
+    toleransi Bible terhadap ekspresi bawaan, serta muat di crop wajah."""
     pytest.importorskip("numpy")
     pytest.importorskip("PIL")
     import sys
@@ -283,4 +284,7 @@ def test_aset_tokoh_layak_panggung(registri):
             assert r["lubang_pakaian_px"] < 50, f"{nama}: {r['lubang_pakaian_px']} px lubang di pakaian"
             if "garis_mata" in r:
                 assert r["crop_ok"], f"{nama}: mata/dagu di luar crop wajah {r['crop_wajah']}"
+            if "luar_zona_sama" in r:
+                assert r["luar_zona_sama"], (f"{nama}: di luar zona ekspresi berbeda dari master "
+                                             f"(rata {r['luar_zona_rata']}, p99 {r['luar_zona_p99']})")
             assert r["panggung_siap"], f"{nama}: {r}"

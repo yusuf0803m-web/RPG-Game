@@ -1063,13 +1063,13 @@ log tetap ada.
 `"panggung": false` di registri karena latarnya tercetak, tetap dipakai untuk wajah di log, tapi
 panggung memakai ekspresi bawaan supaya tidak muncul kotak berlatar.
 
-**Status pilot.** Rimba: empat ekspresi siap panggung. `happy`/`worried`/`serious` dirapikan
-tanpa menggambar ulang (`tools/rapikan_potret.py`: matting papan catur, pemulihan alpha
-lubang pakaian, skala + geser ke landmark neutral), jadi garis mata keempatnya sama (±1,4 px)
-dan satu crop wajah cukup. `tools/audit_potret.py` menjaga ini lewat `tests/test_tokoh.py`.
-Sisa yang butuh gambar baru — siluet rambut/bahu neutral berbeda, dan set ini di luar grid
-Bible §4 — dicatat di `pelita/web/static/assets/characters/README.md`. Tokoh lain didaftarkan
-setelah gambarnya ada.
+**Status pilot.** Rimba: empat ekspresi siap panggung. `neutral` adalah master; `happy`,
+`worried`, dan `serious` = neutral piksel demi piksel kecuali wajah bagian dalam (poligon di
+`tools/zona_ekspresi.json`), yang diambil dari artwork ekspresi dan ditempel dengan
+`tools/rapikan_potret.py --transplantasi` tanpa menggambar ulang. Siluet keempatnya identik,
+jadi ganti ekspresi tidak menggeser rambut, kepala, atau bahu. `tools/audit_potret.py` menjaga
+ini lewat `tests/test_tokoh.py`. Sisa — set ini di luar grid Bible §4 karena masternya — dicatat
+di `pelita/web/static/assets/characters/README.md`. Tokoh lain didaftarkan setelah gambarnya ada.
 
 ---
 

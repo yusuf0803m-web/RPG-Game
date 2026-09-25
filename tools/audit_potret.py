@@ -7,6 +7,8 @@ melaporkan apakah berkas itu layak tampil di panggung:
 - puncak kepala (crown), badan sampai tepi bawah, lebar bahu di y=600
 - latar tercetak: piksel opak di bingkai 4 px tepi kanvas (papan catur, latar hitam, dst.)
 - lubang pakaian: piksel transparan di dalam siluet, di bawah leher (y >= 480)
+- identitas dengan master di luar zona ekspresi (``tools/zona_ekspresi.json``, Bible A6):
+  selisih piksel rata-rata & persentil 99 harus setara derau encode ulang WebP
 - landmark wajah (pupil, dagu) dari ``landmark_potret.json`` yang diukur manual,
   lalu kecocokannya dengan crop wajah di ``tokoh.json`` dan dengan master (neutral).
   Landmark disimpan di ``tools/landmark_potret.json`` (koordinat kanvas 720x960).
@@ -26,12 +28,16 @@ import sys
 from pathlib import Path
 
 import numpy as np
-from PIL import Image
+from PIL import Image, ImageFilter
 
 AKAR = Path(__file__).resolve().parent.parent
 ASET = AKAR / "pelita" / "web" / "static" / "assets" / "characters"
 REGISTRI = AKAR / "pelita" / "data" / "tokoh.json"
 LANDMARK = Path(__file__).resolve().parent / "landmark_potret.json"
+ZONA = Path(__file__).resolve().parent / "zona_ekspresi.json"
+# Derau encode ulang WebP q85 pada master Rimba: rata-rata 3,0, p99 10. Di atas ini = gambar lain.
+LUAR_ZONA_RATA = 4.0
+LUAR_ZONA_P99 = 14
 
 KANVAS = (720, 960)
 BATAS_KB = 160
@@ -135,6 +141,25 @@ def audit_tokoh(tid: str) -> list[dict]:
                                 and lm["dagu"][1] <= y + s)
             r["zona_panggung_ok"] = bool(lm["dagu"][1] <= ZONA_PANGGUNG)
         hasil.append(r)
+    zona = muat_json(ZONA).get(tid)
+    berkas_master = next((b for b in (ASET / tid).glob(f"{bawaan}.*") if b.suffix in (".webp", ".png")), None)
+    if zona and berkas_master:
+        from PIL import ImageDraw
+        M = np.array(Image.open(berkas_master).convert("RGBA")).astype(int)
+        img = Image.new("L", KANVAS, 0)
+        ImageDraw.Draw(img).polygon([tuple(p) for p in zona["poligon"]], fill=255)
+        dalam = np.array(img.filter(ImageFilter.MaxFilter(9))) > 0        # + pita 4 px derau di tepi zona
+        for r in hasil:
+            if r["ekspresi"] == bawaan:
+                continue
+            X = np.array(Image.open(ASET / tid / r["berkas"]).convert("RGBA")).astype(int)
+            if X.shape != M.shape:
+                continue
+            luar = ~dalam & ((M[..., 3] > 0) | (X[..., 3] > 0))
+            d = np.abs(X - M).max(2)[luar]
+            r["luar_zona_rata"] = round(float(d.mean()), 2)
+            r["luar_zona_p99"] = float(np.percentile(d, 99))
+            r["luar_zona_sama"] = bool(r["luar_zona_rata"] <= LUAR_ZONA_RATA and r["luar_zona_p99"] <= LUAR_ZONA_P99)
     master = next((r for r in hasil if r["ekspresi"] == bawaan and "garis_mata" in r), None)
     for r in hasil:
         if master and "garis_mata" in r:
@@ -142,6 +167,7 @@ def audit_tokoh(tid: str) -> list[dict]:
             r["geser_dagu_vs_master"] = round(r["dagu"] - master["dagu"], 1)
             r["skala_vs_master"] = round(r["mata_ke_dagu"] / master["mata_ke_dagu"], 3)   # info saja
         r["panggung_siap"] = bool(
+            r.get("luar_zona_sama", True) and
             r["kanvas"] == list(KANVAS) and r["alpha_min_maks"][0] == 0 and not r["latar_tercetak"]
             and r["lubang_pakaian_px"] < 50 and r["kb"] <= BATAS_KB
             and (not master or r is master or (
@@ -159,7 +185,7 @@ def main(argv: list[str]) -> int:
         return 0
     kolom = ["ekspresi", "kanvas", "kb", "alpha_min_maks", "crown", "garis_mata", "dagu", "bawah",
              "bahu_y600", "geser_mata_vs_master", "geser_dagu_vs_master", "skala_vs_master", "latar_tercetak",
-             "papan_catur", "lubang_pakaian_px", "crop_ok", "zona_panggung_ok", "panggung_siap"]
+             "papan_catur", "lubang_pakaian_px", "luar_zona_rata", "luar_zona_p99", "crop_ok", "zona_panggung_ok", "panggung_siap"]
     for tid, rows in semua.items():
         print(f"== {tid}")
         for r in rows:
