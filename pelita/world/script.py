@@ -4,6 +4,9 @@ Perintah yang didukung (satu objek per perintah):
 
     {"text": "narasi"}                          tampilkan narasi
     {"say": "Nama", "text": "..."}              baris dialog
+        tambahan opsional (hanya tampilan web, GAME_DESIGN §7.3):
+                  "ekspresi": "happy"   ekspresi potret; tanpa ini = ekspresi bawaan tokoh
+                  "tokoh": "rimba"      id tokoh kalau teks "say" bukan nama/aliasnya (mis. "???")
     {"pause": true}                             tunggu Enter
     {"if": <kondisi>, "then": [...], "else": [...]}
     {"once": "flag", "do": [...]}               jalankan sekali, lalu set flag
@@ -100,8 +103,13 @@ class ScriptRunner:
             self.io.line(line)
         self.io.line("")
 
-    def say(self, who: str, text: str) -> None:
-        self.io.emit("say", {"who": who, "text": text})
+    def say(self, who: str, text: str, ekspresi: Optional[str] = None, tokoh: Optional[str] = None) -> None:
+        payload = {"who": who, "text": text}
+        if ekspresi:
+            payload["ekspresi"] = ekspresi
+        if tokoh:
+            payload["tokoh"] = tokoh
+        self.io.emit("say", payload)
         if self.io.structured:
             return
         lines = wrap(text, width=56, indent="")
@@ -126,7 +134,7 @@ class ScriptRunner:
             if "text" in c and "say" not in c:
                 self.narrate(c["text"])
             elif "say" in c:
-                self.say(c["say"], c["text"])
+                self.say(c["say"], c["text"], c.get("ekspresi"), c.get("tokoh"))
             elif "pause" in c:
                 self.pause()
             elif "if" in c:

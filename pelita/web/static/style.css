@@ -420,3 +420,44 @@ button, input { font: inherit; color: inherit; }
   text-shadow: 0 2px 16px rgba(0,0,0,.9);
 }
 @keyframes plate-masuk { from { opacity: 0; } to { opacity: 1; } }
+
+/* ── Tokoh bergambar (GAME_DESIGN §7.3) ─────────────────────────────────
+   Panggung: bust-up pembicara terbaru di atas latar, di bawah label ruang &
+   kotak dialog secara hierarki. Gambar 3:4; bagian atasnya (kepala-dada)
+   yang terlihat, sisanya tenggelam di gradien bawah panorama. */
+.scene-cast { position: absolute; inset: 0; pointer-events: none; z-index: 1; }
+.scene-character {
+  position: absolute; bottom: 0; height: 150%; aspect-ratio: 3 / 4;
+  transform: translateY(30%);
+  transition: opacity .3s ease, filter .3s ease;
+}
+.scene-character--kanan { right: clamp(12px, 22%, 320px); }
+.scene-character--kiri  { left: clamp(12px, 22%, 320px); }
+.scene-character.is-entering, .scene-character.is-leaving { opacity: 0; }
+.scene-character.is-idle { filter: brightness(.55) saturate(.8); }
+.scene-character__img {
+  position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain;
+  opacity: 0; transition: opacity .22s ease;
+}
+.scene-character__img.on { opacity: 1; }
+body.in-battle .scene-cast { display: none; }
+
+/* Face graphic di log: crop dari berkas yang sama, lewat background-*.
+   Duduk di kolom nama supaya garis dialog tetap sejajar dengan baris tanpa potret. */
+.dialog.has-portrait .who { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; }
+.dialog-portrait {
+  flex: none; width: 52px; height: 52px; border-radius: 6px;
+  background-color: var(--bg-2); background-repeat: no-repeat;
+  border: 1px solid var(--line-warm);
+}
+
+@media (max-width: 860px) {
+  .dialog-portrait { width: 48px; height: 48px; }
+  /* Chip Keping & Keluar ada di pojok kanan atas: geser tokoh kanan menjauh. */
+  .scene-character--kanan { right: 28%; }
+  .scene-character--kiri  { left: 4%; }
+}
+/* Lanskap pendek: panorama cuma ~86px, bust-up tidak terbaca. Face graphic di log cukup. */
+@media (max-height: 520px) and (orientation: landscape) {
+  .scene-cast { display: none; }
+}

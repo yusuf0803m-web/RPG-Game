@@ -113,8 +113,8 @@ python -m pelita -s rawa --auto --seed 3 --no-pause
 
 ```bash
 pip install pytest
-python -m pytest -q                     # 247 tes: unit, walkthrough Babak 1-3, sistem Tahap 3,
-                                        # mekanik Babak 2 & 3, latar, API web, regresi menu
+python -m pytest -q                     # 279 tes: unit, walkthrough Babak 1-3, sistem Tahap 3,
+                                        # mekanik Babak 2 & 3, latar, tokoh bergambar, API web, regresi menu
                                         # (tiap prompt harus ada jalan keluar), kalibrasi, dan
                                         # konten sampingan (tests/test_opsional.py)
 python tools/playtest.py                # laporan ekonomi & pacing seluruh permainan (§9.5)
@@ -165,11 +165,13 @@ pelita/
     terminal.py    layar pertarungan & menu teks; IO.menu()/emit() = kanal terstruktur untuk web
   web/
     session.py     satu sesi = satu thread Game.run() dengan IO antrian (event ⇄ input)
+    tokoh.py       registri tokoh bergambar + pencari potret per ekspresi (§7.3)
     app.py         server Flask: /api/session, /state (long-poll), /input
     static/        index.html, style.css, app.js (klien), art.js (SVG prosedural)
-  data/            characters, skills, enemies, items, kaca, jalur;
+  data/            characters, skills, enemies, items, kaca, jalur, tokoh (potret dialog);
                    world/area_*.json (18 area), shops, quests, kenangan, buruan, arena, latar
-tools/             calibrate.py, walkthrough.py, playtest.py (laporan ekonomi & pacing)
+tools/             calibrate.py, walkthrough.py, playtest.py (laporan ekonomi & pacing),
+                   audit_potret.py & rapikan_potret.py (aset tokoh bergambar)
 tests/             pytest (walker.py = pemain otomatis untuk tes alur — ia berbelanja,
                    memasang Kaca, dan menukar Serpihan seperti pemain sungguhan;
                    test_menu_web.py = crawler yang memastikan tiap menu bisa ditinggalkan;
@@ -254,6 +256,26 @@ daftar lengkapnya ada di `pelita/web/static/assets/backgrounds/README.md`.
 **Tanpa satu pun gambar, permainan tetap utuh:** server hanya mengirim URL untuk berkas yang benar-benar
 ada, jadi ruang yang belum digambar memakai panorama prosedural dan peristiwa besar tampil sebagai
 layar gelap berteks. Gambar bisa diisi kapan saja, satu per satu.
+
+## Tokoh bergambar
+
+Saat tokoh yang terdaftar bicara, versi web menampilkan **bust-up-nya di atas latar** dan **wajahnya
+di samping baris dialog**, dengan ekspresi per baris (GAME_DESIGN §7.3). Pilotnya Rimba dengan empat
+ekspresi: `neutral`, `happy`, `worried`, `serious`.
+
+```json
+{"say": "Rimba", "ekspresi": "worried", "text": "Kafilah makin jarang lewat, ya."}
+{"say": "???", "tokoh": "rimba", "ekspresi": "serious", "text": "..."}
+```
+
+Tanpa `ekspresi`, tokoh memakai ekspresi bawaannya. `tokoh` hanya perlu kalau teks `say` bukan nama
+atau alias tokoh itu. Registri ada di `pelita/data/tokoh.json`, gambarnya di
+`pelita/web/static/assets/characters/<id>/<ekspresi>.webp` (atau `.png`). Terminal tidak berubah
+sama sekali, dan tokoh tanpa gambar tetap tampil sebagai dialog biasa.
+
+```bash
+python tools/audit_potret.py rimba     # kelayakan panggung tiap berkas (butuh Pillow + numpy)
+```
 
 ## Cara antarmuka web bekerja
 

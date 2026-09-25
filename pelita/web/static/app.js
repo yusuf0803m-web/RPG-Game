@@ -7,7 +7,7 @@
   const el = {
     title: $("title-screen"), game: $("game-screen"), titleArt: $("title-art"),
     slotList: $("slot-list"), btnNew: $("btn-new"), btnLoad: $("btn-load"), btnQuit: $("btn-quit"),
-    scene: $("scene"), sceneArt: $("scene-art"), scenePhoto: $("scene-photo"),
+    scene: $("scene"), sceneArt: $("scene-art"), scenePhoto: $("scene-photo"), sceneCast: $("scene-cast"),
     sceneArea: $("scene-area"), sceneRoom: $("scene-room"),
     plate: $("plate"), plateImg: $("plate-img"), plateTeks: $("plate-teks"),
     chipKeping: $("chip-keping"), chipLentera: $("chip-lentera"),
@@ -66,6 +66,7 @@
       el.promptHead.hidden = true; el.choiceGrid.innerHTML = "";
       document.body.classList.remove("in-battle");
       el.title.hidden = true; el.game.hidden = false;
+      kosongkanPanggung();
       setScene({ area_id: "pelita_rendah", area: "Lembah Larung", room: "…", fog: false });
       poll();
     } catch (e) { toast("Tidak bisa memulai: " + e.message); }
@@ -78,6 +79,7 @@
   };
   function backToTitle() {
     state.id = null; state.dead = true;
+    kosongkanPanggung();
     el.game.hidden = true; el.title.hidden = false; el.slotList.hidden = true;
   }
 
@@ -106,8 +108,8 @@
       case "ilustrasi":  onIlustrasi(ev.payload); break;
       case "battle":     onBattle(ev.payload); break;
       case "battle_end": onBattleEnd(ev.payload); break;
-      case "say":        addDialog(ev.payload.who, ev.payload.text); break;
-      case "text":       addNarration(ev.payload.text); break;
+      case "say":        addDialog(ev.payload); tampilkanPembicara(ev.payload); break;
+      case "text":       addNarration(ev.payload.text); redupkanPanggung(); break;
       case "log":        addLog(ev.payload.text); break;
       case "prompt":     showPrompt(ev.payload); break;
       case "end":        onEnd(ev.payload); break;
@@ -147,6 +149,7 @@
   el.plate.onclick = () => tutupIlustrasi();
 
   function onAdegan(p) {
+    if (p.latar && p.latar !== state.latar) kosongkanPanggung();
     if (p.latar) pasangLatar(p.latar_url || "", p.latar, p.efek);
     else efekAdegan(p.efek);
   }
@@ -158,11 +161,70 @@
     el.plateImg.style.backgroundColor = p.latar_url ? "" : "#11161f";
     el.plateTeks.textContent = p.teks || "";
     el.plate.hidden = false;
+    kosongkanPanggung();
   }
 
   function tutupIlustrasi() {
     if (!el.plate.hidden) { el.plate.hidden = true; return true; }
     return false;
+  }
+
+  /* ── Panggung tokoh (GAME_DESIGN §7.3) ────────────────────────────────
+     Bust-up pembicara terbaru di atas latar, satu slot per sisi. Gambar baru
+     di-decode dulu sebelum ditukar supaya ganti ekspresi tidak berkedip.
+     Tokoh tanpa gambar panggung tidak memunculkan apa pun. */
+  const panggung = new Map();           // sisi → { el, tokoh, url, token }
+
+  function tampilkanPembicara(p) {
+    if (!p.panggung_url || state.battleOn) { redupkanPanggung(); return; }
+    const sisi = p.sisi === "kiri" ? "kiri" : "kanan";
+    panggung.forEach((slot, s) => { if (s !== sisi) slot.el.classList.add("is-idle"); });
+    let slot = panggung.get(sisi);
+    if (slot && slot.tokoh !== p.tokoh) { lepasSlot(sisi); slot = null; }
+    if (!slot) {
+      const div = document.createElement("div");
+      div.className = `scene-character scene-character--${sisi} is-entering`;
+      div.dataset.tokoh = p.tokoh;
+      el.sceneCast.appendChild(div);
+      slot = { el: div, tokoh: p.tokoh, url: "", token: 0 };
+      panggung.set(sisi, slot);
+      requestAnimationFrame(() => requestAnimationFrame(() => div.classList.remove("is-entering")));
+    }
+    slot.el.classList.remove("is-idle");
+    slot.el.dataset.ekspresi = p.ekspresi || "";
+    if (slot.url === p.panggung_url) return;
+    slot.url = p.panggung_url;
+    const token = ++slot.token;
+    const img = new Image();
+    img.className = "scene-character__img";
+    img.alt = "";
+    img.src = p.panggung_url;
+    const pasang = () => {
+      if (token !== slot.token || panggung.get(sisi) !== slot) return;
+      const lama = [...slot.el.querySelectorAll(".scene-character__img")];
+      slot.el.appendChild(img);
+      requestAnimationFrame(() => img.classList.add("on"));
+      lama.forEach((x) => { x.classList.remove("on"); setTimeout(() => x.remove(), 260); });
+    };
+    img.onerror = () => { if (token === slot.token) lepasSlot(sisi); };
+    (img.decode ? img.decode() : Promise.resolve()).then(pasang, () => {});
+  }
+
+  function redupkanPanggung() {
+    panggung.forEach((slot) => slot.el.classList.add("is-idle"));
+  }
+
+  function lepasSlot(sisi) {
+    const slot = panggung.get(sisi);
+    if (!slot) return;
+    panggung.delete(sisi);
+    slot.token++;
+    slot.el.classList.add("is-leaving");
+    setTimeout(() => slot.el.remove(), 320);
+  }
+
+  function kosongkanPanggung() {
+    [...panggung.keys()].forEach(lepasSlot);
   }
 
   /* ── Adegan & party ───────────────────────────────────────────────── */
@@ -188,6 +250,7 @@
     // Server mengirim ruang tiap kali menu digambar ulang; tulis deskripsinya
     // hanya saat pemain benar-benar pindah, supaya log tidak terisi ulangan.
     const here = r.area_id + "/" + r.room_id;
+    if (here !== state.roomKey) kosongkanPanggung();
     if (r.text && here !== state.roomKey) addNarration(r.text, "room-desc");
     state.roomKey = here;
   }
@@ -226,6 +289,7 @@
 
   /* ── Pertarungan ──────────────────────────────────────────────────── */
   function onBattle(b) {
+    if (!state.battleOn) kosongkanPanggung();
     state.battleOn = true;
     el.battle.hidden = false;
     document.body.classList.add("in-battle");
@@ -326,8 +390,17 @@
   function addNarration(text, cls) {
     push(`<p class="narration ${cls || ""}">${esc(text).replace(/\n\n/g, "</p><p class='narration'>")}</p>`);
   }
-  function addDialog(who, text) {
-    push(`<div class="dialog"><div class="who">${esc(who)}</div><div class="line">${esc(text)}</div></div>`);
+  /* Tiap baris membawa potret & ekspresinya sendiri, jadi riwayat tetap benar
+     walau beberapa baris tiba dalam satu kiriman. Crop wajah dikerjakan CSS
+     (background-size/-position) dari berkas yang sama dengan panggung. */
+  function addDialog(p) {
+    const w = p.potret_url && p.wajah;
+    const potret = w
+      ? `<div class="dialog-portrait" title="${esc(p.nama || p.who)}" style="background-image:url(&quot;${esc(p.potret_url)}&quot;);` +
+        `background-size:${Number(w.ukuran)}% auto;background-position:${Number(w.x)}% ${Number(w.y)}%"></div>`
+      : "";
+    const data = p.tokoh ? ` data-tokoh="${esc(p.tokoh)}" data-ekspresi="${esc(p.ekspresi || "")}"` : "";
+    push(`<div class="dialog${w ? " has-portrait" : ""}"${data}><div class="who">${potret}<span>${esc(p.who)}</span></div><div class="line">${esc(p.text)}</div></div>`);
   }
   function addRule() {
     if (el.log.lastElementChild && el.log.lastElementChild.classList.contains("rule")) return;
@@ -354,6 +427,7 @@
     if (promptKind(p, (p.prompt || "").trim()) !== "enter") tutupIlustrasi();
     const prompt = (p.prompt || "").trim();
     const kind = promptKind(p, prompt);
+    if (kind !== "enter") redupkanPanggung();
 
     /* Judul menu datang bersama prompt, bukan sebagai baris log: panel ini
        diganti tiap prompt, jadi header toko yang digambar ulang tiap putaran

@@ -1,0 +1,21 @@
+{
+ "_catatan": "Registri tokoh bergambar (GAME_DESIGN §7.3). Kunci tokoh adalah id stabil, bukan nama tampilan. 'alias' = teks 'say' di skrip yang dipetakan ke tokoh ini. 'wajah' = kotak crop face graphic [x, y, sisi] dalam koordinat kanvas acuan 720x960; boleh ditimpa per ekspresi kalau framing gambarnya berbeda. 'panggung': false = berkas ini hanya untuk face graphic di log (mis. latarnya belum bersih), panggung memakai ekspresi bawaan. Berkas dicari di assets/characters/<id>/<ekspresi>.webp lalu .png.",
+ "ekspresi": ["neutral", "happy", "worried", "serious", "angry", "sad", "surprised", "scared"],
+ "wajah_bawaan": [216, 120, 288],
+ "tokoh": {
+  "rimba": {
+   "nama": "Rimba",
+   "alias": ["Rimba"],
+   "sisi": "kanan",
+   "ekspresi_bawaan": "neutral",
+   "wajah": [205, 237, 260]
+  },
+  "sela": {
+   "nama": "Sela",
+   "alias": ["Sela"],
+   "sisi": "kanan",
+   "ekspresi_bawaan": "neutral",
+   "wajah": [180, 236, 260]
+  }
+ }
+}
