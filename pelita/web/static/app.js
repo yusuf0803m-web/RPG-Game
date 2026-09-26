@@ -23,7 +23,8 @@
     id: null, since: 0, polling: false, waiting: false,
     areaId: null, roomKey: null, lastHp: new Map(), battleOn: false, dead: false,
     latar: null,
-    fxAktif: false   // server mengirim event "fx" → angka melayang diurus fx.js, bukan dari log
+    fxAktif: false,  // server mengirim event "fx" → angka melayang diurus fx.js, bukan dari log
+    dikunjungi: new Set()   // ruang yang deskripsinya sudah dibacakan di kotak dialog
   };
 
   /* ── Util ─────────────────────────────────────────────────────────── */
@@ -65,7 +66,7 @@
     try {
       const { id } = await api("/api/session", { method: "POST", body: JSON.stringify(body) });
       state.id = id; state.since = 0; state.dead = false;
-      antrean.length = 0; state.fxAktif = false; FX.reset();
+      antrean.length = 0; state.fxAktif = false; FX.reset(); state.dikunjungi.clear();
       el.log.innerHTML = ""; el.enemies.innerHTML = ""; el.party.innerHTML = "";
       el.battle.hidden = true; state.battleOn = false; state.lastHp.clear(); state.roomKey = null;
       el.promptHead.hidden = true; el.choiceGrid.innerHTML = "";
@@ -118,16 +119,39 @@
     while (antrean.length) {
       const ev = antrean.shift();
       try {
+        const kejar = antrean.length > 40 || document.hidden;
         if (ev.kind === "fx") {
           state.fxAktif = true;
           // Tab sempat di latar belakang dan antrean menumpuk: susul tanpa animasi.
-          await FX.play(ev.payload, { kejar: antrean.length > 40 || document.hidden });
-        } else {
+          await FX.play(ev.payload, { kejar });
+        } else if (ev.kind === "say" || ev.kind === "text") {
+          // Cerita: tetap dicatat di log, lalu ditampilkan satu per satu di kotak dialog.
           proses(ev);
+          if (!kejar && !state.battleOn) await Cerita.tampil(ev.payload, ev.kind);
+        } else {
+          if (Cerita.aktif() && menutupDialog(ev)) Cerita.tutup();
+          proses(ev);
+          // Kunjungan pertama ke sebuah ruang: deskripsinya dibacakan sebagai narasi.
+          if (ev.kind === "room" && ev.payload.text && !kejar) {
+            const kunci = ev.payload.area_id + "/" + ev.payload.room_id;
+            if (!state.dikunjungi.has(kunci)) {
+              state.dikunjungi.add(kunci);
+              await Cerita.tampil({ text: ev.payload.text }, "text");
+            }
+          }
+          // Jeda "(Enter)" di tengah adegan: pemain sudah mengetuk tiap baris, jadi langsung lanjut.
+          if (ev.kind === "prompt" && Cerita.aktif() && promptKind(ev.payload, (ev.payload.prompt || "").trim()) === "enter") {
+            answer("");
+          }
         }
       } catch (e) { console.error(e); }
     }
     memutar = false;
+  }
+  // Event yang mengakhiri adegan: kotak dialog ditutup sebelum ia diproses.
+  function menutupDialog(ev) {
+    if (ev.kind === "prompt") return promptKind(ev.payload, (ev.payload.prompt || "").trim()) !== "enter";
+    return ["room", "battle", "battle_end", "end", "finished", "error"].includes(ev.kind);
   }
   function proses(ev) {
     switch (ev.kind) {
@@ -219,6 +243,10 @@
     // Server mengirim ruang tiap kali menu digambar ulang; tulis deskripsinya
     // hanya saat pemain benar-benar pindah, supaya log tidak terisi ulangan.
     const here = r.area_id + "/" + r.room_id;
+    if (here !== state.roomKey) {
+      push(`<div class="lokasi"><span>${esc(r.area || "")}</span><b>${esc(r.room || "")}</b></div>`);
+      el.scene.classList.remove("ruang-baru"); void el.scene.offsetWidth; el.scene.classList.add("ruang-baru");
+    }
     if (r.text && here !== state.roomKey) addNarration(r.text, "room-desc");
     state.roomKey = here;
   }
@@ -351,6 +379,7 @@
 
     if (/tumbang!|Seluruh party/.test(trimmed)) return push(`<p class="combat down">${esc(trimmed)}</p>`);
     if (/PECAH|JURUS GANDA|Bara \+/.test(trimmed)) return push(`<p class="combat big">${esc(trimmed)}</p>`);
+    if (/^\*\*/.test(trimmed)) Cerita.notif(trimmed);
     if (/^\*\*/.test(trimmed)) return push(`<p class="sys">${esc(trimmed.replace(/\*\*/g, "").trim())}</p>`);
     if (/^\(Tip:|^\(Catatan Penyala/.test(trimmed)) return push(`<p class="sys tip">${esc(trimmed)}</p>`);
     if (/^\(/.test(trimmed)) return push(`<p class="sys tip">${esc(trimmed)}</p>`);
@@ -408,6 +437,10 @@
       addButton("Tidak", "n");
       return;
     }
+    if (p.options && p.options.length && menuRuang(p.options)) {
+      tampilMenuRuang(p.options);
+      return;
+    }
     if (p.options && p.options.length) {
       p.options.forEach((o) => {
         let cls = "btn choice";
@@ -421,6 +454,68 @@
     el.freeForm.hidden = false;
     el.freeText.value = "";
     el.freeText.focus();
+  }
+
+  /* ── Menu eksplorasi ─────────────────────────────────────────────────
+     Menu ruang dikenali dari pintasan P/I/C/Q. Opsinya dikelompokkan:
+     Pergi (jalan keluar), Orang (Bicara: …, dengan potret), Periksa, Buruan,
+     lalu Party/Item/Catatan/Quest/Keluar sebagai bilah ikon. */
+  const menuRuang = (opts) => ["p", "i", "c", "q"].every((k) => opts.some((o) => o.meta && o.key === k));
+  const IKON = {
+    p: '<path d="M8 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm8 0a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM2 20c0-3.3 2.7-6 6-6s6 2.7 6 6M12 20c0-3.3 1.8-6 4-6s6 2.7 6 6"/>',
+    i: '<path d="M6 8h12l-1 12H7L6 8zm3 0V6a3 3 0 0 1 6 0v2"/>',
+    c: '<path d="M5 4h11a3 3 0 0 1 3 3v13H8a3 3 0 0 1-3-3V4zm0 13a3 3 0 0 1 3-3h11"/>',
+    q: '<path d="M6 3h10l3 3v15H6zM9 9h7M9 13h7M9 17h4"/>',
+    k: '<path d="M14 4h5v16h-5M10 8l-4 4 4 4M6 12h9"/>'
+  };
+  function tombol(o, cls, isi) {
+    const b = document.createElement("button");
+    b.className = cls;
+    b.innerHTML = `<span class="k">${esc(o.key)}</span>` + isi;
+    b.onclick = () => answer(o.key);
+    return b;
+  }
+  function tampilMenuRuang(opts) {
+    el.promptLabel.textContent = "";
+    const grup = { pergi: [], orang: [], periksa: [], buruan: [] }, bilah = [];
+    opts.forEach((o) => {
+      if (o.meta) { bilah.push(o); return; }
+      const m = /^([^:]{2,20}): (.+)$/.exec(o.label);
+      if (m && /^Buruan$/i.test(m[1])) grup.buruan.push([o, m[2], "Buruan"]);
+      else if (m && /^Bicara$/i.test(m[1])) grup.orang.push([o, m[2], m[1]]);
+      else if (m) grup.periksa.push([o, m[2], m[1]]);
+      else grup.pergi.push([o, o.label]);
+    });
+    const judul = { pergi: "Pergi", orang: "Orang", periksa: "Periksa", buruan: "Buruan" };
+    Object.keys(grup).forEach((g) => {
+      if (!grup[g].length) return;
+      const h = document.createElement("div"); h.className = "grup-judul"; h.textContent = judul[g];
+      el.choiceGrid.appendChild(h);
+      grup[g].forEach(([o, teks, verb]) => {
+        const tutup = g === "pergi" && /\s*\(terhalang\)$/.test(teks);
+        const polos = teks.replace(/\s*\(terhalang\)$/, "");
+        const ket = /^(.*?)\s*\(([^()]+)\)$/.exec(polos);
+        const nama = ket ? ket[1] : polos, sub = ket ? ket[2] : "";
+        if (g === "pergi") {
+          el.choiceGrid.appendChild(tombol(o, `btn choice ruang-pergi ${tutup ? "terhalang" : ""}`,
+            `<span class="rp-panah">${tutup ? "✕" : "➜"}</span><span class="rp-teks"><b>${esc(nama)}</b>${sub || tutup ? `<small>${esc([sub, tutup ? "terhalang" : ""].filter(Boolean).join(" · "))}</small>` : ""}</span>`));
+        } else if (g === "orang") {
+          el.choiceGrid.appendChild(tombol(o, "btn choice ruang-orang",
+            `<span class="ro-potret">${Art.speaker(nama)}</span><span class="rp-teks"><b>${esc(nama)}</b>${sub ? `<small>${esc(sub)}</small>` : ""}</span><span class="ro-verb">${esc(verb)}</span>`));
+        } else {
+          el.choiceGrid.appendChild(tombol(o, `btn choice ruang-periksa ${g === "buruan" ? "buruan" : ""}`,
+            `<span class="rp-panah">${g === "buruan" ? "⚔" : "◆"}</span><span class="rp-teks"><b>${esc(nama)}</b>${sub ? `<small>${esc(sub)}</small>` : ""}</span><span class="ro-verb">${esc(verb)}</span>`));
+        }
+      });
+    });
+    const bar = document.createElement("div"); bar.className = "bilah-ikon";
+    bilah.forEach((o) => {
+      const b = tombol(o, "bilah-btn" + (o.back ? " keluar" : ""),
+        `<svg viewBox="0 0 24 24" aria-hidden="true">${IKON[o.key] || IKON.q}</svg><span>${esc(o.label)}</span>`);
+      b.title = o.label;
+      bar.appendChild(b);
+    });
+    el.choiceGrid.appendChild(bar);
   }
 
   function setPromptHead(p) {
@@ -437,6 +532,9 @@
   /* Label sasaran dari mesin memakai bar teks "[████░░]" (untuk terminal).
      Di web, ganti dengan bar HP sungguhan. */
   function labelHtml(label) {
+    // Barisan toko: "Ramuan Daun      15 K  keterangan  (punya 3)"
+    const tk = /^(.+?)\s{2,}(\d+) K\s*(.*?)\s*\(punya (\d+)\)\s*$/.exec(label);
+    if (tk) return `<span class="lbl-skill"><span class="sk-atas"><b>${esc(tk[1])}</b><span class="tk-punya">punya ${esc(tk[4])}</span><span class="tk-harga">◈ ${esc(tk[2])}</span></span>${tk[3] ? `<span class="sk-bawah">${esc(tk[3])}</span>` : ""}</span>`;
     const sk = RE_SKILL.exec(label);
     if (sk) return labelSkill(sk);
     const it = /^(.+?) ×(\d+)(?: — (.*))?$/.exec(label);

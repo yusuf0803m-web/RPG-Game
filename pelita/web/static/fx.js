@@ -384,6 +384,8 @@
     },
     reset() { sasaranTerakhir = null; if (layer) layer.innerHTML = ""; },
     warna: (el) => WARNA[el] || null,
+    kecepatan: () => speed,
+    modeAnimasi: () => mode,
     pasangKontrol
   };
 })();

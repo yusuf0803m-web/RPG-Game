@@ -102,6 +102,23 @@
 
   <div class="toast" id="toast" hidden></div>
 
+  <!-- kotak dialog cerita (cerita.js): ketuk di mana saja untuk lanjut -->
+  <div class="dialog-lapis" id="dialog-lapis" hidden>
+    <div class="dlg" id="dlg" role="dialog" aria-live="polite">
+      <div class="dlg-potret" id="dlg-potret"></div>
+      <div class="dlg-isi">
+        <div class="dlg-nama" id="dlg-nama"></div>
+        <div class="dlg-teks" id="dlg-teks"></div>
+      </div>
+      <div class="dlg-bawah">
+        <button type="button" class="dlg-btn" id="dlg-auto" aria-pressed="false">Auto</button>
+        <button type="button" class="dlg-btn" id="dlg-lewati">Lewati ▸▸</button>
+        <span class="dlg-lanjut" id="dlg-lanjut" aria-hidden="true">▼</span>
+      </div>
+    </div>
+  </div>
+  <div class="notif-wadah" id="notif" aria-live="polite"></div>
+
   <!-- kartu hasil pertarungan -->
   <div class="hasil" id="hasil" hidden>
     <div class="hasil-kartu" id="hasil-kartu" role="dialog" aria-label="Hasil pertarungan"></div>
@@ -110,6 +127,7 @@
 
 <script src="/static/art.js"></script>
 <script src="/static/fx.js"></script>
+<script src="/static/cerita.js"></script>
 <script src="/static/app.js"></script>
 </body>
 </html>

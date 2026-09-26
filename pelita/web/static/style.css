@@ -612,3 +612,123 @@ button, input { font: inherit; color: inherit; }
   body.in-battle .hero-top { gap: 6px; }
 }
 
+
+/* ── Patch 5: panggung latar, kotak dialog, menu ruang, notifikasi ──── */
+/* Latar lukisan jadi panggung saat menjelajah; menyusut lagi saat bertarung. */
+.scene { transition: height .45s cubic-bezier(.2,.8,.2,1); }
+body:not(.in-battle) .scene { height: 300px; }
+body.berdialog:not(.in-battle) .scene { height: 58vh; }
+body:not(.in-battle) .scene-photo.on:not(.zoom) { animation: latar-hanyut 38s ease-in-out infinite alternate; }
+@keyframes latar-hanyut { from { transform: scale(1.02) translateX(-1%); } to { transform: scale(1.08) translateX(1%); } }
+.scene.ruang-baru .scene-label { animation: judul-masuk .8s cubic-bezier(.2,.8,.2,1) both; }
+@keyframes judul-masuk { from { opacity: 0; transform: translateY(14px); letter-spacing: .08em; } to { opacity: 1; transform: none; } }
+
+/* Kartu lokasi di log saat pindah ruang */
+.lokasi { margin: 14px 0 8px; padding-top: 10px; border-top: 1px solid var(--line); display: flex; flex-direction: column; }
+.lokasi span { font-size: 10.5px; letter-spacing: .26em; text-transform: uppercase; color: var(--nyala); }
+.lokasi b { font-family: var(--serif); font-size: 19px; font-weight: 700; color: var(--ink); }
+
+/* Kotak dialog */
+.dialog-lapis {
+  position: fixed; inset: 0; z-index: 80; cursor: pointer;
+  background: linear-gradient(180deg, rgba(8,10,14,0) 30%, rgba(8,10,14,.55) 62%, rgba(8,10,14,.9) 100%);
+  animation: fade .3s ease both;
+}
+body.berdialog .choices { visibility: hidden; }
+body.berdialog .stage { opacity: .25; transition: opacity .3s; }
+.dlg {
+  --tokoh: #d8cfbb;
+  position: absolute; left: 50%; transform: translateX(-50%);
+  bottom: calc(16px + env(safe-area-inset-bottom)); width: min(760px, calc(100% - 24px));
+  display: grid; grid-template-columns: 84px 1fr; grid-template-rows: 1fr auto; column-gap: 14px;
+  background: linear-gradient(180deg, rgba(28,35,48,.97), rgba(16,20,28,.98));
+  border: 1px solid var(--line); border-top: 2px solid var(--tokoh); border-radius: 14px;
+  padding: 14px 16px 10px; box-shadow: 0 18px 50px rgba(0,0,0,.6);
+}
+.dlg.masuk { animation: dlg-masuk .28s cubic-bezier(.2,.9,.3,1) both; }
+@keyframes dlg-masuk { from { opacity: .4; transform: translateX(-50%) translateY(8px); } to { opacity: 1; transform: translateX(-50%); } }
+.dlg-potret {
+  grid-row: 1 / span 2; width: 84px; height: 84px; margin-top: -34px; border-radius: 12px; overflow: hidden;
+  border: 2px solid var(--tokoh); background: #0e1219; box-shadow: 0 8px 22px rgba(0,0,0,.55), 0 0 18px color-mix(in srgb, var(--tokoh) 30%, transparent);
+}
+.dlg-potret svg { width: 100%; height: 100%; display: block; }
+.dlg-isi { min-width: 0; }
+.dlg-nama { font-weight: 700; font-size: 14px; letter-spacing: .06em; color: var(--tokoh); margin-bottom: 2px; }
+.dlg-teks { font-size: 16.5px; line-height: 1.55; color: var(--ink); min-height: 4.65em; white-space: pre-line; }
+.dlg-bawah { grid-column: 2; display: flex; align-items: center; gap: 8px; justify-content: flex-end; margin-top: 6px; }
+.dlg-btn {
+  background: transparent; border: 1px solid var(--line); color: var(--ink-faint); border-radius: 999px;
+  font-size: 11.5px; padding: 3px 11px; min-height: 30px; cursor: pointer;
+}
+.dlg-btn:hover, .dlg-btn:focus-visible { color: var(--ink); border-color: var(--nyala); outline: none; }
+.dlg-btn.on { color: #1a1206; background: var(--nyala); border-color: var(--nyala); font-weight: 700; }
+.dlg-lanjut { width: 18px; text-align: center; color: var(--nyala); opacity: 0; font-size: 12px; }
+.dlg-lanjut.siap { opacity: 1; animation: kedip-bawah 1s ease-in-out infinite; }
+@keyframes kedip-bawah { 0%, 100% { transform: translateY(0); opacity: 1; } 50% { transform: translateY(3px); opacity: .5; } }
+/* Narasi: tanpa potret, huruf serif miring, di tengah */
+.dlg.narasi { grid-template-columns: 1fr; border-top-color: var(--line-warm); }
+.dlg.narasi .dlg-potret, .dlg.narasi .dlg-nama { display: none; }
+.dlg.narasi .dlg-bawah { grid-column: 1; }
+.dlg.narasi .dlg-teks { font-family: var(--serif); font-style: italic; color: var(--ink-dim); text-align: center; padding: 4px 6px 0; }
+
+/* Notifikasi singkat */
+.notif-wadah {
+  position: fixed; left: 50%; top: calc(58px + env(safe-area-inset-top)); transform: translateX(-50%);
+  z-index: 90; display: flex; flex-direction: column; gap: 6px; align-items: center; pointer-events: none; width: min(420px, calc(100% - 24px));
+}
+.notif {
+  background: rgba(16,20,28,.95); border: 1px solid var(--line); border-left: 3px solid var(--ink-faint);
+  border-radius: 10px; padding: 7px 14px; font-size: 13px; color: var(--ink); box-shadow: 0 8px 24px rgba(0,0,0,.5);
+  animation: notif-masuk .35s cubic-bezier(.2,1.2,.4,1) both; transition: opacity .35s, transform .35s;
+}
+.notif.quest { border-left-color: var(--nyala); }
+.notif.item { border-left-color: var(--hijau); }
+.notif.tokoh { border-left-color: var(--ungu); }
+.notif.pergi { opacity: 0; transform: translateY(-8px); }
+@keyframes notif-masuk { from { opacity: 0; transform: translateY(-12px) scale(.96); } to { opacity: 1; transform: none; } }
+
+/* Menu ruang */
+.grup-judul {
+  grid-column: 1 / -1; font-size: 10.5px; letter-spacing: .24em; text-transform: uppercase;
+  color: var(--ink-faint); margin: 6px 0 -2px;
+}
+.grup-judul:first-child { margin-top: 0; }
+.ruang-pergi .k, .ruang-orang .k, .ruang-periksa .k, .bilah-btn .k { display: none; }
+.ruang-pergi, .ruang-orang, .ruang-periksa { display: flex; align-items: center; gap: 11px; }
+.rp-panah {
+  flex: none; width: 26px; height: 26px; border-radius: 50%; display: grid; place-items: center;
+  font-size: 13px; color: var(--nyala); background: rgba(240,180,92,.1); border: 1px solid rgba(240,180,92,.3);
+}
+.rp-teks { display: flex; flex-direction: column; min-width: 0; flex: 1; line-height: 1.3; }
+.rp-teks b { font-weight: 600; }
+.rp-teks small { color: var(--ink-faint); font-size: 12px; }
+.ruang-pergi.terhalang { opacity: .55; border-style: dashed; }
+.ruang-pergi.terhalang .rp-panah { color: var(--ink-faint); background: transparent; border-color: var(--line); }
+.ro-potret { flex: none; width: 38px; height: 38px; border-radius: 9px; overflow: hidden; border: 1px solid var(--line-warm); }
+.ro-potret svg { width: 100%; height: 100%; display: block; }
+.ro-verb { font-size: 11px; color: var(--ink-faint); border: 1px solid var(--line); border-radius: 999px; padding: 1px 8px; flex: none; }
+.ruang-periksa .rp-panah { color: var(--biru); background: rgba(106,169,216,.1); border-color: rgba(106,169,216,.3); }
+.ruang-periksa.buruan .rp-panah { color: var(--darah); background: rgba(210,85,74,.12); border-color: rgba(210,85,74,.4); }
+.bilah-ikon { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; margin-top: 4px; }
+.bilah-btn {
+  display: flex; flex-direction: column; align-items: center; gap: 3px; padding: 7px 2px 6px; min-height: 52px;
+  background: transparent; border: 1px solid var(--line); border-radius: var(--r); color: var(--ink-dim);
+  font-size: 11px; cursor: pointer;
+}
+.bilah-btn svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+.bilah-btn:hover, .bilah-btn:focus-visible { color: var(--nyala); border-color: var(--line-warm); outline: none; }
+.bilah-btn.keluar { color: var(--ink-faint); }
+.bilah-btn span:last-child { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
+
+/* Toko */
+.tk-harga { margin-left: auto; font-family: var(--mono); font-size: 12px; color: var(--nyala); white-space: nowrap; }
+.tk-punya { font-size: 11px; color: var(--ink-faint); }
+
+@media (max-width: 860px) {
+  body:not(.in-battle) .scene { height: clamp(170px, 32vh, 290px); }
+  body.berdialog:not(.in-battle) .scene { height: 74vh; }
+  .dlg { grid-template-columns: 64px 1fr; column-gap: 11px; padding: 12px 13px 8px; bottom: calc(10px + env(safe-area-inset-bottom)); }
+  .dlg-potret { width: 64px; height: 64px; margin-top: -30px; }
+  .dlg-teks { font-size: 15.5px; }
+  .bilah-btn { font-size: 10px; }
+}
