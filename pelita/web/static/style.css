@@ -420,3 +420,33 @@ button, input { font: inherit; color: inherit; }
   text-shadow: 0 2px 16px rgba(0,0,0,.9);
 }
 @keyframes plate-masuk { from { opacity: 0; } to { opacity: 1; } }
+
+/* ── Efek pertarungan (fx.js) ──────────────────────────────────────── */
+.fx-kontrol { margin-left: auto; display: flex; gap: 6px; }
+.fx-btn {
+  font: inherit; font-size: 11px; letter-spacing: .06em; color: var(--ink-faint);
+  background: transparent; border: 1px solid var(--line); border-radius: 999px;
+  padding: 4px 10px; min-height: 28px; cursor: pointer;
+}
+.fx-btn:hover, .fx-btn:focus-visible { color: var(--ink); border-color: var(--nyala); outline: none; }
+.fx-layer { position: fixed; inset: 0; pointer-events: none; z-index: 30; overflow: hidden; }
+.fx-flash { position: fixed; inset: 0; pointer-events: none; z-index: 31; background: #fff; opacity: 0; }
+.fx-p { position: absolute; will-change: transform, opacity; }
+.fx-tint { position: absolute; inset: 0; border-radius: inherit; pointer-events: none; opacity: 0; mix-blend-mode: screen; z-index: 2; }
+.fx-num {
+  position: absolute; transform: translate(-50%, -50%); white-space: nowrap; text-align: center;
+  font-family: var(--serif); font-weight: 700; font-size: 26px; line-height: 1;
+  text-shadow: 0 2px 0 #000, 0 0 10px rgba(0,0,0,.8);
+}
+.fx-num.besar { font-size: 34px; }
+.fx-num small { display: block; font-family: var(--mono); font-size: 10px; font-weight: 600; letter-spacing: .16em; margin-bottom: 2px; }
+.fx-cap { position: absolute; transform: translate(-50%, -50%); font-family: var(--serif); font-weight: 700; letter-spacing: .08em; white-space: nowrap; }
+.fx-bara {
+  width: 12px; height: 12px; border-radius: 50%;
+  background: radial-gradient(#fff5d6, var(--nyala)); box-shadow: 0 0 14px 4px rgba(240,180,92,.8);
+}
+/* Pecah: kartu miring & pudar. Memakai properti rotate/translate (bukan transform)
+   supaya tidak bentrok dengan animasi "rise" dan guncangan. */
+.enemy { transition: rotate .4s cubic-bezier(.2,.8,.2,1), translate .4s, filter .4s; }
+.enemy.pecah { rotate: -3deg; translate: 0 4px; filter: saturate(.45) brightness(.9); border-left-color: var(--ungu); }
+@media (max-width: 400px) { .fx-btn { padding: 4px 8px; } }

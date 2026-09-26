@@ -263,14 +263,26 @@ def choose_action_interactive(battle: Battle, actor: Combatant, io: IO) -> Actio
             return Action("kabur")
 
 
+def _keluarkan(io: IO, battle: Battle, events: list[str], prefix: str = "  ") -> None:
+    """Tulis baris log dan sisipkan event ``fx`` tepat sebelum baris yang
+    ditimbulkannya, supaya klien grafis memutar animasi dulu baru teksnya."""
+    fx = battle.drain_fx()
+    i = 0
+    for n, line in enumerate(events):
+        while i < len(fx) and fx[i]["pos"] <= n:
+            io.emit("fx", fx[i])
+            i += 1
+        io.line(prefix + line)
+    for f in fx[i:]:
+        io.emit("fx", f)
+
+
 def run_battle(battle: Battle, title: str, io: IO, auto: bool = False, pause: bool = True) -> None:
     """Loop pertarungan lengkap. ``auto`` memakai kebijakan otomatis untuk party."""
-    for e in battle.start():
-        io.line(e)
+    _keluarkan(io, battle, battle.start(), prefix="")
     while not battle.over:
         turn = battle.next_turn()
-        for e in turn.events:
-            io.line("  " + e)
+        _keluarkan(io, battle, turn.events)
         if turn.skipped or turn.actor is None:
             continue
         actor = turn.actor
@@ -283,8 +295,7 @@ def run_battle(battle: Battle, title: str, io: IO, auto: bool = False, pause: bo
                 action = choose_action_interactive(battle, actor, io)
         else:
             action = ai.choose_enemy_action(battle, actor)
-        for e in battle.act(actor, action):
-            io.line("  " + e)
+        _keluarkan(io, battle, battle.act(actor, action))
         if not actor.is_player:
             io.emit("battle", battle_snapshot(battle, title))
         if pause and not actor.is_player and not auto and not battle.over:

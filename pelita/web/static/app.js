@@ -21,7 +21,8 @@
   const state = {
     id: null, since: 0, polling: false, waiting: false,
     areaId: null, roomKey: null, lastHp: new Map(), battleOn: false, dead: false,
-    latar: null
+    latar: null,
+    fxAktif: false   // server mengirim event "fx" → angka melayang diurus fx.js, bukan dari log
   };
 
   /* ── Util ─────────────────────────────────────────────────────────── */
@@ -37,6 +38,8 @@
   }
   const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
   const pct = (a, b) => (b > 0 ? Math.max(0, Math.min(100, (a / b) * 100)) : 0);
+
+  FX.pasangKontrol($("fx-mode"), $("fx-speed"));
 
   /* ── Layar judul ──────────────────────────────────────────────────── */
   el.titleArt.innerHTML = Art.titleArt();
@@ -61,6 +64,7 @@
     try {
       const { id } = await api("/api/session", { method: "POST", body: JSON.stringify(body) });
       state.id = id; state.since = 0; state.dead = false;
+      antrean.length = 0; state.fxAktif = false; FX.reset();
       el.log.innerHTML = ""; el.enemies.innerHTML = ""; el.party.innerHTML = "";
       el.battle.hidden = true; state.battleOn = false; state.lastHp.clear(); state.roomKey = null;
       el.promptHead.hidden = true; el.choiceGrid.innerHTML = "";
@@ -98,8 +102,33 @@
     } finally { state.polling = false; }
   }
 
-  /* ── Event ────────────────────────────────────────────────────────── */
+  /* ── Event ──────────────────────────────────────────────────────────
+     Semua event masuk antrean dan diproses berurutan. Event "fx" memutar
+     animasi dan ditunggu sampai selesai, jadi log, snapshot pertarungan, dan
+     prompt berikutnya baru muncul setelah efeknya habis. */
+  const antrean = [];
+  let memutar = false;
   function handle(ev) {
+    antrean.push(ev);
+    if (!memutar) jalankanAntrean();
+  }
+  async function jalankanAntrean() {
+    memutar = true;
+    while (antrean.length) {
+      const ev = antrean.shift();
+      try {
+        if (ev.kind === "fx") {
+          state.fxAktif = true;
+          // Tab sempat di latar belakang dan antrean menumpuk: susul tanpa animasi.
+          await FX.play(ev.payload, { kejar: antrean.length > 40 || document.hidden });
+        } else {
+          proses(ev);
+        }
+      } catch (e) { console.error(e); }
+    }
+    memutar = false;
+  }
+  function proses(ev) {
     switch (ev.kind) {
       case "room":       onRoom(ev.payload); break;
       case "adegan":     onAdegan(ev.payload); break;
@@ -244,7 +273,7 @@
         ...e.resist.map((w) => `<span class="tag tag-resist">tahan ${esc(w)}</span>`),
         ...(e.statuses || []).map((s) => `<span class="tag ${s.bad ? "tag-status" : "tag-buff"}">${esc(s.name)}${s.turns ? " " + s.turns : ""}</span>`)
       ].join("");
-      return `<div class="enemy ${e.boss ? "boss" : ""} ${e.alive ? "" : "dead"}" data-enemy="${i}" data-name="${esc(e.name)}">
+      return `<div class="enemy ${e.boss ? "boss" : ""} ${e.alive ? "" : "dead"} ${e.pecah && e.alive ? "pecah" : ""}" data-enemy="${i}" data-name="${esc(e.name)}">
         <div class="enemy-top">
           <div class="enemy-sprite">${Art.enemy(e.key)}</div>
           <span class="enemy-name">${esc(e.name)}</span>
@@ -276,7 +305,7 @@
   function trackHp(key, hp, selector) {
     const prev = state.lastHp.get(key);
     state.lastHp.set(key, hp);
-    if (prev !== undefined && hp < prev) {
+    if (prev !== undefined && hp < prev && !state.fxAktif) {
       const node = document.querySelector(selector);
       if (node) { node.classList.add("hurt"); setTimeout(() => node.classList.remove("hurt"), 320); }
     }
@@ -307,12 +336,12 @@
     let m;
     if ((m = RE_DMG.exec(t))) {
       const weak = /LEMAH/.test(m[3]);
-      popNumber(m[1], m[2], weak ? "weak" : "dmg");
+      if (!state.fxAktif) popNumber(m[1], m[2], weak ? "weak" : "dmg");
       return push(`<p class="combat ${weak ? "weak" : "hit"}">${esc(trimmed)}</p>`);
     }
     if ((m = RE_HEAL.exec(t))) { popNumber(m[1], "+" + m[2], "heal"); return push(`<p class="combat heal">${esc(trimmed)}</p>`); }
-    if ((m = RE_MISS.exec(t))) { popNumber(m[1], "meleset", "miss"); return push(`<p class="combat">${esc(trimmed)}</p>`); }
-    if ((m = RE_ABS.exec(t)))  { popNumber(m[1], "serap", "heal"); return push(`<p class="combat big">${esc(trimmed)}</p>`); }
+    if ((m = RE_MISS.exec(t))) { if (!state.fxAktif) popNumber(m[1], "meleset", "miss"); return push(`<p class="combat">${esc(trimmed)}</p>`); }
+    if ((m = RE_ABS.exec(t)))  { if (!state.fxAktif) popNumber(m[1], "serap", "heal"); return push(`<p class="combat big">${esc(trimmed)}</p>`); }
 
     if (/tumbang!|Seluruh party/.test(trimmed)) return push(`<p class="combat down">${esc(trimmed)}</p>`);
     if (/PECAH|JURUS GANDA|Bara \+/.test(trimmed)) return push(`<p class="combat big">${esc(trimmed)}</p>`);

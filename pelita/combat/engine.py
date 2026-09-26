@@ -248,6 +248,10 @@ class Battle:
         self.queue: list[Combatant] = []
         self.log: list[str] = []
         self.pending_events: list[str] = []
+        # Event efek untuk klien grafis (web/Android). Terminal mengabaikannya.
+        # ``pos`` = jumlah baris log di ``ev`` saat efek terjadi, supaya UI bisa
+        # memutar animasi tepat sebelum baris log yang bersangkutan.
+        self.fx: list[dict] = []
         self.result: Optional[BattleResult] = None
         self.bara_skills: list[Skill] = [s for s in data.skills.values() if s.cost_type == CostType.BARA]
         # Jurus Ganda dibuka lewat adegan Kenangan (§4.5). None = semua terbuka (prototipe & tes).
@@ -340,6 +344,15 @@ class Battle:
     def _emit(self, events: list[str], msg: str) -> None:
         events.append(msg)
         self.log.append(msg)
+
+    def _fx(self, events: list[str], t: str, **data) -> None:
+        self.fx.append({"t": t, "pos": len(events), **data})
+        if len(self.fx) > 500:          # alat tanpa UI (kalibrasi) tidak pernah menguras
+            del self.fx[:250]
+
+    def drain_fx(self) -> list[dict]:
+        out, self.fx = self.fx, []
+        return out
 
     # -- alur giliran -------------------------------------------------------
     def start(self) -> list[str]:
@@ -460,6 +473,7 @@ class Battle:
                 if st.turns_left <= 0:
                     actor.statuses.pop(sid, None)
                     if sid == "pecah":
+                        self._fx(ev, "pecah_pulih", sasaran=actor.display_name)
                         actor.ketahanan = actor.ketahanan_max
                         self._emit(ev, f"{actor.display_name} pulih dari Pecah.")
                     elif sdef and sdef.bad and sid not in ("goyah",):
@@ -799,6 +813,7 @@ class Battle:
             p = F.peluang_kena(actor.effective("agi"), target.effective("agi"),
                                skill.hit_mod if skill else 0.0, buta=actor.has("buta"))
             if self.rng.random() >= p:
+                self._fx(ev, "meleset", sasaran=target.display_name, pelaku=actor.display_name)
                 self._emit(ev, f"...meleset dari {target.display_name}.")
                 return 0
         aff = target.affinity(element)
@@ -809,6 +824,7 @@ class Battle:
             if self.bestiary.learn(target.key, element, aff) and aff != Affinity.NORMAL:
                 self._emit(ev, f"(Catatan Penyala: {target.name} — {element.label}: {aff.value.upper()})")
         if mult == 0.0:
+            self._fx(ev, "imun", sasaran=target.display_name, elemen=element.value)
             self._emit(ev, f"Tidak berpengaruh pada {target.display_name}.")
             return 0
         if kind == SkillKind.FISIK:
@@ -843,6 +859,9 @@ class Battle:
         if dmg < 0:
             sembuh = min(-dmg, target.max_hp - target.hp)
             target.hp += sembuh
+            self._fx(ev, "hit", sasaran=target.display_name, pelaku=actor.display_name,
+                     elemen=element.value, afinitas="serap", dmg=-sembuh,
+                     hp=target.hp, hp_max=target.max_hp, jurus=is_jurus(skill))
             self._emit(ev, f"{target.display_name} MENYERAP {element.label}! Pulih {sembuh} HP.")
             return dmg
         # "Yang Ingin Dilupakan" (§6.2 no. 16): apa pun selain Jurus hanya menggores.
@@ -871,6 +890,10 @@ class Battle:
             tag = " (tahan)"
         if krit:
             tag += " KRITIKAL!"
+        self._fx(ev, "hit", sasaran=target.display_name, pelaku=actor.display_name,
+                 elemen=element.value, afinitas=aff.value, dmg=dmg, krit=krit,
+                 hp=target.hp, hp_max=target.max_hp, jurus=is_jurus(skill),
+                 pecah=target.has("pecah"))
         self._emit(ev, f"{target.display_name} terkena {dmg} damage{tag}")
         # Tidur bangun kalau dipukul
         if target.has("tidur"):
@@ -1070,9 +1093,12 @@ class Battle:
         if target.ketahanan_max <= 0 or target.has("pecah"):
             return
         target.ketahanan = max(0, target.ketahanan - amount)
+        self._fx(ev, "ketahanan", sasaran=target.display_name,
+                 nilai=target.ketahanan, maks=target.ketahanan_max)
         if target.ketahanan == 0:
             target.statuses.pop("goyah", None)
             target.statuses["pecah"] = make_status("pecah")
+            self._fx(ev, "pecah", sasaran=target.display_name)
             self._emit(ev, f"*** {target.display_name} PECAH! Ia kehilangan giliran dan menerima damage ×1.5. ***")
             target.statuses.pop("mengisi", None)
             self._release_swallowed(target, ev)
@@ -1167,10 +1193,12 @@ class Battle:
         before = self.bara
         self.bara = min(self.bara_max, self.bara + n)
         if self.bara != before:
+            self._fx(ev, "bara", nilai=self.bara, maks=self.bara_max, alasan=alasan)
             self._emit(ev, f"Bara +{self.bara - before} ({alasan}) → {self.bara}/{self.bara_max}")
 
     def _on_death(self, c: Combatant, ev: list[str]) -> None:
         c.statuses.clear()
+        self._fx(ev, "tumbang", sasaran=c.display_name, pahlawan=c.is_player)
         if c.is_player:
             self._gain_bara(2, ev, "nyala dari amarah")
         else:

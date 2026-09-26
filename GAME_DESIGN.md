@@ -988,6 +988,7 @@ Yang ditampilkan secara grafis:
 | Party | Kartu dengan potret, bar HP/MP, label status |
 | Bara | Deretan belah ketupat yang menyala |
 | Damage | Angka melayang di atas kartu yang terkena; merah untuk biasa, kuning untuk LEMAH |
+| Efek | Event `fx` dari mesin (hit, ketahanan, pecah, bara, tumbang) diputar berurutan oleh `fx.js`: efek per elemen, cap LEMAH, percik Bara, Pecah dengan hit-stop. Pengaturan Animasi Penuh/Ringan/Mati dan kecepatan 1×/2× |
 | Dialog | Nama pembicara di kolom kiri, kalimat di kanan; narasi dibedakan dari log pertarungan |
 
 Seni dibuat prosedural (SVG dari kode), tanpa berkas aset dan tanpa internet. Area baru otomatis
