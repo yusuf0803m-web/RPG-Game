@@ -560,6 +560,12 @@ class Battle:
             self.pending_events.clear()
         if self.over or not actor.alive:
             return ev
+        if action.kind in ("serang", "skill", "item", "jaga"):
+            el = action.skill.element if action.kind == "skill" and action.skill else None
+            self._fx(ev, "aksi", pelaku=actor.display_name, pahlawan=actor.is_player,
+                     nama=action.label, jenis=action.kind,
+                     elemen=el.value if el is not None else None,
+                     jurus=is_jurus(action.skill) if action.kind == "skill" else False)
         if action.kind == "serang":
             self._do_attack(actor, action.targets, ev)
         elif action.kind == "skill":
@@ -819,12 +825,15 @@ class Battle:
         aff = target.affinity(element)
         if element == Element.NETRAL:
             aff = Affinity.NORMAL
+        catat = False
         mult = F.pengali_afinitas(aff, skill.ignore_resist if skill else False, skill.ignore_absorb if skill else False)
         if actor.is_player and target.edef and element != Element.NETRAL:
             if self.bestiary.learn(target.key, element, aff) and aff != Affinity.NORMAL:
+                catat = True
                 self._emit(ev, f"(Catatan Penyala: {target.name} — {element.label}: {aff.value.upper()})")
         if mult == 0.0:
-            self._fx(ev, "imun", sasaran=target.display_name, elemen=element.value)
+            self._fx(ev, "imun", sasaran=target.display_name, elemen=element.value,
+                     kunci=target.key, catat=catat)
             self._emit(ev, f"Tidak berpengaruh pada {target.display_name}.")
             return 0
         if kind == SkillKind.FISIK:
@@ -861,7 +870,8 @@ class Battle:
             target.hp += sembuh
             self._fx(ev, "hit", sasaran=target.display_name, pelaku=actor.display_name,
                      elemen=element.value, afinitas="serap", dmg=-sembuh,
-                     hp=target.hp, hp_max=target.max_hp, jurus=is_jurus(skill))
+                     hp=target.hp, hp_max=target.max_hp, jurus=is_jurus(skill),
+                     kunci=target.key, catat=catat)
             self._emit(ev, f"{target.display_name} MENYERAP {element.label}! Pulih {sembuh} HP.")
             return dmg
         # "Yang Ingin Dilupakan" (§6.2 no. 16): apa pun selain Jurus hanya menggores.
@@ -893,7 +903,7 @@ class Battle:
         self._fx(ev, "hit", sasaran=target.display_name, pelaku=actor.display_name,
                  elemen=element.value, afinitas=aff.value, dmg=dmg, krit=krit,
                  hp=target.hp, hp_max=target.max_hp, jurus=is_jurus(skill),
-                 pecah=target.has("pecah"))
+                 pecah=target.has("pecah"), kunci=target.key, catat=catat)
         self._emit(ev, f"{target.display_name} terkena {dmg} damage{tag}")
         # Tidur bangun kalau dipukul
         if target.has("tidur"):

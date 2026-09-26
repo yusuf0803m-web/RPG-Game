@@ -273,9 +273,9 @@
         ...e.resist.map((w) => `<span class="tag tag-resist">tahan ${esc(w)}</span>`),
         ...(e.statuses || []).map((s) => `<span class="tag ${s.bad ? "tag-status" : "tag-buff"}">${esc(s.name)}${s.turns ? " " + s.turns : ""}</span>`)
       ].join("");
-      return `<div class="enemy ${e.boss ? "boss" : ""} ${e.alive ? "" : "dead"} ${e.pecah && e.alive ? "pecah" : ""}" data-enemy="${i}" data-name="${esc(e.name)}">
+      return `<div class="enemy ${e.boss ? "boss" : ""} ${e.alive ? "" : "dead"} ${e.pecah && e.alive ? "pecah" : ""}" data-enemy="${i}" data-name="${esc(e.name)}" data-key="${esc(e.key)}">
+        <div class="enemy-stage"><div class="enemy-sprite">${Art.enemy(e.key)}</div></div>
         <div class="enemy-top">
-          <div class="enemy-sprite">${Art.enemy(e.key)}</div>
           <span class="enemy-name">${esc(e.name)}</span>
           <span class="enemy-hp-num">${e.alive ? Math.round(hpPct) + "%" : "—"}</span>
         </div>
@@ -288,7 +288,7 @@
       </div>`;
     }).join("");
     b.enemies.forEach((e, i) => trackHp("enemy-" + i + "-" + e.key, e.hp, `.enemy[data-enemy="${i}"]`));
-    renderParty(b.heroes.concat((b.bench || []).map((h) => Object.assign({}, h, { aktif: false }))), null);
+    renderParty(b.heroes.concat((b.bench || []).map((h) => Object.assign({}, h, { aktif: false }))), b.aktor || null);
   }
 
   function onBattleEnd(r) {
@@ -428,10 +428,20 @@
     el.promptNote.textContent = note.join("\n");
   }
 
+  /* Label sasaran dari mesin memakai bar teks "[████░░]" (untuk terminal).
+     Di web, ganti dengan bar HP sungguhan. */
+  function labelHtml(label) {
+    const m = /^(.*?)\s*\[([█░]+)\]\s*$/.exec(label);
+    if (!m) return `<span>${esc(label)}</span>`;
+    const penuh = (m[2].match(/█/g) || []).length, p = (penuh / m[2].length) * 100;
+    const lvl = p <= 25 ? "low" : p <= 55 ? "mid" : "";
+    return `<span class="lbl-sasaran"><span>${esc(m[1])}</span><span class="bar bar-hp bar-pilih ${lvl}" aria-label="HP ${Math.round(p)}%"><i style="width:${p}%"></i></span></span>`;
+  }
+
   function addButton(label, value, cls, keyBadge) {
     const b = document.createElement("button");
     b.className = cls || "btn choice";
-    b.innerHTML = (keyBadge ? `<span class="k">${esc(keyBadge)}</span>` : "") + `<span>${esc(label)}</span>`;
+    b.innerHTML = (keyBadge ? `<span class="k">${esc(keyBadge)}</span>` : "") + labelHtml(String(label));
     b.onclick = () => answer(value);
     el.choiceGrid.appendChild(b);
   }

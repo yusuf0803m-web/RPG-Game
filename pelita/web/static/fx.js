@@ -143,9 +143,10 @@
   function angka(node, teks, warna, besar, label) {
     const c = kotak(node);
     const html = `<div class="fx-num${besar ? " besar" : ""}" style="color:${warna}">${label ? `<small>${label}</small>` : ""}${teks}</div>`;
-    return terbang({ left: (c.x + acak(-c.w * .15, c.w * .15)) + "px", top: (c.top + c.h * .5) + "px" },
-      [{ transform: "translateY(0) scale(.6)", opacity: 0 }, { transform: "translateY(-14px) scale(1.12)", opacity: 1, offset: .15 },
-       { transform: "translateY(-20px) scale(1)", opacity: 1, offset: .6 }, { transform: "translateY(-44px) scale(1)", opacity: 0 }],
+    // Angka lahir di tengah kartu dan hanya naik sedikit, jadi tidak keluar menimpa header.
+    return terbang({ left: (c.x + acak(-c.w * .12, c.w * .12)) + "px", top: (c.top + c.h * .52) + "px" },
+      [{ transform: "translateY(6px) scale(.6)", opacity: 0 }, { transform: "translateY(-6px) scale(1.12)", opacity: 1, offset: .15 },
+       { transform: "translateY(-10px) scale(1)", opacity: 1, offset: .65 }, { transform: "translateY(-22px) scale(1)", opacity: 0 }],
       1000, { html, selalu: true });
   }
   function cap(node, teks, warna, ukuran, miring) {
@@ -178,6 +179,42 @@
     const nums = node.querySelector(".hero-nums span"); if (nums) nums.textContent = `HP ${Math.max(0, hp)}/${maks}`;
   }
 
+  /* Catatan Penyala: perbarui label afinitas di semua kartu spesies yang sama. */
+  const NAMA_EL = (e) => (e ? e.charAt(0).toUpperCase() + e.slice(1) : "");
+  function catat(p) {
+    if (!p.catat || !p.kunci || !p.elemen) return;
+    const jenis = p.afinitas === "lemah" ? ["tag-weak", "lemah"] : p.afinitas === "serap" ? ["tag-absorb", "serap"]
+      : (p.afinitas === "tahan" || p.afinitas === "imun") ? ["tag-resist", "tahan"] : null;
+    if (!jenis) return;
+    const teks = `${jenis[1]} ${NAMA_EL(p.elemen)}`;
+    document.querySelectorAll(`.enemy[data-key="${CSS.escape(p.kunci)}"] .tags`).forEach((box) => {
+      if ([...box.children].some((t) => t.textContent === teks)) return;
+      if (jenis[1] === "lemah") { const q = box.querySelector(".tag-unknown"); if (q) q.remove(); }
+      const t = document.createElement("span"); t.className = "tag " + jenis[0]; t.textContent = teks;
+      box.prepend(t);
+      anim(t, [{ transform: "scale(1.8)", opacity: 0 }, { transform: "scale(1)", opacity: 1 }], 380, { easing: "cubic-bezier(.2,1.4,.4,1)", selalu: true });
+    });
+  }
+
+  /* Penyerang bergerak dulu: pahlawan naik, musuh maju ke arah party, nama aksi tampil sebentar. */
+  async function aksi(p) {
+    const node = cari(p.pelaku); if (!node) return;
+    document.querySelectorAll(".bertindak").forEach((x) => x.classList.remove("bertindak"));
+    node.classList.add("bertindak");
+    setTimeout(() => node.classList.remove("bertindak"), 1400 / speed);
+    if (p.jenis !== "serang") {
+      const c = kotak(node), warna = p.jurus ? "#f0b45c" : (WARNA[p.elemen] || "#e8e3d8");
+      terbang({ left: c.x + "px", top: (p.pahlawan ? c.top - 4 : c.top + c.h + 4) + "px" },
+        [{ transform: "translate(-50%,-50%) scale(.85)", opacity: 0 }, { transform: "translate(-50%,-50%) scale(1)", opacity: 1, offset: .15 },
+         { transform: "translate(-50%,-50%) scale(1)", opacity: 1, offset: .8 }, { transform: "translate(-50%,-50%) scale(1)", opacity: 0 }],
+        1100, { selalu: true, html: `<div class="fx-banner" style="--w:${warna}">${p.nama.replace(/[&<>"]/g, "")}</div>` });
+    }
+    const maju = p.pahlawan ? "translateY(-10px)" : "translateY(10px) scale(1.05)";
+    await anim(node, [{ transform: "none" }, { transform: maju, offset: .45 }, { transform: maju, offset: .7 }, { transform: "none" }],
+      p.jurus ? 460 : 340, { berat: true, easing: "cubic-bezier(.3,0,.3,1)" });
+    if (modeAktif() === "ringan") await tidur(120);
+  }
+
   /* ── Penangan tiap jenis event ──────────────────────────────────── */
   async function hit(p) {
     const node = cari(p.sasaran); if (!node) return;
@@ -208,6 +245,7 @@
       if (jurus) warnai(node, "#f0b45c", .45, 460);
     }
     setelHp(node, p.hp, p.hp_max);
+    catat(p);
     await tidur(p.afinitas === "lemah" || p.jurus ? 260 : 170);
   }
 
@@ -221,6 +259,7 @@
     const node = cari(p.sasaran); if (!node) return;
     await efekElemen(p.elemen, node);
     angka(node, "IMUN", "#8a93a0", false, "");
+    catat(p);
     await tidur(160);
   }
 
@@ -293,7 +332,7 @@
     node.classList.add("dead");
   }
 
-  const PENANGAN = { hit, meleset, imun, ketahanan, pecah, pecah_pulih: pecahPulih, bara, tumbang };
+  const PENANGAN = { aksi, hit, meleset, imun, ketahanan, pecah, pecah_pulih: pecahPulih, bara, tumbang };
 
   /* ── Pengaturan ─────────────────────────────────────────────────── */
   function pasangKontrol(tombolMode, tombolKecepatan) {

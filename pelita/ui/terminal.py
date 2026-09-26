@@ -123,8 +123,8 @@ def _aff_notes(battle: Battle, e: Combatant) -> str:
     return "   ".join(parts)
 
 
-def battle_snapshot(battle: Battle, title: str) -> dict:
-    """Keadaan pertarungan untuk UI terstruktur."""
+def battle_snapshot(battle: Battle, title: str, aktor: Optional[Combatant] = None) -> dict:
+    """Keadaan pertarungan untuk UI terstruktur. ``aktor`` = pahlawan yang sedang memilih aksi."""
     enemies = []
     for e in battle.enemies:
         known = battle.bestiary.get(e.key)
@@ -145,11 +145,12 @@ def battle_snapshot(battle: Battle, title: str) -> dict:
     bench = [{"key": h.key, "name": h.name, "alive": h.alive, "level": h.level,
               "hp": h.hp, "max_hp": h.max_hp, "mp": h.mp, "max_mp": h.max_mp} for h in battle.bench]
     return {"title": title, "round": battle.round, "enemies": enemies, "heroes": heroes, "bench": bench,
-            "bara": battle.bara, "bara_max": battle.bara_max, "bara_frozen": battle.bara_frozen}
+            "bara": battle.bara, "bara_max": battle.bara_max, "bara_frozen": battle.bara_frozen,
+            "aktor": aktor.key if aktor is not None and aktor.is_player else None}
 
 
-def render_screen(battle: Battle, title: str, io: IO) -> None:
-    io.emit("battle", battle_snapshot(battle, title))
+def render_screen(battle: Battle, title: str, io: IO, aktor: Optional[Combatant] = None) -> None:
+    io.emit("battle", battle_snapshot(battle, title, aktor))
     if io.structured:
         return
     io.line("═" * LEBAR)
@@ -287,7 +288,7 @@ def run_battle(battle: Battle, title: str, io: IO, auto: bool = False, pause: bo
             continue
         actor = turn.actor
         if actor.is_player:
-            render_screen(battle, title, io)
+            render_screen(battle, title, io, aktor=actor)
             if auto:
                 action = ai.choose_hero_action(battle, actor)
                 io.line(f" {actor.name} (auto): {action.label}")
