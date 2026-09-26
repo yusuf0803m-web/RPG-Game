@@ -12,7 +12,8 @@
     plate: $("plate"), plateImg: $("plate-img"), plateTeks: $("plate-teks"),
     chipKeping: $("chip-keping"), chipLentera: $("chip-lentera"),
     battle: $("battle"), battleRound: $("battle-round"), bara: $("bara"), baraPips: $("bara-pips"),
-    enemies: $("enemies"), party: $("party"), log: $("log"),
+    enemies: $("enemies"), party: $("party"), log: $("log"), urutan: $("urutan"),
+    hasil: $("hasil"), hasilKartu: $("hasil-kartu"), btnLog: $("btn-log"),
     choices: $("choices"), promptLabel: $("prompt-label"), choiceGrid: $("choice-grid"),
     promptHead: $("prompt-head"), promptTitle: $("prompt-title"), promptNote: $("prompt-note"),
     freeForm: $("free-input"), freeText: $("free-text"), toast: $("toast")
@@ -21,7 +22,9 @@
   const state = {
     id: null, since: 0, polling: false, waiting: false,
     areaId: null, roomKey: null, lastHp: new Map(), battleOn: false, dead: false,
-    latar: null
+    latar: null,
+    fxAktif: false,  // server mengirim event "fx" → angka melayang diurus fx.js, bukan dari log
+    dikunjungi: new Set()   // ruang yang deskripsinya sudah dibacakan di kotak dialog
   };
 
   /* ── Util ─────────────────────────────────────────────────────────── */
@@ -37,6 +40,8 @@
   }
   const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
   const pct = (a, b) => (b > 0 ? Math.max(0, Math.min(100, (a / b) * 100)) : 0);
+
+  FX.pasangKontrol($("fx-mode"), $("fx-speed"));
 
   /* ── Layar judul ──────────────────────────────────────────────────── */
   el.titleArt.innerHTML = Art.titleArt();
@@ -61,6 +66,7 @@
     try {
       const { id } = await api("/api/session", { method: "POST", body: JSON.stringify(body) });
       state.id = id; state.since = 0; state.dead = false;
+      antrean.length = 0; state.fxAktif = false; FX.reset(); state.dikunjungi.clear();
       el.log.innerHTML = ""; el.enemies.innerHTML = ""; el.party.innerHTML = "";
       el.battle.hidden = true; state.battleOn = false; state.lastHp.clear(); state.roomKey = null;
       el.promptHead.hidden = true; el.choiceGrid.innerHTML = "";
@@ -98,14 +104,63 @@
     } finally { state.polling = false; }
   }
 
-  /* ── Event ────────────────────────────────────────────────────────── */
+  /* ── Event ──────────────────────────────────────────────────────────
+     Semua event masuk antrean dan diproses berurutan. Event "fx" memutar
+     animasi dan ditunggu sampai selesai, jadi log, snapshot pertarungan, dan
+     prompt berikutnya baru muncul setelah efeknya habis. */
+  const antrean = [];
+  let memutar = false;
   function handle(ev) {
+    antrean.push(ev);
+    if (!memutar) jalankanAntrean();
+  }
+  async function jalankanAntrean() {
+    memutar = true;
+    while (antrean.length) {
+      const ev = antrean.shift();
+      try {
+        const kejar = antrean.length > 40 || document.hidden;
+        if (ev.kind === "fx") {
+          state.fxAktif = true;
+          // Tab sempat di latar belakang dan antrean menumpuk: susul tanpa animasi.
+          await FX.play(ev.payload, { kejar });
+        } else if (ev.kind === "say" || ev.kind === "text") {
+          // Cerita: tetap dicatat di log, lalu ditampilkan satu per satu di kotak dialog.
+          proses(ev);
+          if (!kejar && !state.battleOn) await Cerita.tampil(ev.payload, ev.kind);
+        } else {
+          if (Cerita.aktif() && menutupDialog(ev)) Cerita.tutup();
+          proses(ev);
+          // Kunjungan pertama ke sebuah ruang: deskripsinya dibacakan sebagai narasi.
+          if (ev.kind === "room" && ev.payload.text && !kejar) {
+            const kunci = ev.payload.area_id + "/" + ev.payload.room_id;
+            if (!state.dikunjungi.has(kunci)) {
+              state.dikunjungi.add(kunci);
+              await Cerita.tampil({ text: ev.payload.text }, "text");
+            }
+          }
+          // Jeda "(Enter)" di tengah adegan: pemain sudah mengetuk tiap baris, jadi langsung lanjut.
+          if (ev.kind === "prompt" && Cerita.aktif() && promptKind(ev.payload, (ev.payload.prompt || "").trim()) === "enter") {
+            answer("");
+          }
+        }
+      } catch (e) { console.error(e); }
+    }
+    memutar = false;
+  }
+  // Event yang mengakhiri adegan: kotak dialog ditutup sebelum ia diproses.
+  function menutupDialog(ev) {
+    if (ev.kind === "prompt") return promptKind(ev.payload, (ev.payload.prompt || "").trim()) !== "enter";
+    return ["room", "battle", "battle_end", "end", "finished", "error"].includes(ev.kind);
+  }
+  function proses(ev) {
     switch (ev.kind) {
-      case "room":       onRoom(ev.payload); break;
+      case "room":       tutupHasil(); onRoom(ev.payload); break;
       case "adegan":     onAdegan(ev.payload); break;
       case "ilustrasi":  onIlustrasi(ev.payload); break;
-      case "battle":     onBattle(ev.payload); break;
+      case "battle":     if (!state.battleOn) tutupHasil(); onBattle(ev.payload); break;
       case "battle_end": onBattleEnd(ev.payload); break;
+      case "naik_level": onNaikLevel(ev.payload); break;
       case "say":        addDialog(ev.payload.who, ev.payload.text); break;
       case "text":       addNarration(ev.payload.text); break;
       case "log":        addLog(ev.payload.text); break;
@@ -188,6 +243,10 @@
     // Server mengirim ruang tiap kali menu digambar ulang; tulis deskripsinya
     // hanya saat pemain benar-benar pindah, supaya log tidak terisi ulangan.
     const here = r.area_id + "/" + r.room_id;
+    if (here !== state.roomKey) {
+      push(`<div class="lokasi"><span>${esc(r.area || "")}</span><b>${esc(r.room || "")}</b></div>`);
+      el.scene.classList.remove("ruang-baru"); void el.scene.offsetWidth; el.scene.classList.add("ruang-baru");
+    }
     if (r.text && here !== state.roomKey) addNarration(r.text, "room-desc");
     state.roomKey = here;
   }
@@ -235,18 +294,24 @@
     el.baraPips.innerHTML = Array.from({ length: b.bara_max }, (_, i) =>
       `<span class="pip ${i < b.bara ? "on" : ""}"></span>`).join("");
 
+    el.enemies.dataset.n = String(Math.min(b.enemies.length, 3));
+    el.enemies.classList.toggle("ringkas", b.enemies.length >= 3);
+    renderUrutan(b.antrean || [], b.enemies);
     el.enemies.innerHTML = b.enemies.map((e, i) => {
+      const isi = (e.statuses || []).some((s) => s.name === "Mengisi");
       const hpPct = pct(e.hp, e.max_hp);
       const lvl = hpPct <= 25 ? "low" : hpPct <= 55 ? "mid" : "";
       const tags = [
         ...(e.weak.length ? e.weak.map((w) => `<span class="tag tag-weak">lemah ${esc(w)}</span>`) : [`<span class="tag tag-unknown">lemah ?</span>`]),
         ...e.absorb.map((w) => `<span class="tag tag-absorb">serap ${esc(w)}</span>`),
         ...e.resist.map((w) => `<span class="tag tag-resist">tahan ${esc(w)}</span>`),
-        ...(e.statuses || []).map((s) => `<span class="tag ${s.bad ? "tag-status" : "tag-buff"}">${esc(s.name)}${s.turns ? " " + s.turns : ""}</span>`)
+        ...(e.statuses || []).map((s) => s.name === "Mengisi"
+          ? `<span class="tag tag-isi">Bersiap menyerang!</span>`
+          : `<span class="tag ${s.bad ? "tag-status" : "tag-buff"}">${esc(s.name)}${s.turns ? " " + s.turns : ""}</span>`)
       ].join("");
-      return `<div class="enemy ${e.boss ? "boss" : ""} ${e.alive ? "" : "dead"}" data-enemy="${i}" data-name="${esc(e.name)}">
+      return `<div class="enemy ${e.boss ? "boss" : ""} ${e.alive ? "" : "dead"} ${e.pecah && e.alive ? "pecah" : ""} ${isi && e.alive ? "mengisi" : ""}" data-enemy="${i}" data-name="${esc(e.name)}" data-key="${esc(e.key)}">
+        <div class="enemy-stage"><div class="enemy-sprite">${Art.enemy(e.key)}</div></div>
         <div class="enemy-top">
-          <div class="enemy-sprite">${Art.enemy(e.key)}</div>
           <span class="enemy-name">${esc(e.name)}</span>
           <span class="enemy-hp-num">${e.alive ? Math.round(hpPct) + "%" : "—"}</span>
         </div>
@@ -259,13 +324,11 @@
       </div>`;
     }).join("");
     b.enemies.forEach((e, i) => trackHp("enemy-" + i + "-" + e.key, e.hp, `.enemy[data-enemy="${i}"]`));
-    renderParty(b.heroes.concat((b.bench || []).map((h) => Object.assign({}, h, { aktif: false }))), null);
+    renderParty(b.heroes.concat((b.bench || []).map((h) => Object.assign({}, h, { aktif: false }))), b.aktor || null);
   }
 
   function onBattleEnd(r) {
-    if (r.outcome === "menang" && (r.xp || r.keping)) {
-      addLog(`  Menang! +${r.xp} XP, +${r.keping} Keping.`);
-    }
+    if (r.outcome === "menang") bukaHasil(r);
     setTimeout(() => {
       if (!state.battleOn) { el.battle.hidden = true; document.body.classList.remove("in-battle"); }
     }, 400);
@@ -276,7 +339,7 @@
   function trackHp(key, hp, selector) {
     const prev = state.lastHp.get(key);
     state.lastHp.set(key, hp);
-    if (prev !== undefined && hp < prev) {
+    if (prev !== undefined && hp < prev && !state.fxAktif) {
       const node = document.querySelector(selector);
       if (node) { node.classList.add("hurt"); setTimeout(() => node.classList.remove("hurt"), 320); }
     }
@@ -307,15 +370,16 @@
     let m;
     if ((m = RE_DMG.exec(t))) {
       const weak = /LEMAH/.test(m[3]);
-      popNumber(m[1], m[2], weak ? "weak" : "dmg");
+      if (!state.fxAktif) popNumber(m[1], m[2], weak ? "weak" : "dmg");
       return push(`<p class="combat ${weak ? "weak" : "hit"}">${esc(trimmed)}</p>`);
     }
     if ((m = RE_HEAL.exec(t))) { popNumber(m[1], "+" + m[2], "heal"); return push(`<p class="combat heal">${esc(trimmed)}</p>`); }
-    if ((m = RE_MISS.exec(t))) { popNumber(m[1], "meleset", "miss"); return push(`<p class="combat">${esc(trimmed)}</p>`); }
-    if ((m = RE_ABS.exec(t)))  { popNumber(m[1], "serap", "heal"); return push(`<p class="combat big">${esc(trimmed)}</p>`); }
+    if ((m = RE_MISS.exec(t))) { if (!state.fxAktif) popNumber(m[1], "meleset", "miss"); return push(`<p class="combat">${esc(trimmed)}</p>`); }
+    if ((m = RE_ABS.exec(t)))  { if (!state.fxAktif) popNumber(m[1], "serap", "heal"); return push(`<p class="combat big">${esc(trimmed)}</p>`); }
 
     if (/tumbang!|Seluruh party/.test(trimmed)) return push(`<p class="combat down">${esc(trimmed)}</p>`);
     if (/PECAH|JURUS GANDA|Bara \+/.test(trimmed)) return push(`<p class="combat big">${esc(trimmed)}</p>`);
+    if (/^\*\*/.test(trimmed)) Cerita.notif(trimmed);
     if (/^\*\*/.test(trimmed)) return push(`<p class="sys">${esc(trimmed.replace(/\*\*/g, "").trim())}</p>`);
     if (/^\(Tip:|^\(Catatan Penyala/.test(trimmed)) return push(`<p class="sys tip">${esc(trimmed)}</p>`);
     if (/^\(/.test(trimmed)) return push(`<p class="sys tip">${esc(trimmed)}</p>`);
@@ -373,6 +437,10 @@
       addButton("Tidak", "n");
       return;
     }
+    if (p.options && p.options.length && menuRuang(p.options)) {
+      tampilMenuRuang(p.options);
+      return;
+    }
     if (p.options && p.options.length) {
       p.options.forEach((o) => {
         let cls = "btn choice";
@@ -388,6 +456,68 @@
     el.freeText.focus();
   }
 
+  /* ── Menu eksplorasi ─────────────────────────────────────────────────
+     Menu ruang dikenali dari pintasan P/I/C/Q. Opsinya dikelompokkan:
+     Pergi (jalan keluar), Orang (Bicara: …, dengan potret), Periksa, Buruan,
+     lalu Party/Item/Catatan/Quest/Keluar sebagai bilah ikon. */
+  const menuRuang = (opts) => ["p", "i", "c", "q"].every((k) => opts.some((o) => o.meta && o.key === k));
+  const IKON = {
+    p: '<path d="M8 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm8 0a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM2 20c0-3.3 2.7-6 6-6s6 2.7 6 6M12 20c0-3.3 1.8-6 4-6s6 2.7 6 6"/>',
+    i: '<path d="M6 8h12l-1 12H7L6 8zm3 0V6a3 3 0 0 1 6 0v2"/>',
+    c: '<path d="M5 4h11a3 3 0 0 1 3 3v13H8a3 3 0 0 1-3-3V4zm0 13a3 3 0 0 1 3-3h11"/>',
+    q: '<path d="M6 3h10l3 3v15H6zM9 9h7M9 13h7M9 17h4"/>',
+    k: '<path d="M14 4h5v16h-5M10 8l-4 4 4 4M6 12h9"/>'
+  };
+  function tombol(o, cls, isi) {
+    const b = document.createElement("button");
+    b.className = cls;
+    b.innerHTML = `<span class="k">${esc(o.key)}</span>` + isi;
+    b.onclick = () => answer(o.key);
+    return b;
+  }
+  function tampilMenuRuang(opts) {
+    el.promptLabel.textContent = "";
+    const grup = { pergi: [], orang: [], periksa: [], buruan: [] }, bilah = [];
+    opts.forEach((o) => {
+      if (o.meta) { bilah.push(o); return; }
+      const m = /^([^:]{2,20}): (.+)$/.exec(o.label);
+      if (m && /^Buruan$/i.test(m[1])) grup.buruan.push([o, m[2], "Buruan"]);
+      else if (m && /^Bicara$/i.test(m[1])) grup.orang.push([o, m[2], m[1]]);
+      else if (m) grup.periksa.push([o, m[2], m[1]]);
+      else grup.pergi.push([o, o.label]);
+    });
+    const judul = { pergi: "Pergi", orang: "Orang", periksa: "Periksa", buruan: "Buruan" };
+    Object.keys(grup).forEach((g) => {
+      if (!grup[g].length) return;
+      const h = document.createElement("div"); h.className = "grup-judul"; h.textContent = judul[g];
+      el.choiceGrid.appendChild(h);
+      grup[g].forEach(([o, teks, verb]) => {
+        const tutup = g === "pergi" && /\s*\(terhalang\)$/.test(teks);
+        const polos = teks.replace(/\s*\(terhalang\)$/, "");
+        const ket = /^(.*?)\s*\(([^()]+)\)$/.exec(polos);
+        const nama = ket ? ket[1] : polos, sub = ket ? ket[2] : "";
+        if (g === "pergi") {
+          el.choiceGrid.appendChild(tombol(o, `btn choice ruang-pergi ${tutup ? "terhalang" : ""}`,
+            `<span class="rp-panah">${tutup ? "✕" : "➜"}</span><span class="rp-teks"><b>${esc(nama)}</b>${sub || tutup ? `<small>${esc([sub, tutup ? "terhalang" : ""].filter(Boolean).join(" · "))}</small>` : ""}</span>`));
+        } else if (g === "orang") {
+          el.choiceGrid.appendChild(tombol(o, "btn choice ruang-orang",
+            `<span class="ro-potret">${Art.speaker(nama)}</span><span class="rp-teks"><b>${esc(nama)}</b>${sub ? `<small>${esc(sub)}</small>` : ""}</span><span class="ro-verb">${esc(verb)}</span>`));
+        } else {
+          el.choiceGrid.appendChild(tombol(o, `btn choice ruang-periksa ${g === "buruan" ? "buruan" : ""}`,
+            `<span class="rp-panah">${g === "buruan" ? "⚔" : "◆"}</span><span class="rp-teks"><b>${esc(nama)}</b>${sub ? `<small>${esc(sub)}</small>` : ""}</span><span class="ro-verb">${esc(verb)}</span>`));
+        }
+      });
+    });
+    const bar = document.createElement("div"); bar.className = "bilah-ikon";
+    bilah.forEach((o) => {
+      const b = tombol(o, "bilah-btn" + (o.back ? " keluar" : ""),
+        `<svg viewBox="0 0 24 24" aria-hidden="true">${IKON[o.key] || IKON.q}</svg><span>${esc(o.label)}</span>`);
+      b.title = o.label;
+      bar.appendChild(b);
+    });
+    el.choiceGrid.appendChild(bar);
+  }
+
   function setPromptHead(p) {
     const title = (p.title || "").trim();
     const sub = (p.subtitle || "").trim();
@@ -399,10 +529,115 @@
     el.promptNote.textContent = note.join("\n");
   }
 
+  /* Label sasaran dari mesin memakai bar teks "[████░░]" (untuk terminal).
+     Di web, ganti dengan bar HP sungguhan. */
+  function labelHtml(label) {
+    // Barisan toko: "Ramuan Daun      15 K  keterangan  (punya 3)"
+    const tk = /^(.+?)\s{2,}(\d+) K\s*(.*?)\s*\(punya (\d+)\)\s*$/.exec(label);
+    if (tk) return `<span class="lbl-skill"><span class="sk-atas"><b>${esc(tk[1])}</b><span class="tk-punya">punya ${esc(tk[4])}</span><span class="tk-harga">◈ ${esc(tk[2])}</span></span>${tk[3] ? `<span class="sk-bawah">${esc(tk[3])}</span>` : ""}</span>`;
+    const sk = RE_SKILL.exec(label);
+    if (sk) return labelSkill(sk);
+    const it = /^(.+?) ×(\d+)(?: — (.*))?$/.exec(label);
+    if (it) return `<span class="lbl-skill"><span class="sk-atas"><b>${esc(it[1])}</b><span class="sk-biaya">×${esc(it[2])}</span></span>${it[3] ? `<span class="sk-bawah">${esc(it[3])}</span>` : ""}</span>`;
+    const m = /^(.*?)\s*\[([█░]+)\]\s*$/.exec(label);
+    if (!m) return `<span>${esc(label)}</span>`;
+    const penuh = (m[2].match(/█/g) || []).length, p = (penuh / m[2].length) * 100;
+    const lvl = p <= 25 ? "low" : p <= 55 ? "mid" : "";
+    return `<span class="lbl-sasaran"><span>${esc(m[1])}</span><span class="bar bar-hp bar-pilih ${lvl}" aria-label="HP ${Math.round(p)}%"><i style="width:${p}%"></i></span></span>`;
+  }
+
+  /* Label skill dari mesin: "Nama [Elemen] (3 MP, satu musuh) — deskripsi". */
+  const RE_SKILL = /^(.+?)(?: \[([A-Za-z]+)\])? \((gratis|\d+ [A-Za-z_%]+), ([^()]+)\)(?: — (.*))?$/;
+  function afinitasArena() {
+    const hidup = [...document.querySelectorAll(".enemy:not(.dead)")];
+    const lemah = new Set(), per = hidup.map(() => new Set());
+    hidup.forEach((n, i) => n.querySelectorAll(".tag").forEach((t) => {
+      const m = /^(lemah|tahan|serap) (\w+)$/.exec(t.textContent.trim());
+      if (!m) return;
+      if (m[1] === "lemah") lemah.add(m[2].toLowerCase()); else per[i].add(m[2].toLowerCase());
+    }));
+    return { lemah, burukSemua: (el) => hidup.length > 0 && per.every((s) => s.has(el)) };
+  }
+  function labelSkill(m) {
+    const [, nama, elemen, biaya, sasaran, desc] = m;
+    const el = (elemen || "").toLowerCase();
+    let chip = "", nilai = "";
+    if (el) {
+      chip = `<span class="sk-el" style="--c:${FX.warna(el) || "#e8e3d8"}">${esc(elemen)}</span>`;
+      // Hanya skill penyerang yang dinilai: heal/buff ber-elemen (mis. Nyala Penjaga) bukan "efektif".
+      if (state.battleOn && /musuh/.test(sasaran)) {
+        const a = afinitasArena();
+        if (a.lemah.has(el)) nilai = `<span class="sk-nilai efektif">★ Efektif</span>`;
+        else if (a.burukSemua(el)) nilai = `<span class="sk-nilai buruk">Kurang efektif</span>`;
+      }
+    }
+    const bawah = [sasaran, desc].filter(Boolean).map(esc).join(" · ");
+    return `<span class="lbl-skill"><span class="sk-atas"><b>${esc(nama)}</b>${chip}${nilai}<span class="sk-biaya">${esc(biaya)}</span></span><span class="sk-bawah">${bawah}</span></span>`;
+  }
+
+  /* Urutan giliran: pelaku sekarang, sisa ronde ini, lalu perkiraan ronde berikutnya. */
+  function renderUrutan(antrean, musuh) {
+    if (!antrean.length) { el.urutan.innerHTML = ""; el.urutan.hidden = true; return; }
+    el.urutan.hidden = false;
+    let batas = false;
+    el.urutan.innerHTML = `<span class="urutan-label">Giliran</span>` + antrean.map((a, i) => {
+      let pisah = "";
+      if (a.depan && !batas) { batas = true; pisah = `<span class="urutan-pisah" title="Ronde berikutnya">›</span>`; }
+      const huruf = !a.pahlawan && / ([A-Z])$/.test(a.nama) ? a.nama.slice(-1) : "";
+      const gambar = a.pahlawan ? Art.portrait(a.kunci) : Art.enemy(a.kunci);
+      return `${pisah}<span class="urutan-item ${a.pahlawan ? "kawan" : "lawan"} ${i === 0 ? "kini" : ""} ${a.depan ? "depan" : ""}" title="${esc(a.nama)}">${gambar}${huruf ? `<b>${huruf}</b>` : ""}</span>`;
+    }).join("");
+  }
+
+  /* Kartu hasil pertarungan. */
+  let hasilTimer = null;
+  function bukaHasil(r) {
+    const drops = (r.drops || []).map((d) => `<span class="tag tag-weak">${esc(d)}</span>`).join("");
+    el.hasilKartu.innerHTML = `
+      <div class="hasil-judul">Menang</div>
+      <div class="hasil-sub">${r.rounds} ronde</div>
+      <div class="hasil-baris"><span>XP</span><b data-hitung="${r.xp || 0}">+0</b></div>
+      <div class="hasil-baris"><span>Keping</span><b data-hitung="${r.keping || 0}">+0</b></div>
+      ${drops ? `<div class="hasil-drops"><span>Dapat</span><div class="tags">${drops}</div></div>` : ""}
+      <div class="hasil-level" id="hasil-level"></div>
+      <div class="hasil-tutup">Ketuk untuk menutup</div>`;
+    el.hasil.hidden = false;
+    el.hasilKartu.querySelectorAll("[data-hitung]").forEach((b) => {
+      const target = Number(b.dataset.hitung), mulai = performance.now(), lama = 700;
+      const langkah = (t) => {
+        const f = Math.min(1, (t - mulai) / lama);
+        b.textContent = "+" + Math.round(target * (1 - Math.pow(1 - f, 3)));
+        if (f < 1) requestAnimationFrame(langkah);
+      };
+      requestAnimationFrame(langkah);
+    });
+    clearTimeout(hasilTimer);
+  }
+  function onNaikLevel(p) {
+    if (el.hasil.hidden) bukaHasil({ rounds: "—", xp: 0, keping: 0 });
+    const box = document.getElementById("hasil-level");
+    if (!box) return;
+    const baris = document.createElement("div");
+    baris.className = "hasil-naik";
+    baris.innerHTML = `<div class="hasil-potret">${Art.portrait(p.kunci)}</div><div><b>${esc(p.nama)}</b> naik ke <b>Lv ${p.level}</b>`
+      + (p.skill && p.skill.length ? `<div class="hasil-skill">Skill baru: ${p.skill.map(esc).join(", ")}</div>` : "")
+      + (p.jalur ? `<div class="hasil-skill">Bisa memilih Jalur. Buka menu Party.</div>` : "") + `</div>`;
+    box.appendChild(baris);
+  }
+  function tutupHasil() { el.hasil.hidden = true; }
+  el.hasil.onclick = tutupHasil;
+
+  /* Log ringkas saat bertarung di HP; tombol Log membuka semuanya. */
+  el.btnLog.onclick = () => {
+    const penuh = document.body.classList.toggle("log-penuh");
+    el.btnLog.setAttribute("aria-pressed", String(penuh));
+    el.log.scrollTop = el.log.scrollHeight;
+  };
+
   function addButton(label, value, cls, keyBadge) {
     const b = document.createElement("button");
     b.className = cls || "btn choice";
-    b.innerHTML = (keyBadge ? `<span class="k">${esc(keyBadge)}</span>` : "") + `<span>${esc(label)}</span>`;
+    b.innerHTML = (keyBadge ? `<span class="k">${esc(keyBadge)}</span>` : "") + labelHtml(String(label));
     b.onclick = () => answer(value);
     el.choiceGrid.appendChild(b);
   }
@@ -411,6 +646,7 @@
 
   async function answer(text) {
     if (!state.waiting || !state.id) return;
+    tutupHasil();
     state.waiting = false;
     el.choiceGrid.querySelectorAll("button").forEach((b) => b.classList.add("waiting"));
     el.freeForm.hidden = true;
