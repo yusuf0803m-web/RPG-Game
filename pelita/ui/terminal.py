@@ -146,7 +146,9 @@ def battle_snapshot(battle: Battle, title: str, aktor: Optional[Combatant] = Non
               "hp": h.hp, "max_hp": h.max_hp, "mp": h.mp, "max_mp": h.max_mp} for h in battle.bench]
     return {"title": title, "round": battle.round, "enemies": enemies, "heroes": heroes, "bench": bench,
             "bara": battle.bara, "bara_max": battle.bara_max, "bara_frozen": battle.bara_frozen,
-            "aktor": aktor.key if aktor is not None and aktor.is_player else None}
+            "aktor": aktor.key if aktor is not None and aktor.is_player else None,
+            "antrean": ([{"nama": aktor.display_name, "kunci": aktor.key, "pahlawan": aktor.is_player, "depan": False}]
+                        if aktor is not None else []) + battle.perkiraan_giliran()}
 
 
 def render_screen(battle: Battle, title: str, io: IO, aktor: Optional[Combatant] = None) -> None:
@@ -305,5 +307,6 @@ def run_battle(battle: Battle, title: str, io: IO, auto: bool = False, pause: bo
     r = battle.result
     assert r is not None
     io.emit("battle", battle_snapshot(battle, title))
-    io.emit("battle_end", {"outcome": r.outcome, "rounds": r.rounds, "xp": r.xp, "keping": r.keping})
+    io.emit("battle_end", {"outcome": r.outcome, "rounds": r.rounds, "xp": r.xp, "keping": r.keping,
+                           "drops": [battle.data.items[d].name for d in r.drops if d in battle.data.items]})
     io.line(f" Hasil: {r.outcome.upper()} dalam {r.rounds} ronde.")

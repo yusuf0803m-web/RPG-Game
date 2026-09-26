@@ -4,6 +4,8 @@
     <!-- Server permainan berjalan di dalam aplikasi ini sendiri (127.0.0.1).
          Android tetap menuntut izin INTERNET untuk membuka soket, meski lokal. -->
     <uses-permission android:name="android.permission.INTERNET" />
+    <!-- getar singkat saat Pecah & pukulan LEMAH (navigator.vibrate di WebView) -->
+    <uses-permission android:name="android.permission.VIBRATE" />
 
     <application
         android:allowBackup="true"

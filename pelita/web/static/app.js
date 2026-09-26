@@ -12,7 +12,8 @@
     plate: $("plate"), plateImg: $("plate-img"), plateTeks: $("plate-teks"),
     chipKeping: $("chip-keping"), chipLentera: $("chip-lentera"),
     battle: $("battle"), battleRound: $("battle-round"), bara: $("bara"), baraPips: $("bara-pips"),
-    enemies: $("enemies"), party: $("party"), log: $("log"),
+    enemies: $("enemies"), party: $("party"), log: $("log"), urutan: $("urutan"),
+    hasil: $("hasil"), hasilKartu: $("hasil-kartu"), btnLog: $("btn-log"),
     choices: $("choices"), promptLabel: $("prompt-label"), choiceGrid: $("choice-grid"),
     promptHead: $("prompt-head"), promptTitle: $("prompt-title"), promptNote: $("prompt-note"),
     freeForm: $("free-input"), freeText: $("free-text"), toast: $("toast")
@@ -130,11 +131,12 @@
   }
   function proses(ev) {
     switch (ev.kind) {
-      case "room":       onRoom(ev.payload); break;
+      case "room":       tutupHasil(); onRoom(ev.payload); break;
       case "adegan":     onAdegan(ev.payload); break;
       case "ilustrasi":  onIlustrasi(ev.payload); break;
-      case "battle":     onBattle(ev.payload); break;
+      case "battle":     if (!state.battleOn) tutupHasil(); onBattle(ev.payload); break;
       case "battle_end": onBattleEnd(ev.payload); break;
+      case "naik_level": onNaikLevel(ev.payload); break;
       case "say":        addDialog(ev.payload.who, ev.payload.text); break;
       case "text":       addNarration(ev.payload.text); break;
       case "log":        addLog(ev.payload.text); break;
@@ -264,16 +266,22 @@
     el.baraPips.innerHTML = Array.from({ length: b.bara_max }, (_, i) =>
       `<span class="pip ${i < b.bara ? "on" : ""}"></span>`).join("");
 
+    el.enemies.dataset.n = String(Math.min(b.enemies.length, 3));
+    el.enemies.classList.toggle("ringkas", b.enemies.length >= 3);
+    renderUrutan(b.antrean || [], b.enemies);
     el.enemies.innerHTML = b.enemies.map((e, i) => {
+      const isi = (e.statuses || []).some((s) => s.name === "Mengisi");
       const hpPct = pct(e.hp, e.max_hp);
       const lvl = hpPct <= 25 ? "low" : hpPct <= 55 ? "mid" : "";
       const tags = [
         ...(e.weak.length ? e.weak.map((w) => `<span class="tag tag-weak">lemah ${esc(w)}</span>`) : [`<span class="tag tag-unknown">lemah ?</span>`]),
         ...e.absorb.map((w) => `<span class="tag tag-absorb">serap ${esc(w)}</span>`),
         ...e.resist.map((w) => `<span class="tag tag-resist">tahan ${esc(w)}</span>`),
-        ...(e.statuses || []).map((s) => `<span class="tag ${s.bad ? "tag-status" : "tag-buff"}">${esc(s.name)}${s.turns ? " " + s.turns : ""}</span>`)
+        ...(e.statuses || []).map((s) => s.name === "Mengisi"
+          ? `<span class="tag tag-isi">Bersiap menyerang!</span>`
+          : `<span class="tag ${s.bad ? "tag-status" : "tag-buff"}">${esc(s.name)}${s.turns ? " " + s.turns : ""}</span>`)
       ].join("");
-      return `<div class="enemy ${e.boss ? "boss" : ""} ${e.alive ? "" : "dead"} ${e.pecah && e.alive ? "pecah" : ""}" data-enemy="${i}" data-name="${esc(e.name)}" data-key="${esc(e.key)}">
+      return `<div class="enemy ${e.boss ? "boss" : ""} ${e.alive ? "" : "dead"} ${e.pecah && e.alive ? "pecah" : ""} ${isi && e.alive ? "mengisi" : ""}" data-enemy="${i}" data-name="${esc(e.name)}" data-key="${esc(e.key)}">
         <div class="enemy-stage"><div class="enemy-sprite">${Art.enemy(e.key)}</div></div>
         <div class="enemy-top">
           <span class="enemy-name">${esc(e.name)}</span>
@@ -292,9 +300,7 @@
   }
 
   function onBattleEnd(r) {
-    if (r.outcome === "menang" && (r.xp || r.keping)) {
-      addLog(`  Menang! +${r.xp} XP, +${r.keping} Keping.`);
-    }
+    if (r.outcome === "menang") bukaHasil(r);
     setTimeout(() => {
       if (!state.battleOn) { el.battle.hidden = true; document.body.classList.remove("in-battle"); }
     }, 400);
@@ -431,12 +437,103 @@
   /* Label sasaran dari mesin memakai bar teks "[████░░]" (untuk terminal).
      Di web, ganti dengan bar HP sungguhan. */
   function labelHtml(label) {
+    const sk = RE_SKILL.exec(label);
+    if (sk) return labelSkill(sk);
+    const it = /^(.+?) ×(\d+)(?: — (.*))?$/.exec(label);
+    if (it) return `<span class="lbl-skill"><span class="sk-atas"><b>${esc(it[1])}</b><span class="sk-biaya">×${esc(it[2])}</span></span>${it[3] ? `<span class="sk-bawah">${esc(it[3])}</span>` : ""}</span>`;
     const m = /^(.*?)\s*\[([█░]+)\]\s*$/.exec(label);
     if (!m) return `<span>${esc(label)}</span>`;
     const penuh = (m[2].match(/█/g) || []).length, p = (penuh / m[2].length) * 100;
     const lvl = p <= 25 ? "low" : p <= 55 ? "mid" : "";
     return `<span class="lbl-sasaran"><span>${esc(m[1])}</span><span class="bar bar-hp bar-pilih ${lvl}" aria-label="HP ${Math.round(p)}%"><i style="width:${p}%"></i></span></span>`;
   }
+
+  /* Label skill dari mesin: "Nama [Elemen] (3 MP, satu musuh) — deskripsi". */
+  const RE_SKILL = /^(.+?)(?: \[([A-Za-z]+)\])? \((gratis|\d+ [A-Za-z_%]+), ([^()]+)\)(?: — (.*))?$/;
+  function afinitasArena() {
+    const hidup = [...document.querySelectorAll(".enemy:not(.dead)")];
+    const lemah = new Set(), per = hidup.map(() => new Set());
+    hidup.forEach((n, i) => n.querySelectorAll(".tag").forEach((t) => {
+      const m = /^(lemah|tahan|serap) (\w+)$/.exec(t.textContent.trim());
+      if (!m) return;
+      if (m[1] === "lemah") lemah.add(m[2].toLowerCase()); else per[i].add(m[2].toLowerCase());
+    }));
+    return { lemah, burukSemua: (el) => hidup.length > 0 && per.every((s) => s.has(el)) };
+  }
+  function labelSkill(m) {
+    const [, nama, elemen, biaya, sasaran, desc] = m;
+    const el = (elemen || "").toLowerCase();
+    let chip = "", nilai = "";
+    if (el) {
+      chip = `<span class="sk-el" style="--c:${FX.warna(el) || "#e8e3d8"}">${esc(elemen)}</span>`;
+      if (state.battleOn) {
+        const a = afinitasArena();
+        if (a.lemah.has(el)) nilai = `<span class="sk-nilai efektif">★ Efektif</span>`;
+        else if (a.burukSemua(el)) nilai = `<span class="sk-nilai buruk">Kurang efektif</span>`;
+      }
+    }
+    const bawah = [sasaran, desc].filter(Boolean).map(esc).join(" · ");
+    return `<span class="lbl-skill"><span class="sk-atas"><b>${esc(nama)}</b>${chip}${nilai}<span class="sk-biaya">${esc(biaya)}</span></span><span class="sk-bawah">${bawah}</span></span>`;
+  }
+
+  /* Urutan giliran: pelaku sekarang, sisa ronde ini, lalu perkiraan ronde berikutnya. */
+  function renderUrutan(antrean, musuh) {
+    if (!antrean.length) { el.urutan.innerHTML = ""; el.urutan.hidden = true; return; }
+    el.urutan.hidden = false;
+    let batas = false;
+    el.urutan.innerHTML = `<span class="urutan-label">Giliran</span>` + antrean.map((a, i) => {
+      let pisah = "";
+      if (a.depan && !batas) { batas = true; pisah = `<span class="urutan-pisah" title="Ronde berikutnya">›</span>`; }
+      const huruf = !a.pahlawan && / ([A-Z])$/.test(a.nama) ? a.nama.slice(-1) : "";
+      const gambar = a.pahlawan ? Art.portrait(a.kunci) : Art.enemy(a.kunci);
+      return `${pisah}<span class="urutan-item ${a.pahlawan ? "kawan" : "lawan"} ${i === 0 ? "kini" : ""} ${a.depan ? "depan" : ""}" title="${esc(a.nama)}">${gambar}${huruf ? `<b>${huruf}</b>` : ""}</span>`;
+    }).join("");
+  }
+
+  /* Kartu hasil pertarungan. */
+  let hasilTimer = null;
+  function bukaHasil(r) {
+    const drops = (r.drops || []).map((d) => `<span class="tag tag-weak">${esc(d)}</span>`).join("");
+    el.hasilKartu.innerHTML = `
+      <div class="hasil-judul">Menang</div>
+      <div class="hasil-sub">${r.rounds} ronde</div>
+      <div class="hasil-baris"><span>XP</span><b data-hitung="${r.xp || 0}">+0</b></div>
+      <div class="hasil-baris"><span>Keping</span><b data-hitung="${r.keping || 0}">+0</b></div>
+      ${drops ? `<div class="hasil-drops"><span>Dapat</span><div class="tags">${drops}</div></div>` : ""}
+      <div class="hasil-level" id="hasil-level"></div>
+      <div class="hasil-tutup">Ketuk untuk menutup</div>`;
+    el.hasil.hidden = false;
+    el.hasilKartu.querySelectorAll("[data-hitung]").forEach((b) => {
+      const target = Number(b.dataset.hitung), mulai = performance.now(), lama = 700;
+      const langkah = (t) => {
+        const f = Math.min(1, (t - mulai) / lama);
+        b.textContent = "+" + Math.round(target * (1 - Math.pow(1 - f, 3)));
+        if (f < 1) requestAnimationFrame(langkah);
+      };
+      requestAnimationFrame(langkah);
+    });
+    clearTimeout(hasilTimer);
+  }
+  function onNaikLevel(p) {
+    if (el.hasil.hidden) bukaHasil({ rounds: "—", xp: 0, keping: 0 });
+    const box = document.getElementById("hasil-level");
+    if (!box) return;
+    const baris = document.createElement("div");
+    baris.className = "hasil-naik";
+    baris.innerHTML = `<div class="hasil-potret">${Art.portrait(p.kunci)}</div><div><b>${esc(p.nama)}</b> naik ke <b>Lv ${p.level}</b>`
+      + (p.skill && p.skill.length ? `<div class="hasil-skill">Skill baru: ${p.skill.map(esc).join(", ")}</div>` : "")
+      + (p.jalur ? `<div class="hasil-skill">Bisa memilih Jalur. Buka menu Party.</div>` : "") + `</div>`;
+    box.appendChild(baris);
+  }
+  function tutupHasil() { el.hasil.hidden = true; }
+  el.hasil.onclick = tutupHasil;
+
+  /* Log ringkas saat bertarung di HP; tombol Log membuka semuanya. */
+  el.btnLog.onclick = () => {
+    const penuh = document.body.classList.toggle("log-penuh");
+    el.btnLog.setAttribute("aria-pressed", String(penuh));
+    el.log.scrollTop = el.log.scrollHeight;
+  };
 
   function addButton(label, value, cls, keyBadge) {
     const b = document.createElement("button");
@@ -450,6 +547,7 @@
 
   async function answer(text) {
     if (!state.waiting || !state.id) return;
+    tutupHasil();
     state.waiting = false;
     el.choiceGrid.querySelectorAll("button").forEach((b) => b.classList.add("waiting"));
     el.freeForm.hidden = true;

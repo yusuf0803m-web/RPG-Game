@@ -301,6 +301,10 @@ class ScriptRunner:
             bagian = int(bagian * (1 + h.passive().xp_pct))
             levels = h.gain_xp(bagian)
             if levels:
+                self.io.emit("naik_level", {
+                    "nama": h.name, "kunci": h.id, "level": h.level,
+                    "skill": [s.name for lv in levels for s in h.new_skills_at(lv)],
+                    "jalur": bool(h.butuh_pilih_jalur)})
                 self.io.line(f" ** {h.name} naik ke Lv {h.level}! **")
                 for lv in levels:
                     for s in h.new_skills_at(lv):

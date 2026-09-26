@@ -361,6 +361,17 @@ class Battle:
         self._emit(ev, f"{names} muncul!")
         return ev
 
+    def perkiraan_giliran(self, n: int = 7) -> list[dict]:
+        """Urutan giliran untuk UI: sisa antrean ronde ini, lalu perkiraan ronde berikutnya
+        (urutan AGI yang sama dengan _new_round). Hanya tampilan; tidak mengubah apa pun."""
+        def info(c: Combatant, ronde_depan: bool) -> dict:
+            return {"nama": c.display_name, "kunci": c.key, "pahlawan": c.is_player, "depan": ronde_depan}
+        out = [info(c, False) for c in self.queue if c.alive]
+        berikut = sorted(self.alive_heroes + self.alive_enemies,
+                         key=lambda c: (-c.effective("agi"), 0 if c.is_player else 1))
+        out += [info(c, True) for c in berikut]
+        return out[:n]
+
     def _new_round(self, ev: list[str]) -> None:
         self.round += 1
         if self.survive_rounds and self.round > self.survive_rounds:
@@ -962,6 +973,7 @@ class Battle:
                 handled = True
         if "charge" in tags:
             actor.statuses["mengisi"] = make_status("mengisi")
+            self._fx(ev, "mengisi", sasaran=actor.display_name)
             batal = "hanya Pecah" if "goyah" in actor.immune else "Goyah atau Pecah"
             self._emit(ev, f"{actor.display_name} mengisi tenaga... ({batal} membatalkannya)")
             handled = True
@@ -1110,7 +1122,8 @@ class Battle:
             target.statuses["pecah"] = make_status("pecah")
             self._fx(ev, "pecah", sasaran=target.display_name)
             self._emit(ev, f"*** {target.display_name} PECAH! Ia kehilangan giliran dan menerima damage ×1.5. ***")
-            target.statuses.pop("mengisi", None)
+            if target.statuses.pop("mengisi", None) is not None:
+                self._fx(ev, "isi_batal", sasaran=target.display_name)
             self._release_swallowed(target, ev)
 
     def _release_swallowed(self, swallower: Combatant, ev: list[str]) -> None:
@@ -1186,6 +1199,7 @@ class Battle:
             return False
         if sid == "goyah":
             if target.statuses.pop("mengisi", None) is not None:
+                self._fx(ev, "isi_batal", sasaran=target.display_name)
                 self._emit(ev, f"Isian {target.display_name} buyar!")
             self._release_swallowed(target, ev)
         st = make_status(sid, turns, source=source)

@@ -67,10 +67,12 @@
         <span class="battle-round" id="battle-round">Ronde 1</span>
         <div class="bara" id="bara" hidden><span class="bara-label">Bara</span><span class="bara-pips" id="bara-pips"></span></div>
         <div class="fx-kontrol">
-          <button type="button" class="fx-btn" id="fx-mode">Animasi: Penuh</button>
+          <button type="button" class="fx-btn" id="fx-mode">✦ Penuh</button>
           <button type="button" class="fx-btn" id="fx-speed">1×</button>
+          <button type="button" class="fx-btn fx-log" id="btn-log" aria-pressed="false">Log</button>
         </div>
       </div>
+      <div class="urutan" id="urutan" aria-label="Urutan giliran"></div>
       <div class="enemies" id="enemies"></div>
     </section>
 
@@ -99,6 +101,11 @@
   </footer>
 
   <div class="toast" id="toast" hidden></div>
+
+  <!-- kartu hasil pertarungan -->
+  <div class="hasil" id="hasil" hidden>
+    <div class="hasil-kartu" id="hasil-kartu" role="dialog" aria-label="Hasil pertarungan"></div>
+  </div>
 </div>
 
 <script src="/static/art.js"></script>

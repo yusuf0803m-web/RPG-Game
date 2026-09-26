@@ -234,6 +234,7 @@
       anim(node, [{ transform: "rotate(0)" }, { transform: "rotate(-3deg) translateX(-5px)" }, { transform: "rotate(2.5deg) translateX(4px)" },
         { transform: "rotate(-1deg)" }, { transform: "rotate(0)" }], 400, { berat: true });
       angka(node, p.dmg, "#ffd84a", true, (p.pecah ? "LEMAH · PECAH" : "LEMAH") + krit);
+      getar(25);
     } else if (p.afinitas === "tahan") {
       angka(node, p.dmg, "#b7bcc4", false, "TAHAN" + krit);
       guncang(node, 2, 180);
@@ -291,6 +292,8 @@
       bar.style.opacity = "0";
     }
     node.classList.add("pecah");
+    node.classList.remove("mengisi");
+    getar([60, 40, 90]);
     kilat(.5, 300);
     guncang(document.getElementById("battle"), 8, 380);
     await Promise.all([cap(node, "PECAH", "#e6dcff", Math.min(46, kotak(node).w * .2), -8)].concat(serpih));
@@ -332,12 +335,37 @@
     node.classList.add("dead");
   }
 
-  const PENANGAN = { aksi, hit, meleset, imun, ketahanan, pecah, pecah_pulih: pecahPulih, bara, tumbang };
+  /* Getar HP (Android butuh izin VIBRATE). Mati bersama mode Animasi: Mati. */
+  function getar(pola) {
+    if (modeAktif() === "mati" || !navigator.vibrate) return;
+    try { navigator.vibrate(pola); } catch (e) { /* tidak didukung */ }
+  }
+
+  /* Boss mulai mengisi tenaga: cincin merah di sprite sampai isian lepas atau batal. */
+  async function mengisi(p) {
+    const node = cari(p.sasaran); if (!node) return;
+    node.classList.add("mengisi");
+    const c = kotak(node);
+    await Promise.all([
+      cap(node, "MENGISI", "#ff8a78", Math.min(30, c.w * .14), 0),
+      anim(node, [{ transform: "scale(1)" }, { transform: "scale(1.04)" }, { transform: "scale(1)" }], 420, { berat: true })
+    ]);
+  }
+  async function isiBatal(p) {
+    const node = cari(p.sasaran); if (!node) return;
+    node.classList.remove("mengisi");
+    angka(node, "BUYAR", "#c7b3ff", false, "ISIAN");
+    await tidur(260);
+  }
+
+  const PENANGAN = { mengisi, isi_batal: isiBatal, aksi, hit, meleset, imun, ketahanan, pecah, pecah_pulih: pecahPulih, bara, tumbang };
 
   /* ── Pengaturan ─────────────────────────────────────────────────── */
   function pasangKontrol(tombolMode, tombolKecepatan) {
     const segarkan = () => {
-      tombolMode.textContent = "Animasi: " + LABEL_MODE[mode];
+      tombolMode.textContent = "✦ " + LABEL_MODE[mode];
+      tombolMode.setAttribute("aria-label", "Animasi " + LABEL_MODE[mode]);
+      tombolMode.title = "Animasi: Penuh / Ringan / Mati";
       tombolKecepatan.textContent = speed + "×";
       tombolKecepatan.setAttribute("aria-label", "Kecepatan animasi " + speed + " kali");
     };
@@ -355,6 +383,7 @@
       return Promise.resolve(f(p)).catch((e) => console.error("fx", p.t, e));
     },
     reset() { sasaranTerakhir = null; if (layer) layer.innerHTML = ""; },
+    warna: (el) => WARNA[el] || null,
     pasangKontrol
   };
 })();
