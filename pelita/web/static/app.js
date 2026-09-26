@@ -466,7 +466,8 @@
     let chip = "", nilai = "";
     if (el) {
       chip = `<span class="sk-el" style="--c:${FX.warna(el) || "#e8e3d8"}">${esc(elemen)}</span>`;
-      if (state.battleOn) {
+      // Hanya skill penyerang yang dinilai: heal/buff ber-elemen (mis. Nyala Penjaga) bukan "efektif".
+      if (state.battleOn && /musuh/.test(sasaran)) {
         const a = afinitasArena();
         if (a.lemah.has(el)) nilai = `<span class="sk-nilai efektif">★ Efektif</span>`;
         else if (a.burukSemua(el)) nilai = `<span class="sk-nilai buruk">Kurang efektif</span>`;
