@@ -243,8 +243,61 @@
       `<path d="M13 24 q7 9 14 0 q-2 10 -7 10 q-5 0 -7 -10z" fill="#c9c4bb"/>
        <rect x="30" y="6" width="2.6" height="30" rx="1" fill="#5d431f"/>
        <circle cx="31.3" cy="7" r="6" fill="#ffd89a" opacity=".9" class="flame"/>`), "0 0 40 40", fitAll),
+    rangga: () => svg(face("#b88a64", "#1a1410",
+      `<rect x="10.5" y="11.5" width="19" height="3" rx="1.2" fill="#8a3b2e"/>
+       <path d="M29 12 l5 3 l-4 1z" fill="#8a3b2e"/>
+       <path d="M23.5 19 l2.5 3" stroke="#7a4f36" stroke-width=".9"/>
+       <path d="M33 10 v26" stroke="#8a7a5e" stroke-width="2"/><path d="M31 10 l2 -5 l2 5z" fill="#c79a60"/>`), "0 0 40 40", fitAll),
+    ratih:  () => svg(face("#e2c09c", "#2a1a22",
+      `<path d="M11 15 q-3 10 1 18 l3 -2 q-2 -8 -1 -14z M29 15 q3 10 -1 18 l-3 -2 q2 -8 1 -14z" fill="#2a1a22"/>
+       <circle cx="27.5" cy="11" r="2.4" fill="#e89ab0"/><circle cx="27.5" cy="11" r="1" fill="#fff1b8"/>
+       <path d="M6 30 l9 -6" stroke="#8fe0a8" stroke-width="1.4" stroke-linecap="round"/>`), "0 0 40 40", fitAll),
+    kelana: () => svg(face("#a97d5a", "#3b3b46",
+      `<path d="M9 20 q0 -15 11 -15 q11 0 11 15 q-2 -7 -11 -8 q-9 1 -11 8z" fill="#23222c"/>
+       <circle cx="16.5" cy="18.5" r="1.1" fill="#a483e0"/><circle cx="23.5" cy="18.5" r="1.1" fill="#a483e0"/>
+       <path d="M8 40 q2 -12 12 -12 q10 0 12 12z" fill="#23222c"/>`), "0 0 40 40", fitAll),
     _default: () => svg(face("#c9a07a", "#2b2b33"), "0 0 40 40", fitAll)
   };
+
+  /* ── Potret NPC: deterministik dari nama, jadi dialog & menu selalu cocok ── */
+  const hashTeks = (t) => { let h = 2166136261; for (const c of t) { h ^= c.charCodeAt(0); h = Math.imul(h, 16777619); } return h >>> 0; };
+  const KULIT = ["#d9b48c", "#c9a07a", "#b88a64", "#e0c3a4", "#a97d5a"];
+  const RAMBUT = ["#241a14", "#3a2a1c", "#1c1c22", "#5a4630", "#8a8680"];
+  const KAIN = ["#5a4a3a", "#3f5a44", "#4a4f63", "#6b4f45", "#5d5470", "#40525a"];
+  // Varian: 0 polos, 1 kerudung, 2 peci, 3 janggut tua, 4 caping, 5 ikat kepala
+  const NPC_VARIAN = { darma: 3, ratna: 1, wira: 2, rukmini: 1, baskara: 3, pandansari: 5, "mbok sari": 1,
+    sari: 1, nelayan: 4, penjaja: 4, pedagang: 2, pengawal: 5, penjaga: 5, "juru arena": 5, harun: 2, salim: 2,
+    asih: 1, wulan: 1, kirana: 0, sekar: 0, enting: 0, baruna: 4, lelana: 4, "sunan wirya": 3, klawu: 5 };
+  const bersihNama = (n) => String(n || "").replace(/\s*\(.*\)\s*$/, "").replace(/^(Pak|Bu|Mbok|Ki|Nyi|Mas|Mbak|Kak)\s+/i, "").trim();
+  function potretNpc(nama) {
+    const n = bersihNama(nama), k = n.toLowerCase(), h = hashTeks(k);
+    if (/^\?+$/.test(n)) return svg(`<rect width="40" height="40" rx="8" fill="#0b0d12"/>
+      <circle cx="20" cy="18" r="9" fill="#1a1d25"/><path d="M8 40 q2 -13 12 -13 q10 0 12 13z" fill="#1a1d25"/>
+      <text x="20" y="22" text-anchor="middle" font-size="11" font-family="serif" fill="#4a5060">?</text>`, "0 0 40 40", fitAll);
+    if (/pelita pertama|gema|penenun|hampa/.test(k)) {
+      const w = /penenun/.test(k) ? "#a98cd8" : /gema/.test(k) ? "#ffd89a" : "#f0b45c";
+      return svg(`<defs><radialGradient id="roh${h}" cx=".5" cy=".45"><stop offset="0" stop-color="${w}" stop-opacity=".9"/><stop offset="1" stop-color="${w}" stop-opacity="0"/></radialGradient></defs>
+        <rect width="40" height="40" rx="8" fill="#0b0d12"/><circle cx="20" cy="19" r="17" fill="url(#roh${h})" class="flame"/>
+        <circle cx="20" cy="17" r="7" fill="${w}" opacity=".35"/><path d="M9 40 q2 -12 11 -12 q9 0 11 12z" fill="${w}" opacity=".22"/>`, "0 0 40 40", fitAll);
+    }
+    const kulit = KULIT[h % KULIT.length], rambut = RAMBUT[(h >>> 3) % RAMBUT.length], kain = KAIN[(h >>> 6) % KAIN.length];
+    const v = k in NPC_VARIAN ? NPC_VARIAN[k] : (h >>> 9) % 6;
+    const tambah = [
+      `<path d="M11 15 q9 -11 18 0 q-3 -6 -9 -6 q-6 0 -9 6z" fill="${rambut}"/>`,
+      `<path d="M9.5 20 q0 -13 10.5 -13 q10.5 0 10.5 13 v7 q-2 -3 -3 -9 q-3 -5 -7.5 -5 q-4.5 0 -7.5 5 q-1 6 -3 9z" fill="${kain}"/>`,
+      `<path d="M11 15 q9 -11 18 0 q-3 -6 -9 -6 q-6 0 -9 6z" fill="${rambut}"/><rect x="12" y="6.5" width="16" height="6" rx="1.5" fill="#15171c"/>`,
+      `<path d="M11 15 q9 -11 18 0 q-3 -6 -9 -6 q-6 0 -9 6z" fill="#c9c4bb"/><path d="M13.5 21 q6.5 9 13 0 q-1.5 9 -6.5 9 q-5 0 -6.5 -9z" fill="#c9c4bb"/>`,
+      `<path d="M11 15 q9 -11 18 0 q-3 -6 -9 -6 q-6 0 -9 6z" fill="${rambut}"/><path d="M4 13 L20 3 L36 13 z" fill="#b89a5e"/><path d="M4 13 h32" stroke="#7a6438" stroke-width="1"/>`,
+      `<path d="M11 15 q9 -11 18 0 q-3 -6 -9 -6 q-6 0 -9 6z" fill="${rambut}"/><rect x="10.5" y="11" width="19" height="3" rx="1.2" fill="${kain}"/>`
+    ][v];
+    return svg(`<rect width="40" height="40" rx="8" fill="#0e1219"/>
+      <path d="M8 40 q2 -13 12 -13 q10 0 12 13z" fill="${kain}"/>
+      <circle cx="20" cy="18" r="9" fill="${kulit}"/>${tambah}
+      <circle cx="16.8" cy="18.5" r=".9" fill="#1a1410"/><circle cx="23.2" cy="18.5" r=".9" fill="#1a1410"/>`, "0 0 40 40", fitAll);
+  }
+  /* Warna nama pembicara di kotak dialog. */
+  const WARNA_TOKOH = { rimba: "#f0b45c", sela: "#b8c0cc", lintang: "#b9a2e6", bagas: "#8fd0e0", rangga: "#d9a86c",
+    ratih: "#8fe0a8", kelana: "#a98ae6", guntur: "#ffd89a" };
 
   /* ── Siluet musuh (dikelompokkan dari id) ───────────────────────── */
   const shape = (inner) => svg(inner, "0 0 40 40", fitAll);
@@ -309,6 +362,13 @@
   global.Art = {
     scene(areaId) { return (SCENES[areaId] || SCENES._default)(); },
     portrait(heroId) { return (PORTRAITS[heroId] || PORTRAITS._default)(); },
+    /* Potret siapa pun yang berbicara: tokoh party pakai potretnya, NPC dibuat dari nama. */
+    speaker(nama) {
+      const k = bersihNama(nama).toLowerCase();
+      return PORTRAITS[k] && k !== "_default" ? PORTRAITS[k]() : potretNpc(nama);
+    },
+    speakerColor(nama) { return WARNA_TOKOH[bersihNama(nama).toLowerCase()] || "#d8cfbb"; },
+    isHero(nama) { return bersihNama(nama).toLowerCase() in WARNA_TOKOH; },
     enemy(enemyId) {
       for (const [re, key] of ENEMY_MAP) if (re.test(enemyId)) return ENEMIES[key]();
       return ENEMIES._default();

@@ -123,8 +123,8 @@ def _aff_notes(battle: Battle, e: Combatant) -> str:
     return "   ".join(parts)
 
 
-def battle_snapshot(battle: Battle, title: str) -> dict:
-    """Keadaan pertarungan untuk UI terstruktur."""
+def battle_snapshot(battle: Battle, title: str, aktor: Optional[Combatant] = None) -> dict:
+    """Keadaan pertarungan untuk UI terstruktur. ``aktor`` = pahlawan yang sedang memilih aksi."""
     enemies = []
     for e in battle.enemies:
         known = battle.bestiary.get(e.key)
@@ -145,11 +145,14 @@ def battle_snapshot(battle: Battle, title: str) -> dict:
     bench = [{"key": h.key, "name": h.name, "alive": h.alive, "level": h.level,
               "hp": h.hp, "max_hp": h.max_hp, "mp": h.mp, "max_mp": h.max_mp} for h in battle.bench]
     return {"title": title, "round": battle.round, "enemies": enemies, "heroes": heroes, "bench": bench,
-            "bara": battle.bara, "bara_max": battle.bara_max, "bara_frozen": battle.bara_frozen}
+            "bara": battle.bara, "bara_max": battle.bara_max, "bara_frozen": battle.bara_frozen,
+            "aktor": aktor.key if aktor is not None and aktor.is_player else None,
+            "antrean": ([{"nama": aktor.display_name, "kunci": aktor.key, "pahlawan": aktor.is_player, "depan": False}]
+                        if aktor is not None else []) + battle.perkiraan_giliran()}
 
 
-def render_screen(battle: Battle, title: str, io: IO) -> None:
-    io.emit("battle", battle_snapshot(battle, title))
+def render_screen(battle: Battle, title: str, io: IO, aktor: Optional[Combatant] = None) -> None:
+    io.emit("battle", battle_snapshot(battle, title, aktor))
     if io.structured:
         return
     io.line("═" * LEBAR)
@@ -263,19 +266,31 @@ def choose_action_interactive(battle: Battle, actor: Combatant, io: IO) -> Actio
             return Action("kabur")
 
 
+def _keluarkan(io: IO, battle: Battle, events: list[str], prefix: str = "  ") -> None:
+    """Tulis baris log dan sisipkan event ``fx`` tepat sebelum baris yang
+    ditimbulkannya, supaya klien grafis memutar animasi dulu baru teksnya."""
+    fx = battle.drain_fx()
+    i = 0
+    for n, line in enumerate(events):
+        while i < len(fx) and fx[i]["pos"] <= n:
+            io.emit("fx", fx[i])
+            i += 1
+        io.line(prefix + line)
+    for f in fx[i:]:
+        io.emit("fx", f)
+
+
 def run_battle(battle: Battle, title: str, io: IO, auto: bool = False, pause: bool = True) -> None:
     """Loop pertarungan lengkap. ``auto`` memakai kebijakan otomatis untuk party."""
-    for e in battle.start():
-        io.line(e)
+    _keluarkan(io, battle, battle.start(), prefix="")
     while not battle.over:
         turn = battle.next_turn()
-        for e in turn.events:
-            io.line("  " + e)
+        _keluarkan(io, battle, turn.events)
         if turn.skipped or turn.actor is None:
             continue
         actor = turn.actor
         if actor.is_player:
-            render_screen(battle, title, io)
+            render_screen(battle, title, io, aktor=actor)
             if auto:
                 action = ai.choose_hero_action(battle, actor)
                 io.line(f" {actor.name} (auto): {action.label}")
@@ -283,8 +298,7 @@ def run_battle(battle: Battle, title: str, io: IO, auto: bool = False, pause: bo
                 action = choose_action_interactive(battle, actor, io)
         else:
             action = ai.choose_enemy_action(battle, actor)
-        for e in battle.act(actor, action):
-            io.line("  " + e)
+        _keluarkan(io, battle, battle.act(actor, action))
         if not actor.is_player:
             io.emit("battle", battle_snapshot(battle, title))
         if pause and not actor.is_player and not auto and not battle.over:
@@ -293,5 +307,6 @@ def run_battle(battle: Battle, title: str, io: IO, auto: bool = False, pause: bo
     r = battle.result
     assert r is not None
     io.emit("battle", battle_snapshot(battle, title))
-    io.emit("battle_end", {"outcome": r.outcome, "rounds": r.rounds, "xp": r.xp, "keping": r.keping})
+    io.emit("battle_end", {"outcome": r.outcome, "rounds": r.rounds, "xp": r.xp, "keping": r.keping,
+                           "drops": [battle.data.items[d].name for d in r.drops if d in battle.data.items]})
     io.line(f" Hasil: {r.outcome.upper()} dalam {r.rounds} ronde.")
