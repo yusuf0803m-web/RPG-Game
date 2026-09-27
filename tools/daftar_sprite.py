@@ -24,7 +24,8 @@ PROMPT = Path(__file__).resolve().parent / "sprite_prompts.json"
 UKURAN = "persegi 1:1, minimal 768×768 px; simpan sebagai .webp 640×640 (di bawah ±120 KB)"
 
 GAYA = ("Dark fantasy Nusantara {jenis}, painterly digital painting, same style as a moody "
-        "lantern-lit Indonesian night scene. {isi} Single {tunggal}, full body, centered, {sudut}. "
+        "lantern-lit Indonesian night scene. {isi} Single {tunggal}, full body, centered, {sudut}, "
+        "the whole creature inside the middle 70% of the frame with empty dark margin around it. "
         "Plain very dark blue-black background (#0c0f14), soft warm lantern rim light, cool mist at the bottom. "
         "No text, no frame, no border. Square 1:1.")
 
@@ -36,9 +37,10 @@ Semua musuh dengan id itu (Kunang Kelam A, B, C) memakai gambar yang sama.
 - **Format & ukuran:** {UKURAN}.
 - **Kalau berkasnya belum ada**, kartu memakai siluet SVG. Tidak ada yang rusak;
   gambar bisa diisi bertahap.
-- **Komposisi:** satu makhluk di tengah, seluruh badan, latar gelap polos. Kartu
-  memotong gambar seperti jendela lebar (bagian tengah atas paling terlihat) lalu
-  memudarkan bagian bawahnya, jadi taruh kepala/wajah di sepertiga atas.
+- **Komposisi:** satu makhluk di tengah, seluruh badan, latar gelap polos, dengan
+  ruang kosong di sekelilingnya. Kartu memotong gambar seperti jendela lebar (kira-kira
+  70% bagian tengah terlihat) lalu memudarkan seperlima bawahnya. Ciri penting makhluk
+  (wajah, perut bercahaya, senjata) jangan diletakkan di tepi atas atau bawah gambar.
 - **Gaya:** sama dengan gambar latar: lukisan digital, cahaya lentera hangat,
   kabut dingin. Pakai prompt di bawah apa adanya supaya semua sprite seragam.
 - Sumber prompt: `tools/sprite_prompts.json`. Perbarui daftar ini dengan
