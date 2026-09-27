@@ -984,7 +984,7 @@ Yang ditampilkan secara grafis:
 |---|---|
 | Lokasi | Panorama SVG per area (desa, hutan berkabut, rawa, danau, kota, saluran, tambang, menara) |
 | Kabut | Lapisan kabut di panorama + penghitung sisa Minyak Lentera |
-| Musuh | Kartu dengan bar HP, meter Ketahanan, label kelemahan/tahan/serap dari Catatan Penyala |
+| Musuh | Kartu dengan bar HP, meter Ketahanan, label kelemahan/tahan/serap dari Catatan Penyala. Sprite lukisan dari `assets/enemies/<id>.webp` bila ada (daftar & prompt: `tools/daftar_sprite.py`), selain itu siluet SVG |
 | Party | Kartu dengan potret, bar HP/MP, label status |
 | Bara | Deretan belah ketupat yang menyala |
 | Damage | Angka melayang di atas kartu yang terkena; merah untuk biasa, kuning untuk LEMAH |

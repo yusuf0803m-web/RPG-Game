@@ -44,6 +44,17 @@ from ..world.state import SAVE_SLOTS, GameState, new_game
 # supaya klien tidak perlu menebak lewat permintaan yang berakhir 404 (GAME_DESIGN §7.2).
 ASET_LATAR = Path(__file__).parent / "static" / "assets" / "backgrounds"
 URL_LATAR = "/static/assets/backgrounds"
+# Sprite lukisan musuh (pelita/web/static/assets/enemies/<id musuh>.webp). Kalau belum
+# ada, klien memakai siluet SVG dari art.js. Daftar: tools/daftar_sprite.py.
+ASET_MUSUH = Path(__file__).parent / "static" / "assets" / "enemies"
+URL_MUSUH = "/static/assets/enemies"
+
+
+def url_sprite(enemy_id: str) -> str:
+    """URL sprite musuh kalau berkasnya ada; string kosong kalau belum digambar."""
+    if not enemy_id or "/" in enemy_id or "\\" in enemy_id or enemy_id.startswith("."):
+        return ""
+    return f"{URL_MUSUH}/{enemy_id}.webp" if (ASET_MUSUH / f"{enemy_id}.webp").is_file() else ""
 
 
 def url_latar(path: str) -> str:
@@ -103,6 +114,11 @@ class WebIO(IO):
         # menembak berkas yang belum digambar dan meninggalkan 404 di konsol.
         if kind in ("room", "adegan", "ilustrasi") and "latar" in payload:
             payload = dict(payload, latar_url=url_latar(payload["latar"]))
+        if kind == "battle":
+            payload = dict(payload,
+                           enemies=[dict(e, sprite_url=url_sprite(e.get("key", ""))) for e in payload.get("enemies", [])],
+                           antrean=[a if a.get("pahlawan") else dict(a, sprite_url=url_sprite(a.get("kunci", "")))
+                                    for a in payload.get("antrean", [])])
         self.session.push(kind, payload)
 
     def render_options(self, options, header: Optional[Header] = None) -> None:

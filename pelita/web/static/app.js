@@ -310,7 +310,9 @@
           : `<span class="tag ${s.bad ? "tag-status" : "tag-buff"}">${esc(s.name)}${s.turns ? " " + s.turns : ""}</span>`)
       ].join("");
       return `<div class="enemy ${e.boss ? "boss" : ""} ${e.alive ? "" : "dead"} ${e.pecah && e.alive ? "pecah" : ""} ${isi && e.alive ? "mengisi" : ""}" data-enemy="${i}" data-name="${esc(e.name)}" data-key="${esc(e.key)}">
-        <div class="enemy-stage"><div class="enemy-sprite">${Art.enemy(e.key)}</div></div>
+        ${e.sprite_url
+          ? `<div class="enemy-stage lukis"><img class="enemy-lukis" src="${esc(e.sprite_url)}" alt="" decoding="async"></div>`
+          : `<div class="enemy-stage"><div class="enemy-sprite">${Art.enemy(e.key)}</div></div>`}
         <div class="enemy-top">
           <span class="enemy-name">${esc(e.name)}</span>
           <span class="enemy-hp-num">${e.alive ? Math.round(hpPct) + "%" : "—"}</span>
@@ -584,7 +586,8 @@
       let pisah = "";
       if (a.depan && !batas) { batas = true; pisah = `<span class="urutan-pisah" title="Ronde berikutnya">›</span>`; }
       const huruf = !a.pahlawan && / ([A-Z])$/.test(a.nama) ? a.nama.slice(-1) : "";
-      const gambar = a.pahlawan ? Art.portrait(a.kunci) : Art.enemy(a.kunci);
+      const gambar = a.pahlawan ? Art.portrait(a.kunci)
+        : (a.sprite_url ? `<img src="${esc(a.sprite_url)}" alt="" decoding="async">` : Art.enemy(a.kunci));
       return `${pisah}<span class="urutan-item ${a.pahlawan ? "kawan" : "lawan"} ${i === 0 ? "kini" : ""} ${a.depan ? "depan" : ""}" title="${esc(a.nama)}">${gambar}${huruf ? `<b>${huruf}</b>` : ""}</span>`;
     }).join("");
   }
